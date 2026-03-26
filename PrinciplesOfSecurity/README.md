@@ -1,32 +1,44 @@
-# Principles of Security
+---
+user: bung3r
+date: 24.01.22
+description: Learn the principles of information security that secures data and protects systems from abuse
+tags:
+  - cia
+  - priviliges
+---
+# [Principles of Security](https://tryhackme.com/room/principlesofsecurity)
 
 ## The CIA Triad
 
-Model that creates a security policy.
+- Model that creates a security policy.
 
-Confidentiality, Intergrity and Availability have become an industry standard today.
+- Confidentiality, Integrity and Availability have become an industry standard today.
 
-If one elements of the three is not met, then the other two are useless. If a securiy policy does not answer these three section, then most likely it is not an effective policy.
+- If one elements of the three is not met, then the other two are useless. If a security policy does not answer these three section, then most likely it is not an effective policy.
 
 ### Confidentiality
 
-Protection of data from unauthorized access and misuse (protect from parties that is not intended for). 
+- Protection of data from unauthorized access and misuse (protect from parties that is not intended for). 
 
 Ex.: Governments using a sensitivity classification rating system (top-secret, classified, unclassified).
 
 ### Intergrity
 
-Information is kept accurate and consistent during storage, tramission and usage, unless authorized changes are made.
-Steps we can take to prevent this are access control and rigorous authentication, hash verification or digital signatures.
+- Information is kept accurate and consistent during storage, tramission and usage, unless authorized changes are made.
+
+- Steps we can take to prevent this are access control and rigorous authentication, hash verification or digital signatures.
 
 ### Availability
 
-Data must be available and acccesible by the user.
+- Data must be available and acccesible by the user.
 
-This is achieved through: 
-- having reliable and well-tested software for the servers
-- having redundant technology as a backup in case of failure of the primary
-- implement well-versed security protocols to protect from attacks.
+- This is achieved through: 
+
+	- having reliable and well-tested software for the servers
+	
+	- having redundant technology as a backup in case of failure of the primary
+	
+	- implement well-versed security protocols to protect from attacks.
 
 ### Questions:
 
@@ -42,20 +54,19 @@ R: *Availability*
 
 R: *Confidentiality*
 
-
-
 ## Principles of Privileges
 
-Level of access to individuals is determined by:
-- his role in the organisation
-- the sensitivity of information stored on the system.
+- Level of access to individuals is determined by:
+	- his role in the organisation
+	- the sensitivity of information stored on the system.
 
-Two concepts are used to administrate the rights of individuals:
+- Two concepts are used to administrate the rights of individuals:
 
-- **Privileged Identity Management** (**PIM**) -> used to translate the user's role within an organisation into an access role on a system.
-- **Privileged Access Management** (**PAM**) -> manages the privileges a system's role has, enforces security policies (password management), auditing policies and recucing the attack surface a system faces.
+	- **Privileged Identity Management** (**PIM**) -> used to translate the user's role within an organisation into an access role on a system.
+	
+	- **Privileged Access Management** (**PAM**) -> manages the privileges a system's role has, enforces security policies (password management), auditing policies and reducing the attack surface a system faces.
 
-*Principle of least privilege* -> everyone should be given the least amount of privileges such that they could do their job.
+	- *Principle of least privilege* -> everyone should be given the least amount of privileges such that they could do their job.
 
 ### Questions:
 

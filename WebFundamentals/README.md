@@ -1,4 +1,39 @@
-# What I learned 
+---
+user: bung3r
+date: 02.02.22
+description: Learn how the web works!
+tags:
+  - web
+---
+
+# [WebFundamentals](https://tryhackme.com/room/webfundamentals)
+
+
+- *User*: bung3r
+- *Date*: 
+- *Description*: Learn how the web works!
+
+**Tags**: #web #pentesting
+
+---
+
+## Writeup
+---
+- Simple GET request to ctf/get:
+	`curl http://10.10.110.50:8081/ctf/get`
+
+-	POST request with data 'flag please' to /ctf/post:
+
+			`curl -X POST --data "flag_please" http://10.10.110.50:8081/ctf/post`
+
+![[GET_COOKIE.png]]
+
+-	Send cookie and then a GET request to ctf/sendcookie:
+
+			`curl -b "flagpls=flagpls" http://10.10.110.50:8081/ctf/sendcookie`
+
+
+## What I learned 
 ---
 ## How do you find a server?
 
@@ -38,3 +73,4 @@ The most important part of a cookie is the *name-value* pair.
 Also, you can create your own cookie.
 
 [More on cookies.](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
+
