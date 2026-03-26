@@ -111,7 +111,7 @@ A: blue team
 3.  Containment, Eradication, and Recovery: Once an incident is detected, it is crucial to stop it from affecting other systems, eliminate it, and recover the affected systems. For instance, when we notice that a system is infected with a computer virus, we would like to stop (contain) the virus from spreading to other systems, clean (eradicate) the virus, and ensure proper system recovery.
 4.  Post-Incident Activity: After successful recovery, a report is produced, and the learned lesson is shared to prevent similar future incidents.
 
-![](../../../Attachments/Pasted%20image%2020221231234627.png)
+![](../../../Pasted%20image%2020221231234627.png)
 #### Malware Analysis
 #malwareanalysis 
 
@@ -165,14 +165,14 @@ A: Ransomware
 
 What is the flag that you obtained by following along?
 
-![](../../../Attachments/Pasted%20image%2020230101001751.png)
+![](../../../Pasted%20image%2020230101001751.png)
 
-![](../../../Attachments/Pasted%20image%2020230101001848.png)
+![](../../../Pasted%20image%2020230101001848.png)
 
-![](../../../Attachments/Pasted%20image%2020230101001937.png)
+![](../../../Pasted%20image%2020230101001937.png)
 
-![](../../../Attachments/Pasted%20image%2020230101002109.png)
+![](../../../Pasted%20image%2020230101002109.png)
 
-![](../../../Attachments/Pasted%20image%2020230101002158.png)
+![](../../../Pasted%20image%2020230101002158.png)
 
 A: THM{THREAT-BLOCKED}

