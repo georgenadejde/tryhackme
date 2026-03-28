@@ -63,11 +63,11 @@ A: v4er9ll1!ss
 
 3. After accessing his account, what did the user mcinventory request?
 
-![[cookiee.png]]
+![](cookiee.png)
 
 - The first part of the cookie was the username, so I changed the value to mcinventory then encoded it to base64. Changed the cookie on the webpage and refresed the page. On deleted entries we get our answer:
 
-![[day1.png]]
+![](day1.png)
 
 A: firewall
 
@@ -79,7 +79,7 @@ A: firewall
 
 - Tried Gobuster and dirsearch and found the answer
 
-![[dirsearchandgobuster.png]]
+![](dirsearchandgobuster.png)
 
 A: /sysadmin
 
@@ -87,11 +87,11 @@ A: /sysadmin
 
 - Opened the page source and saw a name of a github repo
 
-![[password.png]]
+![](password.png)
 
 - Found some credentials:
 
-![[gitt.png]]
+![](gitt.png)
 
 A: defaultpass
 
@@ -99,7 +99,7 @@ A: defaultpass
 
 - Logged in and found the flag:
 
-![[flag2.png]]
+![](flag2.png)
 
 A: Eggnog
 
@@ -109,7 +109,7 @@ A: Eggnog
 
 1. Whats the destination IP on packet number 998?
 
-![[wire1.png]]
+![](wire1.png)
 
 A: 63.32.89.195
 
@@ -117,7 +117,7 @@ A: 63.32.89.195
 
 - Sorted the packets after the Protocol and checked out the TELNET ones, as we know they send data in plain text. We found the answer:
 
-![[telnett.png]]
+![](telnett.png)
 
 A: ps4
 
@@ -125,13 +125,13 @@ A: ps4
 
 - Alternatively, we can use the option "Follow TCP Stream" on the first TELNET package or just use strings on the pcap file:
 
-![[alternative.png]]
+![](alternative.png)
 
 - Firstly, in the */etc/shadow* file the account details have the following format: `username:$hash_algo$hash_salt$hash_data:other_data`
 
 - Figure out it is an sha512 hash and so I used hashcat with hash-mode 1800 to crack it using rockyou.txt as a wordlist:
 
-![[hashcatcrack.png]] 
+![](hashcatcrack.png) 
 
 A: rainbow
 
@@ -142,14 +142,14 @@ A: rainbow
 
 - File system:
 
-![[linuxsystem.png]]
+![](linuxsystem.png)
 
 - Format of */etc/passwd*:
 
 	- `username:x(represent their password):userid:groupid:useridinfo:folder/location:/shell/location`
 1. How many visible files are there in the home directory(excluding ./ and ../)?
 
-![[filesss.png]]
+![](filesss.png)
 
 A: 8
 
@@ -187,7 +187,7 @@ A: fa67ee594358d83becdd2cb6c466b25320fd2835
 
 - Tried to access /etc/shadow but we don't have the right privileges. Scanned the given doc once again and tried to search for backups with the find command. Found one of shadows and then just cat it:
 
-![[backupss.png]]
+![](backupss.png)
 
 A: $6$jbosYsU/$qOYToX/hnKGjT0EscuUIiIqF8GHgokHdy/Rg/DaB.RgkrbeBXPdzpHdMLI6cQJLdFlS4gkBMzilDBYcQvu2ro/
 
@@ -200,7 +200,7 @@ A: $6$jbosYsU/$qOYToX/hnKGjT0EscuUIiIqF8GHgokHdy/Rg/DaB.RgkrbeBXPdzpHdMLI6cQJLdF
 
 - Ran exiftool and found a creator name. Tried foremost, binwalk, strings but nothing popped up. Checked the hint and then I searched twitter for the creator name and I found the birth date.
 
-![[twitter1.png]]
+![](twitter1.png)
 
 A: December 29, 1900
 
@@ -221,7 +221,7 @@ A: Iphone X
 
 - Searched on the Wayback Machine website and see the first snapshot of the website is from 23th of OCtober 2019. Entered the website and read in the title when she started photographing
 
-![[lola.png]]
+![](lola.png)
 
 A: 23/10/2014
 
@@ -230,7 +230,7 @@ A: 23/10/2014
 
 - Used Google's reverse Image Searching engine 
 
-![[ada.png]]
+![](ada.png)
 
 A: Ada Lovelace
 
@@ -260,7 +260,7 @@ A: Candy Cane Serial Number 8491
 
 - Used fcrackzip with rockyou on the zip file I got from exporting objects in Wireshark. Eventually it found that the pw to unzip the file was 'december'. Using this, I got some gift lists.
 
-![[fcrackzippp.png]]
+![](fcrackzippp.png)
 
 A: pentester
 
@@ -268,7 +268,7 @@ A: pentester
 
 - Used steghide to extract the file from the picture I got from exporting objects in Wireshark and it revealed a poem abouc RFC527
 
-![[steggg.png]]
+![](steggg.png)
 
 A: RFC527
 
@@ -280,7 +280,7 @@ A: RFC527
 
 - Simple Nmap scan revealed there are only 3 TCP ports open
 
-![[nmapchrist.png]]
+![](nmapchrist.png)
 
 A: 3
 
@@ -288,7 +288,7 @@ A: 3
 
 - Had to use aggresive os scan option in order to get a reliable answer from Nmap:
 
-![[osscan.png]]
+![](osscan.png)
 
 A: Linux
 
@@ -296,7 +296,7 @@ A: Linux
 
 - Use the `-sV` flag:
 
-![[sshscan.png]]
+![](sshscan.png)
 
 A: 7.4
 
@@ -304,7 +304,7 @@ A: 7.4
 
 - From the scan we can see there is an http server running on port 999. We access that and we get one file we can download:
 
-![[interestingfile.png]]
+![](interestingfile.png)
 
 A: interesting.file
 
@@ -330,7 +330,7 @@ A: interesting.file
 
 - An nmap scan on all ports revealed on which port ssh is running
 
-![[sshscannew.png]]
+![](sshscannew.png)
 
 A: 65534
 
@@ -340,7 +340,7 @@ A: 65534
 
 - Found that find was one of the commands so I ran it as igor and used `-exec cat {} \;` to get the contents of flag1.txt
 
-![[findsuid.png]]
+![](findsuid.png)
 
 A: THM{d3f0708bdd9accda7f937d013eaf2cd8}
 
@@ -348,7 +348,7 @@ A: THM{d3f0708bdd9accda7f937d013eaf2cd8}
 
 - Search the binaries with a SUID by root. After I tried a couple, I searched the website [GTFObins](https://gtfobins.github.io/#+suid) for some inspiration but I could not figure out anything. Finally, I observed a binary called system-control. It seems like it executes any command we give it so I used it to become root and cat the flag2.txt file.
 
-![[privesc.png]]
+![](privesc.png)
 
 A: THM{8c8211826239d849fa8d6df03749c3a2}
 
@@ -393,13 +393,13 @@ A: sCrIPtKiDdend
 
 - I used nmap to get an idea of the ip address and from that we found port 80 is open. Searched the source for something useful and found this js file:
 
-![[struts.png]]
+![](struts.png)
 
 - Inside, some clues indicate the version 2.0 of Struts.
 
 - Searched for a proper exploit on Metasploit and decided to use the same as the one used on the blog post. Set all of the required parameters and chose the same payload as in the blog. Type exploit and got a meterpreter:
 
-![[metsaploit.png]]
+![](metsaploit.png)
 
 
 
@@ -469,7 +469,7 @@ A: Lindsey Gaffney
 
 1. What is the password inside the creds.txt file?
 
-![[mounttt.png]]
+![](mounttt.png)
 
 A: securepassword123
 
@@ -477,9 +477,9 @@ A: securepassword123
 
 - logged in using the default credentials and downloaded the file to get some credentials?
 
-![[ftpget.png]]
+![](ftpget.png)
 
-![[sshcreds.png]]
+![](sshcreds.png)
 
 A: file.txt
 
@@ -493,7 +493,7 @@ A: file.txt
 
 - `SELECT * FROM USERS;`
 
-![[sqlconnect.png]]
+![](sqlconnect.png)
 
 A: bestpassword
 
@@ -503,7 +503,7 @@ A: bestpassword
 
 - How to generate private/public keys pair and use them to encrypt/decrypt a files:
 
-![[generatingprivatepublickeys.png]]
+![](generatingprivatepublickeys.png)
 
 1. What is the md5 hashsum of the encrypted note1 file?
 
@@ -515,7 +515,7 @@ A: 24cf615e2a4f42718f2ff36b35614f8f
 
 - Used the hint to get the gpg passphrase:
 
-![[bobalice.png]]
+![](bobalice.png)
 
 A: Santa's Grotto
 
@@ -523,7 +523,7 @@ A: Santa's Grotto
 
 - Decrypt the note2 file using the private key and using the passphrase given in the hint:
 
-![[privatekeydecrypt.png]]
+![](privatekeydecrypt.png)
 
 A: THM{ed9ccb6802c5d0f905ea747a310bba23}
 
@@ -542,7 +542,7 @@ A: THM{ed9ccb6802c5d0f905ea747a310bba23}
 
 - Enumeration:
 
-![[nmappppp.png]]
+![](nmappppp.png)
 
 1. A web server is running on the target. What is the hidden directory which the website lives on?
 
@@ -562,7 +562,7 @@ A: /retro
 
 - Used Remmina RDP to connect to the machine using the credentials stolen
 
-![[remminaaa.png]]
+![](remminaaa.png)
 
 A: THM{HACK_PLAYER_ONE}
 
@@ -589,7 +589,7 @@ C:\WINDOWS\system32\cmd.exe
 
 - [In Action](https://www.youtube.com/watch?v=RW5l6dQ8H-8)
 
-![[privvvv.png]]
+![](privvvv.png)
 
 A: THM{COIN_OPERATED_EXPLOITATION}
 
@@ -628,7 +628,7 @@ bucketname.region-name.amazonaws.com
 
 - Accessed the following link and got some info about the bucket:
 
-![[cloudaws1.png]]
+![](cloudaws1.png)
 
 A: employee_names.txt
 
@@ -636,7 +636,7 @@ A: employee_names.txt
 
 - Then I added /file_name to get the contents of the file
 
-![[aws2.png]]
+![](aws2.png)
 
 A: mcchef
 
@@ -702,15 +702,15 @@ A: Hawaii
 
 - If we view the source we can see a function we can potentially exploit using LFI:
 
-![[viewsource.png]]
+![](viewsource.png)
 
 - I get the /etc/shadow file using LFI:
 
-![[gethascharlie.png]]
+![](gethascharlie.png)
 
 - Use hashcat with rockyou.txt to crack the hash:
 
-![[hashcatcharlie.png]]
+![](hashcatcharlie.png)
 
 A: password1
 
@@ -718,7 +718,7 @@ A: password1
 
 - URl encoded /home/charlie/flag1.txt and got the flag:
 
-![[flag11111.png]]
+![](flag11111.png)
 
 A: THM{4ea2adf842713ad3ce0c1f05ef12256d}
 
@@ -812,7 +812,7 @@ A: dL6w.txt
 
 - Used the command `hydra -l molly -P rockyou.txt 10.10.64.64 http-post-form "/login:username=^USER^&password=^PASS^:F=incorrect" -V` to get the password for molly:
 
-![[hidra1.png]]
+![](hidra1.png)
 
 A:  THM{2673a7dd116de68e85c48ec0b1f2612e}
 
@@ -820,7 +820,7 @@ A:  THM{2673a7dd116de68e85c48ec0b1f2612e}
 
 - Used the following command: `hydra -l molly -P rockyou.txt 10.10.64.64 ssh -V`
 
-![[hydra2.png]]
+![](hydra2.png)
 
 - Did not use `-t 4` because it finds the pw faster in this case :)
 
@@ -880,7 +880,7 @@ A: THM{c8eeb0468febbadea859baeb33b2541b}
 
 - Then I opened up a netcat on port 4545 and waited quite a bit for the admin to log in:
 
-![[netcaaat.png]]
+![](netcaaat.png)
 
 A: 2564799a4e6689972f6d9e1c7b406f87065cbf65
 
@@ -958,7 +958,7 @@ A: 2564799a4e6689972f6d9e1c7b406f87065cbf65
 
 - So i used this command `find / -name user.txt -exec cat {} \;` to cat user.txt, which i url encoded: `find%20%2F%20-name%20user.txt%20-exec%20cat%20%7B%7D%20%5C%3B`
 
-![[comandinjection.png]]
+![](comandinjection.png)
 
 A: 5W7WkjxBWwhe3RNsWJ3Q
 
@@ -967,7 +967,7 @@ A: 5W7WkjxBWwhe3RNsWJ3Q
 
 1. What port is SSH running on?
 
-![[enum20.png]]
+![](enum20.png)
 
 A: 4567
 
@@ -975,7 +975,7 @@ A: 4567
 
 - I used Hydra to crack sam's pw and then using ssh I logged in as sam
 
-![[findingsamspass.png]]
+![](findingsamspass.png)
 
 A: THM{dec4389bc09669650f3479334532aeab}
 
@@ -983,11 +983,11 @@ A: THM{dec4389bc09669650f3479334532aeab}
 
 - Added this line to the file in /home directory that is a cronjob:
 
-![[addedline.png]]
+![](addedline.png)
 
 - Got a root shell:
 
-![[rootsheeel.png]]
+![](rootsheeel.png)
 
 A: THM{b27d33705f97ba2e1f444ec2da5f5f61}
 
@@ -1007,7 +1007,7 @@ A: THM{b27d33705f97ba2e1f444ec2da5f5f61}
 
 - examine: `pdf @main` -> print disassembly function
 
-![[assemblyy.png]]
+![](assemblyy.png)
 
 - breakpoint: `db address`
 
@@ -1030,9 +1030,9 @@ A: THM{b27d33705f97ba2e1f444ec2da5f5f61}
 
 - once inside: `aa` and `afl | grep main` and `pdf @ main`
 
-![[aflmain.png]]
+![](aflmain.png)
 
-![[Screenshot at 2022-02-22 07-42-03.png]]
+![](Screenshot at 2022-02-22 07-42-03.png)
 
 A: 1
 
@@ -1040,7 +1040,7 @@ A: 1
 
 - Made a breakpoint before imul
 
-![[breakpoint.png]]
+![](breakpoint.png)
 
 - Then by using `ds` and `dr` we can figure out the value of eax
 
@@ -1054,7 +1054,7 @@ A: 6
 
 - [Help Doc](https://docs.google.com/document/d/1cIHd_YQ_PHhkUPMrEDWAIfQFb9M9ge3OFr22HHaHQOU/edit?usp=sharing)
 
-![[Screenshot at 2022-02-22 07-55-25.png]]
+![](Screenshot at 2022-02-22 07-55-25.png)
 
 - by analysing the main function, we can see that it compares 2 with 8 anc check if 8 is less or equal to 2.
 
@@ -1083,21 +1083,21 @@ A: log_email
 
 - Used burp suite to intercept the POST Request:
 
-![[burpppp.png]]
+![](burpppp.png)
 
 - Then used sqlmap again to try to find the tables in the database *social*:
 
-![[firstsqlmap.png]]
+![](firstsqlmap.png)
 
 - Also I used more threads to speed it up a little
 
 - Used `sqlmap -r burp.txt -D social -U users --tables --threads=5` to get the columns of table users:
 
-![[Screenshot at 2022-02-22 17-41-21.png]]
+![](Screenshot at 2022-02-22 17-41-21.png)
 
 - Using this command `sqlmap -r burp.txt -D social -T users -C email,username,password --dump --threads=5` I got the data I need to answer question 2 and 3 (after cracking it)
 
-![[Screenshot at 2022-02-22 17-42-49.png]]
+![](Screenshot at 2022-02-22 17-42-49.png)
 
 
 A: bigman@shefesh.com
@@ -1106,7 +1106,7 @@ A: bigman@shefesh.com
 
 - We are going to use hashcat to crack the hash of santa's pw: f1267830a78c0b59acc06b05694b2e28
 
-![[hashcataaaa.png]]
+![](hashcataaaa.png)
 
 A: saltnpepper
 
@@ -1122,7 +1122,7 @@ A: Waterloo
 
 - Tried every php extension I could think of and also .pl and .html. The only one that did not show an image picture in the post (thus, one that worked) was .phtml:
 
-![[revsheeel.png]] 
+![](revsheeel.png) 
 
 A: THM{SHELLS_IN_MY_EGGNOG}
 
@@ -1130,17 +1130,17 @@ A: THM{SHELLS_IN_MY_EGGNOG}
 
 - Nmap scan:
 
-![[nmap.png]]
+![](nmap.png)
 
 - Looked on port 8000 and I found a log file. Here, i found a port and decided to check it out, as it did not show in my nmap search
 
-![[kibanalog.png]]
+![](kibanalog.png)
 
 - then it opened this website which gives me access to some of the database (messages).
 
 - searching through the messages, I found some creds:
 
-![[messages.png]]
+![](messages.png)
 - creds: l33tperson:9Qs58Ol3AXkMWLxiEyUyyf
 
 1. Find the password in the database
@@ -1153,7 +1153,7 @@ A: 9Qs58Ol3AXkMWLxiEyUyyf
 
 - The nmap port scan revealed some additional opened ports:
 
-![[nmapportscans.png]]
+![](nmapportscans.png)
 
 - As I had the version 6.4.2 and the name, I searched for some exploits. Used searchsploit and tried a CSV injection that did now work
 
@@ -1167,6 +1167,6 @@ A: 9Qs58Ol3AXkMWLxiEyUyyf
 
 - After a bit of banging my head against the wall there, I found the flag:
 
-![[flaggg.png]]
+![](flaggg.png)
 
 A: someELKfun

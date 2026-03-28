@@ -27,7 +27,7 @@ tags:
 
 - get the assembly code for a function (*print disassembly function): `pdf @main`
 
-![[pdf.png]]
+![](pdf.png)
 
 - the values on the complete left column are **memory addresses** of the instructions, and these are usually stored in a structure called the stack
 
@@ -45,7 +45,7 @@ tags:
 
 - Since the architecture is **x86-64**, the **registers are 64 bit** and Intel has a list of *16* registers:
 
-![[registers.png]]
+![](registers.png)
 
 - the first 6 registers are known as *general purpose registers*. 
 
@@ -59,11 +59,11 @@ tags:
 
 - the *q* represents the size of the data:
 
-![[dattypes.png]]
+![](dattypes.png)
 
 - Instructions:
 
-![[instructs.png]]
+![](instructs.png)
 
 ## If Statements
 
@@ -74,7 +74,7 @@ tags:
 
 - in order to transfer control to different instructions, we use jumps:
 
-![[jumps.png]]
+![](jumps.png)
 
 ## If Statements cnt.
 
@@ -94,7 +94,7 @@ tags:
 
 - SSH to the machine and open if2 file using radare2.
 
-![[raddare.png]]
+![](raddare.png)
 
 1. What is the value of var_8h before the popq and ret instructions?
 

@@ -17,11 +17,11 @@ tags:
 
 - IP Address Classes (**NOTE**: if you look on the first terms of the ranges, the difference between two consecutive ones is 2^7-1, then 2^6, 2^5 and 2^4)
 
-![[ipclasses.png]]
+![](ipclasses.png)
 
 - Private Address Space:
 
-![[private.png]]
+![](private.png)
 
 - The first address of a subnet is the Network address, while the last one is the Broadcast.
 

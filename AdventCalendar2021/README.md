@@ -80,7 +80,7 @@ A: THM{ADM1N_AC3SS}
 
 - Used the intruder to fuzz the password of santa using the provided password list
 
-![[Screenshot at 2022-05-19 09-41-25.png]]
+![](Screenshot at 2022-05-19 09-41-25.png)
 
 - We can see that one of them provides a different length response
 
@@ -157,7 +157,7 @@ A: THM{SANTA_DELIVERS}
 
 - when Grinch visits it, it will automaticaly change their password to the one we just set.
 
-![[Screenshot at 2022-05-19 10-04-16.png]]
+![](Screenshot at 2022-05-19 10-04-16.png)
 
 A: THM{NO_MORE_BUTTMAS}
 
@@ -192,7 +192,7 @@ A: THM{NO_MORE_BUTTMAS}
 
 - Parameters are query parameter strings attached to the URL that could be used to retrieve data or perform actions based on user input.
 
-![[dbf35cc4f35fde7a4327ad8b5a2ae2ec.png]]
+![](dbf35cc4f35fde7a4327ad8b5a2ae2ec.png)
 
 - In addition, other entry points can be used depending on the web application, and where can consider the User-Agent, Cookies, session, and other HTTP headers.
 
@@ -351,7 +351,7 @@ A: err
 
 - changed the file included to `/etc/flag` and the flag popped up on the screen
 
-![[Screenshot at 2022-05-19 10-59-11.png]]
+![](Screenshot at 2022-05-19 10-59-11.png)
 
 A: THM{d29e08941cf7fe41df55f1a7da6c4c06} 
 
@@ -361,7 +361,7 @@ A: THM{d29e08941cf7fe41df55f1a7da6c4c06}
 
 - Got a very long base64 result: `PD9waHAgc2Vzc2lvbl9zdGFydCgpOwokZmxhZyA9ICJUSE17NzkxZDQzZDQ2MDE4YTBkODkzNjFkYmY2MGQ1ZDllYjh9IjsKaW5jbHVkZSgiLi9pbmNsdWRlcy9jcmVkcy5waHAiKTsKaWYoJF9TRVNTSU9OWyd1c2VybmFtZSddID09PSAkVVNFUil7ICAgICAgICAgICAgICAgICAgICAgICAgCgloZWFkZXIoICdMb2NhdGlvbjogbWFuYWdlLnBocCcgKTsKCWRpZSgpOwp9IGVsc2UgewoJJGxhYk51bSA9ICIiOwogIHJlcXVpcmUgIi4vaW5jbHVkZXMvaGVhZGVyLnBocCI7Cj8+CjxkaXYgY2xhc3M9InJvdyI+CiAgPGRpdiBjbGFzcz0iY29sLWxnLTEyIj4KICA8L2Rpdj4KICA8ZGl2IGNsYXNzPSJjb2wtbGctOCBjb2wtb2Zmc2V0LTEiPgogICAgICA8P3BocCBpZiAoaXNzZXQoJGVycm9yKSkgeyA/PgogICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQgdGV4dC1kYW5nZXIiPjxiPjw/cGhwIGVjaG8gJGVycm9yOyA/PjwvYj48L3NwYW4+CiAgICAgIDw/cGhwIH0KCj8+CiA8cD5XZWxjb21lIDw/cGhwIGVjaG8gZ2V0VXNlck5hbWUoKTsgPz48L3A+Cgk8ZGl2IGNsYXNzPSJhbGVydCBhbGVydC1kYW5nZXIiIHJvbGU9ImFsZXJ0Ij5UaGlzIHNlcnZlciBoYXMgc2Vuc2l0aXZlIGluZm9ybWF0aW9uLiBOb3RlIEFsbCBhY3Rpb25zIHRvIHRoaXMgc2VydmVyIGFyZSBsb2dnZWQgaW4hPC9kaXY+IAoJPC9kaXY+Cjw/cGhwIGlmKCRlcnJJbmNsdWRlKXsgaW5jbHVkZSgkX0dFVFsnZXJyJ10pO30gPz4KPC9kaXY+Cgo8P3BocAp9Cj8+`
 
-![[Screenshot at 2022-05-19 11-07-14.png]]
+![](Screenshot at 2022-05-19 11-07-14.png)
 
 - If we decode it, we get the flag
 
@@ -396,7 +396,7 @@ A: THM{552f313b52e3c3dbf5257d8c6db7f6f1}
 
 - Got a bunch of info:
 
-![[Screenshot at 2022-05-19 18-31-51.png]]
+![](Screenshot at 2022-05-19 18-31-51.png)
 
 A: lfi-aoc-awesome-59aedca683fff9261263bb084880c965
 
@@ -423,7 +423,7 @@ A: lfi-aoc-awesome-59aedca683fff9261263bb084880c965
 
 - Documents in MongoDB are objects stored in a format called `BSON`, which supports `JSON` data types for document storing.
 
-![[753375399860b87237241fbd9ab2af72.png]]
+![](753375399860b87237241fbd9ab2af72.png)
 
 - compare the [query operators](https://docs.mongodb.com/manual/reference/operator/query/) between MongoDB and MySQL:
 
@@ -437,7 +437,7 @@ A: lfi-aoc-awesome-59aedca683fff9261263bb084880c965
 
 - `show` - list all the databases that we have in MongoDB
 
-![[Screenshot at 2022-05-20 20-44-14.png]]
+![](Screenshot at 2022-05-20 20-44-14.png)
 
 - `use` - connect to a database if it exists or creates one if it doesn't.
 
@@ -477,7 +477,7 @@ A: lfi-aoc-awesome-59aedca683fff9261263bb084880c965
 
 	- Note that when we provide the correct credentials, a document returns, while a `null` reply is received when providing the wrong credentials when nothing matches!
 
-- ![[Screenshot at 2022-05-20 20-56-46.png]]
+- ![](Screenshot at 2022-05-20 20-56-46.png)
 
 - MongoDB operators that we need to be familiar with that are heavily used in the injections:
 
@@ -495,7 +495,7 @@ A: lfi-aoc-awesome-59aedca683fff9261263bb084880c965
 
 - we will be exploiting the logic of the login query by injecting a JSON object which includes one of the NoSQL operators, which is `$ne`:
 
-![[Screenshot at 2022-05-20 20-58-58.png]]
+![](Screenshot at 2022-05-20 20-58-58.png)
 
 - `db.users.findOne({username: "admin", password: {"$ne":"xyz"}})`
 
@@ -541,7 +541,7 @@ A: lfi-aoc-awesome-59aedca683fff9261263bb084880c965
 
 - used the Flagdb database, showed the collections and then the document that is in there
 
-![[Screenshot at 2022-05-20 20-53-19.png]]
+![](Screenshot at 2022-05-20 20-53-19.png)
 
 A: THM{8814a5e6662a9763f7df23ee59d944f9}
 
@@ -551,18 +551,18 @@ Use the knowledge given in AoC3 day 4 to setup and run Burp Suite proxy to inter
 
 - intercepted the request using Burp then modified the password parameter to `password[$ne]=password` and then I got logged in.
 
-![[11ebe0504325632b2690ebb147fdcf58.png]]
+![](11ebe0504325632b2690ebb147fdcf58.png)
 
 A: THM{b6b304f5d5834a4d089b570840b467a8}
 
 3. Once you are logged in, use the gift search page to list all usernames that have `guest` roles. What is the flag?
 
-![[Screenshot at 2022-05-20 21-14-38.png]]
+![](Screenshot at 2022-05-20 21-14-38.png)
 
 - used the following paylaod: `username[$ne]=guest&role=guest`
 
 - this is what was returned: 
-![[Screenshot at 2022-05-20 21-17-37.png]]
+![](Screenshot at 2022-05-20 21-17-37.png)
 
 A: THM{2ec099f2d602cc4968c5267970be1326}
 
@@ -580,7 +580,7 @@ A: ID:6184f516ef6da50433f100f4:mcskidy:admin
 
 	- Typically, PowerShell Transcription can be enabled by Group Policy, but another method to turn on this logging is by configuring the Windows Registry.
 
-![[db043444e0f48f521f7825b419465745.png]]
+![](db043444e0f48f521f7825b419465745.png)
 
 
 
@@ -590,7 +590,7 @@ A: ID:6184f516ef6da50433f100f4:mcskidy:admin
 
 - Opened the first powershell Transcript file and searched for 'OS Name'
 
-![[Screenshot at 2022-05-29 11-33-51.png]]
+![](Screenshot at 2022-05-29 11-33-51.png)
 
 A: Microsoft Windows 11 Pro
 
@@ -598,7 +598,7 @@ A: Microsoft Windows 11 Pro
 
 - You can find this info in the second file
 
-![[Screenshot at 2022-05-29 11-36-42.png]]
+![](Screenshot at 2022-05-29 11-36-42.png)
 
 A: grinchstolechristmas
 
@@ -606,7 +606,7 @@ A: grinchstolechristmas
 
 - Find this info in the third file
 
-![[Screenshot at 2022-05-29 11-39-31.png]]
+![](Screenshot at 2022-05-29 11-39-31.png)
 
 A: C:\Users\santa\AppData\Local\Microsoft\Windows\UsrClass.dat
 
@@ -614,7 +614,7 @@ A: C:\Users\santa\AppData\Local\Microsoft\Windows\UsrClass.dat
 
 - In the same file:
 
-![[Screenshot at 2022-05-29 11-41-40.png]]
+![](Screenshot at 2022-05-29 11-41-40.png)
 
 A: certutil.exe
 
@@ -624,7 +624,7 @@ A: certutil.exe
 
 - Found the folder SantaRat and inside of it the answer to this question.
 
-![[Screenshot at 2022-05-29 11-58-55.png]]
+![](Screenshot at 2022-05-29 11-58-55.png)
 
 A: .github
 
@@ -634,33 +634,33 @@ A: bag_of_toys.zi
 
 7. What is the name of the user that owns the SantaRat repository?
 
-![[Screenshot at 2022-05-29 12-00-30.png]]
+![](Screenshot at 2022-05-29 12-00-30.png)
 
 A: Grinchiest
 
 8. Explore the other repositories that this user owns. What is the name of the repository that seems especially pertinent to our investigation?
 
-![[Screenshot at 2022-05-29 12-01-35.png]]
+![](Screenshot at 2022-05-29 12-01-35.png)
 
 A: operation-bag-of-toys 
 
 9. What is the name of the executable that installed a unique utility the actor used to collect the bag of toys?
 
-![[Screenshot at 2022-05-29 12-04-34.png]]
+![](Screenshot at 2022-05-29 12-04-34.png)
 
 A: uharc-cmd-install.exe
 
 10. What are the contents of these "malicious" files (coal, mold, and all the others)?
 
-![[Screenshot at 2022-05-29 12-06-53.png]]
+![](Screenshot at 2022-05-29 12-06-53.png)
 
 A: Grinchmas
 
 11. What is the password to the original bag_of_toys.uha archive? (You do not need to perform any password-cracking or bruteforce attempts)
 
-![[Screenshot at 2022-05-29 12-08-46]]
+![](Screenshot at 2022-05-29 12-08-46)
 
-![[Screenshot at 2022-05-29 12-10-25.png]]
+![](Screenshot at 2022-05-29 12-10-25.png)
 
 A: TheGrinchiestGrinchmasOfAll
 
@@ -668,7 +668,7 @@ A: TheGrinchiestGrinchmasOfAll
 
 - I used the password to unlock the UHA archive and find all of the presents.
 
-![[Screenshot at 2022-05-29 12-12-31.png]]
+![](Screenshot at 2022-05-29 12-12-31.png)
 
 A: 228
 
@@ -676,7 +676,7 @@ A: 228
 
 #wireshark
 
-![[13c778e7c432bb30a029dd5495056cdf.png]]
+![](13c778e7c432bb30a029dd5495056cdf.png)
 
 - Filter to only show get requests: `http.request.method == GET`
 
@@ -684,7 +684,7 @@ A: 228
 
 - specify DNS packets: `udp.port==53` or `dns`
 
-![[0c75a59341f7cb5fab198054b5eb46a9.png]]
+![](0c75a59341f7cb5fab198054b5eb46a9.png)
 
 - By expanding the `Domain Name System (query)` subtree, it is obvious that this packet is a question `Questions: 1`, where the client queries a domain name and looks for an answer from the server. 
 
@@ -698,7 +698,7 @@ A: 228
 
 	- To confirm that, check the field section where showing query `response 0xef8e A packet.tryhackme.com.`
 
-![[a27736d55dd7c0c83666672113528df5.png]]
+![](a27736d55dd7c0c83666672113528df5.png)
 
 - By double-clicking on the required packet, we can see that it has an answer section, where it has the answer to our query, which is Address: `127.0.0.1`. 
 
@@ -722,7 +722,7 @@ A: login
 
 - filtered to only show POST requests and then i followed the TCP stream to get the answer.
 
-![[Screenshot at 2022-05-22 16-56-35.png]]
+![](Screenshot at 2022-05-22 16-56-35.png)
 
 A: McSkidy:Christmas2021
 
@@ -736,7 +736,7 @@ A: TryHackMe-UserAgent-THM{d8ab1be969825f2c5c937aec23d55bc9}
 
 - found the query for the TXT DNS query and then I followed the UDP stream.
 
-![[Screenshot at 2022-05-22 17-09-21.png]]
+![](Screenshot at 2022-05-22 17-09-21.png)
 
 A: THM{dd63a80bf9fdd21aabbf70af7438c257}
 
@@ -744,7 +744,7 @@ A: THM{dd63a80bf9fdd21aabbf70af7438c257}
 
 - we filter the FTP packets and we get the answers for the next two questions
 
-![[Screenshot at 2022-05-22 17-14-36.png]]
+![](Screenshot at 2022-05-22 17-14-36.png)
 
 A: TryH@ckM3!
 
@@ -756,7 +756,7 @@ A: STOR
 
 - filtered the `ftp-data` packets and then checked details of the packet to get the answer
 
-![[Screenshot at 2022-05-22 17-17-33.png]]
+![](Screenshot at 2022-05-22 17-17-33.png)
 
 A: 123^-^321
 
@@ -798,7 +798,7 @@ A: 123^-^321
 
 - ran the scan with sudo because it only returned that ssh is opened only.
 
-![[Screenshot at 2022-05-23 14-42-06.png]]
+![](Screenshot at 2022-05-23 14-42-06.png)
 
 A: 2
 
@@ -814,7 +814,7 @@ A: HTTP
 
 - this time you have to run the command with sudo.
 
-![[Screenshot at 2022-05-23 14-43-06.png]]
+![](Screenshot at 2022-05-23 14-43-06.png)
 
 A: Y
 
@@ -822,7 +822,7 @@ A: Y
 
 - added the `-sV` flag in order to return the version as well.
 
-![[Screenshot at 2022-05-23 14-44-21.png]]
+![](Screenshot at 2022-05-23 14-44-21.png)
 
 A: Apache httpd 2.4.49
 
@@ -830,7 +830,7 @@ A: Apache httpd 2.4.49
 
 - a quick look on the website provided and the answer is found:
 
-![[Screenshot at 2022-05-23 14-45-41.png]]
+![](Screenshot at 2022-05-23 14-45-41.png)
 
 A: CVE-2021-42013
 
@@ -838,7 +838,7 @@ A: CVE-2021-42013
 
 - I only scanned ports 20000-21000 like the hint indicated to save some time.
 
-![[Screenshot at 2022-05-23 14-48-52.png]]
+![](Screenshot at 2022-05-23 14-48-52.png)
 
 A: 20212
 
@@ -871,7 +871,7 @@ A: telnetd
 
 		- Note that the ; indicates the end of the SQL query, while `go` sends a SQL batch to the database.
 
-![[Screenshot at 2022-05-25 11-43-53.png]]
+![](Screenshot at 2022-05-25 11-43-53.png)
 
 #interesting
 
@@ -881,9 +881,9 @@ A: telnetd
 
 - The command syntax is `xp_cmdshell 'COMMAND';`
 
-![[Screenshot at 2022-05-25 11-49-44.png]]
+![](Screenshot at 2022-05-25 11-49-44.png)
 
-![[Screenshot at 2022-05-25 11-50-00.png]]
+![](Screenshot at 2022-05-25 11-50-00.png)
 
 ### Questions
 
@@ -891,7 +891,7 @@ A: telnetd
 
 - Ran this command: 
 
-![[Screenshot at 2022-05-24 07-40-12.png]]
+![](Screenshot at 2022-05-24 07-40-12.png)
 
 A: 1433
 
@@ -899,7 +899,7 @@ A: 1433
 
 - Using the command `sqsh -S 10.10.199.126 -U sa -P t7uLKzddQzVjVFJp` I get a shell:
 
-![[Screenshot at 2022-05-25 11-40-30.png]]
+![](Screenshot at 2022-05-25 11-40-30.png)
 
 A: 1>
 
@@ -907,19 +907,19 @@ A: 1>
 
 - We run the following commands:
 
-![[Screenshot at 2022-05-25 11-45-14.png]]
+![](Screenshot at 2022-05-25 11-45-14.png)
 
 A: Rudolph
 
 4. Check the table schedule. What is the destination of the trip scheduled on December 7?
 
-- We run: ![[Screenshot at 2022-05-25 11-46-44.png]]
+- We run: ![](Screenshot at 2022-05-25 11-46-44.png)
 
 A: Prague
 
 5. Check the table presents. What is the quantity available for the present “Power Bank”?
 
-- We run: ![[Screenshot at 2022-05-25 11-47-37.png]]
+- We run: ![](Screenshot at 2022-05-25 11-47-37.png)
 
 A: 25000
 
@@ -938,7 +938,7 @@ A: 25000
 1> xp_cmdshell 'dir c:\Users\grinch\Documents'
 2> go
 ```
-![[Screenshot at 2022-05-25 11-54-26.png]]
+![](Screenshot at 2022-05-25 11-54-26.png)
 
 - Found it! Now we use `type` to get the content of the file:
 
@@ -946,7 +946,7 @@ A: 25000
 1> xp_cmdshell 'type c:\Users\grinch\Documents\flag.txt'
 2> go
 ```
-![[Screenshot at 2022-05-25 11-55-23.png]]
+![](Screenshot at 2022-05-25 11-55-23.png)
 
 A: THM{YjtKeUy2qT3v5dDH}
 
@@ -969,7 +969,7 @@ A: THM{YjtKeUy2qT3v5dDH}
 
 1. Scan the target server with the IP MACHINE_IP. Remember that MS Windows hosts block pings by default, so we need to add -Pn, for example, nmap -Pn MACHINE_IP for the scan to work correctly. How many TCP ports are open?
 
-![[Screenshot at 2022-05-25 12-18-38.png]]
+![](Screenshot at 2022-05-25 12-18-38.png)
 
 A: 7
 
@@ -983,7 +983,7 @@ A: 2049
 
 - We run `showmount -e 10.10.144.30`, where `-e` is `--exports` and shows the NFS server's export list
 
-![[Screenshot at 2022-05-25 12-22-29.png]]
+![](Screenshot at 2022-05-25 12-22-29.png)
 
 A: 4
 
@@ -994,11 +994,11 @@ A: 3
 5. What is the title of file 2680-0.txt?
 
 - Had to use sudo to make it work
-![[Screenshot at 2022-05-25 12-26-15.png]]
+![](Screenshot at 2022-05-25 12-26-15.png)
 
 - using `less 2680-0.txt` gets me the answer
 
-![[Screenshot at 2022-05-25 12-27-39.png]]
+![](Screenshot at 2022-05-25 12-27-39.png)
 
 A: Meditations
 
@@ -1010,7 +1010,7 @@ A: Meditations
 
 - inside it, we can find an ssh directory with the ssh keys in there.
 
-![[Screenshot at 2022-05-25 12-32-45.png]]
+![](Screenshot at 2022-05-25 12-32-45.png)
 
 A: confidential
 
@@ -1018,7 +1018,7 @@ A: confidential
 
 - `md5sum id_rsa`
 
-![[Screenshot at 2022-05-25 12-33-32.png]]
+![](Screenshot at 2022-05-25 12-33-32.png)
 
 A: 3e2d315a38f377f304f5598dc2f044de
 
@@ -1076,13 +1076,13 @@ A: 3e2d315a38f377f304f5598dc2f044de
 
 1. Complete the username: p.....
 
-![[Screenshot at 2022-05-28 12-50-46.png]]
+![](Screenshot at 2022-05-28 12-50-46.png)
 
 A: pepper
 
 2. What is the OS version?
 
-![[Screenshot at 2022-05-28 12-56-10.png]]
+![](Screenshot at 2022-05-28 12-56-10.png)
 
 A: 10.0.17763 N/A Build 17763
 
@@ -1090,7 +1090,7 @@ A: 10.0.17763 N/A Build 17763
 
 - Ran `wmic service list | findstr "Iperius"`
 
-![[Screenshot at 2022-05-28 13-00-32.png]]
+![](Screenshot at 2022-05-28 13-00-32.png)
 
 A: IperiusSVC
 
@@ -1160,13 +1160,13 @@ A: jazzercize
 
 - Used `dirb http://10.10.173.24`
 
-![[Screenshot at 2022-05-29 11-16-36.png]]
+![](Screenshot at 2022-05-29 11-16-36.png)
 
 A: 4
 
 2. How many scripts do you see in the /home/thegrinch/scripts folder?
 
-![[Screenshot at 2022-05-29 11-08-17.png]]
+![](Screenshot at 2022-05-29 11-08-17.png)
 
 A: 4
 
@@ -1174,7 +1174,7 @@ A: 4
 
 - Changed the content of the loot.sh script to `cat /etc/shadow > /var/www/html/ls.html` and after some time I got the result on the web page.
 
-![[Screenshot at 2022-05-29 11-16-00.png]]
+![](Screenshot at 2022-05-29 11-16-00.png)
 
 A: ZUP42
 
@@ -1211,7 +1211,7 @@ A: DI3H4rdIsTheBestX-masMovie!
 
 - The **RIS OSINT data-information model** outlines an approach to gathering information to identify and categorize data.
 
-![[88f137b6e95bfb541532a6580a74734e.png]]
+![](88f137b6e95bfb541532a6580a74734e.png)
 
 - Intelligence is obtained from information that is obtained from data. 
 
@@ -1223,15 +1223,15 @@ A: DI3H4rdIsTheBestX-masMovie!
 
 - This is an ever-evolving process that will change and continue depending on intelligence and decisions from the previous model.
 
-![[8faa6f8c3218aa5e6c4dfc01648b0972.png]]
+![](8faa6f8c3218aa5e6c4dfc01648b0972.png)
 
-![[Screenshot at 2022-05-26 21-11-30.png]]
+![](Screenshot at 2022-05-26 21-11-30.png)
 
 ### Account Discovery & Analysis
 
 - When analyzing a target's account, we are commonly looking at the following objectives:
 
-![[Screenshot at 2022-05-26 21-12-26.png]]
+![](Screenshot at 2022-05-26 21-12-26.png)
 	
 ### Google Dorking
 
@@ -1243,7 +1243,7 @@ A: DI3H4rdIsTheBestX-masMovie!
 
 - Some examples:
 
-![[Screenshot at 2022-05-26 21-15-54.png]]
+![](Screenshot at 2022-05-26 21-15-54.png)
 
 - a complete list of google dork terms can be found [here](https://www.sans.org/posters/google-hacking-and-defense-cheat-sheet/) and [here](https://gist.github.com/sundowndev/283efaddbcf896ab405488330d1bbc06)
 
@@ -1270,7 +1270,7 @@ A: DI3H4rdIsTheBestX-masMovie!
 
 - An example of an unintentional information leak from *GitHub* could be a company that `forgot to delete its API keys from a JSON file`. They made a new commit to their repository with the thought that no one could access those keys anymore. Anyone can look at a public repository commit history and view exactly what was deleted and added to the repository.
 
-![[fcd94be34ed25de238ad3232606bd9c2.png]]
+![](fcd94be34ed25de238ad3232606bd9c2.png)
 ### Questions
 
 1. What is the operator's username?
@@ -1283,7 +1283,7 @@ A: GrinchWho31
 
 - searched the username on google and found 3 interesting things:
 
-![[Screenshot at 2022-05-26 21-27-32.png]]
+![](Screenshot at 2022-05-26 21-27-32.png)
 
 - Tried Reddit first but it was not the one. Twitter remained.
 
@@ -1293,7 +1293,7 @@ A: twitter
 
 - On his twitter account, I found this tweet:
 
-![[Screenshot at 2022-05-26 21-29-48.png]]
+![](Screenshot at 2022-05-26 21-29-48.png)
 
 A: 1GW8QR7CWW3cpvVPGMCF5tZz4j96ncEgrVaR
 
@@ -1307,7 +1307,7 @@ A: keybase.io
 
 - On his profile on keybase.io, we can see there is a bitcoin address in his description
 
-![[Screenshot at 2022-05-26 21-32-18.png]]
+![](Screenshot at 2022-05-26 21-32-18.png)
 
 A: bc1q5q2w2x6yka5gchr89988p2c8w8nquem6tndw2f
 
@@ -1318,7 +1318,7 @@ A: bc1q5q2w2x6yka5gchr89988p2c8w8nquem6tndw2f
 
 - the second one is more interesting and it contains a `.cpp` file with a comment that includes the bitcoin address
 
-![[Screenshot at 2022-05-26 21-35-29.png]]
+![](Screenshot at 2022-05-26 21-35-29.png)
 
 A: GitHub
 
@@ -1326,7 +1326,7 @@ A: GitHub
 
 - To answer the following two questions, I checked the commits of the bash script in the other repositories. And indeed, he left some important info there :)
 
-![[Screenshot at 2022-05-26 21-42-03.png]]
+![](Screenshot at 2022-05-26 21-42-03.png)
 
 A: DonteHeath21@gmail.com
 
@@ -1346,7 +1346,7 @@ A: Donte Heath
 
 - The number of services AWS supports is so vast that we can barely fit it all in this screenshot. 
 
-![[AWSConsole.png]]
+![](AWSConsole.png)
 
 - AWS divides its infrastructure into Regions, mostly independent clusters of datacenters. 
 
@@ -1424,7 +1424,7 @@ A: Donte Heath
 
 	- *Anyone* with a *credit card* can create an AWS account; therefore, Authenticated Users doesn't provide much data protection.
 
-![[Screenshot at 2022-05-26 22-11-50.png]]
+![](Screenshot at 2022-05-26 22-11-50.png)
 
 ### AWS IAM
 
@@ -1512,7 +1512,7 @@ A: It's easy to get your elves data when you leave it so easy to find!
 
 - To get the content of the bucket, I used the command `aws s3 ls s3://images.bestfestivalcompany.com/ --no-sign-request` and got the results:
 
-![[Screenshot at 2022-05-26 22-26-35.png]]
+![](Screenshot at 2022-05-26 22-26-35.png)
 
 - The backup file looks suspiciously good :)
 
@@ -1526,7 +1526,7 @@ A: wp-backup.zip
 
 - Two results:
 
-![[Screenshot at 2022-05-26 22-39-08.png]]
+![](Screenshot at 2022-05-26 22-39-08.png)
 
 - A simple `cat` of the first file and the AKIA string is visible.
 
@@ -1540,7 +1540,7 @@ A:
 
 - Running the command `aws sts get-access-key-info --access-key-id <access-key-id>` after that gives us the Account ID:
 
-![[Screenshot at 2022-05-26 22-48-22.png]]
+![](Screenshot at 2022-05-26 22-48-22.png)
 
 A: 019181489476
 
@@ -1550,7 +1550,7 @@ A: 019181489476
 
 - So I created one more, making sure now that I provide the name using `aws configure --profile hr`:
 
-![[Screenshot at 2022-05-26 22-53-18.png]]
+![](Screenshot at 2022-05-26 22-53-18.png)
 
 A: ElfMcHR@bfc.com
 
@@ -1560,7 +1560,7 @@ A: ElfMcHR@bfc.com
 
 - After some trial and error, I found the name:
 
-![[Screenshot at 2022-05-26 22-58-35.png]]
+![](Screenshot at 2022-05-26 22-58-35.png)
 
 A: HR-Portal
 
@@ -1568,18 +1568,18 @@ A: HR-Portal
 
 - To list the secrets, I used `aws secretsmanager list-secrets --profile hr`
 
-![[Screenshot at 2022-05-26 23-07-27.png]]
+![](Screenshot at 2022-05-26 23-07-27.png)
 
 - Then tried this:
 
-![[Screenshot at 2022-05-26 23-09-54.png]]
+![](Screenshot at 2022-05-26 23-09-54.png)
 
 - So we have to change the region to somethin `xx-north-x`
 
 - After trying some regions, I finally found the right one that gave me the password: `aws secretsmanager get-secret-value --secret-id HR-Password --profile hr --region eu-north-1`
 
 
-![[Screenshot at 2022-05-26 23-13-29.png]]
+![](Screenshot at 2022-05-26 23-13-29.png)
 
 A: Winter2021!
 
@@ -1638,19 +1638,19 @@ A: manifest.json
 
 4. What is the token value you found for the bonus challenge?
 
-![[Screenshot at 2022-05-27 16-38-46.png]]
+![](Screenshot at 2022-05-27 16-38-46.png)
 
-![[Screenshot at 2022-05-27 16-40-56.png]]
+![](Screenshot at 2022-05-27 16-40-56.png)
 
 - Installed `jq`, which makes it easier to read the layers of the container image.
 
-![[Screenshot at 2022-05-27 16-44-41.png]]
+![](Screenshot at 2022-05-27 16-44-41.png)
 
 - `f886f00520700e2ddd74a14856fcc07a36c819b4cea8cee8be83d4de01e9787.json` is the configuration files
 
 - Untarred the layer that included the repository pulled from GitHub and using `cat root/envconsul/config.hcl | grep token` I found the value of the token:
 
-![[Screenshot at 2022-05-27 16-52-41.png]]
+![](Screenshot at 2022-05-27 16-52-41.png)
 
 A: 7095b3e9300542edadbc2dd558ac11fa
 
@@ -1671,25 +1671,25 @@ A: 7095b3e9300542edadbc2dd558ac11fa
 
 - I opened the mail application and under `More` I selected `View Source`.
 
-![[Screenshot at 2022-05-30 10-19-18.png]]
+![](Screenshot at 2022-05-30 10-19-18.png)
 
 A: elfmcphearson@tbfc.com
 
 2. Phishing emails use similar domains of their targets to increase the likelihood the recipient will be tricked into interacting with the email. Who does it say the email was from? (Answer is the email address)
 
-![[Screenshot at 2022-05-30 10-20-46.png]]
+![](Screenshot at 2022-05-30 10-20-46.png)
 
 A: customerservice@t8fc.info
 
 3. Sometimes phishing emails have a different reply-to email address. If this email was replied to, what email address will receive the email response?
 
-![[Screenshot at 2022-05-30 10-21-39.png]]
+![](Screenshot at 2022-05-30 10-21-39.png)
 
 A: fisher@tempmailz.grinch
 
 4. Less sophisticated phishing emails will have typos. What is the misspelled word?
 
-![[Screenshot at 2022-05-30 10-22-28.png]]
+![](Screenshot at 2022-05-30 10-22-28.png)
 
 A: stright
 
@@ -1699,13 +1699,13 @@ A: https://89xgwsnmo5.grinch/out/fishing/
 
 6. View the email source code. There is an unusual email header. What is the header and its value?
 
-![[Screenshot at 2022-05-30 10-27-50.png]]
+![](Screenshot at 2022-05-30 10-27-50.png)
 
 A: X-GrinchPhish: >;^)
 
 7. You received other reports of phishing attempts from other colleagues. Some of the other emails contained attachments. Open attachment.txt. What is the name of the attachment?
 
-![[Screenshot at 2022-05-30 10-28-58.png]]
+![](Screenshot at 2022-05-30 10-28-58.png)
 
 A: password-reset-instructions.pdf
 
@@ -1715,7 +1715,7 @@ A: password-reset-instructions.pdf
 
 - opened the PDF and got the flag
 
-![[Screenshot at 2022-05-30 10-33-04.png]]
+![](Screenshot at 2022-05-30 10-33-04.png)
 
 A: THM{A0C_Thr33_Ph1sh1ng_An4lys!s}
 
@@ -1729,7 +1729,7 @@ A: THM{A0C_Thr33_Ph1sh1ng_An4lys!s}
 
 - Went to `Desktop` on the deployed machine and ran `strings` on `testfile`
 
-![[Screenshot at 2022-05-31 07-26-19.png]]
+![](Screenshot at 2022-05-31 07-26-19.png)
 
 A: X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
 
@@ -1745,13 +1745,13 @@ A: EICAR virus test files
 
 - Searched it on VirusTotal and under `Details` I found the answer
 
-![[Screenshot at 2022-05-31 07-29-16.png]]
+![](Screenshot at 2022-05-31 07-29-16.png)
 
 A: 2005-10-17 22:03:48
 
 4. On VirusTotal's detection tab, what is the classification assigned to the file by Microsoft?
 
-![[Screenshot at 2022-05-31 07-30-31.png]]
+![](Screenshot at 2022-05-31 07-30-31.png)
 
 A:  Virus:DOS/EICAR_Test_File
 
@@ -1866,7 +1866,7 @@ A: metadata
 
 - Checked the Yara Documentation website
 
-![[Screenshot at 2022-06-01 10-50-07.png]]
+![](Screenshot at 2022-06-01 10-50-07.png)
 
 A: -n
 
@@ -1874,7 +1874,7 @@ A: -n
 
 - Created a YARA rule and then ran it using `-c` (print number of matches) on `testfile`
 
-![[Screenshot at 2022-06-01 10-56-34.png]]
+![](Screenshot at 2022-06-01 10-56-34.png)
 
 A: 0
 
@@ -1918,9 +1918,9 @@ A: 0
 
 1. What is the username (email address of Grinch Enterprises) from the decoded script?
 
-![[Screenshot at 2022-06-01 11-33-02.png]]
+![](Screenshot at 2022-06-01 11-33-02.png)
 
-![[Screenshot at 2022-06-01 11-33-28.png]]
+![](Screenshot at 2022-06-01 11-33-28.png)
 
 A: Grinch.Enterprises.2021@gmail.com
 
@@ -1938,7 +1938,7 @@ A: 587
 
 5. What is the flag hidden found in the document that Grinch Enterprises left behind? (Hint: use the following command oledump.py -s {stream number} -d, the answer will be in the caption).
 
-![[Screenshot at 2022-06-01 11-34-31.png]]
+![](Screenshot at 2022-06-01 11-34-31.png)
 
 A: YouFoundGrinchCookie
 
@@ -1946,7 +1946,7 @@ A: YouFoundGrinchCookie
 
 - In the data from stream 8 there was something about the Pictures folder. I checked it and found a png
 
-![[Screenshot at 2022-06-01 11-38-10.png]]
+![](Screenshot at 2022-06-01 11-38-10.png)
 
 A: S@nt@c1Au$IsrEAI
 
@@ -1981,25 +1981,25 @@ A: Invoke-Nightmare
 
 2. What user executed the PowerShell file to send the password.txt file from the administrator's desktop to a remote server?
 
-![[Screenshot at 2022-06-03 01-15-58.png]]
+![](Screenshot at 2022-06-03 01-15-58.png)
 
 A: adm1n
 
 3. What was the IP address of the remote server? What was the port used for the remote connection? (format: IP,Port)
 
-![[Screenshot at 2022-06-03 01-17-32.png]]
+![](Screenshot at 2022-06-03 01-17-32.png)
 
 A: 10.10.148.96,4321
 
 4. What was the encryption key used to encrypt the contents of the text file sent to the remote server?
 
-![[Screenshot at 2022-06-03 01-18-17.png]]
+![](Screenshot at 2022-06-03 01-18-17.png)
 
 A: j3pn50vkw21hhurbqmxjlpmo9doiukyb
 
 5. What application was used to delete the password.txt file?
 
-![[Screenshot at 2022-06-03 01-19-47.png]]
+![](Screenshot at 2022-06-03 01-19-47.png)
 
 A: sdelete.exe
 
@@ -2009,11 +2009,11 @@ A: sdelete.exe
 
 - One thing that worked is modifying the event description string to include `password.txt`
 
-![[Screenshot at 2022-06-03 01-26-17.png]]
+![](Screenshot at 2022-06-03 01-26-17.png)
 
 - We got our answer:
 
-![[Screenshot at 2022-06-03 01-27-43.png]]
+![](Screenshot at 2022-06-03 01-27-43.png)
 
 A: 11/11/2021 7:29:27 PM
 
@@ -2021,11 +2021,11 @@ A: 11/11/2021 7:29:27 PM
 
 - Edited the decryptor with the key we found earlier and the encrypted value
 
-![[Screenshot at 2022-06-03 01-32-00.png]]
+![](Screenshot at 2022-06-03 01-32-00.png)
 
 - Ran the decryptor and got the original content of password.txt
 
-![[Screenshot at 2022-06-03 01-35-22.png]]
+![](Screenshot at 2022-06-03 01-35-22.png)
 
 A: Mission Control: letitsnowletitsnowletitsnow
 
@@ -2098,7 +2098,7 @@ A: Mission Control: letitsnowletitsnowletitsnow
 
 		- You need Administrator access or a SYSTEM account to use this module.
 
-![[Screenshot at 2022-06-03 12-50-12.png]]
+![](Screenshot at 2022-06-03 12-50-12.png)
 
 - Use `privilege::debug` to test if you have the necessary privileges to run the program.
 
@@ -2106,7 +2106,7 @@ A: Mission Control: letitsnowletitsnowletitsnow
 
 	- `sekurlsa::logonpasswords`
 
-![[Screenshot at 2022-06-03 12-53-27.png]]
+![](Screenshot at 2022-06-03 12-53-27.png)
 
 ### Cracking Password Hashes
 
@@ -2127,7 +2127,7 @@ A: Mission Control: letitsnowletitsnowletitsnow
 
 1. What is the username of the other user on the system?
 
-![[Screenshot at 2022-06-03 12-53-27.png]]
+![](Screenshot at 2022-06-03 12-53-27.png)
 
 A: emily
 
@@ -2137,6 +2137,6 @@ A: 8af326aa4850225b75c592d4ce19ccf5
 
 3. What is the password for this user?
 
-![[Screenshot at 2022-06-03 13-01-13.png]]
+![](Screenshot at 2022-06-03 13-01-13.png)
 
 A: 123456890

@@ -127,7 +127,7 @@ tags:
 
 1. Who is the adversary that attacked Santa's network this year?
 
-![[Pasted image 20221202181026.png]]
+![](Pasted image 20221202181026.png)
 
 A: The Bandit Yeti!
 

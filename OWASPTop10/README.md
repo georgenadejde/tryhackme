@@ -105,7 +105,7 @@ tags:
 
 - The root directory of the website is usually in `/var/www/html`, hence I used the command injection string `ls /var/www/html`
 
-![[Screenshot at 2022-06-04 15-22-57.png]]
+![](Screenshot at 2022-06-04 15-22-57.png)
 
 A: drpepper.txt 
 
@@ -113,7 +113,7 @@ A: drpepper.txt
 
 - Besides root, there is no other user.
 
-![[Screenshot at 2022-06-04 15-27-23.png]]
+![](Screenshot at 2022-06-04 15-27-23.png)
 
 A: 0
 
@@ -127,7 +127,7 @@ A: www-data
 
 - 	Check the /etc/passwd file
 
-![[Screenshot at 2022-06-04 15-31-09.png]]
+![](Screenshot at 2022-06-04 15-31-09.png)
 
 A: /usr/sbin/nologin
 
@@ -141,7 +141,7 @@ A: 18.04.4
 
 - I thought the motd is kept inside `/etc/motd`, but on moder Ubuntu systems this is kept in `/etc/update-motd.d/00-header`.
 
-![[Screenshot at 2022-06-04 15-43-40.png]]
+![](Screenshot at 2022-06-04 15-43-40.png)
 
 A:  DR PEPPER
 
@@ -214,7 +214,7 @@ A:  DR PEPPER
 
 - Registered another account with the username ` darren` and when I logged in, I could access the real darren's account.
 
-![[Screenshot at 2022-06-04 20-12-04.png]]
+![](Screenshot at 2022-06-04 20-12-04.png)
 
 A: fe86079416a21a3c99937fea8874b667
 
@@ -273,13 +273,13 @@ A: d9ac0f7db4fda460ac3edeb75d75e16e
 
 - Opened the page source of the login page
 
-![[Screenshot at 2022-06-05 11-04-11.png]]
+![](Screenshot at 2022-06-05 11-04-11.png)
 
 A: /assets
 
 2. Navigate to the directory you found in question one. What file stands out as being likely to contain sensitive data?
 
-![[Screenshot at 2022-06-05 11-05-22.png]]
+![](Screenshot at 2022-06-05 11-05-22.png)
 
 A: webapp.db
 
@@ -287,7 +287,7 @@ A: webapp.db
 
 - Downlaoded the .db file and opened it using sqlite3
 
-![[Screenshot at 2022-06-05 11-08-03.png]]
+![](Screenshot at 2022-06-05 11-08-03.png)
 
 A: 6eea9b7ef19179a06954edd0f6c05ceb
 
@@ -296,13 +296,13 @@ What is the admin's plaintext password?
 
 - Used Crackstation
 
-![[Screenshot at 2022-06-05 11-08-57.png]]
+![](Screenshot at 2022-06-05 11-08-57.png)
 
 A: qwertyuiop
 
 5. Login as the admin. What is the flag?
 
-![[Screenshot at 2022-06-05 11-09-24.png]]
+![](Screenshot at 2022-06-05 11-09-24.png)
 
 A: THM{Yzc2YjdkMjE5N2VjMzNhOTE3NjdiMjdl}
 
@@ -481,7 +481,7 @@ A: !ENTITY
 
 	- if we use this payload then a website vulnerable to XXE(normally) would display the content of the file `/etc/passwd`.
 
-![[Screenshot at 2022-06-06 11-57-17.png]]
+![](Screenshot at 2022-06-06 11-57-17.png)
 
 
 ## `[Severity 4]` XML External Entity - Exploiting
@@ -492,11 +492,11 @@ A: !ENTITY
 
 1. Try to display your own name using any payload.
 
-![[Screenshot at 2022-06-06 12-00-40.png]]
+![](Screenshot at 2022-06-06 12-00-40.png)
 
 2. See if you can read the /etc/passwd
 
-![[Screenshot at 2022-06-06 11-57-17.png]]
+![](Screenshot at 2022-06-06 11-57-17.png)
 
 3. What is the name of the user in /etc/passwd
 
@@ -515,7 +515,7 @@ A: falcon
 ```
 - I got a result.
 
-![[Screenshot at 2022-06-06 12-04-59.png]]
+![](Screenshot at 2022-06-06 12-04-59.png)
 
 A: /home/falcon/.ssh/id_rsa
 
@@ -571,7 +571,7 @@ ResultSet results = pstmt.executeQuery( );
 
 #idor
 
-![[v7GuE3d.png]]
+![](v7GuE3d.png)
 
 - **IDOR**, or **Insecure Direct Object Reference**, is the act of exploiting a misconfiguration in the way user input is handled, to access resources you wouldn't ordinarily be able to access. 
 
@@ -591,7 +591,7 @@ ResultSet results = pstmt.executeQuery( );
 
 - Logged in with the credentials given
 
-![[Screenshot at 2022-06-06 12-15-39.png]]
+![](Screenshot at 2022-06-06 12-15-39.png)
 
 - Note we have a parameter in the URL `note`. I wonder what happens if we change it :)
 
@@ -599,7 +599,7 @@ ResultSet results = pstmt.executeQuery( );
 
 - As root is usually 0 in the linux system, I tried that and it got me the flag.
 
-![[Screenshot at 2022-06-06 12-17-37.png]]
+![](Screenshot at 2022-06-06 12-17-37.png)
 
 A: flag{fivefourthree}
 
@@ -631,7 +631,7 @@ A: flag{fivefourthree}
 	- User: pensive
 	- Pass: PensiveNotes
 
-![[Screenshot at 2022-06-08 11-34-47.png]]
+![](Screenshot at 2022-06-08 11-34-47.png)
 
 A: thm{4b9513968fd564a87b28aa1f9d672e17}
 
@@ -694,7 +694,7 @@ A: thm{4b9513968fd564a87b28aa1f9d672e17}
 
 - Used the payload `<script>alert(“Hello”)</script>`
 
-![[Screenshot at 2022-06-08 11-49-58.png]]
+![](Screenshot at 2022-06-08 11-49-58.png)
 
 A: ThereIsMoreToXSSThanYouThink
 
@@ -702,9 +702,9 @@ A: ThereIsMoreToXSSThanYouThink
 
 - Used the payload `<script>alert(window.location.hostname)</script>`
 
-![[Screenshot at 2022-06-08 11-52-24.png]]
+![](Screenshot at 2022-06-08 11-52-24.png)
 
-![[Screenshot at 2022-06-08 11-52-40.png]]
+![](Screenshot at 2022-06-08 11-52-40.png)
 
 A: ReflectiveXss4TheWin
 
@@ -712,7 +712,7 @@ A: ReflectiveXss4TheWin
 
 - Used `<html> document.write </html>`
 
-![[Screenshot at 2022-06-08 11-56-39.png]]
+![](Screenshot at 2022-06-08 11-56-39.png)
 
 A: HTML_T4gs
 
@@ -720,9 +720,9 @@ A: HTML_T4gs
 
 - Used `<script> alert(document.cookies) </script>`
 
-![[Screenshot at 2022-06-08 11-58-58.png]]
+![](Screenshot at 2022-06-08 11-58-58.png)
 
-![[Screenshot at 2022-06-08 12-01-27.png]]
+![](Screenshot at 2022-06-08 12-01-27.png)
 
 A: W3LL_D0N3_LVL2s
 
@@ -730,7 +730,7 @@ A: W3LL_D0N3_LVL2s
 
 - Used `<script>document.querySelector('#thm-title').textContent = 'I am a hacker'</script>`
 
-![[Screenshot at 2022-06-08 12-04-58.png]]
+![](Screenshot at 2022-06-08 12-04-58.png)
 
 A: websites_can_be_easily_defaced_with_xss
 
@@ -772,7 +772,7 @@ A: websites_can_be_easily_defaced_with_xss
 
 1. Who developed the Tomcat application?
 
-![[Screenshot at 2022-06-09 10-20-41.png]]
+![](Screenshot at 2022-06-09 10-20-41.png)
 
 A:  The Apache Software Foundation
 
@@ -844,7 +844,7 @@ A: binary
 
     - This is determined by the *"Expiry"* timer that is set when the cookie is created.
 
-![[Screenshot at 2022-06-09 10-48-52.png]]
+![](Screenshot at 2022-06-09 10-48-52.png)
 
 ### Questions
 
@@ -867,11 +867,11 @@ A: HTTPS
 
 - Made an account and checked out the cookies
 
-![[Screenshot at 2022-06-09 10-53-48.png]]
+![](Screenshot at 2022-06-09 10-53-48.png)
 
 - To get the first flag, I decoded the base64 encrypted cookie sessionID.
 
-![[Screenshot at 2022-06-09 10-56-06.png]]
+![](Screenshot at 2022-06-09 10-56-06.png)
 
 A: THM{good_old_base64_huh}
  
@@ -879,7 +879,7 @@ A: THM{good_old_base64_huh}
 
 - To get the second flag, I changed the userType cookie from 'user' to 'admin' and refreshed the page.
 
-![[Screenshot at 2022-06-09 10-58-32.png]]
+![](Screenshot at 2022-06-09 10-58-32.png)
 
 A: THM{heres_the_admin_flag} 
 
@@ -892,13 +892,13 @@ A: THM{heres_the_admin_flag}
 
 - In our user account we go to this feedback page:
 
-![[Screenshot at 2022-06-09 11-02-33.png]]
+![](Screenshot at 2022-06-09 11-02-33.png)
 
 - If a user was to enter their feedback, the data will get encoded and sent to the Flask application (presumably for storage within a database for example). 
 
 - However, the application assumes that any data encoded is trustworthy.
 
-![[lgomAL9.png]]
+![](lgomAL9.png)
 
 - When you visit the "Exchange your vim" URL, A cookie is encoded and stored within your browser - perfect for us to modify! 
 
@@ -906,29 +906,29 @@ A: THM{heres_the_admin_flag}
 
 - In the snippet below, we can see how the cookie is retrieved and then deserialized via `pickle.loads`
 
-![[8id81K3.png]]
+![](8id81K3.png)
 
 - Created a .py file with this payload:
 
-![[Screenshot at 2022-06-09 11-09-40.png]]
+![](Screenshot at 2022-06-09 11-09-40.png)
 
 - If I execute the file, the payload will look like this:
 
-![[Screenshot at 2022-06-09 11-11-30.png]]
+![](Screenshot at 2022-06-09 11-11-30.png)
 
 - Copied everything betweek quotation marks from this output and replaced the value of the cookie encodedPayload with it.
 
-![[Screenshot at 2022-06-09 11-12-46.png]]
+![](Screenshot at 2022-06-09 11-12-46.png)
 
 - Refreshing the page makes the website hang and this is a good sign that I may have received the shell on my netcat listener
 
 - Indeed:
 
-![[Screenshot at 2022-06-09 11-14-11.png]]
+![](Screenshot at 2022-06-09 11-14-11.png)
 
 - The flag can be found in the home directory of the user we are signed in as:
 
-![[Screenshot at 2022-06-09 11-15-50.png]]
+![](Screenshot at 2022-06-09 11-15-50.png)
 
 1. flag.txt
 
@@ -966,15 +966,15 @@ A: 4a69a7ff9fd68
 
 - Searched 'bookstore' on exploit-db:
 
-![[Screenshot at 2022-06-09 11-42-34.png]]
+![](Screenshot at 2022-06-09 11-42-34.png)
 
 - We ll be using the Authentification Bypass one:
 
-![[Screenshot at 2022-06-09 11-45-27.png]]
+![](Screenshot at 2022-06-09 11-45-27.png)
 
 - So it is vulnerable to SQLi. Let's try it ourselves
 
-![[Screenshot at 2022-06-09 11-46-22.png]]
+![](Screenshot at 2022-06-09 11-46-22.png)
 
 - We're in
 
@@ -982,21 +982,21 @@ A: 4a69a7ff9fd68
 
 - A search on google revealed an interesting result that we may use:
 
-![[Screenshot at 2022-06-09 11-50-45.png]]
+![](Screenshot at 2022-06-09 11-50-45.png)
 
 - We run it and thus we can see its usage:
 
-![[Screenshot at 2022-06-09 11-51-26.png]]
+![](Screenshot at 2022-06-09 11-51-26.png)
 
 - We only need to provide the URL of the website:
 
-![[Screenshot at 2022-06-09 11-54-05.png]]
+![](Screenshot at 2022-06-09 11-54-05.png)
 
 - We're in (again)
 
 - And we get the flag:
 
-![[Screenshot at 2022-06-09 11-54-25.png]]
+![](Screenshot at 2022-06-09 11-54-25.png)
 
 A: 1611
 
@@ -1071,7 +1071,7 @@ A: 1611
 
 - Thus, this must be the attacker.
 
-![[Screenshot at 2022-06-09 12-03-59.png]]
+![](Screenshot at 2022-06-09 12-03-59.png)
 
 A: 49.99.13.16
 

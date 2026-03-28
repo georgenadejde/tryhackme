@@ -26,7 +26,7 @@ tags:
 
 			`curl -X POST --data "flag_please" http://10.10.110.50:8081/ctf/post`
 
-![[GET_COOKIE.png]]
+![](GET_COOKIE.png)
 
 -	Send cookie and then a GET request to ctf/sendcookie:
 
@@ -56,7 +56,7 @@ VERB PATH
 
 Instead of a verb and a path, we have a status code ([more information](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)):
 
-![[Pasted image 20211203090605.png]]
+![](Pasted image 20211203090605.png)
 
 ## Cookies
 

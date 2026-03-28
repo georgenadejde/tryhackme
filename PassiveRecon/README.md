@@ -20,7 +20,7 @@ tags:
 	
 1). **Passive Recon**
 
-![[PassiveRecon.png]]
+![](PassiveRecon.png)
 
 - rely on publicly available information without actually engaging with the target.
 
@@ -36,7 +36,7 @@ tags:
 
 2). **Active Recon**
 
-![[ActiveRecon.png]]
+![](ActiveRecon.png)
 
 - requires direct engagement with the target.
 
@@ -82,7 +82,7 @@ R: Active
 
 ### Questions
 
-![[WHOIS_tryhackme.png]]
+![](WHOIS_tryhackme.png)
 
 
 1. When was TryHackMe.com registered?
@@ -109,7 +109,7 @@ nslookup OPTIONS DOMAIN_NAME SERVER
 
 - *Options*:
 
-![[nslookup.png]]
+![](nslookup.png)
 
 - *Domain_Name*: the domain name you are looking up
 
@@ -127,13 +127,13 @@ nslookup OPTIONS DOMAIN_NAME SERVER
 nslookup -type=A tryhackme.com 1.1.1.1
 ```
 
-![[NSLOOKUPEXAMPLE.png]]
+![](NSLOOKUPEXAMPLE.png)
 
 - you want to learn about the email servers and configurations for a particular domain.
 	
 	- you can use: ``` nslookup -type=MX tryhackme.com```:
 
-	![[nslokkupex2.png]]
+	![](nslokkupex2.png)
 
 - e can see that tryhackme.com’s current email configuration uses Google. 
 
@@ -153,7 +153,7 @@ dig SERVER DOMAIN_NAME TYPE
 - Domain_name: the domain name you are looking up
 - Type: the DNS record type
 
-![[digexample.png]]
+![](digexample.png)
 
 - if you want to query a 1.1.1.1 DNS server, use:
 
@@ -165,7 +165,7 @@ dig @1.1.1.1 tryhackme.com MX
 
 1. Check the TXT records of thmlabs.com. What is the flag there?
 
-R: ![[nslookupquestion.png]]
+R: ![](nslookupquestion.png)
 
 ## DNSDumpster
 
@@ -177,9 +177,9 @@ R: ![[nslookupquestion.png]]
 
 - We will search for tryhackme.com on DNSDumpster. 
 
-![[DNSDumpster.png]]
+![](DNSDumpster.png)
 
-![[DNSDumpster2.png]]
+![](DNSDumpster2.png)
 
 
 - Among the results, we got a list of DNS servers for the domain we are looking up. 
@@ -204,7 +204,7 @@ R: remote
 
 - Shodan.io tries to connect to every reachable device online to build a search engine of connected 'things'.
 
-![[shodanio.png]]
+![](shodanio.png)
 
 - we can learn several things from a Shodan.io search:
 
@@ -217,7 +217,7 @@ R: remote
 
 1. According to Shodan.io, what is the 2nd country in the world in terms of the number of publicly accessible Apache servers?
 
-![[shodanioQuestions.png]]
+![](shodanioQuestions.png)
 
 R: Germany
 
@@ -227,11 +227,11 @@ R: 8080
 
 3. Based on Shodan.io, what is the 3rd most common port used for nginx?
 
-![[shodan_nginx.png]]
+![](shodan_nginx.png)
 
 R: 8888
 
 
 ## Recap
 
-![[CTFs/TryHackMe/PassiveRecon/Recap.png]]
+![](CTFs/TryHackMe/PassiveRecon/Recap.png)

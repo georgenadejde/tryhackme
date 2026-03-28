@@ -25,7 +25,7 @@ tags:
 
 	- this is done by establishing connections to the remote services using different ports on our machine
 
-![[ports.png]]
+![](ports.png)
 
 - every computer has a total of **65535 available ports**
 
@@ -183,7 +183,7 @@ A: RST
 
 	- when it receives a TCP packet with SYN/ACK flags set, it sends a RST TCP packet (preventing the server from repeatedly trying to make a request).
 
-![[synscans.png]]
+![](synscans.png)
 
 - *Advantages*:
 
@@ -258,7 +258,7 @@ A: ICMP
 
 	- if the port is closed, it gets a TCP RST as a response.
 
-![[RST.png]]
+![](RST.png)
 
 - The FIN Scan (**-sF**) sends a TCP Request with the FIN flag set, which is usually used to "gracefuly close an active connection"
 
@@ -268,7 +268,7 @@ A: ICMP
 	
 	-  It's referred to as an xmas scan as the flags that it sets (*PSH*, *URG* and *FIN*) give it the appearance of a blinking christmas tree when viewed as a packet capture in Wireshark. 
 
-![[xmas.png]]
+![](xmas.png)
 
 - The expected response for open ports with these scans is also identical, and is very similar to that of a UDP scan. 
 
@@ -384,13 +384,13 @@ A: intrusive
 
 - Nmap scripts come with built in help menus: `nmap --script-help <script_name>`
 
-![[scripthelp.png]]
+![](scripthelp.png)
 
 ### Questions
 
 1. What optional argument can the ftp-anon.nse script take?
 
-![[ftpanon.png]]
+![](ftpanon.png)
 
 A: maxlist
 
@@ -409,15 +409,15 @@ A: maxlist
 
 		- this is not a database file, but a formatted text file containing the filenames and categories
 
-![[scriptsss.png]]
+![](scriptsss.png)
 
 - We can use grep on this file to find what we are looking for:
 
-![[scriptftp.png]]
+![](scriptftp.png)
 
 - or we can just use the `ls` command:
 
-![[lscommand.png]]
+![](lscommand.png)
 
 - if we want to install a script, we can do this from the nmap website:
 
@@ -478,7 +478,7 @@ A: N (did a `ping -c 5 <IP>`)
 
 2. Perform an Xmas scan on the first 999 ports of the target -- how many ports are shown to be open or filtered?
 
-![[nmapscan.png]]
+![](nmapscan.png)
 
 A: 999
 
@@ -490,7 +490,7 @@ A: no response (you could try -vv)
 
 4. Perform a TCP SYN scan on the first 5000 ports of the target -- how many ports are shown to be open?
 
-![[nmapscan2.png]]
+![](nmapscan2.png)
 
 A: 5
 
@@ -498,6 +498,6 @@ A: 5
 
 6. Deploy the ftp-anon script against the box. Can Nmap login successfully to the FTP server on port 21? (Y/N)
 
-![[ftpanonscan.png]]
+![](ftpanonscan.png)
 
 A: Y

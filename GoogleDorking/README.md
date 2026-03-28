@@ -14,7 +14,7 @@ tags:
 
 - they discover content through various means such as pure discovery or by using any or all URLs found from previous crawled websites.
 
-![[crawlers.png]]
+![](crawlers.png)
 
 - In the diagram above, "mywebsite.com" has been scraped as having the keywords as “Apple” “Banana" and “Pear”. 
 
@@ -28,11 +28,11 @@ tags:
 
 	- Say if “mywebsite.com” had the same keywords as before (“Apple", “Banana” and “Pear”), but also had a URL to another website “anotherwebsite.com”, the crawler will then *attempt to traverse everything on that URL* (anotherwebsite.com) and retrieve the contents of everything within that domain respectively. 
 
-![[crawlers2.png]]
+![](crawlers2.png)
 
 - now the search engine know this:
 
-![[crawlers3.png]]
+![](crawlers3.png)
 
 ### Questions
 
@@ -83,15 +83,15 @@ A: Keywords
 
 	- files or directories
 
-![[robots.png]]
+![](robots.png)
 
 - Keywords:
 
-![[KeywordsRobots.png]]
+![](KeywordsRobots.png)
 
 - Example:
 
-![[Robots2.png]]
+![](Robots2.png)
 
 - Crawlers will not index anything contained within /super-secret-directory
 
@@ -99,13 +99,13 @@ A: Keywords
 
 - Example:
 
-![[disallowrd.png]]
+![](disallowrd.png)
 
 - Here, the crawler "msnbot" *is not allowed to index* the website
 
 - if you have a huge website, it can be difficult to index all of the sensitive files by including every path and every filename for each. Hence, we can use *regex*:
 
-![[disallowrd.png]]
+![](disallowrd.png)
 
 - Here, the crawlers cannot index *any* file with the extension .ini contained in any directory or subdirectory using ("$") of the site.
 
@@ -138,11 +138,11 @@ A: .conf
 
 - they specify the routes to find content on the domain
 
-![[sitemap.png]]
+![](sitemap.png)
 
 - Or more realistically:
 
-![[sitemapsreal.png]]
+![](sitemapsreal.png)
 
 - it influences the SEO of a website quite drastically
 

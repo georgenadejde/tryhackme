@@ -81,7 +81,7 @@ R: the Iran nuclear programme
 	- *spearphishing*: targeted and better crafted.
 	- *whaling*: targets highly-value individuals and are very hard to spot.
 
-![[types_of_phishing.png]]
+![](types_of_phishing.png)
 
 - *Steps*:
 
@@ -103,7 +103,7 @@ R: the Iran nuclear programme
 
 - also, you can get tricked by going to a illegimate site using a legitimate name, such in the picture:
 
-![[types_of_phishing.png]]
+![](types_of_phishing.png)
 
 - the from email may be suspicious, as many times attackers don't bother to change it to a company's specific email.
 
@@ -237,7 +237,7 @@ w41=V1)S7KIJGPN,dII>cHEh>FRVQsj3M^]CB
 
 ### The Golden 3,2,1 Rule
 
-![[3.2.1.goldenrule.png]]
+![](3.2.1.goldenrule.png)
 
 - *but* of equal importance is the *frequency* at which you take backups. 
 

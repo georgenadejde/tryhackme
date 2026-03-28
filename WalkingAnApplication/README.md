@@ -14,7 +14,7 @@ tags:
 
 - An excellent place to start is just with your browser exploring the website and noting down the individual pages/areas/features with a summary for each one.
 
-![[ss1.png]]
+![](ss1.png)
 
 ## Viewing The Page Source
 
@@ -89,7 +89,7 @@ R: THM{NOT_SO_HIDDEN}
 
 - used a breakpoint to make flashing red rectangle and then refreshed the page
 
-![[PausedOnBreakpoint.png]]
+![](PausedOnBreakpoint.png)
 
 R: THM{CATCH_ME_IF_YOU_CAN}
 

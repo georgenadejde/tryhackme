@@ -70,7 +70,7 @@ R: Tim Berners-Lee
 
 	- last 6: unique address of the network interface.
 
-![[mac_address.png]]
+![](mac_address.png)
 
 - MAC addresses can be faked (*spoofed*), when a device pretends to identify as another using its MAC address.
 
@@ -103,7 +103,7 @@ R: THM{YOU_GOT_ON_TRYHACKME}
 
 - The time measuring is done usings ICMP's echo packet and then ICMP's echo reply from the target device.
 
-![[ping1.png]]
+![](ping1.png)
 
 ### Questions
 

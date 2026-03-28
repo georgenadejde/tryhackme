@@ -63,7 +63,7 @@ People Don't Need These Stupid Packets Anyway.
 - **WHOIS** - query who a domain name is registered to. Domains are leased out by companies called *DOMAIN REGISTRARS*.
   
   
-  ![[OSI_VS_TCPIP.png]]
+  ![](OSI_VS_TCPIP.png)
   
 ## Domain servers:
 
@@ -81,6 +81,6 @@ dig <domain> @<dns-server-ip>
 
 - Dig also tells us is the TIME TO LIVE (TTL) of a queried DNS record. When we make a request for a domain, it gets stored in our local cache. The TTl of the record tells us when to stop considering the record as valid - when it shoud request the data again. In a dig answer, this is highlighted in the second column of the ANSWER SECTION (measured in seconds).
 
-![[TTL.png]]
+![](TTL.png)
 
 - *Google public DNS Servers*: 8.8.8.8 and 8.8.4.4

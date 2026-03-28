@@ -13,7 +13,7 @@ tags:
 Instead of remembering an IP address, DNS allows us to instead remember a name of the website (tryhackme.com)
 
 ## Domain Hierarchy
-![[DomainHierarchy.png]]
+![](DomainHierarchy.png)
 ### TLD (Top-Level Domains)
 
 - It is basically the right hand side of a website's URL. For e.g., the TLD of tryhackme.com would be *.com*. 
@@ -60,7 +60,7 @@ Sits on the left of a SLD. For ex, in admin.tryhackme.com, *admin* would be the 
 
 ## Making a request
 
-![[MakingADNSRequest.png]]
+![](MakingADNSRequest.png)
 
 1. Checks your **local cache** in case you recently looked up that IP. If not, a request to your *Recursive DNS Server* is made.
 

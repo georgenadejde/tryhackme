@@ -23,7 +23,7 @@ Register for an account, and then login.
 
 1. What is the name of the cookie used for authentication?
 
-![[hexxx.png]]
+![](hexxx.png)
 
 A: auth
 
@@ -35,7 +35,7 @@ A: hexadecimal
 
 - Used Cyberchef to convert it from hex:
 
-![[Screenshot at 2022-02-23 13-04-49.png]]
+![](Screenshot at 2022-02-23 13-04-49.png)
 
 A: JSON
 
@@ -45,7 +45,7 @@ Figure out how to bypass the authentication.
 
 - Changed the username to santa and converted to hex
 
-![[asciitohex.png]]
+![](asciitohex.png)
 
 A: 7b22636f6d70616e79223a22546865204265737420466573746976616c20436f6d70616e79222c2022757365726e616d65223a2273616e7461227d
 
@@ -54,7 +54,7 @@ Now that you are the santa user, you can re-activate the assembly line!
 
 5. What is the flag you're given when the line is fully active?
 
-![[LASTFLAGGG.png]]
+![](LASTFLAGGG.png)
 
 A: THM{MjY0Yzg5NTJmY2Q1NzM1NjBmZWFhYmQy}
 
@@ -103,7 +103,7 @@ A: id=ODIzODI5MTNiYmYw
 
 - From the page source, we can see what extensions are allowed to be uploaded:
 
-![[acceptedextensions.png]]
+![](acceptedextensions.png)
 
 A: image	
 
@@ -121,11 +121,11 @@ Activate your reverse shell and catch it in a netcat listener!
 
 - Uploaded a revshell.jpeg.php file (you need to select *all files* when the window pops up)
 
-![[revshelljpen.png]]
+![](revshelljpen.png)
 
 - Click the file and if you have a listener up, it should spawn a shell in your terminal.
 
-![[revflah.png]]
+![](revflah.png)
 
 A: THM{MGU3Y2UyMGUwNjExYTY4NTAxOWJhMzhh}
 
@@ -146,15 +146,15 @@ Use the correct credentials to log in to the Santa Sleigh Tracker app. Don't for
 
 - Intercepted the requst and sent it to Intruder:
 
-![[burprequesti.png]]
+![](burprequesti.png)
 
 - He already marked my positions and so I only need to add the payloads
 
-![[paylaodsburp.png]]
+![](paylaodsburp.png)
 
 - I got only 302s but one of them is different in length. So i choose to use those credentials to log in and indeed they work:
 
-![[resultsburp.png]]
+![](resultsburp.png)
 
 A: THM{885ffab980e049847516f9d8fe99ad1a}
 
@@ -164,7 +164,7 @@ A: THM{885ffab980e049847516f9d8fe99ad1a}
 
 - **wfuzz** options:
 
-![[wfuzz.png]]
+![](wfuzz.png)
 
 1. Given the URL "http://shibes.xyz/api.php", what would the entire wfuzz command look like to query the "breed" parameter using the wordlist "big.txt" (assume that "big.txt" is in your current directory)
 
@@ -176,11 +176,11 @@ A: wfuzz -c -z file,big.txt http://shibes.xyz/api.php?breed=FUZZ
 
 - Found the api directory:
 
-![[apifound.png]]
+![](apifound.png)
 
 - I will run gobuster again but with -x flag. After a while, I found the log file:
 
-![[gobuster.png]]
+![](gobuster.png)
 
 A: site-log.php
 
@@ -188,7 +188,7 @@ A: site-log.php
 
 - Used wfuzz and the flag `--hh 0` to filter out the only result that returned some chars:
 
-![[gettingwfuzzflag.png]]
+![](gettingwfuzzflag.png)
 
 - Used cURL to get the flag using the payload
 
@@ -208,15 +208,15 @@ A: /santapanel
 
 - Used this payload:
 
-![[sqqli.png]]
+![](sqqli.png)
 
 - I used sqlmap here with a saved burp request and dumped all the db using this command: `sqlmap -r anotherburp --tamper=space2comment --dbms=sqlite --tables --columns --dump`
 
 - I got all of the info to answer the questions at this point
 
-![[sqlmap1.png]]
+![](sqlmap1.png)
 
-![[sqlmap2.png]]
+![](sqlmap2.png)
 
 A: 22
 
@@ -277,7 +277,7 @@ A: stored cross-site scripting
 
 2. What query string can be abused to craft a reflected XSS?
 
-![[xssex.png]]
+![](xssex.png)
 
 A: q
 
@@ -285,7 +285,7 @@ Launch the OWASP ZAP Application
 
 3. Run a ZAP (zaproxy) automated scan on the target. How many XSS alerts are in the scan?
 
-![[loool.png]]
+![](loool.png)
 
 A: 2
 
@@ -331,7 +331,7 @@ A: 2
 
 - This order is agreed upon during three steps.
 
-![[threewayhand.png]]
+![](threewayhand.png)
 
 - Because all data is received, just in a different order, it can be reassembled using the agreed sequence numbers that would have been exchanged during the three-way-handshake.
 
@@ -341,15 +341,15 @@ A: 2
 
 ### Wireshark
 
-![[wire.png]]
+![](wire.png)
 
-![[combiningfilters.png]]
+![](combiningfilters.png)
 
 ### Questions
 
 1. Open "pcap1.pcap" in Wireshark. What is the IP address that initiates an ICMP/ping?
 
-![[q1.png]]
+![](q1.png)
 
 A: 10.11.3.2
 
@@ -361,7 +361,7 @@ A: http.request.method == GET
 
 3. Now apply this filter to "pcap1.pcap" in Wireshark, what is the name of the article that the IP address "10.10.67.199" visited?
 
-![[qq.png]]
+![](qq.png)
 
 A: reindeer-of-the-week 
 
@@ -369,7 +369,7 @@ Let's begin analysing "pcap2.pcap". Look at the captured FTP traffic; what passw
 
 4. There's a lot of irrelevant data here - Using a filter here would be useful!
 
-![[qqqq.png]]
+![](qqqq.png)
 
 A: plaintext_password_fiasco
 
@@ -383,11 +383,11 @@ Analyse "pcap3.pcap" and recover Christmas!
 
 - export objects HTML
 
-![[export.png]]
+![](export.png)
 
 - tried to open the blog thing but it did not work, so I unzipped the downlaoded file.
 
-![[unzipeed.png]]
+![](unzipeed.png)
 
 - Got the answer.
 
@@ -454,7 +454,7 @@ A: Rubber ducky
 
 ### Additional Scan Types
 
-- ![[nmapscan.png]]
+- ![](nmapscan.png)
 
 ### Defending against Nmap Scans
 
@@ -470,7 +470,7 @@ A: 1998
 
 2. Using Nmap on MACHINE_IP , what are the port numbers of the three services running?  (Please provide your answer in ascending order/lowest -> highest, separated by a comma)
 
-![[scaaan.png]]
+![](scaaan.png)
 
 A: 80,2222,3389
 
@@ -482,7 +482,7 @@ Experiment with different scan settings such as-A and -sV whilst comparing the o
 
 - use -O or just -sV to detect the most probable OS
 
-![[fingerprint.png]]
+![](fingerprint.png)
 
 A: Ubuntu
 
@@ -490,11 +490,11 @@ A: Ubuntu
 
 - Used an `-A` scan and got the http-title without using `-script`
 
-![[usedfor.png]]
+![](usedfor.png)
 
 - But if we were to do it with a script, we would use `http-title`: 
 
-![[cleanly.png]]
+![](cleanly.png)
 
 A: blog
 
@@ -511,7 +511,7 @@ protocols available. Whilst this protocol is unencrypted, it can be accessed thr
 
 - FTP uses two connections when transferring data, as illustrated below:
 
-![[ftp.png]]
+![](ftp.png)
 
 - The standard for these two connections are the two ports:
 
@@ -549,7 +549,7 @@ protocols available. Whilst this protocol is unencrypted, it can be accessed thr
 
 - connect to the ftp server in anonymous mode, run a ls command and then figure out the only directory I am allowed to go into
 
-![[ftpin.png]]
+![](ftpin.png)
 
 A: public
 
@@ -557,7 +557,7 @@ A: public
 
 - another ls command in the public directory gets us the answer
 
-![[backuppp.png]]
+![](backuppp.png)
 
 A: backup.sh
 
@@ -565,7 +565,7 @@ A: backup.sh
 
 - I downloaded the file using `get` and cat it on my own machine to get the name of the movie
 
-![[getshooping.png]]
+![](getshooping.png)
 
 A: The Polar Express
 
@@ -577,7 +577,7 @@ A: The Polar Express
 
 - set up a nc listener `nc -lnvp <local_port>` and waited one minute to get a shell.
 
-![[reversseee.png]]
+![](reversseee.png)
 
 A: THM{even_you_can_be_santa}
 
@@ -593,7 +593,7 @@ A: THM{even_you_can_be_santa}
 
 - Protocols such as SMB send "requests" and "responses" when communicating with each other, as illustrated below:
 
-![[smb.jpg]]
+![](smb.jpg)
 
 - What makes Samba so popular and useful is that it removes the differences between these two protocols, meaning that the two operating systems can now share resources including files amongst each other. 
 
@@ -619,11 +619,11 @@ A: THM{even_you_can_be_santa}
 
 	- If successful, this means that the share requires no authentication and we are now logged in.
 
-![[lololoo.png]]
+![](lololoo.png)
 
 - Useful Samba commands:
 
-![[sambaaacommd.png]]
+![](sambaaacommd.png)
 
 ### Questions
 
@@ -639,7 +639,7 @@ A: 3
 
 `enum4linux -S -r <ip>`
 
-![[sambashares.png]]
+![](sambashares.png)
 
 A: 4
 
@@ -649,7 +649,7 @@ A: 4
 
 `smbclient //<ip>/tbfc-santa`
 
-![[santtaa.png]]
+![](santtaa.png)
 
 A: tbfc-santa
 
@@ -657,7 +657,7 @@ A: tbfc-santa
 
 - an ls command
 
-![[jingle.png]]
+![](jingle.png)
 
 A: jingle-tunes
 
@@ -689,7 +689,7 @@ A: jingle-tunes
 
 - Executing a rev. shell:
 
-![[reverseeee.png]]
+![](reverseeee.png)
 
 - Executing the `whoami` command allows us to see what the name of the account that we are executing commands as. 
 
@@ -764,7 +764,7 @@ A: jingle-tunes
 
 - Transfering a file through `netcat`:
 
-![[netcattransferfile.png]]
+![](netcattransferfile.png)
 
 > How to cover our tracks?
 
@@ -805,7 +805,7 @@ Use this executable to launch a system shell as root.
 
 - ran `/bin/bash -p` to priv esc.
 
-![[privescroot.png]]
+![](privescroot.png)
 
 A: thm{2fb10afe933296592}
 
@@ -813,11 +813,11 @@ A: thm{2fb10afe933296592}
 
 - Known as information disclosure, these nuggets of information are handed to us by the server through error messages such as in the following screenshot, HTTP headers or even on the website itself.
 
-![[apachee.png]]
+![](apachee.png)
 
 - An attacker can use knowledgebases such as [Rapid7](http://rapid7.com/), [AttackerKB](https://attackerkb.com/), [MITRE](https://cve.mitre.org/cve/) or [Exploit-DB](http://exploit-db.com/) to look for vulnerabilities associated with the version number of that application.
 
-![[cve.png]]
+![](cve.png)
 
 - **The Common Gateway Interface** or **CGI** for short is a standard means of communicating and processing data between a client such as a web browser to a web server.
 
@@ -832,13 +832,13 @@ A: thm{2fb10afe933296592}
 
 1. What is the version number of the web server?
 
-![[nmapscaaaan.png]]
+![](nmapscaaaan.png)
 
 A: 9.0.17
 
 2. What CVE can be used to create a Meterpreter entry onto the machine? (Format: CVE-XXXX-XXXX)
 
-![[apachecve.png]]
+![](apachecve.png)
 
 A: [CVE-2019-0232](http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-0232)
 
@@ -850,7 +850,7 @@ Set your Metasploit settings appropriately and gain a foothold onto the deployed
 
 - `search Apache cgi`
 
-![[msfexploit.png]]
+![](msfexploit.png)
 
 - set the RHOSTS as the ip address of the vuln machine URI to /cgi-bin/elfwhacker.bat
 
@@ -873,7 +873,7 @@ Looking for a challenge? Try to find out some of the vulnerabilities present to 
 
 - did a stealth scan because the usual one takes some time to run
 
-![[nmaaaap.png]]
+![](nmaaaap.png)
 
 A: telnet
 
@@ -893,13 +893,13 @@ A: clauschristmas
 	- `uname -a`
 	- `cat /etc/issue`
 
-- ![[linuxinfo.png]]
+- ![](linuxinfo.png)
 
 A: ubuntu 12.04
 
 4. Who got here first?
 
-- ![[cookiesss.png]]
+- ![](cookiesss.png)
 
 A: Grinch
 
@@ -917,7 +917,7 @@ A: firefart
 
 - downlaoded the otiginal DirtyC0w from exploitDB, used a python http server to get it on the machine, compiled and ran it. Switched to the newly created user, go to the root directory and then follow Grinch's instructions.
 
-![[endgame.png]]
+![](endgame.png)
 
 A: 8b16f00dd3b51efadb02c1df7f8427cc
 
@@ -957,13 +957,13 @@ A: Chicago
 
 3. Rudolph mentions Robert.  Can you use Google to tell me Robert's last name?
 
-![[rudolphcreat.png]]
+![](rudolphcreat.png)
 
 A: May
 
 4. On what other social media platform might Rudolph have an account?
 
-![[twitter.png]]
+![](twitter.png)
 
 A: Twitter
 
@@ -987,7 +987,7 @@ A: Bachelorette
 
 - googled it and found that it is in chicago
 
-![[chigaco.png]]
+![](chigaco.png)
 
 A: Chigago
 
@@ -999,7 +999,7 @@ A: Chigago
 
 - I wget it and ran `exiftool` on it
 
-![[exiftoool.png]]
+![](exiftoool.png)
 
 - to get the answer, you may want to upload the image to http://exif.regex.info/exif.cgi
 
@@ -1019,7 +1019,7 @@ A: spygame
 
 - we know from his tweets that he stays in Marriott hotel. 
 
-![[rudolfhotel.png]]
+![](rudolfhotel.png)
 
 A: 540
 
@@ -1067,7 +1067,7 @@ A: Pass by reference
 
 1. What is the port number for the web server?
 
-![[nmapscanlol.png]]
+![](nmapscanlol.png)
 
 A: 80
 
@@ -1092,7 +1092,7 @@ for i in range (1,100,2):
 print ("Ended")
 ```
 
-![[pythonresponse.png]]
+![](pythonresponse.png)
 
 A: Winter Wonderland, Hyde Park, London.
 
@@ -1116,7 +1116,7 @@ A: 57
 
 - `pdf @main`, where pdf means print disassembly function.
 
-![[registeeeers.png]]
+![](registeeeers.png)
 
 - The general formula for working through something like this is:
 
@@ -1128,7 +1128,7 @@ A: 57
 
 ### Questions
 
-![[assem.png]]
+![](assem.png)
 
 1. What is the value of local_ch when its corresponding movl instruction is called (first if multiple)?
 
@@ -1156,15 +1156,15 @@ A: 6
 
 2. What is Santa's password?
 
-![[remminaa.png]]
+![](remminaa.png)
 
-![[santapass.png]]
+![](santapass.png)
 
 A: santapassword321
 
 3. Now that you've retrieved this password, try to login...What is the flag?
 
-![[flagagag.png]]
+![](flagagag.png)
 
 A: thm{046af}
 
@@ -1219,11 +1219,11 @@ look like this: `http://list.hohoho:8080/search.php?name=Santa`
 
 - now we can log in with the username: Santa and pass: Be good for goodness sake!
 
-![[santapasdasd.png]]
+![](santapasdasd.png)
 
 - we get redirected here
 
-![[adminoanel.png]] 
+![](adminoanel.png) 
 
 - deleting the naughty list gives us the flag.
 
@@ -1303,7 +1303,7 @@ A: THM{EVERYONE_GETS_PRESENTS}
 
 - displayed all of the hidden files and got the content of the one about the elf
 
-![[Screenshot at 2022-04-22 08-27-49.png]]
+![](Screenshot at 2022-04-22 08-27-49.png)
 
 A: 2 front teeth
 
@@ -1315,7 +1315,7 @@ A: 2 front teeth
 
 - output the contents of that file
 
-![[Screenshot at 2022-04-22 08-32-59.png]]
+![](Screenshot at 2022-04-22 08-32-59.png)
 
 A: Scrooged
 
@@ -1323,25 +1323,25 @@ A: Scrooged
 
 - You have to go to 'c:\Windows\System32' and search there.
 
-![[Screenshot at 2022-04-22 08-51-35.png]]
+![](Screenshot at 2022-04-22 08-51-35.png)
 
 A: 3lfthr3e
 
 4. How many words does the first file contain?
 
-![[Screenshot at 2022-04-22 08-53-50.png]]
+![](Screenshot at 2022-04-22 08-53-50.png)
 
 A: 9999
 
 5. What 2 words are at index 551 and 6991 in the first file?
 
-![[Screenshot at 2022-04-22 08-54-49.png]]
+![](Screenshot at 2022-04-22 08-54-49.png)
 
 A: Red Ryder
 
 6. This is only half the answer. Search in the 2nd file for the phrase from the previous question to get the full answer. What does Elf 3 want? (use spaces when submitting the answer)
 
-![[Screenshot at 2022-04-22 08-57-32.png]]
+![](Screenshot at 2022-04-22 08-57-32.png)
 
 A: red ryder bb gun
 
@@ -1400,26 +1400,26 @@ A: red ryder bb gun
 
 1. Read the contents of the text file within the Documents folder. What is the file hash for db.exe?
 
-![[Screenshot at 2022-04-22 16-25-58.png]]
+![](Screenshot at 2022-04-22 16-25-58.png)
 
 A: 596690FFC54AB6101932856E6A78E3A1 
 
 2. What is the file hash of the mysterious executable within the Documents folder?
 
-![[Screenshot at 2022-04-22 16-26-30.png]]
+![](Screenshot at 2022-04-22 16-26-30.png)
 
 A: 5F037501FB542AD2D9B06EB12AED09F0 
 
 3. Using Strings find the hidden flag within the executable?
 
-![[Screenshot at 2022-04-22 16-27-51.png]]
+![](Screenshot at 2022-04-22 16-27-51.png)
 
 A: THM{f6187e6cbeb1214139ef313e108cb6f9}
 
 4. What is the flag that is displayed when you run the database connector file?
 
-![[Screenshot at 2022-04-22 16-33-20.png]]
-![[Screenshot at 2022-04-22 16-32-52.png]]
+![](Screenshot at 2022-04-22 16-33-20.png)
+![](Screenshot at 2022-04-22 16-32-52.png)
 
 A: THM{088731ddc7b9fdeccaed982b07c297c}
 
@@ -1437,19 +1437,19 @@ A: THM{088731ddc7b9fdeccaed982b07c297c}
 
 1. What is the password to the KeePass database?
 
-![[Screenshot at 2022-04-22 16-52-50.png]]
+![](Screenshot at 2022-04-22 16-52-50.png)
 
 A: thegrinchwashere
 
 2. What is the encoding method listed as the 'Matching ops'?
 
-![[Screenshot at 2022-04-22 16-58-19.png]]
+![](Screenshot at 2022-04-22 16-58-19.png)
 
 A: Base64
 
 3. What is the decoded password value of the Elf Server?
 
-![[Screenshot at 2022-04-22 16-59-18.png]]
+![](Screenshot at 2022-04-22 16-59-18.png)
 
 - it is hex encoded, as Cyberchef confirms
 
@@ -1457,7 +1457,7 @@ A: sn0wM4n!
 
 4. What is the decoded password value for ElfMail?
 
-![[Screenshot at 2022-04-22 17-00-22.png]]
+![](Screenshot at 2022-04-22 17-00-22.png)
 
 A: ic3Skating!
 
@@ -1469,13 +1469,13 @@ A: ic3Skating!
 
 - using the hint, I use the From Charcode Recipe twice, which gives me a github link
 
-![[Screenshot at 2022-04-22 17-07-22.png]]
+![](Screenshot at 2022-04-22 17-07-22.png)
 
-![[Screenshot at 2022-04-22 17-07-38.png]]
+![](Screenshot at 2022-04-22 17-07-38.png)
 
 - going to the link we can find the flag
 
-![[Screenshot at 2022-04-22 17-08-09.png]]
+![](Screenshot at 2022-04-22 17-08-09.png)
 
 A: THM{657012dcf3d1318dca0ed864f0e70535}
 
@@ -1524,7 +1524,7 @@ A: .grinch
 
 3. What is the name of the suspicious scheduled task?
 
-![[Screenshot at 2022-04-23 13-22-03.png]]
+![](Screenshot at 2022-04-23 13-22-03.png)
 
 A: opidsfsdf
 
@@ -1558,7 +1558,7 @@ A: 80, 65000
 
 - the one on port 80 is just thm's website, so I treid the other port found which redirected me to a different website
 
-![[Screenshot at 2022-04-23 21-38-37.png]]
+![](Screenshot at 2022-04-23 21-38-37.png)
 
 A: Light Cycle
 

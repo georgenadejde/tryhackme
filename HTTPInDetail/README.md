@@ -36,7 +36,7 @@ R: Secure
 
 - an URL instructs on how to access a resource on the internet
 
-![[url.png]]
+![](url.png)
 
 - URL components:
 	
@@ -92,7 +92,7 @@ R: GET
 
 ## HTTP Status Codes
 
-![[StatusCodes1.png]]
+![](StatusCodes1.png)
 
 - 100-199 -> Information Response
 - 200-299 -> Success
@@ -114,7 +114,7 @@ R: GET
 	- 500 - Internal Service Error
 	- 503 - Service Unavailable
 
-![[CommonStatusCodes.png]]
+![](CommonStatusCodes.png)
 
 ### Questions
 
@@ -185,7 +185,7 @@ R: Host
 
 - Example:
 
-![[cookie_flow.png]]
+![](cookie_flow.png)
 
 - Cookies can be used for many purposes but are most commonly used for website authentication. 
 

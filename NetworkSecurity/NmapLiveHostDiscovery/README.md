@@ -36,7 +36,7 @@ tags:
 
 - An Nmap scan usually goes through these steps:
 
-![[nmap1.png]]
+![](nmap1.png)
 
 ## Subnetworks
 
@@ -50,7 +50,7 @@ tags:
 
 	- a subnetwork, or simply a *subnet* has its own IP address range and is connected to a more extensive network via a router.
 
-![[subnetworks.png]]
+![](subnetworks.png)
 
 - Subnets with /16 have the subnet mask 255.255.0.0 and can have around 65k hosts.
 
@@ -112,7 +112,7 @@ nmap -sL TARGETS
 
 R: 10.10.12.8
 
-![[nmapex.png]]
+![](nmapex.png)
 
 2. How many IP addresses will Nmap scan if you provide the following range 10.10.0-255.101-125? 
 
@@ -128,11 +128,11 @@ R: 256 * 25 = 6400
 
 	- *TCP* and *UDP* from Transport Layer
 
-![[OSITCPIP.png]]
+![](OSITCPIP.png)
 
 ### Questions
 
-![[CTFs/TryHackMe/NetworkSecurity/NmapLiveHostDiscovery/Question.png]]
+![](CTFs/TryHackMe/NetworkSecurity/NmapLiveHostDiscovery/Question.png)
 
 Send a packet with the following:
 
@@ -267,7 +267,7 @@ R: -PE
 
 - privileged users don't need to complete the 3-way handshake even if the port is open
 
-![[wayhanshake.png]]
+![](wayhanshake.png)
 
 - however, unprivileged users have to complete the 3-way handshake if the port is open.
 
@@ -283,9 +283,9 @@ R: -PE
 
 - if the host is online, it will respond with *RST*, as the TCP packet with the ACK flag is not part of a connection.
 
-![[ssd.png]]
+![](ssd.png)
 
-![[example.png]]
+![](example.png)
 
 ### UDP Ping
 
@@ -293,13 +293,13 @@ R: -PE
 
 	- however, if we send one to a closed UDP port, we expect to get an **ICMP port unreachable packet**
 
-![[sdsa.png]]
+![](sdsa.png)
 
 - syntax: **-PU**
 
 ### Masscan
 
-![[masscan.png]]
+![](masscan.png)
 
 ### Questions
 
@@ -330,4 +330,4 @@ R: -PS23
 
 R: -R
 
-![[CTFs/TryHackMe/NetworkSecurity/NmapLiveHostDiscovery/recap.png]]
+![](CTFs/TryHackMe/NetworkSecurity/NmapLiveHostDiscovery/recap.png)

@@ -43,4 +43,4 @@ E.g.: command1 && command2
 
 - But command2 will execute only if command1 was successful.
 
-![[ShellOperators.png]]
+![](ShellOperators.png)

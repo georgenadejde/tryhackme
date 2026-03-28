@@ -16,7 +16,7 @@ tags:
 
 ## Finding a way around linux
 
-![[find_command_cheat_sheet.png]]
+![](find_command_cheat_sheet.png)
 
 ### Questions
 
@@ -61,7 +61,7 @@ volFlag{81726350827fe53g}
 
 ## Working with files
 
-![[working_with_files.png]]
+![](working_with_files.png)
 
 - Move mulltiple files into a directory:
 
@@ -104,11 +104,11 @@ cd -- -march\ folder/
 
 - Hash Craking using John The Ripper example:
 
-![[john_the_ripper_example.png]]
+![](john_the_ripper_example.png)
 
 - Hash identifier tool (hash-identifier or a modern alternative: [haiti](https://github.com/noraj/haiti):
 
-![[hashidentifier.png]]
+![](hashidentifier.png)
 
 ### Questions
 
@@ -181,11 +181,11 @@ john --show --format=Raw-MD4 hash1.txt
 
 - Encrypt:
 
- ![[gpg.png]]
+ ![](gpg.png)
 
  - Decrypt:
 
-![[gpgdecrypt.png]]
+![](gpgdecrypt.png)
 
 ### Questions
 
@@ -208,7 +208,7 @@ R: gpg history_logs.txt.gpg
 ```bash
 gpg2john [encrypted gpg file] > [filename of the hash you want to create]
 ```
-![[gpg2john.png]]
+![](gpg2john.png)
 
 ### Questions
 

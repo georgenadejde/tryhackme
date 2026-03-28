@@ -161,11 +161,11 @@ A: keys
 
 	- Vulnerability scan results (a simple listing of vulnerabilities)
 
-	![[Acunetix+sample+report.png]]
+	![](Acunetix+sample+report.png)
 	
 	- Findings summary 
 
-	![[findingsumartmary.png]]
+	![](findingsumartmary.png)
 	
 	- Full Formal Report: <https://github.com/hmaverickadams/TCM-Security-Sample-Pentest-Report>
 

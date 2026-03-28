@@ -90,7 +90,7 @@ R: *PIM*
 
 ### The Bell-La Padula Model
 
-![[Bell-LaPadula.png]]
+![](Bell-LaPadula.png)
 
 - Used to achieve *confidentiality*.
 
@@ -98,7 +98,7 @@ R: *PIM*
 
 - *Motto*: "no write down, no read up".
 
-![[Bell-LaPadula_Pro_Con.png]]
+![](Bell-LaPadula_Pro_Con.png)
 
 - Popular governmental or military organisations, because their members went through vetting.
 
@@ -107,7 +107,7 @@ R: *PIM*
 ### Biba Model
 
 
-![[Biba.png]]
+![](Biba.png)
 
 - equivalent for Bell-La Padula but it for the *integrity* of CIA.
 
@@ -115,7 +115,7 @@ R: *PIM*
 
 - users can only write to objects below their level and read objects higher than their level.
 
-![[Biba_Pro_Con.png]]
+![](Biba_Pro_Con.png)
 
 - used in org. where integrity is more important than confidentiality, for example in software develpment companies, where a developer only needs access to what is neccessary to its job, and not access to for ex, the databases.
 
@@ -155,11 +155,11 @@ Preparation -> Mitigations -> Reviews -> Identification
     - **STRIDE** (Spoofing identity, Tampering with data, Repudiation threats, Information disclosure, Denial of Service and Elevation of privileges) 
     - PASTA (Process for Attack Simulation and Threat Analysis)
 
-- ![[STRIDE_Principles.png]]
+- ![](STRIDE_Principles.png)
 
 - An incident is responded to by a **CSIRT** team (Computer Security Incident Response Team). To solve an incident, these steps are taken:
 
-![[Steps_for_solving_incident.png]]
+![](Steps_for_solving_incident.png)
 
 ### Questions:
 

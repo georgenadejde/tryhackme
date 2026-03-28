@@ -58,7 +58,7 @@ rule examplerule{
 
 	- if it exists, we are given the name of the rule: `examplerule`
 
-![[yara.png]]
+![](yara.png)
 
 ## Expanding on Yara Rules
 
@@ -82,13 +82,13 @@ rule examplerule{
 
 	- For example, say we wanted to search a directory for all files containing "Hello World!", we would create a rule such as below:
 
-![[TzxFGbd.png]]
+![](TzxFGbd.png)
 
 - Of course, we need a condition here to make the rule valid. 
 
 	- In this example, to make this string the condition, we need to use the variable's name. In this case, $hello_world:
 
-![[helloworld_checker_con11.png]]
+![](helloworld_checker_con11.png)
 
 - Essentially, if any file has the string "Hello World!" then the rule will match. 
 
@@ -96,13 +96,13 @@ rule examplerule{
 
 - use `any of them`:
 
-![[TGFw8sH.png]]
+![](TGFw8sH.png)
 
 ### Conditions
 
 - We have already used the true and any of them condition. Much like regular programming, you can use operators such as: <=, >=, !=.
 
-![[helloworld_checker.png]]
+![](helloworld_checker.png)
 
 - The rule will now:
 
@@ -113,11 +113,11 @@ rule examplerule{
 
 - To combine multiple conditions. Say if you wanted the rule to match if any .txt files with "Hello World!" is found, you can use a rule like below:
 
-![[jkADv0i.png]]
+![](jkADv0i.png)
 
 ### Anatomy of a Yara Rule
 
-![[1*gThGNPenpT-AS-gjr8JCtA.png]]
+![](1*gThGNPenpT-AS-gjr8JCtA.png)
 
 ## Yara Modules
 
@@ -177,7 +177,7 @@ Scenario: You are the security analyst for a mid-size law firm. A co-worker disc
 
 1. Scan file 1. Does Loki detect this file as suspicious/malicious or benign?
 
-![[loki1.png]]
+![](loki1.png)
 
 A: Suspicious 
 
@@ -203,7 +203,7 @@ A: 1
 
 7. Scan file 2. Does Loki detect this file as suspicious/malicious or benign?
 
-![[loki2.png]]
+![](loki2.png)
 
 A: benign
 
@@ -249,7 +249,7 @@ python3 yarGen.py -m /home/cmnatic/suspicious-files/file2 --excludegood -o /home
 
 1. From within the root of the suspicious files directory, what command would you run to test Yara and your Yara rule against file 2?
 
-![[loki3.png]]
+![](loki3.png)
 
 A: yara file2.yar file2/1ndex.php
 
@@ -269,7 +269,7 @@ A: yay
 
 5. What is the name of the variable for the string that it matched on?
 
-![[sdds.png]]
+![](sdds.png)
 
 A: Zepto
 
@@ -290,37 +290,37 @@ A: 700KB
 ### Tasks
 1. Enter the SHA256 hash of file 1 into Valhalla. Is this file attributed to an APT group? (Yay/Nay)
 
-![[file1.png]]
+![](file1.png)
 
 A: Yay
 
 2. Do the same for file 2. What is the name of the first Yara rule to detect file 2?
 
-![[file2val.png]]
+![](file2val.png)
 
 A: Webshell_b374k_rule1
 
 3. Examine the information for file 2 from Virus Total (VT). The Yara Signature Match is from what scanner?
 
-![[thora.png]]
+![](thora.png)
 
 A: THOR APT Scanner
 
 4. Enter the SHA256 hash of file 2 into Virus Total. Did every AV detect this as malicious? (Yay/Nay)
 
-![[virus.png]]
+![](virus.png)
 
 A: Nay
 
 5. Besides .PHP, what other extension is recorded for this file?
 
-![[asd.png]]
+![](asd.png)
 
 A: exe
 
 6. What JavaScript library is used by file 2?
 
-![[sads.png]]
+![](sads.png)
 
 A: zepto
 

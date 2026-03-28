@@ -85,7 +85,7 @@ R: 10
 	- each time the IP packet passes through a router, its TTL value is decremented by 1. 
 	- Initially, it leaves the system with a TTL value of 64; it reaches the target system with a TTL value of 60 after passing through 4 routers.
 
-![[e82c42dcfae78ac592a8d7843465d2d6.png]]
+![](e82c42dcfae78ac592a8d7843465d2d6.png)
 
 - However, *if the TTL reaches 0, it will be dropped, and an ICMP Time-to-Live exceeded would be sent to the original sender*. 
 
@@ -95,7 +95,7 @@ R: 10
 	- Consequently, this router will discard the packet and send an ICMP time exceeded in-transit error message. 
 	- Note that some routers are configured not to send such ICMP messages when discarding a packet.
 
-![[traceroute2.png]]
+![](traceroute2.png)
 
 - On Linux, traceroute will start by sending *UDP datagrams* within IP packets of *TTL being 1*. 
 
@@ -159,7 +159,7 @@ telnet IP PORT
 
 1. Start the attached VM from Task 3 if it is not already started. On the AttackBox, open the terminal and use the telnet client to connect to the VM on port 80. What is the name of the running server?
 
-![[tracerouteex.png]]
+![](tracerouteex.png)
 
 R: apache
 
@@ -183,7 +183,7 @@ nc IP PORT
 
 - Netcat flags:
 
-![[ncoptions.png]]
+![](ncoptions.png)
 
 - *port number less than 1024 need root privileges to listen on!!*
 
@@ -193,7 +193,7 @@ nc IP PORT
 
 R: 0.17
 
-![[nc.png]]
+![](nc.png)
 
 ## Recap 
 
@@ -203,4 +203,4 @@ R: 0.17
 
 	- Available scanners do this at much more advanced and sophisticated levels, as we will see in the next four rooms with nmap.
 
-![[CTFs/TryHackMe/ActiveRecon/recap.png]]
+![](CTFs/TryHackMe/ActiveRecon/recap.png)

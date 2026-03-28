@@ -66,7 +66,7 @@ R: CVE-2019-18634
 
 - Another way to find that switch would have been to *search the man page for the correct switch using grep*:
 
-![[asds.png]]
+![](asds.png)
 
 ### Questions
 

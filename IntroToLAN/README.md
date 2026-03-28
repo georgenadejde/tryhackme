@@ -23,7 +23,7 @@ Tags: #networking #subnetting #[arp](arp.md) #dhcp
 
 ### Star Topology
 
-![[star.png]]
+![](star.png)
 
 - Devices are individually connected via a central networking device, such as a *switch* or a *hub*
 
@@ -36,7 +36,7 @@ Tags: #networking #subnetting #[arp](arp.md) #dhcp
 
 ### Bus Topology
 
-![[bus.png]]
+![](bus.png)
 
 - Devices are connected on a single cable (**backbone**)
 
@@ -111,7 +111,7 @@ R:THM{TOPOLOGY_FLAWS}
 
 - Example of use case for subnetting:
 
-![[subnet22.png]]
+![](subnet22.png)
 
 - Subnetting is achieved by splitting up the number of hosts that can fit within the network, represented by a number called a subnet mask.
 
@@ -121,7 +121,7 @@ R:THM{TOPOLOGY_FLAWS}
 	- Identify the *host address*.
 	- Identify the *default gateway*.
 
-![[subnetting_spliting.png]]
+![](subnetting_spliting.png)
 
 - Benefits:
 	- Efficiency
@@ -174,7 +174,7 @@ R: default gateway.
 
 - When an ARP request is sent, a message is broadcasted to every other device found on a network by the device, asking whether or not the device's MAC address matches the requested IP address. If the device does have the requested IP address, an ARP reply is returned to the initial device to acknowledge this. The initial device will now remember this and store it within its cache (an ARP entry). 
 
-![[arp.png]]
+![](arp.png)
 
 ### Questions
 
@@ -201,7 +201,7 @@ R: IP Address
 
 - When a device has not been configured manually with an IP address, a request is made to discover a DHCP server (*DHCP Discover*). The DHCP sends a possible IP address the device could use (*DHCP Offer*). The device sends a reply confirming it wants that IP (*DHCP Request*) and lastly, the DHCP sends a reply acknowledging this has been completed and that the device can now use that IP address (*DHCP ACK*). 
 
-![[DHCP.png]]
+![](DHCP.png)
 
 ### Questions
 

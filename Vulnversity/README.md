@@ -15,11 +15,11 @@ tags:
 
 - *nmap* - tool used to discover hosts and services on a computer network. Options:
 
-![[nmap.png]]
+![](nmap.png)
 
 - *GoBuster* - fast directory discovery tool (what we might use to upload a shell to)
 
-![[GoBusterFlags.png]]
+![](GoBusterFlags.png)
 
 - Used GoBuster to find a subdomain /internal where you can upload files.
 - Used Burp to see what kind of files we can upload: .phtml

@@ -110,4 +110,4 @@ add-apt-repository
 
  - In /var/log we can see a lot of interesting stuff. In /var/log/apache we may see access or error logs, which can tell what user accessed what file. 
 
-![[CRON.png]]
+![](CRON.png)

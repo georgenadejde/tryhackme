@@ -51,7 +51,7 @@ R: OSINT
 
 1. What is the directory in the robots.txt that isn't allowed to be viewed by web crawlers?
 
-![[ss1.png]]
+![](ss1.png)
 
 R: staff-portal
 
@@ -59,7 +59,7 @@ R: staff-portal
 
 - favicon is a small icon displayed in the browser's address bar or tab used for branding a website.
 
-![[favicon.png]]
+![](favicon.png)
 
 - sometimes when a framework is used to build a website, a favicon is left over and so we can figure out the framework that was used in building that website.
 
@@ -71,19 +71,19 @@ R: staff-portal
 
 - Viewed the source and got the path to the favicon:
 
-![[favi1.png]]
+![](favi1.png)
 
 - Used the following command to get the md5 of the favicon: 
 
-![[favi2.png]]
+![](favi2.png)
 
 - Got the following md5:
 
-![[favi3.png]]
+![](favi3.png)
 
 - Searched on the md5 databses of favicons and got the result:
 
-![[favi4.png]]
+![](favi4.png)
 
 R: cgiirc
 
@@ -97,7 +97,7 @@ R: cgiirc
 
 1. What is the path of the secret area that can be found in the sitemap.xml file? 
 
-![[sitemap.png]]
+![](sitemap.png)
 
 R: /s3cr3t-area
 
@@ -111,7 +111,7 @@ R: /s3cr3t-area
 
 1. What is the flag value from the X-FLAG header? 
 
-![[headers.png]]
+![](headers.png)
 
 R: THM{HEADER_FLAG}
 
@@ -125,11 +125,11 @@ R: THM{HEADER_FLAG}
 
 - Navigate to the framwork login page we get the following clues:
 
-![[doc.png]]
+![](doc.png)
 
 - We login with the credentials given and we get the flag:
 
-![[framework.png]]
+![](framework.png)
 
 R: THM{CHANGE_DEFAULT_CREDENTIALS}
 
@@ -137,7 +137,7 @@ R: THM{CHANGE_DEFAULT_CREDENTIALS}
 
 - OSINT -> freely available external tools
 
-![[GoogleDorking.png]]
+![](GoogleDorking.png)
 
 ### Questions
 
@@ -196,21 +196,21 @@ R: s3.amazonaws.com
 
 - ffuf:
 
-![[ffuf.png]]
+![](ffuf.png)
 
 - dirb:
 
-![[dirb.png]]
+![](dirb.png)
 
 - gobuster:
 
-![[gobuster.png]]	
+![](gobuster.png)	
 
 ### Questions
 
 - Used dirb to search for directories and files in the given domain:
 
-![[CTFs/TryHackMe/ContentDiscovery/question.png]]
+![](CTFs/TryHackMe/ContentDiscovery/question.png)
 
 1. What is the name of the directory beginning "/mo...." that was discovered?
 
