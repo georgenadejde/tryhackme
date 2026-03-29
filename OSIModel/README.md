@@ -20,7 +20,7 @@ tags: osi
 - At every individual layer that data travels through, specific processes take place, and pieces of information are added to this data, which is what we'll come to discuss in the upcoming tasks within this room. 
 	- However, for now, we only need to understand that this process is called encapsulation and what the OSI model looks like in the diagram below:
 
-![](Pasted%20image%2020230202110847.png)
+![](Pasted image 20230202110847.png)
 
 ### Questions
 
@@ -45,7 +45,7 @@ A: encapsulation
 - Everyday applications such as email clients, browsers, or file server browsing software such as FileZilla provide a friendly, **G**raphical **U**ser **I**nterface (**GUI**) for users to interact with data sent or received. 
 	- Other protocols include **DNS** (**D**omain **N**ame **S**ystem), which is how website addresses are translated into IP addresses.
 
-![](Pasted%20image%2020230202111129.png)
+![](Pasted image 20230202111129.png)
 
 ### Questions
 

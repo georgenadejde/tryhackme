@@ -50,7 +50,7 @@ What type of firewall is Windows Defender Firewall?
 	- After gaining control over one target system, the attacker has achieved their objectives. One example objective is Data Exfiltration (stealing target’s data).
 
 
-![](Pasted%20image%2020240905184002.png)
+![](Pasted image 20240905184002.png)
 
 ### Questions
 

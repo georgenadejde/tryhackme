@@ -13,21 +13,21 @@ tags:
 
  What's the Administrator's email address?
 
-![](Pasted%20image%2020240927124219.png)
+![](Pasted image 20240927124219.png)
 
 	`A: admin@juice-sh.op`
 
 What parameter is used for searching?
 
-![](Pasted%20image%2020240927124354.png)
+![](Pasted image 20240927124354.png)
 
 	`A:q `
 
  What show does Jim reference in his review?
 
-![](Pasted%20image%2020240927124505.png)
+![](Pasted image 20240927124505.png)
 
-![](Pasted%20image%2020240927125150.png)
+![](Pasted image 20240927125150.png)
 
 `A: Star Trek`
 
@@ -52,7 +52,7 @@ Log into the administrator account!
 - Intercept the request and change the email to `' or 1=1--`
 - It will log you in as admin
 
-![](Pasted%20image%2020240927133549.png)
+![](Pasted image 20240927133549.png)
 
 	`A:`
 

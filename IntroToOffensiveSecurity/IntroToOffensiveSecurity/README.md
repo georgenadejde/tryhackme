@@ -39,20 +39,20 @@ When you've transferred money to your account, go back to your bank account page
 
 - Used `gobuster` on the given website to find the hidden pages:
 
-![](../../../Pasted%20image%2020221231231651.png)
+![](Pasted image 20221231231651.png)
 
 - We found two directories: `/images` and `/bank-transfer`. 
 	- The latter seems more interesting
 - Let's access that hidden directory using a browser:
 
-![](../../../Pasted%20image%2020221231232059.png)
+![](Pasted image 20221231232059.png)
 
 - We send 2000 USD dollars from the account 2276 to ours, 8881:
 
-![](../../../Pasted%20image%2020221231232307.png)
+![](Pasted image 20221231232307.png)
 
 - Going back to our account page, we can see the transfer from the bank stuff and the flag:
 
-![](../../../Pasted%20image%2020221231232446.png)
+![](Pasted image 20221231232446.png)
 
 A: BANK-HACKED

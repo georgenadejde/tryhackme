@@ -234,4 +234,4 @@ R: 8888
 
 ## Recap
 
-![](CTFs/TryHackMe/PassiveRecon/Recap.png)
+![](Recap.png)

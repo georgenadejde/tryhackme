@@ -132,7 +132,7 @@ R: 256 * 25 = 6400
 
 ### Questions
 
-![](CTFs/TryHackMe/NetworkSecurity/NmapLiveHostDiscovery/Question.png)
+![](Question.png)
 
 Send a packet with the following:
 
@@ -330,4 +330,4 @@ R: -PS23
 
 R: -R
 
-![](CTFs/TryHackMe/NetworkSecurity/NmapLiveHostDiscovery/recap.png)
+![](recap.png)

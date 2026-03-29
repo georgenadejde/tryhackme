@@ -94,7 +94,7 @@ Which tab **Ctrl + Shift + P** will switch us to?
 
 ## Options
 
-![](Pasted%20image%2020240919143423.png)
+![](Pasted image 20240919143423.png)
 
 ### Questions
 
@@ -112,7 +112,7 @@ What is the name of the sub-category which allows you to change the keybindings 
 
 If we have uploaded Client-Side TLS certificates, can we override these on a per-project basis (yea/nay)?
 
-![](Pasted%20image%2020240919143814.png)
+![](Pasted image 20240919143814.png)
 
 	`A: yea`
 
@@ -124,7 +124,7 @@ If we have uploaded Client-Side TLS certificates, can we override these on a per
 	- The requests appear in the Proxy tab, allowing for further actions such as forwarding, dropping, editing, or sending them to other Burp modules. 
 	- To disable the intercept and allow requests to pass through the proxy without interruption, click the `Intercept is on` button.
 
-![](Pasted%20image%2020240919144403.png)
+![](Pasted image 20240919144403.png)
 
 - **Capture and Logging:** 
 	- Burp Suite captures and logs requests made through the proxy by default, even when the interception is turned off. 
@@ -135,7 +135,7 @@ If we have uploaded Client-Side TLS certificates, can we override these on a per
 
 ![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/8d5388b41dc847d2af38acf7ef4b116c.png)
 
-![](Pasted%20image%2020240919145052.png)
+![](Pasted image 20240919145052.png)
 
 
 ## Site Map and Issue Definitions
@@ -166,7 +166,7 @@ If we have uploaded Client-Side TLS certificates, can we override these on a per
 
 What is the flag you receive after visiting the unusual endpoint?
 
-![](Pasted%20image%2020240919150102.png)
+![](Pasted image 20240919150102.png)
 
 	`A: THM{NmNlZTliNGE1MWU1ZTQzMzgzNmFiNWVk}`
 
@@ -235,10 +235,10 @@ What is the flag you receive after visiting the unusual endpoint?
 
 - Make a request by putting legitimate data in the support form and then intercept the request with Burp
 
-![](Pasted%20image%2020240919151819.png)
+![](Pasted image 20240919151819.png)
 
 - We can then change the email we put in initially with our payload `<script>alert("Succ3ssful XSS")</script>`, URL encode it using `CTRL + U` and then forward the request(s) to the website's server
 
-![](Pasted%20image%2020240919152041.png)
+![](Pasted image 20240919152041.png)
 
-![](Pasted%20image%2020240919152309.png)
+![](Pasted image 20240919152309.png)

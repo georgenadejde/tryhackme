@@ -52,19 +52,19 @@ tags:
   
 What is McGreedy's personal email address?
 
-![](../../../49_3_2023_14-21.png)
+![](49_3_2023_14-21.png)
 
 A: t.mcgreedy@antarcticrafts.thm
 
 What is the password for the IT server room door?  
 
-![](../../../49_3_2023_14-32.png)
+![](49_3_2023_14-32.png)
 
 A: BtY2S02
 
 What is the name of McGreedy's secret project?
 
-![](../../../49_3_2023_14-38.png)
+![](49_3_2023_14-38.png)
 
 A: Purple Snow
 

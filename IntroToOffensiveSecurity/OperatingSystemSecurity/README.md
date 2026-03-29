@@ -64,7 +64,7 @@ Based on the top 7 passwords, let’s try to find Johnny’s password. What is t
 
 Once you are logged in as Johnny, use the command `history` to check the commands that Johnny has typed. We expect Johnny to have mistakenly typed the `root` password instead of a command. What is the root password?
 
-![](Pasted%20image%2020240905174226.png)
+![](Pasted image 20240905174226.png)
 
 	`A: happyHack!NG`
 

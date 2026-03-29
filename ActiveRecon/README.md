@@ -203,4 +203,4 @@ R: 0.17
 
 	- Available scanners do this at much more advanced and sophisticated levels, as we will see in the next four rooms with nmap.
 
-![](CTFs/TryHackMe/ActiveRecon/recap.png)
+![](recap.png)

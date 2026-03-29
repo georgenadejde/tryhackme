@@ -210,7 +210,7 @@ R: s3.amazonaws.com
 
 - Used dirb to search for directories and files in the given domain:
 
-![](CTFs/TryHackMe/ContentDiscovery/question.png)
+![](question.png)
 
 1. What is the name of the directory beginning "/mo...." that was discovered?
 

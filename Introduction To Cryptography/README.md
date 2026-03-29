@@ -34,7 +34,7 @@ You can guess that it is a quote. Who said it?
 
 - Paste the quote on [quipqiup](https://www.quipqiup.com/)
 
-![](Pasted%20image%2020240906150440.png)
+![](Pasted image 20240906150440.png)
 
 
 	`A: Miyamoto Musashi`
@@ -144,19 +144,19 @@ You can guess that it is a quote. Who said it?
 
 - Decrypt the file `quote01` encrypted (using AES256) with the key `s!kR3T55` using `gpg`. What is the third word in the file?
 
-![](Pasted%20image%2020240906154749.png)
+![](Pasted image 20240906154749.png)
 
 	`A: waste`
 
 - Decrypt the file `quote02` encrypted (using AES256-CBC) with the key `s!kR3T55` using `openssl`. What is the third word in the file?
 
-![](Pasted%20image%2020240906155024.png)
+![](Pasted image 20240906155024.png)
 
 	`A: science`
 
 Decrypt the file `quote03` encrypted (using CAMELLIA256) with the key `s!kR3T55` using `gpg`. What is the third word in the file?
 
-![](Pasted%20image%2020240906155217.png)
+![](Pasted image 20240906155217.png)
 
 	`A: understand`
 
@@ -178,7 +178,7 @@ Decrypt the file `quote03` encrypted (using CAMELLIA256) with the key `s!kR3T
 
 - RSA got its name from its inventors, Rivest, Shamir, and Adleman. It works as follows:
 
-![](Pasted%20image%2020240906160946.png)
+![](Pasted image 20240906160946.png)
 
 - RSA security relies on factorization being a hard problem. 
 	- It is easy to multiply _p_ by _q_; however, it is time-consuming to find _p_ and _q_ given _N_. 
@@ -186,7 +186,7 @@ Decrypt the file `quote03` encrypted (using CAMELLIA256) with the key `s!kR3T
 - It is important to note that RSA relies on secure random number generation, as with other asymmetric encryption algorithms. 
 	- If an adversary can guess _p_ and _q_, the whole system would be considered insecure.
 
-![](Pasted%20image%2020240906161214.png)
+![](Pasted image 20240906161214.png)
 
 - Generate RSA key pair:
 	- `openssl genrsa -out private-key.pem 2048`: With `openssl`, we used `genrsa` to generate an RSA private key. Using `-out`, we specified that the resulting private key is saved as `private-key.pem`. We added `2048` to specify a key size of 2048 bits.
@@ -202,7 +202,7 @@ Decrypt the file `quote03` encrypted (using CAMELLIA256) with the key `s!kR3T
 
 Bob has received the file `ciphertext_message` sent to him from Alice. You can find the key you need in the same folder. What is the first word of the original plaintext?
 
-![](Pasted%20image%2020240906162000.png)
+![](Pasted image 20240906162000.png)
 
 	`A: Perception`
 
@@ -227,9 +227,9 @@ Take a look at Bob’s private RSA key. What is the last byte of _q_?
 - How can Alice and Bob agree on a secret key in such a setting? 
 	- One way would be to use the Diffie-Hellman key exchange, which allows the exchange of a secret over a public channel.
 
-![](Pasted%20image%2020240909163855.png)
+![](Pasted image 20240909163855.png)
 
-![](Pasted%20image%2020240909164104.png)
+![](Pasted image 20240909164104.png)
 
 
 - We can use `openssl` to generate Diffie-Hellman parameters; we need to specify the option `dhparam` to indicate that we want to generate Diffie-Hellman parameters along with the specified size in bits, such as `2048` or `4096`.
@@ -275,7 +275,7 @@ What is the prime number’s last byte (least significant byte)?
 	- inner pad (ipad) a constant string. (RFC2104 uses the byte `0x36` repeated B times. The value of B depends on the chosen hash function.)
 	- outer pad (opad) a constant string. (RFC2104 uses the byte `0x5C` repeated B times.)
 
-![](Pasted%20image%2020240909170906.png)
+![](Pasted image 20240909170906.png)
 
 - To calculate the HMAC on a Linux system, you can use any of the available tools such as `hmac256` (or `sha224hmac`, `sha256hmac`, `sha384hmac`, and `sha512hmac`, where the secret key is added after the option `--key`)
 
@@ -305,7 +305,7 @@ Using SHA256 and the key `3RfDFz82`, what is the HMAC of `order.txt`?
 - the key exchange we described earlier (i.e. Diffie-Hellman) is not immune to Man-in-the-Middle (MITM) attack. 
 	- The reason is that Alice has no way of ensuring that she is communicating with Bob, and Bob has no way of ensuring that he is communicating with Alice when exchanging the secret key.
 
-![](Pasted%20image%2020240910133043.png)
+![](Pasted image 20240910133043.png)
 
 - This susceptibility necessitates some mechanism that would allow us to confirm the other party’s identity. 
 	- This brings us to **Public Key Infrastructure (PKI)**.

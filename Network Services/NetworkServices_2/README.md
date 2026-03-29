@@ -96,7 +96,7 @@ What is the latest version of NFS? [released in 2016, but is still up to date as
 
 Conduct a thorough port scan scan of your choosing, how many ports are open?
 
-![](Pasted%20image%2020240913141619.png)
+![](Pasted image 20240913141619.png)
 
 	`A: 7`
 
@@ -106,7 +106,7 @@ Which port contains the service we're looking to enumerate?
 
 Now, use /usr/sbin/showmount -e [IP] to list the NFS shares, what is the name of the visible share?
 
-![](Pasted%20image%2020240913142013.png)
+![](Pasted image 20240913142013.png)
 
 	`A: /home`
 
@@ -156,13 +156,13 @@ Can we log into the machine using`ssh -i <key-file> <username>@<ip> `? (Y/N)
 
 - we can use SCP with the command `scp -i id_rsa cappucino@10.10.18.84:/bin/bash ~/Downloads/bash` to download the executable onto our attacking machine.
 
-![](Pasted%20image%2020240913144228.png)
+![](Pasted image 20240913144228.png)
 
 ### Questions
 
 - Now, we're going to add the SUID bit permission to the bash executable we just copied to the share using "`sudo chmod +[permission] bash`". What letter do we use to set the SUID bit set using chmod?
 
-![](Pasted%20image%2020240913144543.png)
+![](Pasted image 20240913144543.png)
 
 	`A: s`
 
@@ -175,9 +175,9 @@ Can we log into the machine using`ssh -i <key-file> <username>@<ip> `? (Y/N)
 
 - `./bash -p` -> persist the permission
 
-![](Pasted%20image%2020240913144931.png)
+![](Pasted image 20240913144931.png)
 
-![](Pasted%20image%2020240913145346.png)
+![](Pasted image 20240913145346.png)
 
 	`A: THM{nfs_got_pwned}`
 
@@ -199,7 +199,7 @@ Can we log into the machine using`ssh -i <key-file> <username>@<ip> `? (Y/N)
 		- This means that changes to the inbox made on one computer, over IMAP, will persist if you then synchronise the inbox from another computer. 
 	- The POP/IMAP server is responsible for fulfiling this process.
 
-![](Pasted%20image%2020240913150413.png)
+![](Pasted image 20240913150413.png)
 
 1. The mail user agent, which is either your email client or an external program. connects to the SMTP server of your domain, e.g. smtp.google.com. This initiates the SMTP handshake. This connection works over the SMTP port- which is usually 25. Once these connections have been made and validated, the SMTP session starts.  
 
@@ -263,7 +263,7 @@ Can a Windows machine run an SMTP server? (Y/N)
 
 - First, lets run a port scan against the target machine, same as last time. What port is SMTP running on?
 
-![](Pasted%20image%2020240918105105.png)
+![](Pasted image 20240918105105.png)
 
 
 	`A: 25`
@@ -275,13 +275,13 @@ Can a Windows machine run an SMTP server? (Y/N)
 
 - Let's search for the module "smtp_version", what's it's full module name?  
 
-![](Pasted%20image%2020240918105944.png)
+![](Pasted image 20240918105944.png)
 
 	`A: auxiliary/scanner/smtp/smtp_version `
 
 Great, now- select the module and list the options. How do we do this?  
 
-![](Pasted%20image%2020240918110256.png)
+![](Pasted image 20240918110256.png)
 
 	`A: options`
 
@@ -291,19 +291,19 @@ Have a look through the options, does everything seem correct? What is the optio
 
 Set that to the correct value for your target machine. Then run the exploit. What's the system mail name?  
 
-![](Pasted%20image%2020240918110521.png)
+![](Pasted image 20240918110521.png)
 
 	`A: polosmtp.home`
 
 What Mail Transfer Agent (MTA) is running the SMTP server? This will require some external research.  
 
-![](Pasted%20image%2020240918110952.png)
+![](Pasted image 20240918110952.png)
 
 	`A: Postfix`
 
 Good! We've now got a good amount of information on the target system to move onto the next stage. Let's search for the module "_smtp_enum_", what's it's full module name?
 
-![](Pasted%20image%2020240918111051.png)
+![](Pasted image 20240918111051.png)
 
 	`A: auxiliary/scanner/smtp/smtp_enum`
 
@@ -313,7 +313,7 @@ Seclists is an amazing collection of wordlists. If you're running Kali or Parrot
 
 What option do we need to set to the wordlist's path?  
 
-![](Pasted%20image%2020240918111209.png)
+![](Pasted image 20240918111209.png)
 
 	`A: USER_FILE`
 
@@ -323,13 +323,13 @@ Once we've set this option, what is the other essential paramater we need to set
 
 Okay! Now that's finished, what username is returned?
 
-![](Pasted%20image%2020240918111456.png)
+![](Pasted image 20240918111456.png)
 
 	`A: administrator`
 
 ## Exploiting SMTP
 
-![](Pasted%20image%2020240918111739.png)
+![](Pasted image 20240918111739.png)
 ### Questions
 
 
@@ -337,7 +337,7 @@ What is the password of the user we found during our enumeration stage?
 
 - `hydra -t 16 -l administrator -P /usr/share/wordlists/rockyou.txt -vV 10.10.103.238 ssh`
 
-![](Pasted%20image%2020240918112200.png)
+![](Pasted image 20240918112200.png)
 
 	`A: alejandro`
 
@@ -345,7 +345,7 @@ Great! Now, let's SSH into the server as the user, what is contents of smtp.txt
 
 - `ssh administrator@<ip>`
 
-![](Pasted%20image%2020240918112307.png)
+![](Pasted image 20240918112307.png)
 
 	`A: THM{who_knew_email_servers_were_c00l?}`
 
@@ -391,7 +391,7 @@ What major social network uses MySQL as their back-end database? This will requi
 
 As always, let's start out with a port scan, so we know what port the service we're trying to attack is running on. What port is MySQL using?
 
-![](Pasted%20image%2020240918113710.png)
+![](Pasted image 20240918113710.png)
 
 	`A: 3306`
 
@@ -402,19 +402,19 @@ We're going to be using the "mysql_sql" module.
 
 Search for, select and list the options it needs. What three options do we need to set? (in descending order).
 
-![](Pasted%20image%2020240918114229.png)
+![](Pasted image 20240918114229.png)
 
 	`A: PASSWORD/RHOSTS/USERNAME `
 
 Run the exploit. By default it will test with the "select version()" command, what result does this give you?
 
-![](Pasted%20image%2020240918114413.png)
+![](Pasted image 20240918114413.png)
 
 	`A: 5.7.29-0ubuntu0.18.04.1 `
 
 Great! We know that our exploit is landing as planned. Let's try to gain some more ambitious information. Change the "sql" option to "show databases". how many databases are returned?
 
-![](Pasted%20image%2020240918114608.png)
+![](Pasted image 20240918114608.png)
 
 	`A: 4`
 
@@ -446,7 +446,7 @@ Awesome, you have now dumped the tables, and column names of the whole database.
 
 Again, I'll let you take it from here. Set the relevant options, run the exploit. What non-default user stands out to you?  
 
-![](Pasted%20image%2020240918115410.png)
+![](Pasted image 20240918115410.png)
 
 	`A: carl`
 
@@ -458,7 +458,7 @@ What is the user/hash combination string?
 
 Now, we need to crack the password! Let's try John the Ripper against it using: "_john hash.txt_" what is the password of the user we found?  
 
-![](Pasted%20image%2020240918115712.png)
+![](Pasted image 20240918115712.png)
 
 	`A: doggie`
 
@@ -466,6 +466,6 @@ Awesome. Password reuse is not only extremely dangerous, but extremely common. W
 
 What's the contents of MySQL.txt
 
-![](Pasted%20image%2020240918115851.png)
+![](Pasted image 20240918115851.png)
 
 	`A: THM{congratulations_you_got_the_mySQL_flag}`

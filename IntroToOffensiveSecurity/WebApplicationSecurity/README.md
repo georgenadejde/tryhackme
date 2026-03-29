@@ -33,7 +33,7 @@ tags:
 3. The product database returns the search results matching the provided keywords to the web application.
 4. The web application formats the results as a friendly web page and returns them to the user.
 
-![](Pasted%20image%2020240905164046.png)
+![](Pasted image 20240905164046.png)
 
 
 ### Questions
@@ -64,7 +64,7 @@ You noticed that the username and password are sent in cleartext without encrypt
 - Tried different user_id's in the URL to find the correct employee and revert their actions.
 - Reverting all actions yields the flag
 
-![](Pasted%20image%2020240905170328.png)
+![](Pasted image 20240905170328.png)
 
 ### Questions
 

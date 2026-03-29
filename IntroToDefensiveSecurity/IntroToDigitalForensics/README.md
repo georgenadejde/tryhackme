@@ -65,7 +65,7 @@ It is essential to keep track of who is handling it at any point in time to ensu
 
 - `cd /root/Rooms/introdigitalforensics`
 
-![](Pasted%20image%2020240906095301.png)
+![](Pasted image 20240906095301.png)
 
 - **EXIF** stands for **Exchangeable Image File Format**; it is a standard for saving metadata to image files. 
 	- Whenever you take a photo with your smartphone or with your digital camera, plenty of information gets embedded in the image. 
@@ -92,6 +92,6 @@ Using `exiftool` or any similar tool, try to find where the kidnappers took th
 
 What is the model name of the camera used to take this photo?
 
-![](Pasted%20image%2020240906095713.png)
+![](Pasted image 20240906095713.png)
 
 	`A: Canon EOS R6`
