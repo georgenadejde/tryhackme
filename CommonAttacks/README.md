@@ -1,4 +1,5 @@
 ---
+title: "Common Attacks"
 user: bung3r
 date: 28.01.26
 description: An introduction to common attacks on internet users, and recommendations for staying safe online.

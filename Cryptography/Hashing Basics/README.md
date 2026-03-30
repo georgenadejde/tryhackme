@@ -1,4 +1,5 @@
 ---
+title: "Hashing Basics"
 user: bung3r
 date: 16.12.25
 description: Learn about hashing functions and their uses in password verification and file integrity checking.

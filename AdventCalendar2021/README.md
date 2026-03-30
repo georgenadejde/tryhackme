@@ -1,3 +1,63 @@
+---
+title: "Advent Calendar2021"
+user: h4ck@d4wn
+date: 23.02.22
+description: Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.
+tags:
+  - authentication
+  - authorisation
+  - contentdiscovery
+  - dirbuster
+  - fuzzing
+  - burp
+  - xss
+  - lfi
+  - important
+  - php
+  - phpwrapper
+  - nosql
+  - mongodb
+  - nosqlinjection
+  - powershell
+  - wireshark
+  - dns
+  - ip
+  - port
+  - nmap
+  - mssqlserver
+  - interesting
+  - nfs
+  - windows
+  - privilegeescalation
+  - wmic
+  - devops
+  - ci
+  - cd
+  - osint
+  - googledorking
+  - blockcahin
+  - aws
+  - s3
+  - iam
+  - awsarn
+  - docker
+  - ecr
+  - phishing
+  - virustotal
+  - md5
+  - strings
+  - yara
+  - ole
+  - vba
+  - logs
+  - postexploitation
+  - hash
+  - sam
+  - ntlm
+  - mimikatz
+  - johntheripper
+---
+
 # [Advent Calendar 2021](https://tryhackme.com/room/adventofcyber3)
 
 - *User*: h4ck@d4wn

@@ -1,4 +1,5 @@
 ---
+title: "Flare VM Arsenal of Tools"
 user: bung3r
 date: "09.12.25"
 description: Learn the arsenal of investigative tools in FlareVM.

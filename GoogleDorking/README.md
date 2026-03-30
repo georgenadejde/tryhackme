@@ -1,4 +1,5 @@
 ---
+title: "Google Dorking"
 user: bung3r
 date: 10.02.22
 description: Explaining how Search Engines work and leveraging them into finding hidden content!

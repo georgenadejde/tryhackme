@@ -1,4 +1,5 @@
 ---
+title: "Windows Command Line"
 user: bung3r
 date: 02.12.25
 description: Learn the essential Windows commands

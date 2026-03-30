@@ -1,4 +1,5 @@
 ---
+title: "Passive Recon"
 user: bung3r
 date: 30.01.22
 description: Learn about the essential tools for passive reconnaissance, such as whois, nslookup, and dig.

@@ -1,4 +1,5 @@
 ---
+title: "Linux Fundamentals Part3"
 user: bung3r
 date: xx.yy.zz
 description: Power-up your Linux skills and get hands-on with some common utilities that you are likely to use day-to-day!

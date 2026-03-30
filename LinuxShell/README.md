@@ -1,4 +1,5 @@
 ---
+title: "Linux Shell"
 user: bung3r
 date: 01.12.25
 description: Learn about scripting and the different types of Linux shells.

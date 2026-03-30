@@ -1,4 +1,5 @@
 ---
+title: "Intro To Research"
 user: bung3r
 date: 09.02.22
 description: A brief introduction to research skills for pentesting.

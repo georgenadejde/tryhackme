@@ -1,4 +1,5 @@
 ---
+title: "Training Impact on Teams"
 user: bung3r
 date: 10.12.25
 description: Discover the impact of training on teams and organisations.

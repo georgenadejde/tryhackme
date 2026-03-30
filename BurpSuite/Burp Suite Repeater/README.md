@@ -1,4 +1,5 @@
 ---
+title: "Burp Suite Repeater"
 user: bung3r
 date: 22.03.2026
 description: Learn how to use Repeater to duplicate requests in Burp Suite.

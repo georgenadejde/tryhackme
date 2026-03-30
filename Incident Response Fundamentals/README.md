@@ -1,4 +1,5 @@
 ---
+title: "Incident Response Fundamentals"
 user: bung3r
 date: 05.12.25
 description: Learn how to perform Incident Response in cyber security.

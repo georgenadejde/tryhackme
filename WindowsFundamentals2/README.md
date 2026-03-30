@@ -1,4 +1,5 @@
 ---
+title: "Windows Fundamentals2"
 user: bung3r
 date: 14.06.22
 description: In part 2 of the Windows Fundamentals module, discover more about System Configuration, UAC Settings, Resource Monitoring, the Windows Registry and more.

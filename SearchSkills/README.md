@@ -1,4 +1,5 @@
 ---
+title: "Search Skills"
 user: bung3r
 date: 28.11.25
 description: Learn to efficiently search the Internet and use specialized search engines and technical docs.

@@ -1,4 +1,5 @@
 ---
+title: "Java Script Essentials"
 user: bung3r
 date: 23.12.25
 description: Learn how to use JavaScript to add interactivity to a website and understand associated vulnerabilities.

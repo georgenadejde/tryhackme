@@ -1,4 +1,5 @@
 ---
+title: "SQL Fundamentals"
 user: bung3r
 date: 23.12.25
 description: Learn how to perform basic SQL queries to retrieve and manage data in a database.

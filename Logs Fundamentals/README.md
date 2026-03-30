@@ -1,4 +1,5 @@
 ---
+title: "Logs Fundamentals"
 user: bung3r
 date: 05.12.25
 description: Learn what logs are and how to analyze them for effective investigation.

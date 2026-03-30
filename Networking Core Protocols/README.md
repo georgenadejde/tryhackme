@@ -1,4 +1,5 @@
 ---
+title: "Networking Core Protocols"
 user: bung3r
 date: 12.12.25
 description: Learn about the core TCP/IP protocols.

@@ -1,4 +1,5 @@
 ---
+title: "Hydra"
 user: bung3r
 date: 23.12.25
 description: Learn about and use Hydra, a fast network logon cracker, to bruteforce and obtain a website's credentials.

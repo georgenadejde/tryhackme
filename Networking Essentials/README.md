@@ -1,4 +1,5 @@
 ---
+title: "Networking Essentials"
 user: bung3r
 date: 12.12.25
 description: Explore networking protocols from automatic configuration to routing packets to the destination.

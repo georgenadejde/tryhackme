@@ -1,4 +1,5 @@
 ---
+title: "Shells Overview"
 user: bung3r
 date: 23.12.25
 description: Learn about the different types of shells.

@@ -1,4 +1,5 @@
 ---
+title: "Authentication Bypass"
 user: bung3r
 date: 30.12.25
 description: Learn how to defeat logins and other authentication mechanisms to allow you access to unpermitted areas.

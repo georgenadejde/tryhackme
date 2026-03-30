@@ -1,4 +1,5 @@
 ---
+title: "File Inclusion"
 user: bung3r
 date: 01.01.26
 description: This room introduces file inclusion vulnerabilities, including Local File Inclusion (LFI), Remote File Inclusion (RFI), and directory traversal.

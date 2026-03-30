@@ -1,4 +1,5 @@
 ---
+title: "Cryptography Basics"
 user: bung3r
 date: 16.12.25
 description: Learn the basics of cryptography and symmetric encryption.

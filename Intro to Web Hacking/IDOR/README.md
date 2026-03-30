@@ -1,4 +1,5 @@
 ---
+title: "IDOR"
 user: bung3r
 date: 26.12.25
 description: Learn how to find and exploit IDOR vulnerabilities in a web application giving you access to data that you shouldn't have.

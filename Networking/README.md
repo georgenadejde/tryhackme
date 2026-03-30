@@ -1,4 +1,5 @@
 ---
+title: "Networking"
 user: bung3r
 date: 12.02.22
 description: Learn the basics of networking and network addressing

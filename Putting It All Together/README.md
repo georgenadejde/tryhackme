@@ -1,4 +1,5 @@
 ---
+title: "Putting It All Together"
 user: bung3r
 date: 01.02.2023
 tags:

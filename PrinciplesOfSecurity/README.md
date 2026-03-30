@@ -1,4 +1,5 @@
 ---
+title: "Principles Of Security"
 user: bung3r
 date: 24.01.22
 description: Learn the principles of information security that secures data and protects systems from abuse

@@ -1,4 +1,5 @@
 ---
+title: "Cyber Chef The Basics"
 user: bung3r
 date: 06.12.25
 description: This room is an introduction to CyberChef, the Swiss Army knife for cyber security professionals.

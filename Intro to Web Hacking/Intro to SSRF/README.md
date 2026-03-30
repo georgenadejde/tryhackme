@@ -1,4 +1,5 @@
 ---
+title: "Intro to SSRF"
 user: bung3r
 date: 02.01.26
 description: Learn how to exploit Server-Side Request Forgery (SSRF) vulnerabilities, allowing you to access internal server resources.

@@ -1,4 +1,5 @@
 ---
+title: "CAPA The Basics"
 user: bung3r
 date: "08.12.25"
 description: Learn to use CAPA to identify malicious capabilities.

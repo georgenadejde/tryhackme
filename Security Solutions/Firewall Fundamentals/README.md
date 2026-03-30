@@ -1,4 +1,5 @@
 ---
+title: "Firewall Fundamentals"
 user: bung3r
 date: 18.12.25
 description: Learn about firewalls and get hands-on with Windows and Linux built-in firewalls.

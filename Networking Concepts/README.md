@@ -1,4 +1,5 @@
 ---
+title: "Networking Concepts"
 user: bung3r
 date: 11.12.25
 description: Learn about the ISO OSI model and the TCP/IP protocol suite.

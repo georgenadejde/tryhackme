@@ -1,4 +1,5 @@
 ---
+title: "Digital Forensics Fundamentals"
 user: bung3r
 date: 04.12.25
 description: Learn about digital forensics and related processes and experiment with a practical example.

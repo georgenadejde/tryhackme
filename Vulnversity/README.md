@@ -1,4 +1,5 @@
 ---
+title: "Vulnversity"
 user: bung3r
 description: Learn about active recon, web app attacks and privilege escalation.
 tags:

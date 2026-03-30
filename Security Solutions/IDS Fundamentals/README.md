@@ -1,4 +1,5 @@
 ---
+title: "IDS Fundamentals"
 user: bung3r
 date: 19.12.25
 description: Learn the fundamentals of IDS, along with the experience of working with Snort.

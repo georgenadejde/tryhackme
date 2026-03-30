@@ -1,4 +1,5 @@
 ---
+title: "Intro to SIEM"
 user: bung3r
 date: 18.12.25
 description: Learn the fundamentals of SIEM and explore its features and functionality.

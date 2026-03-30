@@ -1,4 +1,5 @@
 ---
+title: "Intro To Offensive Security"
 user: bung3r
 date: 31.12.2022
 description: Intro To Offensive Security

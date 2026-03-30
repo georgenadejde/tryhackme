@@ -1,4 +1,5 @@
 ---
+title: "Content Discovery"
 user: bung3r
 date: 03.02.23
 description: Learn the various ways of discovering hidden or private content on a webserver that could lead to new vulnerabilities.

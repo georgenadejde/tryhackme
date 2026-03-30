@@ -1,4 +1,5 @@
 ---
+title: "Command Injection"
 user: bung3r
 date: 05.01.26
 description: Learn about a vulnerability allowing you to execute commands through a vulnerable app, and its remediations.

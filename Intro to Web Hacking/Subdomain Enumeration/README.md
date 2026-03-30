@@ -1,4 +1,5 @@
 ---
+title: "Subdomain Enumeration"
 user: bung3r
 date: 29.12.25
 description: Learn the various ways of discovering subdomains to expand your attack surface of a target.

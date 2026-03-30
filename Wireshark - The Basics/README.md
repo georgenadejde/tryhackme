@@ -1,4 +1,5 @@
 ---
+title: "Wireshark The Basics"
 user: bung3r
 date: "15.12.25"
 description: Learn the basics of Wireshark and how to analyse protocols and PCAPs. 

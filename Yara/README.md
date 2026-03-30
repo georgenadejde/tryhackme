@@ -1,4 +1,5 @@
 ---
+title: "Yara"
 user: bung3r
 date: 18.02.22
 description: Learn the applications and language that is Yara for everything threat intelligence, forensics, and threat hunting!

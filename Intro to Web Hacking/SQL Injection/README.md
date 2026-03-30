@@ -1,4 +1,5 @@
 ---
+title: "SQL Injection"
 user: bung3r
 date: 07.01.2026
 description: Learn how to detect and exploit SQL Injection vulnerabilities

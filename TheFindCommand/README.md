@@ -1,10 +1,14 @@
+---
+title: "The Find Command"
+user: bung3r
+date: 27.01.22
+description: A learn-by-doing approach to the find command
+tags: 
+  - linux
+  - find
+---
+
 # [The find command](https://tryhackme.com/room/thefindcommand)
-
-- User: bung3r
-- Date: 27th January 2022
-- Description: A learn-by-doing approach to the find command
-
-Tags: #linux #find
 
 ---
 

@@ -1,4 +1,5 @@
 ---
+title: "Python Basics"
 user: bung3r
 date: 28.01.22
 description: Using a web-based code editor, learn the basics of Python and put your knowledge into practice by eventually coding a short Bitcoin investment project.

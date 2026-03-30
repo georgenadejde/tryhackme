@@ -1,4 +1,5 @@
 ---
+title: "Security Principles"
 user: bung3r
 date: 10.12.25
 description: Learn about the security triad and common security models and principles.

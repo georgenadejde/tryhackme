@@ -1,4 +1,5 @@
 ---
+title: "Networking Secure Protocols"
 user: bung3r
 date: 13.12.25
 description: Learn how TLS, SSH, and VPN can secure your network traffic. 

@@ -1,4 +1,5 @@
 ---
+title: "OWASPJuice Shop"
 user: h4ck47d4wn
 date: 27.09.24
 tags:

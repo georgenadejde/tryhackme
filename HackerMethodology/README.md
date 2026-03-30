@@ -1,4 +1,5 @@
 ---
+title: "Hacker Methodology"
 user: bung3r
 Description: Hacker methodology
 tags:

@@ -1,4 +1,5 @@
 ---
+title: "Windows Powershell"
 user: bung3r
 date: 02.12.25
 description: Discover the "Power" in PowerShell and learn the basics.

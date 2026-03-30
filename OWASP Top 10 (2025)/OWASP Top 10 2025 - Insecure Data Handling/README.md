@@ -1,4 +1,5 @@
 ---
+title: "OWASP Top 10 2025 Insecure Data Handling"
 user: bung3r
 date: 19.12.25
 description: Learn about A04, A05, and A08 as they related to insecure data handling.

@@ -1,4 +1,5 @@
 ---
+title: "Burp Suite Other Modules"
 user: bung3r
 date: 23.03.2026
 description: Take a dive into some of Burp Suite's lesser-known modules.

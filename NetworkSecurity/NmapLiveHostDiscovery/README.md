@@ -1,4 +1,5 @@
 ---
+title: "Nmap Live Host Discovery"
 user: bung3r
 date: 05.02.22
 description: Learn how to use Nmap to discover live hosts using ARP scan, ICMP scan, and TCP/UDP ping scan.

@@ -1,4 +1,5 @@
 ---
+title: "Web Fundamentals"
 user: bung3r
 date: 02.02.22
 description: Learn how the web works!

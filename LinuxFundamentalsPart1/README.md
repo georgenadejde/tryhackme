@@ -1,4 +1,5 @@
 ---
+title: "Linux Fundamentals Part1"
 user: bung3r
 description: Embark on the journey of learning the fundamentals of Linux. Learn to run some of the first essential commands on an interactive terminal.
 tags:

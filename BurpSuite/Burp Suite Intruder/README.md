@@ -1,4 +1,5 @@
 ---
+title: "Burp Suite Intruder"
 user: bung3r
 date: 22.03.2026
 description: Learn how to use Intruder to automate requests in Burp Suite.

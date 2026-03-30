@@ -1,4 +1,5 @@
 ---
+title: "Public Key Cryptography Basics"
 user: bung3r
 date: "16.12.25"
 description: Discover how public key ciphers such as RSA work and explore their role in applications such as SSH.

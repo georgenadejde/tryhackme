@@ -1,4 +1,5 @@
 ---
+title: "Linux Strength Training"
 user: bung3r
 date: 26.01.22
 description: Guided room for beginners to learn/reinforce linux command line skills

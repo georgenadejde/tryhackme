@@ -1,4 +1,5 @@
 ---
+title: "DNSIn Detail"
 user: bung3r
 date: 15.01.22
 description: Learn how DNS works and how it helps you access internet services.

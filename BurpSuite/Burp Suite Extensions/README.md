@@ -1,4 +1,5 @@
 ---
+title: "Burp Suite Extensions"
 user: bung3r
 date: 23.03.2026
 description: Learn how to use Extensions to broaden the functionality of Burp Suite.

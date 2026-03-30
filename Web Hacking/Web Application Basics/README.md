@@ -1,4 +1,5 @@
 ---
+title: "Web Application Basics"
 user: bung3r
 date: 22.12.25
 description: "Learn the basics of web applications: HTTP, URLs, request methods, response codes, and headers."

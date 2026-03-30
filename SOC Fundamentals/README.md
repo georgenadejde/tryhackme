@@ -1,4 +1,5 @@
 ---
+title: "SOC Fundamentals"
 user: bung3r
 date: 04.12.25
 description: Learn about the SOC team and their processes.

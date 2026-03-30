@@ -1,4 +1,5 @@
 ---
+title: "Intro To Digital Forensics"
 user: h4ck47d4wn
 date: 06.09.2024
 description: Intro to digital forensics

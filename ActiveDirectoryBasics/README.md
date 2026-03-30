@@ -1,4 +1,5 @@
 ---
+title: "Active Directory Basics"
 user: bung3r
 date: 29.11.25
 description: This room will introduce the basic concepts and functionality provided by Active Directory.

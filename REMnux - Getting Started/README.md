@@ -1,4 +1,5 @@
 ---
+title: "REMnux Getting Started"
 user: bung3r
 date: "09.12.25"
 description: Learn how you can use the tools inside the REMnux VM.

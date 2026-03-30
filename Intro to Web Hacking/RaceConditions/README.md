@@ -1,4 +1,5 @@
 ---
+title: "Race Conditions"
 user: bung3r
 date: 03.02.2026
 description: Learn about race conditions and how they affect web application security.

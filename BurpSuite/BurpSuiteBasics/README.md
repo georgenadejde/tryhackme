@@ -1,4 +1,5 @@
 ---
+title: "Burp Suite Basics"
 user: bung3r
 date: 16.06.22
 description: An introduction to using Burp Suite for Web Application pentesting

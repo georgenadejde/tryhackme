@@ -1,4 +1,5 @@
 ---
+title: "Intro To LAN"
 user: bung3r
 date: 25.01.22
 description: Intro to LAN
