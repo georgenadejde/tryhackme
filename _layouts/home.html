@@ -65,9 +65,10 @@
       <span class="search-suffix">" ./</span>
     </div>
 
-    <!-- Tag filter -->
+    <!-- Tags Filter -->
     <div class="tag-filter" id="tagFilter">
       <span class="tag-filter-label">$ filter --tag</span>
+      
       <div class="tag-list" id="tagList">
         <button class="tag-btn active" data-tag="all">all</button>
         {% assign all_tags = "" | split: "" %}
@@ -84,7 +85,11 @@
         {% for tag in sorted_tags %}
         <button class="tag-btn" data-tag="{{ tag }}">{{ tag }}</button>
         {% endfor %}
-      </div>
+    </div>
+
+    <button class="tag-expand-btn" id="tagExpandBtn">
+      <span id="tagExpandLabel">show more ↓</span>
+    </button>
     </div>
 
     <!-- Writeup list -->
@@ -184,6 +189,14 @@
       activeTag = btn.dataset.tag;
       filterItems();
     });
+  });
+  const tagList = document.getElementById('tagList');
+  const tagExpandBtn = document.getElementById('tagExpandBtn');
+  const tagExpandLabel = document.getElementById('tagExpandLabel');
+
+  tagExpandBtn.addEventListener('click', () => {
+    const isExpanded = tagList.classList.toggle('expanded');
+    tagExpandLabel.textContent = isExpanded ? 'show less ↑' : 'show more ↓';
   });
 </script>
 
