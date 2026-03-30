@@ -32,7 +32,7 @@ When passing data from page to page either by post data, query strings, or cooki
 
 You can use websites like [https://www.base64decode.org/](https://www.base64decode.org/) to decode the string, then edit the data and re-encode it again using [https://www.base64encode.org/](https://www.base64encode.org/) and then resubmit the web request to see if there is a change in the response.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/5f2cbe5c4ab4a274420bc9a9afc9202d.png)
+![](5f2cbe5c4ab4a274420bc9a9afc9202d.png)
 
 ### Questions
 

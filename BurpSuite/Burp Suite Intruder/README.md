@@ -15,7 +15,7 @@ Intruder is Burp Suit's built-in fuzzing tool that allows for automated request 
 
 However, it's important to note that while Intruder can be used with Burp Community Edition, it is rate-limited, significantly reducing its speed compared to Burp Professional. This limitation often leads security practitioners to rely on other tools for fuzzing and brute-forcing. Nonetheless, Intruder remains a valuable tool and is worth learning how to use it effectively.
 
-![Showing the intruder interface](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/2b2a10c651bee6531f8dbeb5e32733e8.png)
+![Showing the intruder interface](2b2a10c651bee6531f8dbeb5e32733e8.png)
 
 The initial view of Intruder presents a simple interface where we can select our target. This field will already be populated if a request has been sent from the Proxy (using `Ctrl + I` or right-clicking and selecting "Send to Intruder").
 
@@ -42,7 +42,7 @@ When using Intruder to perform an attack, the first step is to examine the posit
 
 Let's navigate to the Positions tab:
 
-![Showing the positions tab](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/1372bbafab835e10806ee6beb6681f36.png)
+![Showing the positions tab](1372bbafab835e10806ee6beb6681f36.png)
 
 Notice that Burp Suite automatically attempts to identify the most probable positions where payloads can be inserted. These positions are highlighted in green and enclosed by section marks (`§`).
 
@@ -62,7 +62,7 @@ A: `§`
 
 Here, we can create, assign, and configure payloads for our attack. This sub-tab is divided into four sections:
 
-![Payloads sub-tab divided into four sections](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/f049dff9e1172b76c0f81ad4771b012d.png)
+![Payloads sub-tab divided into four sections](f049dff9e1172b76c0f81ad4771b012d.png)
 
 1. **Payload Sets**:
     - This section allows us to choose the position for which we want to configure a payload set and select the type of payload we want to use.
@@ -75,7 +75,7 @@ Here, we can create, assign, and configure payloads for our attack. This sub-tab
     - For example, when using the "Simple list" payload type, we can manually add or remove payloads to/from the set using the **Add** text box, **Paste** lines, or **Load** payloads from a file. The **Remove** button removes the currently selected line, and the **Clear** button clears the entire list. Be cautious with loading huge lists, as it may cause Burp to crash.
     - Each payload type will have its own set of options and functionality. Explore the options available to understand the range of possibilities.  
         
-        ![Available options](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/722a734ac5dd6437211504d3bc7bb6c2.png)
+        ![Available options](722a734ac5dd6437211504d3bc7bb6c2.png)
         
   
 3. **Payload Processing**:

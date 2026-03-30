@@ -50,7 +50,7 @@ A: `People, Process, Technology`
 
 ## People
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/6645aa8c024f7893371eb7ac/room-content/6645aa8c024f7893371eb7ac-1718872774537)
+![](6645aa8c024f7893371eb7ac-1718872774537)
 
 - **SOC Analyst (Level 1):** Anything detected by the security solution would pass through these analysts first. These are the first responders to any detection. SOC Level 1 Analysts perform basic alert triage to determine if a specific detection is harmful. They also report these detections through proper channels.
 - ****SOC Analyst (Level 2)**:** While Level 1 does the first-level analysis, some detections may require deeper investigation. Level 2 Analysts help them dive deeper into the investigations and correlate the data from multiple data sources to perform a proper analysis.
@@ -76,7 +76,7 @@ Each role has its own **Processes**, just as we saw the role of Level 1 SOC Anal
 
 The alert triage is the basis of the SOC team. The first response to any alert is to perform the triage. The triage is focused on analyzing the specific alert. This determines the severity of the alert and helps us prioritize it. The alert triage is all about answering the 5 Ws. What are these 5 Ws?
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/6645aa8c024f7893371eb7ac/room-content/6645aa8c024f7893371eb7ac-1718872960352)
+![](6645aa8c024f7893371eb7ac-1718872960352)
 
 ![](2025-12-04_16-45.png)
 

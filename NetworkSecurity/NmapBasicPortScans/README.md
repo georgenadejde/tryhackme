@@ -9,7 +9,7 @@ tags:
 
 ## TCP and UDP Ports
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/f351cd3eaca9da85b9417ca820494ec0.png)
+![](f351cd3eaca9da85b9417ca820494ec0.png)
 
 A TCP port or UDP port id use dot identify a network service running on that host. A server provides the network service, an dit adheres to a specific network protocol. 
 
@@ -54,7 +54,7 @@ Nmap supports different types of TCP port scans.
 
 The TCP header is the first 24 bytes of a TCP segment:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/79ca8e4acbd573a27cee413cde927769.png)
+![](79ca8e4acbd573a27cee413cde927769.png)
 
 This is defined in [RFC 793](https://datatracker.ietf.org/doc/html/rfc793.html).
 

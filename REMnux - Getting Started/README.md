@@ -81,7 +81,7 @@ We will copy the first value of **Sqtnew** and paste it into **CyberChef's** inp
 
 Next, select the **Find/Replace** operation twice. Looking back at the script, the 2nd and 3rd values of Sqtnew have a command to replace * with "" and ^ with "". We would assume that the "" means there is no value. So, with our first operation selected, we put the value * and selected **SIMPLE STRING** as additional parameters. In contrast, **we did not put anything on the Replace box** or have any value.  The same applies to our second operation: we put the value ^ and selected SIMPLE STRING, and the replace box has no value. 
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727075711805.png)
+![](5e6bbe59a46ee9407fd65bbe-1727075711805.png)
 
 The resulting string:
 
@@ -181,7 +181,7 @@ Simulation running.
 
 From your laptop/attack box, open a browser and go to our REMnux's IP address using the command `https://10.80.169.119`. This will prompt a Security Risk; ignore it, click **Advance**, then **Accept the Risk and Continue.**
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727039504431.png)
+![](5e6bbe59a46ee9407fd65bbe-1727039504431.png)
 
 One usual malware behaviour is downloading another binary or script. We will try to mimic this behaviour by getting another file from INetsim. We can do this via the CLI or browser, but let's use the CLI to make it more realistic. Use this command: `sudo wget https://10.80.169.119/second_payload.zip --no-check-certificate`.
 

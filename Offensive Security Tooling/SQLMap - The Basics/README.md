@@ -117,7 +117,7 @@ However, in this task, on the login page, we have used the GET requests, but the
 
 So, to get the complete URL along with its GET parameters, we need to right-click on the login page and click the inspect option (the process may vary slightly from browser to browser). From here, we have to select the Network tab; then we have to enter some test credentials in the username and password fields and click the login button, and we will be able to see the GET request. Click on that request, and we can see the complete GET request with the parameters. We can copy this complete URL and use it with the SQLMap tool to discover SQL injection vulnerabilities inside it and exploit it. The complete request is shown in the screenshot below:
 
-![The in-browser tools in the website that allow us to see the URL with parameters.](https://tryhackme-images.s3.amazonaws.com/user-uploads/6645aa8c024f7893371eb7ac/room-content/6645aa8c024f7893371eb7ac-1728644607260.png)
+![The in-browser tools in the website that allow us to see the URL with parameters.](6645aa8c024f7893371eb7ac-1728644607260.png)
 
 
 remember to include your URL inside single quotes `'`. This is to avoid errors with special characters in the terminal such as `?`.

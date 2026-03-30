@@ -60,19 +60,19 @@ Reflected XSS happens when user-supplied data in an HTTP request is included in 
   
 A website where if you enter incorrect input, an error message is displayed. The content of the error message gets taken from the **error** parameter in the query string and is built directly into the page source.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/a5b0dbc4d2f1f69988f82f2c5d53f6ed.png)  
+![](a5b0dbc4d2f1f69988f82f2c5d53f6ed.png)  
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/7f90b73106d655b07874943f93533f7b.png)  
+![](7f90b73106d655b07874943f93533f7b.png)  
 
 The application doesn't check the contents of the **error** parameter, which allows the attacker to insert malicious code.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/66743e9fa50b4c5793f070eb505f72d1.png)  
+![](66743e9fa50b4c5793f070eb505f72d1.png)  
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/24e50d95cecfc3783bd1a3a4fecbf310.png)  
+![](24e50d95cecfc3783bd1a3a4fecbf310.png)  
 
 The vulnerability can be used as per the scenario in the image below:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/8e3bffe500771c03366de569c3565058.png)  
+![](8e3bffe500771c03366de569c3565058.png)  
 
 ### **Potential Impact**  
   
@@ -103,7 +103,7 @@ As the name infers, the XSS payload is stored on the web application (in a datab
   
 A blog website that allows users to post comments. Unfortunately, these comments aren't checked for whether they contain JavaScript or filter out any malicious code. If we now post a comment containing JavaScript, this will be stored in the database, and every other user now visiting the article will have the JavaScript run in their browser.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/cc2566d297f7328d91bc8552f902210e.png)  
+![](cc2566d297f7328d91bc8552f902210e.png)  
 
   
 
@@ -133,7 +133,7 @@ A: `database`
 
 DOM stands for **D**ocument **O**bject **M**odel and is a programming interface for HTML and XML documents. It represents the page so that programs can change the document structure, style and content. A web page is a document, and this document can be either displayed in the browser window or as the HTML source. A diagram of the HTML DOM is displayed below:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/24a54ac532b5820bf0ffdddf00ab2247.png)  
+![](24a54ac532b5820bf0ffdddf00ab2247.png)  
 
 If you want to learn more about the DOM and gain a deeper understanding [w3.org](https://www.w3.org/TR/REC-DOM-Level-1/introduction.html) have a great resource.
 

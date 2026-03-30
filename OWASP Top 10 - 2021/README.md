@@ -138,7 +138,7 @@ Log in as the admin. What is the flag?
 	- If the console detects an inline command, it will execute it first and then use the result as the parameter for the outer command. 
 - Look at the following example, which runs `whoami` as an inline command inside an `echo` command:
 
-![Inline commands](https://tryhackme-images.s3.amazonaws.com/user-uploads/5ed5961c6276df568891c3ea/room-content/b7158502a9799698ec0ab29a850c8840.png)
+![Inline commands](b7158502a9799698ec0ab29a850c8840.png)
 
 - Since the application accepts any input from us, we can inject an inline command which will get executed and used as a parameter for cowsay. 
 	- This will make our cow say whatever the command returns! 
@@ -404,7 +404,7 @@ What is the SHA-256 hash of `https://code.jquery.com/jquery-1.12.4.min.js`?
 - The structure of a JWT token is formed of 3 parts:
 
 
-![JSON Web Tokens](https://tryhackme-images.s3.amazonaws.com/user-uploads/5ed5961c6276df568891c3ea/room-content/11c86acaea05f98045cec5634e03e997.png)
+![JSON Web Tokens](11c86acaea05f98045cec5634e03e997.png)
 
 - The header contains metadata indicating this is a JWT, and the signing algorithm in use is HS256. 
 - The payload contains the key-value pairs with the data that the web application wants the client to store. 
@@ -427,7 +427,7 @@ What is the SHA-256 hash of `https://code.jquery.com/jquery-1.12.4.min.js`?
 - Taking the JWT from before as an example, if we wanted to change the payload so that the username becomes "admin" and no signature check is done, we would have to decode the header and payload, modify them as needed, and encode them back. 
 - Notice how we removed the signature part but kept the dot at the end.
 
-![JWT None Algorithm](https://tryhackme-images.s3.amazonaws.com/user-uploads/5ed5961c6276df568891c3ea/room-content/f5d1b4ef49ff4eef52e7617631225e8a.png)
+![JWT None Algorithm](f5d1b4ef49ff4eef52e7617631225e8a.png)
 
 
 ### Questions
@@ -516,7 +516,7 @@ What kind of attack is being carried out?
 - The API key serves as an authentication token and allows the provider to know to whom to bill each message. 
 - The application would work like this:
 
-![SSRF](https://tryhackme-images.s3.amazonaws.com/user-uploads/5ed5961c6276df568891c3ea/room-content/271d0075650cdf6499f994f99fa7eb8a.png)  
+![SSRF](271d0075650cdf6499f994f99fa7eb8a.png)  
 
 - By looking at the diagram above, it is easy to see where the vulnerability lies. 
 - The application exposes the `server` parameter to the users, which defines the server name of the SMS service provider. 

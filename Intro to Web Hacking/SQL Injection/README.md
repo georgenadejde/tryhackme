@@ -25,7 +25,7 @@ A database is a way of electronically storing collections of data in an organise
 
 Within a DBMS, you can have multiple databases, each containing its own set of related data. For example, you may have a database called "**shop**". Within this database, you want to store information about products available to **purchase**, **users** who have signed up to your online shop, and information about the **orders** you've received. You'd store this information separately in the database using something called tables. The tables are identified with a unique name for each one. You can see this structure in the diagram below, but you can also see how a business might have other separate databases to store staff information or the accounts team.    
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/f31d5855476c01e8359df000da4ac79d.png)
+![](f31d5855476c01e8359df000da4ac79d.png)
 
 A relational database stores information in tables, and often, the tables share information between them; they use columns to specify and define the data being stored and rows actually to store the data. The tables will often contain a column that has a unique ID (primary key), which will then be used in other tables to reference it and cause a relationship between the tables, hence the name **relational** database.  
 
@@ -342,7 +342,7 @@ An Out-Of-Band attack is classified by having two different communication channe
 
   
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/75103b88e95d4eda2244dbb360cba4ff.png)
+![](75103b88e95d4eda2244dbb360cba4ff.png)
 
 ### Questions
 

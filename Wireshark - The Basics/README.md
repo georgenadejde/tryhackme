@@ -47,31 +47,31 @@ Packets consist of 5 to 7 layers based on the OSI model.
 
 **The Frame (Layer 1):**This will show you what frame/packet you are looking at and details specific to the Physical layer of the OSI model.
 
-![Wireshark - layer 1](https://tryhackme-images.s3.amazonaws.com/user-uploads/66c44fd9733427ea1181ad58/room-content/66c44fd9733427ea1181ad58-1761041779538.png)
+![Wireshark - layer 1](66c44fd9733427ea1181ad58-1761041779538.png)
 
 **Source [MAC] (Layer 2):**This will show you the source and destination MAC Addresses; from the Data Link layer of the OSI model.
 
-![Wireshark - layer 2](https://tryhackme-images.s3.amazonaws.com/user-uploads/66c44fd9733427ea1181ad58/room-content/66c44fd9733427ea1181ad58-1761042014059.png)
+![Wireshark - layer 2](66c44fd9733427ea1181ad58-1761042014059.png)
 
 **Source [IP] (Layer 3):**This will show you the source and destination IPv4 Addresses; from the Network layer of the OSI model.
 
-![Wireshark - layer 3](https://tryhackme-images.s3.amazonaws.com/user-uploads/66c44fd9733427ea1181ad58/room-content/66c44fd9733427ea1181ad58-1761042013990.png) 
+![Wireshark - layer 3](66c44fd9733427ea1181ad58-1761042013990.png) 
 
 **Protocol (Layer 4):**This will show you details of the protocol used (UDP/TCP) and source and destination ports; from the Transport layer of the OSI model.
 
-![Wireshark - layer 4](https://tryhackme-images.s3.amazonaws.com/user-uploads/66c44fd9733427ea1181ad58/room-content/66c44fd9733427ea1181ad58-1761042014024.png)
+![Wireshark - layer 4](66c44fd9733427ea1181ad58-1761042014024.png)
 
 **Protocol Errors:**This continuation of the 4th layer shows specific segments from TCP that needed to be reassembled.
 
-![Wireshark - protocol error](https://tryhackme-images.s3.amazonaws.com/user-uploads/66c44fd9733427ea1181ad58/room-content/66c44fd9733427ea1181ad58-1761042204301.png)
+![Wireshark - protocol error](66c44fd9733427ea1181ad58-1761042204301.png)
 
 **Application Protocol (Layer 5):**This will show details specific to the protocol used, such as HTTP, FTP,  and SMB. From the Application layer of the OSI model.
 
-![Wireshark - layer 5](https://tryhackme-images.s3.amazonaws.com/user-uploads/66c44fd9733427ea1181ad58/room-content/66c44fd9733427ea1181ad58-1761042014014.png)
+![Wireshark - layer 5](66c44fd9733427ea1181ad58-1761042014014.png)
 
 **Application Data:** This extension of the 5th layer can show the application-specific data.
 
-![Wireshark - application data](https://tryhackme-images.s3.amazonaws.com/user-uploads/66c44fd9733427ea1181ad58/room-content/66c44fd9733427ea1181ad58-1761042014019.png)
+![Wireshark - application data](66c44fd9733427ea1181ad58-1761042014019.png)
 
 ### Questions
 
@@ -129,11 +129,11 @@ Capture files can contain thousands of packets in a single file. As mentioned ea
 
 Wireshark can extract files transferred through the wire. For a security analyst, it is vital to discover shared files and save them for further investigation. Exporting objects are available only for selected protocol's streams (DICOM, HTTP, IMF, SMB and TFTP).
 
-![Wireshark - export objects](https://tryhackme-images.s3.amazonaws.com/user-uploads/66c44fd9733427ea1181ad58/room-content/66c44fd9733427ea1181ad58-1761116433258.gif)
+![Wireshark - export objects](66c44fd9733427ea1181ad58-1761116433258.gif)
 
 Wireshark lists the packets as they are captured, so investigating the default flow is not always the best option. By default, Wireshark shows the time in "Seconds Since Beginning of Capture", the common usage is using the UTC Time Display Format for a better view. You can use the **"View --> Time Display Format"** menu to change the time display format.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/6131132af49360005df01ae3/room-content/d2333318ff4df99df252c6ee1c236619.png)
+![](d2333318ff4df99df252c6ee1c236619.png)
 
 Wireshark also detects specific states of protocols to help analysts easily spot possible anomalies and problems. Note that these are only suggestions, and there is always a chance of having false positives/negatives. Expert info can provide a group of categories in three different severities. Details are shown in the table below.
 
@@ -155,7 +155,7 @@ Frequently encountered information groups are listed in the table below. You can
 
 You can use the **"lower left bottom section"** in the status bar or **"Analyse --> Expert Information"** menu to view all available information entries via a dialogue box. It will show the packet number, summary, group protocol and total occurrence.
 
-![Wireshark - expert info](https://tryhackme-images.s3.amazonaws.com/user-uploads/6131132af49360005df01ae3/room-content/31917b6f1e846d3383218cabf1c07caf.png)
+![Wireshark - expert info](31917b6f1e846d3383218cabf1c07caf.png)
 
 ### Questions
 

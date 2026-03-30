@@ -46,7 +46,7 @@ A Uniform Resource Locator (URL) is a web address that lets you access all kinds
 
 ### Anatomy of a URL
 
-![Illustration depicting the various parts of a URL, including the protocol, domain name, path, query parameters, and fragment. Each component is labeled and visually distinct, demonstrating how they work together to form a complete web address.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5c549500924ec576f953d9fc/room-content/34ad66d8b90aaaa35f9536d3b152ea97.png)
+![Illustration depicting the various parts of a URL, including the protocol, domain name, path, query parameters, and fragment. Each component is labeled and visually distinct, demonstrating how they work together to form a complete web address.](34ad66d8b90aaaa35f9536d3b152ea97.png)
 
 Think of a URL as being made up of several parts, each playing a different role in helping you find the right resource. Understanding how these parts fit together is important for browsing the web, developing web applications, and even troubleshooting problems.
 
@@ -143,7 +143,7 @@ A:  `Empty Line`
 
 An **HTTP request** is what a user sends to a web server to interact with a web application and make something happen. Since these requests are often the first point of contact between the user and the web server, knowing how they work is super important—especially if you’re into cyber security.
 
-![Illustration showing a GET request and all of the different headers that are used.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1730445201524.png)
+![Illustration showing a GET request and all of the different headers that are used.](5f04259cf9bf5b57aed2c476-1730445201524.png)
 
 Imagine an HTTP request showing the key parts like the method (e.g., GET or POST), path (e.g., /login), and version (e.g., HTTP/1.1). These elements make up the basics of how a client (user) communicates with a server.
 
@@ -349,7 +349,7 @@ When a web server responds to an HTTP request, it includes **HTTP response heade
 
 Picture an example of an HTTP response with the headers highlighted. Key headers like `Content-Type`, `Content-Length`, and `Date` give us important details about the response the server sends back.
 
-![HTTP response header](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1741854427607.svg)  
+![HTTP response header](5f04259cf9bf5b57aed2c476-1741854427607.svg)  
 
 ### Required Response Headers
 

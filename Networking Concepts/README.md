@@ -233,7 +233,7 @@ Encapsulation is an essential concept as it allows each layer to focus on its in
 
 We start with application data. At the transport layer, we add a TCP or UDP header to create a **TCP segment** or **UDP datagram**. Again, at the network layer, we add the proper IP header to get an **IP packet** that can be routed over the Internet. Finally, we add the appropriate header and trailer to get a WiFi or Ethernet frame at the link layer
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1719849061418.svg)
+![](5f04259cf9bf5b57aed2c476-1719849061418.svg)
 
 ### The Life of a Packet
 

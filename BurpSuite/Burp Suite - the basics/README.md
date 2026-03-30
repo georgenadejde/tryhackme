@@ -133,7 +133,7 @@ If we have uploaded Client-Side TLS certificates, can we override these on a per
 - **Logs and History:** 
 	- The captured requests can be viewed in the **HTTP history** and **WebSockets history** sub-tabs, allowing for retrospective analysis and sending the requests to other Burp modules as needed.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/8d5388b41dc847d2af38acf7ef4b116c.png)
+![](8d5388b41dc847d2af38acf7ef4b116c.png)
 
 ![](Pasted image 20240919145052.png)
 
@@ -175,7 +175,7 @@ What is the flag you receive after visiting the unusual endpoint?
 - To start the Burp Browser, click the `Open Browser` button in the proxy tab. 
 - A Chromium window will pop up, and any requests made in this browser will go through the proxy.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/61ee07fd18e8bac9ec6a566c25a3e814.png)
+![](61ee07fd18e8bac9ec6a566c25a3e814.png)
 
 
 ## Scoping and Targeting
@@ -190,7 +190,7 @@ What is the flag you receive after visiting the unusual endpoint?
 - However, even if we disabled logging for out-of-scope traffic, the proxy will still intercept everything. 
 	- To prevent this, we need to go to the **Proxy settings** sub-tab and select `And` `URL` `Is in target scope` from the "Intercept Client Requests" section.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/97db105960dfe71e42855461e3ef0de2.png)
+![](97db105960dfe71e42855461e3ef0de2.png)
 
 
 ## Proxying HTTPS
@@ -199,7 +199,7 @@ What is the flag you receive after visiting the unusual endpoint?
 - For example, when accessing a site like `https://google.com/`, we may receive an error indicating that the PortSwigger Certificate Authority (CA) is not authorised to secure the connection. 
 - This happens because the browser does not trust the certificate presented by Burp Suite.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/8b4b43cac91cd9a80622b953598d05eb.png)
+![](8b4b43cac91cd9a80622b953598d05eb.png)
 
 - To overcome this issue, we can manually add the PortSwigger CA certificate to our browser's list of trusted certificate authorities:
 
@@ -212,7 +212,7 @@ What is the flag you receive after visiting the unusual endpoint?
 	- This will take you to the Firefox settings page. 
 	- Search the page for "certificates" and click on the **View Certificates** button.
     
-    ![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/a9de0495b2ac6738520c8f9946afdecb.png)
+    ![](a9de0495b2ac6738520c8f9946afdecb.png)
     
 3. **Import the CA Certificate:** 
 	- In the Certificate Manager window, click on the **Import** button. 
@@ -221,13 +221,13 @@ What is the flag you receive after visiting the unusual endpoint?
 4. **Set Trust for the CA Certificate:** 
 	- In the subsequent window that appears, check the box that says "Trust this CA to identify websites" and click OK.
     
-    ![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/23e5cb317d00c1a5e64def1d46fa9301.png)
+    ![](23e5cb317d00c1a5e64def1d46fa9301.png)
 
 ## Example attack
 
 - take a look at the support form at `http://10.10.55.106/ticket/`
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/5b50c536c72d943a3aa5665bcf8858a5.png)
+![](5b50c536c72d943a3aa5665bcf8858a5.png)
 
 - In a real-world web app pentest, we would test this for a variety of things, one of which would be Cross-Site Scripting (or XSS). 
 - If you have not yet encountered XSS, it can be thought of as injecting a client-side script (usually in Javascript) into a webpage in such a way that it executes. 

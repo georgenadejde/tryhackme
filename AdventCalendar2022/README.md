@@ -45,7 +45,7 @@ tags:
 - Developed by Lockheed Martin, the cyber kill chain describes the stages commonly followed by cyber attacks and security defenders can use the framework as part of intelligence-driven defence.
 
 
-![Image showcasing the seven steps of the Cyber Kill Chain.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5fc2847e1bbebc03aa89fbf2/room-content/1e0cdd3b3f3c33c18d67f25aad84e618.png)
+![Image showcasing the seven steps of the Cyber Kill Chain.](1e0cdd3b3f3c33c18d67f25aad84e618.png)
 
 ### Unified Kill Chain
 
@@ -2519,7 +2519,7 @@ Here's a table to summarize everything above:
 
 - For the next part of the discussion, let’s take a look at the simple base code below wherein a programmer attempts to retrieve the usual details from a user.
 
-![Base Code](https://tryhackme-images.s3.amazonaws.com/user-uploads/60c1834f577d63004fdaec50/room-content/944be37798d52b534749b314d6c90849.png)  
+![Base Code](944be37798d52b534749b314d6c90849.png)  
 
 - The example is a bit bare and would have been an immediate nightmare as it raises many alarms not only in terms of security, but also in terms of risking getting a ton of garbage responses. 
 - Since all of them are text inputs by default, the birthday and age fields may receive responses that aren’t within their specific context. 
@@ -2528,7 +2528,7 @@ Here's a table to summarize everything above:
 - This is the case if no input validation is done at all. 
 	- Let’s fix it up a bit and review it again.
  
-![Edited Base Code to Include Type Attribute](https://tryhackme-images.s3.amazonaws.com/user-uploads/60c1834f577d63004fdaec50/room-content/a7484e2056785655394786a397857a5f.png)  
+![Edited Base Code to Include Type Attribute](a7484e2056785655394786a397857a5f.png)  
 
 - The changes above are literally just additions of the _type_ attribute and their corresponding values within the input element. 
 - Yet, there’s already a world of difference between this one and the base implementation prior. 
@@ -2538,7 +2538,7 @@ Here's a table to summarize everything above:
 - However, the implementation above is still susceptible to misuse, especially for very naughty users. 
 - Let’s fix it up further and review it again.
 
-![Further Edit of Base Code to Include Semantic and Whitelisting Techniques](https://tryhackme-images.s3.amazonaws.com/user-uploads/60c1834f577d63004fdaec50/room-content/4b0203a837d72f92684f35c8bd1d00b6.png)  
+![Further Edit of Base Code to Include Semantic and Whitelisting Techniques](4b0203a837d72f92684f35c8bd1d00b6.png)  
 
 The changes done above incorporate both semantic checking and whitelisting techniques to the existing syntax checking in the prior implementation in order to further filter out allowed values that can be provided in the input fields.
 
@@ -2569,7 +2569,7 @@ The changes done above incorporate both semantic checking and whitelisting techn
 
 - On the other hand, the one below uses the HTMLPurifier library to help with some use cases, such as our `<textarea>` conundrum above. 
 
-![Purifier Example](https://tryhackme-images.s3.amazonaws.com/user-uploads/60c1834f577d63004fdaec50/room-content/f66f8bfc285d5d43cfcaea4834ff6adb.png)
+![Purifier Example](f66f8bfc285d5d43cfcaea4834ff6adb.png)
 
 - Both examples are done on the server-side to escape characters and purify content, respectively both effective ways to prevent user misuse and XSS attacks. 
 - Implementing both client and server-side validations ensure that no stones are left unturned.

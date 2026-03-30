@@ -31,7 +31,7 @@ A **process** is a **_program_** in execution. In some literature, you might com
 - **Memory**: Temporary data storage
 - **State**: A process usually hops between different states. After it is in the New state, i.e., just created, it moves to the Ready state, i.e., ready to run once given CPU time. Once the CPU allocates time for it, it goes to the Running state. Furthermore, it can be in the Waiting state pending I/O or event completion. Once it exits, it moves to the Terminated state.
 
-![State diagram showing the 5 states of a process: New, Ready, Running, Waiting, and Terminated](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/659a97b7bb26b976007d5eae2b341e82.svg)
+![State diagram showing the 5 states of a process: New, Ready, Running, Waiting, and Terminated](659a97b7bb26b976007d5eae2b341e82.svg)
 
 ### Threads
 
@@ -110,7 +110,7 @@ A web application follows a multi-tier architecture. Such architecture separates
 - **Application tier**: This tier contains the web application’s business logic and functionality. It receives client requests, processes them, and interacts with the data tier. It is implemented using server-side programming languages such as Node.js and PHP, among many others.
 - **Data tier**: This tier is responsible for storing and manipulating the application data. Typical database operations include creating, updating, deleting, and searching existing records. It is usually achieved using a database management system (DBMS); examples of DBMS include MySQL and PostgreSQL.
 
-![A web browser accessing a web server. The web server is connected to a database over the cloud.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/d81b4960e5e7d02aaf91b4d1f4c336c4.svg)
+![A web browser accessing a web server. The web server is connected to a database over the cloud.](d81b4960e5e7d02aaf91b4d1f4c336c4.svg)
 
 Consider the example of transferring money to a friend or your other account. The program will progress as follows:
 
@@ -120,14 +120,14 @@ Consider the example of transferring money to a friend or your other account. Th
     1. If the amount is within the account limits, the application conducts the transaction
     2. If the amount is beyond the account limits, the application shows an error message
 
-![A flowchart for a program responsible for money transfers.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/a85571359f7d2a6df3f6135b3e49a069.svg)
+![A flowchart for a program responsible for money transfers.](a85571359f7d2a6df3f6135b3e49a069.svg)
 
 In an ideal scenario, the code above leads to two program states:
 
 - Amount not sent
 - Amount sent
 
-![A state diagram for program responsible for money transfers; it shows two states.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1750346443769.svg)
+![A state diagram for program responsible for money transfers; it shows two states.](5f04259cf9bf5b57aed2c476-1750346443769.svg)
 
 Let’s consider the example of applying a discount coupon. The user goes to their shopping cart and adds a coupon to get a discount. The steps might be something along the following lines:
 
@@ -137,32 +137,32 @@ Let’s consider the example of applying a discount coupon. The user goes to the
     1. The discount is applied if the code is valid and there are no constraints on applying it for this user.
     2. An error message is displayed if the code is invalid or there are constraints on applying it for this user.
 
-![Example flowchart of the code responsible for applying a discount coupon.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f22358005dabe4be5ded6a16b7499ad.svg)
+![Example flowchart of the code responsible for applying a discount coupon.](5f22358005dabe4be5ded6a16b7499ad.svg)
 
 The above code leads to a few program states:
 
 - Coupon not applied
 - Coupon applied
 
-![A state diagram for the code responsible for applying a discount coupon; it shows two states.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/d6787ffe68c2d225144344700326529d.svg)
+![A state diagram for the code responsible for applying a discount coupon; it shows two states.](d6787ffe68c2d225144344700326529d.svg)
 
 Let’s continue our analysis of applying a discount coupon. Ideally, we expect two states: **Coupon not applied** and **Coupon applied**. However, this is too simplistic to depict real sophisticated scenarios. We can add an intermediary state: **Checking coupon applicability**.
 
-![A state diagram for the code responsible for applying a discount coupon; it shows three states.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/0fc7e963d1e251b50b379d0a19039e6f.svg)
+![A state diagram for the code responsible for applying a discount coupon; it shows three states.](0fc7e963d1e251b50b379d0a19039e6f.svg)
 
 Depending on how the application is developed, we can expect more states. For example, **Checking coupon applicability** might involve two states: **Checking coupon validity** and **Checking coupon constraints**. A coupon might be valid, but existing constraints prevent it from being applied. Similarly, **Coupon applied** might be divided into two states, one of which is **Recalculating total**.
 
-![A state diagram for the code responsible for applying a discount coupon; it shows five states.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/a39d6bea81fd850ce9e02f9fbfdc4d55.svg)
+![A state diagram for the code responsible for applying a discount coupon; it shows five states.](a39d6bea81fd850ce9e02f9fbfdc4d55.svg)
 
 In the state diagram above, we can see that we pass through multiple states before the coupon is marked as applied. Let’s draw the states on a time axis, as shown below.
 
-![Timeline showing the different states that the application goes through as it applies a discount coupon.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/4bcf6a7618f9a140f0807ae590106b78.svg)
+![Timeline showing the different states that the application goes through as it applies a discount coupon.](4bcf6a7618f9a140f0807ae590106b78.svg)
 
 There is a time window between the instant we try to add a coupon and the instant where the coupon is marked as applied and cannot be applied again. As long as the coupon is not marked as applied, most likely, no controls prevent it from being accepted repeatedly. We might be able to apply it multiple times during this time window.
 
 This situation is similar when considering the states for the program making a money transfer. Although ideally speaking, it would be two states, considering the business logic, we can easily update the diagram to include three states. The reason is that we expect some time spent checking the account balance and limits; although this amount of time might be brief, it is not zero. If we dig deeper, we can uncover more “hidden” states.
 
-![A state diagram for program responsible for money transfers; it shows three states.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1750346478448.svg)
+![A state diagram for program responsible for money transfers; it shows three states.](5f04259cf9bf5b57aed2c476-1750346478448.svg)
 
 However, even if the web application is vulnerable, we still have one challenge to overcome: timing. Even in vulnerable applications, this “window of opportunity” is relatively short; therefore, exploiting it necessitates that our requests reach the server simultaneously. In practice, we aim to get our repeated requests to reach the server only milliseconds apart.
 
@@ -190,7 +190,7 @@ In the image below, we can see:
 2. The details show the target phone number and a transfer amount of $1.5
 3. In the response, we can infer that the transaction is successful
 
-![Burp Sutie Proxy HTTP history showing an HTTP POST request and response.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/714563c050f0418dd577a28c99ac00e8.png)  
+![Burp Sutie Proxy HTTP history showing an HTTP POST request and response.](714563c050f0418dd577a28c99ac00e8.png)  
 
 Now that we have seen how the system reacts to valid and invalid requests, let’s see if we can exploit a race condition.
 
@@ -204,9 +204,9 @@ In the **Repeater** tab, as shown in the numbered screenshots below:
 4. As a starting point, we will duplicate it 20 times
 5. Next to the Send button, the arrow pointed downwards will bring a menu to decide how you want to send the duplicated requests
 
-![Creating a tab group in Burp Suite Repeater.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/0791576ab6442ee8bc7b5c816075a48e.png)  
+![Creating a tab group in Burp Suite Repeater.](0791576ab6442ee8bc7b5c816075a48e.png)  
 
-![Duplicating a tab 20 times within a tab group in Burp Suite Repeater.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/58ea5e9b87072fde3c104aa8c69dcb80.png)  
+![Duplicating a tab 20 times within a tab group in Burp Suite Repeater.](58ea5e9b87072fde3c104aa8c69dcb80.png)  
 
 Next, we will exploit the target application by sending the duplicated request. Using the built-in options in Burp Suite Repeater, the drop-down arrow offers the following choices:
 
@@ -232,18 +232,18 @@ We tested this option to attack the web application. The screenshot below shows 
 - The first group (labelled 1) comprises five successful requests. We could confirm that they were successful by checking the respective responses. Furthermore, we noticed that each took around 3 seconds, as indicated by the duration (labelled 3).
 - The second group (labelled 2) shows sixteen denied requests. The duration was around four milliseconds. It is interesting to check the Relative Start time as well.
 
-![Wireshark showing 21 different POST requests; five are successful and the remaining ones are not successful.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5b4c02c24aa5d28de8856a161416cb24.png)  
+![Wireshark showing 21 different POST requests; five are successful and the remaining ones are not successful.](5b4c02c24aa5d28de8856a161416cb24.png)  
 
 The screenshot below shows the whole TCP connection for a request. We can confirm that the `POST` request was sent in a single packet.
 
-![Wireshark showing the TCP connection related to a POST request.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/c74da214d087b71fa9a7cffe37f0d439.png)
+![Wireshark showing the TCP connection related to a POST request.](c74da214d087b71fa9a7cffe37f0d439.png)
 
 Choosing to send the group’s requests in parallel would trigger the Repeater to send all the requests in the group at once. In this case, we notice the following, as shown in the screenshot below:
 
 - In the Relative Start column, we notice that all 21 packets were sent within a window of 0.5 milliseconds (labelled 1).
 - All 21 requests were successful; they resulted in a successful credit transfer. Each request took around 3.2 seconds to complete (labelled 2).
 
-![Wireshark showing 21 requests sent in parallel and at the same time.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/0eeea41a616bc42b2eff1dbaa35d9483.png)  
+![Wireshark showing 21 requests sent in parallel and at the same time.](0eeea41a616bc42b2eff1dbaa35d9483.png)  
 
 By paying close attention to the screenshot above, we notice that each request led to 12 packets; however, in the previous attempt (send in sequence), we see that each request required only 10 packets. Why did this happen?
 
@@ -252,7 +252,7 @@ According to [Sending Grouped HTTP Requests](https://portswigger.net/burp/docume
 - In the case of HTTP/2+, the Repeater tries to send the whole group in a single packet. In other words, a single TCP packet would carry multiple requests.
 - In the case of HTTP/1, the Repeater resorts to last-byte synchronization. This trick is achieved by withholding the last byte from each request. Only once all packets are sent without the last-byte are the last-byte of all the requests sent. The screenshot below shows our `POST` request sent over two packets.
 
-![Wireshark showing the TCP connection related to a POST request when using last-byte synchronization.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/50de5a50b80906df95054b339eb87826.png)
+![Wireshark showing the TCP connection related to a POST request when using last-byte synchronization.](50de5a50b80906df95054b339eb87826.png)
 
 ### Questions
 

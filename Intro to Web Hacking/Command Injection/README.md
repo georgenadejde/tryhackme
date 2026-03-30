@@ -19,7 +19,7 @@ This vulnerability exists because applications often use functions in programmin
 
 In this code snippet, the application takes data that a user enters in an input field named `$title` to search a directory for a song title. Let’s break this down into a few simple steps.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/a54a09f7c4efa1d340ab678ece230c44.png)  
+![](a54a09f7c4efa1d340ab678ece230c44.png)  
 
 **1.** The application stores MP3 files in a directory contained on the operating system.
 
@@ -35,7 +35,7 @@ An attacker could abuse this application by injecting their own commands for the
 
 Abusing applications in this way can be possible no matter the programming language the application uses. As long as the application processes and executes it, it can result in command injection. For example, this code snippet below is an application written in Python.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/04a1cb87fad0a9b47761afddc48e0bf2.png)  
+![](04a1cb87fad0a9b47761afddc48e0bf2.png)  
 
 Note, you are not expected to understand the syntax behind these applications. However, for the sake of reason, I have outlined the steps of how this Python application works as well.
 
@@ -132,7 +132,7 @@ In PHP, many functions interact with the operating system to execute commands vi
 
 Take this snippet below as an example. Here, the application will only accept and process numbers that are inputted into the form. This means that any commands such as `whoami` will not be processed.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/14acf436361fcfb7efced4b2f416b3d5.png)
+![](14acf436361fcfb7efced4b2f416b3d5.png)
 
 1. The application will only accept a specific pattern of characters (the digits  0-9)
 2. The application will then only proceed to execute this data which is all numerical.
@@ -145,7 +145,7 @@ Sanitising any input from a user that an application uses is a great way to prev
 
 In the snippet below, the `filter_input` [PHP function](https://www.php.net/manual/en/function.filter-input.php) is used to check whether or not any data submitted via an input form is a number or not. If it is not a number, it must be invalid input.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/06e83dfe3791664ed0bb9bc9ffd3e581.png)
+![](06e83dfe3791664ed0bb9bc9ffd3e581.png)
 
 ### Bypassing Filters
 
@@ -153,7 +153,7 @@ Applications will employ numerous techniques in filtering and sanitising data th
 
 When executed, although the data given will be in a different format than what is expected, it can still be interpreted and will have the same result.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5de96d9ca744773ea7ef8c00/room-content/fd59464e2884390ee1b8bb52b327d454.png)
+![](fd59464e2884390ee1b8bb52b327d454.png)
 
 ### Questions
 

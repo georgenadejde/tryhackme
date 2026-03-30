@@ -76,7 +76,7 @@ You can guess that it is a quote. Who said it?
 	3. `MixColumns(state)`: Each column is multiplied by a fixed matrix (4 by 4 array).
 	4. `AddRoundKey(state)`: A round key is added to the state using the XOR operation.
 
-![Illustration of the ShiftRows function when applied on a four by four array](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/049bad7deb4e6dd426335d7c3477f10a.png)
+![Illustration of the ShiftRows function when applied on a four by four array](049bad7deb4e6dd426335d7c3477f10a.png)
 
 - The total number of transformation rounds depends on the key size.
 

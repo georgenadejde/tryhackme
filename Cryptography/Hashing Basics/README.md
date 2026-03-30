@@ -273,7 +273,7 @@ The following steps give you a fair idea of how HMAC works.
 
 The illustration below should clarify the above steps.
 
-![A visual representation of the HMAC function.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1725294564965.svg)  
+![A visual representation of the HMAC function.](5f04259cf9bf5b57aed2c476-1725294564965.svg)  
 
 Technically speaking, the HMAC function is calculated using the following expression:
 

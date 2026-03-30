@@ -129,11 +129,11 @@ A: `TTL`
 
 how can the Internet figure out how to deliver a packet from Network 1 to Network 2 or Network 3? Although this is an overly simplified diagram, we need some algorithm to figure out how to connect Network 1 to Network 2 and Network 3 and vice versa.
 
-![Three networks are connected to the Internet through its own router.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1719849271800.svg)
+![Three networks are connected to the Internet through its own router.](5f04259cf9bf5b57aed2c476-1719849271800.svg)
 
 The mobile user can reach the web server; however, for this to happen, each router across the path needs to send the packets via the appropriate link. Obviously, there is more than one path, i.e., route, connecting the mobile user and the web server. We need a routing algorithm for the router to figure out which link to use.
 
-![A network with six routers provides more than one path for the hosts to communicate.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1719849333579.svg)
+![A network with six routers provides more than one path for the hosts to communicate.](5f04259cf9bf5b57aed2c476-1719849333579.svg)
 
 Routing algorithms:
 
@@ -161,7 +161,7 @@ Unlike routing, which is the natural way to route packets to the destination hos
 
 In the diagram below, multiple devices access the Internet via a router that supports NAT. The router maintains a table that maps the internal IP address and port number with its external IP address and port number. For instance, the laptop might establish a connection with some web server. From the laptop perspective, the connection is initiated from its IP address `192.168.0.129` from TCP source port number `15401`; however, the web server will see this same connection as being established from `212.3.4.5` and TCP port number `19273`, as shown in the translation table. The router does this address translation seamlessly.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1719849362861.svg)
+![](5f04259cf9bf5b57aed2c476-1719849362861.svg)
 
 
 ### Questions

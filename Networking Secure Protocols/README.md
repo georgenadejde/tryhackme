@@ -50,7 +50,7 @@ Let’s take a minute to review the most common steps before a web browser can r
 
 The two steps described above are shown in the window below. The three packets for the TCP handshake (marked with 1) precede the first HTTP packet with `GET` in it. The HTTP communication is marked with 2. The last three displayed packets are for TCP connection termination and are marked with 3.
 
-![Wireshark displaying a TCP connection getting established, HTTP request sent and response received, and the TCP connection getting terminated.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1721903373648.png)
+![Wireshark displaying a TCP connection getting established, HTTP request sent and response received, and the TCP connection getting terminated.](5f04259cf9bf5b57aed2c476-1721903373648.png)
 
 HTTPS stands for Hypertext Transfer Protocol Secure. It is basically HTTP over TLS. Consequently, requesting a page over HTTPS will require the following three steps (after resolving the domain name):
 
@@ -62,7 +62,7 @@ The screenshot below shows that a TCP session is established in the first three 
 
 Finally, HTTP application data is exchanged, marked with `3`. Looking at the Wireshark screenshot, we see that it says “Application Data” because there is no way to know if it is indeed HTTP or some other protocol sent over port 443.
 
-![Wireshark displaying a TCP connection getting established, a TLS session getting established, and encrypted application data](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1721903449717.png)
+![Wireshark displaying a TCP connection getting established, a TLS session getting established, and encrypted application data](5f04259cf9bf5b57aed2c476-1721903449717.png)
 
 The key takeaway is that TLS offered security for HTTP without requiring any changes in the lower or higher layer protocols. In other words, TCP and IP were not modified, while HTTP was sent over TLS the way it would be sent over TCP.
 
@@ -132,11 +132,11 @@ Almost all companies require “private” information exchange in their virtual
 
 The network diagram below shows an example of a company with two remote branches connecting to the main branch. A VPN client in the remote branches is expected to connect to the VPN server in the main branch. In this case, the VPN client will encrypt the traffic and pass it to the main branch via the established VPN tunnel (shown in blue). The VPN traffic is limited to the blue lines; the green lines would carry the decrypted VPN traffic.
 
-![A network diagram showing two remote company branches connecting to the main branch over VPN.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1721903538365.svg)
+![A network diagram showing two remote company branches connecting to the main branch over VPN.](5f04259cf9bf5b57aed2c476-1721903538365.svg)
 
 In the network diagram below, we see two remote users using VPN clients to connect to the VPN server in the main branch. In this case, the VPN client connects a single device.
 
-![A network diagram showing two remote employees with laptops connecting to the main branch over VPN](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1721903568757.svg)
+![A network diagram showing two remote employees with laptops connecting to the main branch over VPN](5f04259cf9bf5b57aed2c476-1721903568757.svg)
 
 Once a VPN tunnel is established, all our Internet traffic will usually be routed over the VPN connection, i.e. via the VPN tunnel. Consequently, when we try to access an Internet service or web application, they will not see our public IP address but the VPN server’s. This is why some Internet users connect over VPN to circumvent geographical restrictions. Furthermore, the local ISP will only see encrypted traffic, which limits its ability to censor Internet access.
 

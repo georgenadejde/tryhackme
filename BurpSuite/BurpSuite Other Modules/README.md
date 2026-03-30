@@ -11,7 +11,7 @@ tags:
 
 The Decoder module of Burp gives user data manipulation capabilities. As implied by its name, it not only decodes data intercepted during an attack but also provides the function to encode our own data, prepping it for transmission to the target. Decoder also allows us to create hashsums of data, as well as providing a Smart Decode feature, which attempts to decode provided data recursively until it is back to being plaintext (like the "Magic" function of [Cyberchef (opens in new tab)](https://gchq.github.io/CyberChef/)).
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/f795b0f0701d019d37025310fa4ae285.png)
+![](f795b0f0701d019d37025310fa4ae285.png)
 
 1. This box serves as the workspace for entering or pasting data that requires encoding or decoding. Consistent with other modules of Burp, data can be moved to this area from different parts of the framework via the **Send to Decoder** option upon right-clicking.
 2. At the top of the list on the right, there's an option to treat the input as either text or hexadecimal byte values.
@@ -28,7 +28,7 @@ A: `smart decode`
 
 Now, let's examine the manual encoding and decoding options in detail. These are identical whether the decoding or encoding menu is chosen:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/8ce7c550edf3a79cafbb7be8468793ff.png)
+![](8ce7c550edf3a79cafbb7be8468793ff.png)
 
 - **Plain**: This refers to the raw text before any transformations are applied.
 - **URL**: URL encoding is utilized to ensure the safe transfer of data in the URL of a web request. It involves substituting characters for their ASCII character code in hexadecimal format, preceded by a percentage symbol (%). This method is vital for any type of web application testing.
@@ -78,7 +78,7 @@ A: `key3`
 
 Comparer, as the name implies, lets us compare two pieces of data, either by ASCII words or by bytes.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/f05e8f491facd01264f53759714120db.png)
+![](f05e8f491facd01264f53759714120db.png)
 
 The interface can be divided into three main sections:
 
@@ -88,7 +88,7 @@ The interface can be divided into three main sections:
 
 Once we've added at least 2 datasets to compare and press on either **Words** or **Bytes**, a pop-up window shows us the comparison:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/221f10f4817c0ee660248edea10dd041.png)
+![](221f10f4817c0ee660248edea10dd041.png)
 
 This window also has three distinct sections:
 
@@ -114,7 +114,7 @@ Sequencer allows us to evaluate the entropy , or randomness, of "tokens". Tokens
 
 Let's start by looking at the Sequencer interface:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/dab1d10ba6ae4740453d593706cff315.png)
+![](dab1d10ba6ae4740453d593706cff315.png)
 
 We have two main ways to perform token analysis with Sequencer:
 
@@ -136,7 +136,7 @@ First, capture a request to `http://MACHINE_IP/admin/login/` in the
 
 In the "Token Location Within Response" section, we can select between **Cookie**, **Form field**, and **Custom location**. Since we're testing the loginToken in this case, select the "Form field" radio button and choose the loginToken from the dropdown menu:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/9bb4ea43eb0acb59dee493699d336930.png)
+![](9bb4ea43eb0acb59dee493699d336930.png)
 
 In this situation, we can safely leave all other options at their default values
 
@@ -144,7 +144,7 @@ A new window will pop up indicating that a live capture is in progress and displ
 
 Once around 10,000 tokens are captured, click on **Pause** and then select the **Analyze now** button:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/715caf9a950bdd3a3c9ec4a5360ae9ca.png)
+![](715caf9a950bdd3a3c9ec4a5360ae9ca.png)
 
 ![](2026-03-23_11-49.jpg)
 ### Questions
@@ -157,7 +157,7 @@ A: `excellent`
 
 The generated entropy analysis report is split into four primary sections. The first of these is the **Summary** of the results. The summary gives us the following:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/ff780f0e74d75191ea4945dbe7794a29.png)
+![](ff780f0e74d75191ea4945dbe7794a29.png)
 
 - **Overall result**: This gives a broad assessment of the security of the token generation mechanism. In this case, the level of entropy indicates that the tokens are likely securely generated.
     

@@ -30,7 +30,7 @@ IDS can be deployed in the following ways:
     
 - **Network Intrusion Detection System (NIDS):** Network-based IDS solutions are crucial in detecting potentially malicious activities within the whole network, regardless of any specific hosts. They monitor the network traffic of all the hosts involved to detect suspicious activities. It provides a centralized view of all the detections inside the whole network.
 
-![Difference between NIDS and HIDS.](https://tryhackme-images.s3.amazonaws.com/user-uploads/6645aa8c024f7893371eb7ac/room-content/6645aa8c024f7893371eb7ac-1723026309300.png)
+![Difference between NIDS and HIDS.](6645aa8c024f7893371eb7ac-1723026309300.png)
 
 
 ### Detection Modes
@@ -83,7 +83,7 @@ Snort has some built-in rule files, a configuration file, and other files. These
 
 Now, let’s discuss how rules are created in Snort. There is a specific way of writing the rules. A sample rule would detect ICMP packets (usually used when you ping a host) coming from any IP address and port and reaching the home network (the network range is defined in Snort’s configuration file) to any port. Once such traffic is detected, it generates “Ping Detected” alerts.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/6645aa8c024f7893371eb7ac/room-content/6645aa8c024f7893371eb7ac-1725532438800.png)
+![](6645aa8c024f7893371eb7ac-1725532438800.png)
 
 The details of the components involved in this rule are given below:
 

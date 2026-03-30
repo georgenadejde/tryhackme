@@ -36,15 +36,15 @@ Additionally, it has the following features:
 
 - `Add a new input tab`: This is where an additional tab is created for the user to use different values from the previous tab.
 
-![Open a new input tab option under the Input Area.](https://tryhackme-images.s3.amazonaws.com/user-uploads/6645aa8c024f7893371eb7ac/room-content/6645aa8c024f7893371eb7ac-1728731934218.png)
+![Open a new input tab option under the Input Area.](6645aa8c024f7893371eb7ac-1728731934218.png)
 
 - `Open folder as input`: This feature allows users to upload a whole folder as input value.
 
-![Open folder as input option under the Input Area.](https://tryhackme-images.s3.amazonaws.com/user-uploads/6645aa8c024f7893371eb7ac/room-content/6645aa8c024f7893371eb7ac-1728731934186.png)  
+![Open folder as input option under the Input Area.](6645aa8c024f7893371eb7ac-1728731934186.png)  
 
 - `Open file as input`: This feature allows the user to upload a file as its input value.
 
-![Open file as input option under the Input Area.](https://tryhackme-images.s3.amazonaws.com/user-uploads/6645aa8c024f7893371eb7ac/room-content/6645aa8c024f7893371eb7ac-1728731934210.png)  
+![Open file as input option under the Input Area.](6645aa8c024f7893371eb7ac-1728731934210.png)  
 
 - `Clear input and output`: This feature allows the user to clear any input values inserted and the corresponding output value.
 - `Reset pane layout`: This feature brings the tool's interface to its default window sizes.
@@ -63,7 +63,7 @@ A: `recipe`
 
 Before even going to the actual thing, let's have a quick overview of the thought process when using CyberChef! This process consists of four different steps:
 
-![This image illustrates the thought process when using CyberChef. The first box includes setting a clear objective and answering the question What do you want to achieve? The second box includes the steps you can do with your data. The third box includes which operations you might want to use. This can be a little bit tricky if you are not familiar with the data that you have. However, there are plenty of operations that we can choose from. The last box includes determining if the output is the desired one. If not, it states to repeat the process from the first box](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1726735685403.png)
+![This image illustrates the thought process when using CyberChef. The first box includes setting a clear objective and answering the question What do you want to achieve? The second box includes the steps you can do with your data. The third box includes which operations you might want to use. This can be a little bit tricky if you are not familiar with the data that you have. However, there are plenty of operations that we can choose from. The last box includes determining if the output is the desired one. If not, it states to repeat the process from the first box](5e6bbe59a46ee9407fd65bbe-1726735685403.png)
 
 ### Questions
 

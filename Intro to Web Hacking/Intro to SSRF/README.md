@@ -54,21 +54,21 @@ A: `THM{SSRF_MASTER}`
 
 **When a full URL is used in a parameter in the address bar:**
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/956e1914b116cbc9e564e3bb3d9ab50a.png)  
+![](956e1914b116cbc9e564e3bb3d9ab50a.png)  
 
 **A hidden field in a form:**
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/237696fc8e405d25d4fc7bbcc67919f0.png)  
+![](237696fc8e405d25d4fc7bbcc67919f0.png)  
 
 **A partial URL such as just the hostname:**
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/f3c387849e91a4f15a7b59ff7324be75.png)
+![](f3c387849e91a4f15a7b59ff7324be75.png)
 
   
 
 **Or perhaps only the path of the URL:**
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/3fd583950617f7a3713a107fcb4cfa49.png)
+![](3fd583950617f7a3713a107fcb4cfa49.png)
 
 Some of these examples are easier to exploit than others, and this is where a lot of trial and error will be required to find a working payload.
 
@@ -128,7 +128,7 @@ We've come across two new endpoints during a content discovery exercise against 
 First, create a customer account and sign in. Once you've signed in, visit [https://10-80-188-95.reverse-proxy.cell-prod-eu-west-1a.vm.tryhackme.com/customers/new-account-page](https://10-80-188-95.reverse-proxy.cell-prod-eu-west-1a.vm.tryhackme.com/customers/new-account-page) to view the new avatar selection feature. By viewing the page source of the avatar form, you'll see the avatar form field value contains the path to the image. The background-image style can confirm this in the above DIV element as per the screenshot below:
 
   
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/bd9ee9ac0b7592b5343cbc8dd9b57189.png)
+![](bd9ee9ac0b7592b5343cbc8dd9b57189.png)
 
   
 
@@ -136,13 +136,13 @@ If you choose one of the avatars and then click the **Update Avatar** button, 
 
   
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5c549500924ec576f953d9fc/room-content/8685bf7a4b24616031425a7f5e8db1ae.png)
+![](8685bf7a4b24616031425a7f5e8db1ae.png)
 
 Viewing the page source will show your current avatar is displayed using the data URI scheme, and the image content is base64 encoded as per the screenshot below.  
 
   
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/fff0ea113602635dcf5d1e8d0b1d8bca.png)  
+![](fff0ea113602635dcf5d1e8d0b1d8bca.png)  
 
   
 
@@ -150,7 +150,7 @@ Now let's try making the request again but changing the avatar value to **priva
 
   
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/2ef87608418e47625bedad9d0361ed08.png)  
+![](2ef87608418e47625bedad9d0361ed08.png)  
 
   
 
@@ -158,19 +158,19 @@ Now let's try making the request again but changing the avatar value to **priva
 
   
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/a1712298679cc642d792d935b14effe5.png)  
+![](a1712298679cc642d792d935b14effe5.png)  
 
 Be sure to select the avatar you edited and then click the **Update Avatar** button. Unfortunately, it looks like the web application has a deny list in place and has blocked access to the /private endpoint.
 
   
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/a59460cc19eaf5776ee8a882e25b2d64.png)
+![](a59460cc19eaf5776ee8a882e25b2d64.png)
 
   
 
 As you can see from the error message, the path cannot start with /private but don't worry, we've still got a trick up our sleeve to bypass this rule. We can use a directory traversal trick to reach our desired endpoint. Try setting the avatar value to **x/../private**
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5efe36fb68daf465530ca761/room-content/84b88d9c6fa6a29450520625bb42870d.png)
+![](84b88d9c6fa6a29450520625bb42870d.png)
 
 You'll see we have now bypassed the rule, and the user updated the avatar. This trick works because when the web server receives the request for **x/../private**, it knows that the **../** string means to move up a directory that now translates the request to just **/private**.
 

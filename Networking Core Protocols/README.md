@@ -125,7 +125,7 @@ Let’s present some of the commands used by your mail client when it transfers 
 
 The SMTP server listens on TCP port 25 by default.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1719849634602.png)
+![](5f04259cf9bf5b57aed2c476-1719849634602.png)
 
 ### Questions
 
@@ -157,7 +157,7 @@ POP3 server listens on TCP port 110 by default.
 
 Someone capturing the network packets would be able to intercept the exchanged traffic. As per previous Wireshark captures, the commands in red are sent by the client, and the lines in blue are the server’s. It is also clear that someone capturing the traffic can read the passwords.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1719849655900.png)
+![](5f04259cf9bf5b57aed2c476-1719849655900.png)
 
 
 ### Questions
@@ -189,7 +189,7 @@ The IMAP protocol commands are more complicated than the POP3 protocol commands.
 
 IMAP server listens on TCP port 143 by default
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5f04259cf9bf5b57aed2c476/room-content/5f04259cf9bf5b57aed2c476-1719849677604.png)
+![](5f04259cf9bf5b57aed2c476-1719849677604.png)
 
 ### Questions
 

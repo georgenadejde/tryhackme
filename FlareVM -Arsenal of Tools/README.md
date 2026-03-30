@@ -135,7 +135,7 @@ These tools are the basic ones used for initial investigations. See the list bel
 
 A powerful Windows tool designed to help you record issues with your system's apps. It lets you **see, record, and keep track of system and Windows file activity in real-time**. Process Monitor is helpful for **tracking system activity, especially regarding malware research, troubleshooting, and forensic investigations**. It keeps real-time tabs on the file system, registry, and thread/process activity.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727302306550.png)
+![](5e6bbe59a46ee9407fd65bbe-1727302306550.png)
 
 According to this log entry, the Local Security Authority Subsystem Service (LSASS)- related process lsass.exe has successfully read a file. LSASS handles authentication and frequently communicates with crucial system files such as lsasrv.dll (Local Security Authority Server Service).
 
@@ -145,7 +145,7 @@ Although this is a standard system process, LSASS may be the target of credentia
 
 Process Explorer offers in-depth insights into the active processes running on your computer. It allows you to delve into the inner workings of your system, providing a comprehensive list of currently running processes and their linked user accounts. If you've ever been curious about which program is accessing a specific file or folder, Process Explorer can provide us with that information.
 
-![The image shows the process and it's parent. We can validate the process ID and other information of the process here](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727171765939.png)
+![The image shows the process and it's parent. We can validate the process ID and other information of the process here](5e6bbe59a46ee9407fd65bbe-1727171765939.png)
 
 As you can see from the image above, the CFF Explorer app is open. Using **Process Explorer(procexp),** located on the desktop, we identified the process and its parent process. This is usually pretty useful when we want to monitor what other processes are being spawned, such as from a Word document, an LNK file, or even an ISO file, as threat actors typically abuse these.
 
@@ -153,7 +153,7 @@ As you can see from the image above, the CFF Explorer app is open. Using **Proce
 
 HxD is a quick and flexible hex editor for editing files, memory, and drives of any capacity. It can be applied to forensic investigation, data recovery, debugging, and exact manipulation of binary data. Important features include viewing file and memory contents, editing, searching, and comparing hex data
 
-![The image shows the hex value of a file](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727170785692.png)
+![The image shows the hex value of a file](5e6bbe59a46ee9407fd65bbe-1727170785692.png)
 
 This HxD hex editor snapshot shows the binary file **possible_medusa.txt**. The hex data on the left indicates the file's contents in hexadecimal, and the ASCII interpretation appears on the right. Interestingly, the file starts with **4D 5A (Little Endian)**, indicating it is executable.
 
@@ -165,7 +165,7 @@ By permitting in-depth examination of a file's unprocessed hexadecimal data, HxD
 
 With the help of CFF Explorer's comprehensive file information, investigators can generate file hashes for integrity verification, authenticate the source of system files, and validate their validity (e.g., by looking for unusual alterations). This is important to know when analyzing malware since dangerous code may be hidden in altered system files.
 
-![the image shows the information of the file when opened using the CFF explorer tool.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727170785706.png)
+![the image shows the information of the file when opened using the CFF explorer tool.](5e6bbe59a46ee9407fd65bbe-1727170785706.png)
 
 The **cryptominer.bin** file's details are displayed in the sample. On September 23, 2024, a 64-bit Portable Executable file was generated. The file's information can be verified by its hashes (SHA-1 and MD5). During investigations, this tool aids in confirming file information lookup and locating possible problems.
 
@@ -179,7 +179,7 @@ Static analysis, or studying executable file properties without running the file
 
 So, how does it work? Let's look at the image below.
 
-![this image shows information about the certain file that you wish to examine.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727170785666.png)
+![this image shows information about the certain file that you wish to examine.](5e6bbe59a46ee9407fd65bbe-1727170785666.png)
 
 This example shows the examination of an executable file, PSexec.exe ( **not in the VM; this is a pure example only**), using PEstudio 9.22, a static malware analysis tool. The file has a dual purpose—legitimate for system administrators but potentially exploited by hackers for remote access.
 
@@ -260,7 +260,7 @@ Legitimate REGEDIT tools are usually found in the **C:\Windows\System32** direct
 
 What else?
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727175229441.png)
+![](5e6bbe59a46ee9407fd65bbe-1727175229441.png)
 
 Редактор реестра" - "Registry Editor", "Операционная система Microsoft® Windows®") in the file’s metadata is suspicious, primarily if the user or the organization does not operate in a Russian-speaking environment. This could potentially have profound implications for our organization.
 
@@ -268,7 +268,7 @@ The absence of a **rich header**  indicates that the file is potentially packed
 
 The **function** tabs list **API calls** that the file has imported. This is also known as the IAT (Import Address Table). By clicking on the blacklist tab, PeStudio will sort the API by moving all the blacklisted functions to the top. This is useful because it enables us to understand how malware may behave once it compromises a host. The image below shows what API has been imported.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727178234246.png)
+![](5e6bbe59a46ee9407fd65bbe-1727178234246.png)
 
 Here are the important functions that we noted.
 
@@ -280,7 +280,7 @@ Here are the important functions that we noted.
 
 Run the command `FLOSS.exe .\windows.exe > windows.txt`
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727179931028.png)
+![](5e6bbe59a46ee9407fd65bbe-1727179931028.png)
 
 Aren't these familiar? These are the functions that we saw earlier using the PEStudio tool!
 
@@ -290,7 +290,7 @@ In this example, we will analyze the network connectivity of the file **cobalts
 
 We will try to figure out if the file is making any network connectivity to any possible c2 server.  Let's get started! Run the file **cobaltstrike.exe** and open **Process Explorer** on the desktop or from the taskbar. You can also search for it in the Windows search bar. If you manually click the binary **Explorer.exe** would be the parent process, and cobaltstrike.exe would be the child process. Let's see if that is indeed the case.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727191613610.png)
+![](5e6bbe59a46ee9407fd65bbe-1727191613610.png)
 
 Right-click on the process, select **Properties** and go to the **TCP/IP** tab. We should be able to determine the destination it connects to and the state it sends.
 
@@ -300,7 +300,7 @@ There we have it! On another note, when we are doing analysis, it needs to be ve
 
 When we open Procmon, looking for the binary is challenging as it will list all active processes. What we are going to do is filter it. The image below points to the filter icon. Or you can press **CRTL + L**.
 
-![this image shows how to use the filter for process monitor tool](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727192184037.png)  
+![this image shows how to use the filter for process monitor tool](5e6bbe59a46ee9407fd65bbe-1727192184037.png)  
 
 - Now, using this filter involves several steps. This includes:
     1. Select the **Process Name**
@@ -310,7 +310,7 @@ When we open Procmon, looking for the binary is challenging as it will list all 
     5. And then **Add** and Click on Apply
     6. You should be able to see the conditions added.
 
-![This image shows the steps you will use to filter the results of process monitor tool.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1727193011175.png)
+![This image shows the steps you will use to filter the results of process monitor tool.](5e6bbe59a46ee9407fd65bbe-1727193011175.png)
 
 This should give us a more detailed result.
 

@@ -17,7 +17,7 @@ Security Information and Event Management system (SIEM) is the core security sol
 
 Multiple devices in a network communicate with each other and, most of the time, with the Internet through a router. The image below shows an example of a simple network that comprises multiple Linux/Windows-based Endpoints, one data server, and one website.
 
-![A network diagram showing multiple servers and workstations.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e8dd9a4a45e18443162feab/room-content/41df28fd5cb0b3f4f8ee8616ed315d94.png)
+![A network diagram showing multiple servers and workstations.](41df28fd5cb0b3f4f8ee8616ed315d94.png)
 
 These devices continuously generate logs of the activities that occur within them. We can also call these devices log sources. The logs they generate serve as a trail of all the activities and are extremely helpful for identifying malicious activities or general troubleshooting. These log sources are mainly divided into two categories
 
@@ -75,7 +75,7 @@ A: `network-centric`
 
 Security Information and Event Management (SIEM) is a security solution that collects logs from various types of log sources, standardizes their format into a consistent one, correlates them, and detects malicious activities using detection rules.
 
-![Features of SIEM solution.](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e8dd9a4a45e18443162feab/room-content/63724f4da84dd3cfbaf2937790910e20.png)
+![Features of SIEM solution.](63724f4da84dd3cfbaf2937790910e20.png)
 
 ### Features of SIEM
 
@@ -151,7 +151,7 @@ All these logs provide a wealth of information and can help identify security is
 
 An example of how Splunk provides various methods for log Ingestion is shown below:
 
-![Shows data Ingestion Options in Splunk SIEM](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e8dd9a4a45e18443162feab/room-content/82d3a3a56537be4635c58cc10caee050.png)
+![Shows data Ingestion Options in Splunk SIEM](82d3a3a56537be4635c58cc10caee050.png)
 
 ### Questions
 

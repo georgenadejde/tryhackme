@@ -212,7 +212,7 @@ The same goes for the **obfuscation** namespace. We have rules that are grouped,
 
 Again, do note that this is still under TLN **Anti-Analysis**!
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1728863959663.png)
+![](5e6bbe59a46ee9407fd65bbe-1728863959663.png)
 
 ### Questions
 
@@ -350,13 +350,13 @@ o analyze this result with ease, we need to do two things. First, we will use th
 
 The second thing we need to do is upload the file to **CAPA Explorer Web**. We can either use their online version here on this [link](https://mandiant.github.io/capa/explorer/#/), or the offline version already in the virtual machine.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1726485953392.png)
+![](5e6bbe59a46ee9407fd65bbe-1726485953392.png)
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1726486090871.png)
+![](5e6bbe59a46ee9407fd65bbe-1726486090871.png)
 
 We know that the capability was to **reference anti-VM strings targeting VMWare,** and the corresponding rule config file or yaml file is **anti-VM-Strings-targeting-VMWare.yml.** Notice the box from the image.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1726487492872.png)
+![](5e6bbe59a46ee9407fd65bbe-1726487492872.png)
 
  Then, let us show you an overview of the rule's content. Focus on the **features** as CAPA uses the succeeding strings below to check if strings are within the analyzed file.
 
@@ -440,7 +440,7 @@ Did you see it? That's right! Under the features, the "**string: /VMWare/i"** is
   
 Let's have another sample.  We know that the capability was to reference the **scheduled task via schtasks**, and the corresponding rule was to schedule the **task via schtasks****.yml.** Notice the box from the image.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1726488911179.png)
+![](5e6bbe59a46ee9407fd65bbe-1726488911179.png)
 
 The same applies to our first example; we will show you the rule's content overview. Focus on the features, as CAPA uses the succeeding strings below to check if there are strings within the file being analyzed.
 
@@ -474,7 +474,7 @@ Under the feature, the "**string: /schtasks/i** and **/\/create /i"** is refere
 
 Another cool feature of this tool is its filter options and the Global Search box, which are very helpful.
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/5e6bbe59a46ee9407fd65bbe/room-content/5e6bbe59a46ee9407fd65bbe-1726489697099.png)
+![](5e6bbe59a46ee9407fd65bbe-1726489697099.png)
 
 ### Questions
 

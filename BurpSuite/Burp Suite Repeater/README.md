@@ -16,7 +16,7 @@ The ability to edit and resend requests multiple times makes Repeater invaluable
 
 The Repeater interface consists of six main sections, as depicted in the annotated diagram below:
 
-![Showing a sample request in burp suite repeater](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/3a4a4ee2008a2ed6a1aa8e9af3601ab2.png)
+![Showing a sample request in burp suite repeater](3a4a4ee2008a2ed6a1aa8e9af3601ab2.png)
 
 1. **Request List**: Located at the top left of the tab, it displays the list of Repeater requests. Multiple requests can be managed simultaneously, and each new request sent to Repeater will appear here.
     
@@ -54,7 +54,7 @@ Repeater provides us with various request and response presentation options, ran
 
 To explore these options, we can refer to the section located above the response box, where the following four view buttons are available:
 
-![Four buttons above the response box](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/635ad62b0204b104bbd58489716eccde.png)
+![Four buttons above the response box](635ad62b0204b104bbd58489716eccde.png)
 
 We are presented with the following display choices:
 
@@ -80,11 +80,11 @@ Inspector is a supplementary feature to the Request and Response views in the Re
 
 Inspector can be utilized both in the Proxy and Repeater module. In both instances, it is situated on the far-right side of the window, presenting a list of components within the request and response:
 
-![](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/6c95db764fe7491d938485256fd1dd87.png)  
+![](6c95db764fe7491d938485256fd1dd87.png)  
 
 Among these components, the sections pertaining to the request can typically be modified, enabling the addition, editing, and removal of items. For instance, in the **Request Attributes** section, we can alter elements related to the location, method, and protocol of the request. This includes modifying the desired resource to retrieve, changing the HTTP method from GET to another variant, or switching the protocol from HTTP/1 to HTTP/2:
 
-![Switching the protocol from HTTP/1 to HTTP/2](https://tryhackme-images.s3.amazonaws.com/user-uploads/5d9e176315f8850e719252ed/room-content/4f3a0f3714ceebbd6016e077369b48e8.png)
+![Switching the protocol from HTTP/1 to HTTP/2](4f3a0f3714ceebbd6016e077369b48e8.png)
 
 Other sections available for viewing and/or editing include:
 

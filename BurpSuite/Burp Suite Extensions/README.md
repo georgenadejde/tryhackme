@@ -9,7 +9,7 @@ tags:
 
 ## The Extensions Interface
 
-![Extensions interface](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/499907ccb192f8deb8f473accd967df9.png)
+![Extensions interface](499907ccb192f8deb8f473accd967df9.png)
 
 1. **Extensions List**: The top box displays a list of the extensions that are currently installed in Burp for the current project. It allows you to activate or deactivate individual extensions.
 2. **Managing Extensions**: On the left side of the Extensions interface, there are options to manage extensions:
@@ -42,7 +42,7 @@ Follow these steps to install the Request Timer extension from the BApp store:
 3. Click on the returned extension to view more details.
 4. Click the **Install** button to install the Request Timer extension.
 
-![Process to install request timer from BApp Store](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/f667309abf35384b10ab28ffe04da311.png)
+![Process to install request timer from BApp Store](f667309abf35384b10ab28ffe04da311.png)
 
 ## Jython
 
@@ -52,13 +52,13 @@ Follow these steps to integrate Jython into Burp:
 
 1. **Download Jython** JAR: Visit the [Jython website (opens in new tab)](https://www.jython.org/download) and download the standalone JAR archive. Look for the **Jython Standalone** option. Save the JAR file to a location on your disk.
     
-    ![Jython Standalone download link](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/bdfe7373a7aa5fc356cdd95f0f7a2370.png)
+    ![Jython Standalone download link](bdfe7373a7aa5fc356cdd95f0f7a2370.png)
     
 - **Configure Jython in** Burp: Open Burp and switch to the **Extensions** module. Then, go to the **Extensions settings** sub-tab.
 - **Python Environment**: Scroll down to the "Python environment" section.
 - **Set Jython** JAR **Location**: In the "Location of Jython standalone JAR file" field, set the path to the downloaded Jython JAR file.
     
-    ![Setting the location of Jython Standalone](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/092c98a31ec4a28c39ef9e1446305762.png)
+    ![Setting the location of Jython Standalone](092c98a31ec4a28c39ef9e1446305762.png)
     
 
 Once you have completed these steps, Jython will be integrated with Burp, allowing you to use Python modules in the tool. This integration significantly increases the number of available extensions and enhances your capabilities in performing various security testing and web application assessment tasks.
@@ -69,7 +69,7 @@ In the Extensions module, you have access to a wide range of API endpoints that 
 
 To view the available API endpoints, navigate to the **APIs** sub-tab within the Extensions module. Each item listed in the left-hand panel represents a different API endpoint that can be accessed from within extensions.
 
-![Burp Suite Extender APIs](https://tryhackme-images.s3.amazonaws.com/user-uploads/645b19f5d5848d004ab9c9e2/room-content/b815da3ba5714ffd2cbfa13c1c034aae.png)
+![Burp Suite Extender APIs](b815da3ba5714ffd2cbfa13c1c034aae.png)
 
 The Extensions APIs give developers significant power and flexibility when writing custom extensions. You can use these APIs to seamlessly interact with Burp's existing functionality and tailor your extensions to perform specific tasks.
 
