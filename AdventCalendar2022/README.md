@@ -1,9 +1,80 @@
 ---
-title: "Advent Calendar2022"
-startDate: 01.12.2022
-endDate: 
+title: Advent Calendar 2022
 user: h4ck47d4wn
-tags: 
+date: 01.12.22 
+description: Get started with Cyber Security in 24 Days - learn the basics by doing a new, beginner-friendly security challenge every day leading up to Christmas.
+tags:
+  - frameworks
+  - mitre
+  - iso
+  - killchain
+  - nist
+  - logfiles
+  - grep
+  - osint
+  - googledorking
+  - whois
+  - robots
+  - github
+  - scanning
+  - ports
+  - port
+  - nmap
+  - nikto
+  - ssh
+  - rdp
+  - vnc
+  - hydra
+  - phishing
+  - emailanalysis
+  - emlanalyzer
+  - cyberchef
+  - blockchain
+  - smartcontracts
+  - reentrancy
+  - docker
+  - metasploit
+  - important
+  - meterpreter
+  - pivoting
+  - msfconsole
+  - socksproxy
+  - proxy
+  - memory
+  - cetus
+  - volatility
+  - memoryforensics
+  - process
+  - malware
+  - malwareanalysis
+  - die
+  - capa
+  - pcap
+  - packets
+  - wireshark
+  - web
+  - owasp
+  - idor
+  - sqli
+  - sql
+  - regex
+  - html5
+  - threatdetection
+  - sigma
+  - yaml
+  - hardware
+  - usart
+  - spi
+  - i2c
+  - saleae
+  - firmware
+  - reverseengineering
+  - binwalk
+  - fmk
+  - iot
+  - paho
+  - mosquitto
+  - attackvectors
 ---
 # [Advent Calendar 2022](https://tryhackme.com/room/adventofcyber4)
 
