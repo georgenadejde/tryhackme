@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THM Writeups · George Nădejde</title>
+  <meta name="description" content="TryHackMe room writeups by George Nădejde — penetration testing, forensics, reverse engineering and more." />
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="{{ '/' | relative_url }}" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+      <a href="https://github.com/georgenadejde/tryhackme" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>github
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="index-main">
+  <div class="container">
+
+    <div class="index-header">
+      <span class="section-tag">$ ls -la ~/writeups/tryhackme/</span>
+      <h1 class="index-title">TryHackMe Writeups</h1>
+      <p class="index-desc">Room walkthroughs and notes — penetration testing, forensics, reverse engineering and more.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-num" id="totalCount">0</span>
+        <span class="stat-label">Total Rooms</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="shownCount">0</span>
+        <span class="stat-label">Showing</span>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <span class="search-prefix">$ grep -r "</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="search rooms..." autocomplete="off" spellcheck="false" />
+      <span class="search-suffix">" ./</span>
+    </div>
+
+    <!-- Tag filter -->
+    <div class="tag-filter" id="tagFilter">
+      <span class="tag-filter-label">$ filter --tag</span>
+      <div class="tag-list" id="tagList">
+        <button class="tag-btn active" data-tag="all">all</button>
+        {% assign all_tags = "" | split: "" %}
+        {% for page in site.pages %}
+          {% if page.tags %}
+            {% for tag in page.tags %}
+              {% unless all_tags contains tag %}
+                {% assign all_tags = all_tags | push: tag %}
+              {% endunless %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+        {% assign sorted_tags = all_tags | compact | sort %}
+        {% for tag in sorted_tags %}
+        <button class="tag-btn" data-tag="{{ tag }}">{{ tag }}</button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Writeup list -->
+    <div class="writeup-list" id="writeupList">
+      {% assign writeups = site.pages | sort: 'title' %}
+      {% for page in writeups %}
+        {% if page.layout == 'writeup' and page.name == 'README.md' %}
+        <a href="{{ page.url | relative_url }}"
+           class="writeup-item"
+           data-name="{{ page.title | downcase | escape }}"
+           data-desc="{{ page.description | downcase | escape }}"
+           data-tags="{{ page.tags | join: ',' | downcase | escape }}">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">{{ page.title | default: page.dir | remove: '/' | replace: '-', ' ' }}</span>
+              {% if page.description %}
+              <span class="writeup-desc">{{ page.description }}</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            {% if page.tags %}
+              {% assign tag_limit = 3 %}
+              {% assign tag_count = page.tags | size %}
+              {% for tag in page.tags limit:tag_limit %}
+              <span class="tag-pill">{{ tag }}</span>
+              {% endfor %}
+              {% if tag_count > tag_limit %}
+              <span class="tag-more">+{{ tag_count | minus: tag_limit }}</span>
+              {% endif %}
+            {% endif %}
+          </div>
+        </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- No results -->
+    <div class="no-results" id="noResults" style="display:none;">
+      <span class="prompt">george@kali:~$</span> grep: no matches found
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://linkedin.com/in/george-nadejde" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const items = Array.from(document.querySelectorAll('.writeup-item'));
+  const searchInput = document.getElementById('searchInput');
+  const noResults = document.getElementById('noResults');
+  const shownCount = document.getElementById('shownCount');
+  const totalCount = document.getElementById('totalCount');
+  const tagBtns = document.querySelectorAll('.tag-btn');
+
+  let activeTag = 'all';
+  let searchQuery = '';
+
+  totalCount.textContent = items.length;
+  shownCount.textContent = items.length;
+
+  function filterItems() {
+    let visible = 0;
+    items.forEach(item => {
+      const name = item.dataset.name || '';
+      const desc = item.dataset.desc || '';
+      const tags = item.dataset.tags || '';
+      const matchesSearch = !searchQuery || name.includes(searchQuery) || desc.includes(searchQuery);
+      const matchesTag = activeTag === 'all' || tags.split(',').includes(activeTag);
+      const show = matchesSearch && matchesTag;
+      item.style.display = show ? 'flex' : 'none';
+      if (show) visible++;
+    });
+    shownCount.textContent = visible;
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value.toLowerCase().trim();
+    filterItems();
+  });
+
+  tagBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tagBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTag = btn.dataset.tag;
+      filterItems();
+    });
+  });
+</script>
+
+</body>
+</html>

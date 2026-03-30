@@ -1,0 +1,50 @@
+title: TryHackMe Writeups
+description: Room writeups by George Nădejde
+baseurl: "/tryhackme"
+url: "https://georgenadejde.github.io"
+
+markdown: kramdown
+highlighter: rouge
+
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+# Disable date parsing — our dates are in DD.MM.YY format which Jekyll rejects
+future: true
+unpublished: true
+
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: false
+
+# Tell Jekyll not to process these
+exclude:
+  - vendor/
+  - .bundle/
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - "THM Room To Do List.md"
+  - "TryHackMe.md"
+  - .nojekyll
+  - "*.yar"
+  - somefile
+
+# Collect all pages and read front matter
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "writeup"
+  - scope:
+      path: "index.md"
+    values:
+      layout: "home"

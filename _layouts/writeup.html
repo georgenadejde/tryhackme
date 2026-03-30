@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ page.title | default: page.dir | remove: '/' }} · THM Writeups</title>
+  {% if page.description %}
+  <meta name="description" content="{{ page.description | escape }}" />
+  {% endif %}
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="{{ '/' | relative_url }}" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="{{ '/' | relative_url }}" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="{{ '/' | relative_url }}">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>{{ page.title | default: page.dir | remove: '/' | replace: '-', ' ' }}</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">{{ page.path }}</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        {% if page.tags %}
+          {% for tag in page.tags %}
+          <span class="tag-pill">{{ tag }}</span>
+          {% endfor %}
+        {% endif %}
+        {% if page.description %}
+        <span class="writeup-meta-desc">{{ page.description }}</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Content -->
+    <article class="writeup-content">
+      {{ content }}
+    </article>
+
+    <!-- Back button -->
+    <div class="writeup-footer-nav">
+      <a href="{{ '/' | relative_url }}" class="btn-ghost">← Back to Index</a>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

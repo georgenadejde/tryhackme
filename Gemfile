@@ -1,0 +1,7 @@
+source "https://rubygems.org"
+
+gem "jekyll", "~> 3.10"
+gem "jekyll-relative-links"
+gem "kramdown-parser-gfm"
+gem "webrick"
+gem "rouge"
