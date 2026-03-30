@@ -1,5 +1,5 @@
 ---
-title: "OSIModel"
+title: OSI Model
 user: bung3r
 date: 02.02.2023
 tags: osi

@@ -1,5 +1,5 @@
 ---
-title: "OWASP Top 10 2025 IAAA Failures"
+title: OWASP Top 10 2025 - IAAA Failures
 user: bung3r
 date: 19.12.25
 description: Learn about A01, A07, and A09 in how they related to failures in the applied IAAA model.

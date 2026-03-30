@@ -1,5 +1,5 @@
 ---
-title: "Burp Suite the basics"
+title: "Burp Suite: the basics"
 user: bung3r
 date: 18.09.2024
 tags:

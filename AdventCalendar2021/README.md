@@ -1,5 +1,5 @@
 ---
-title: "Advent Calendar2021"
+title: Advent Calendar 2021
 user: h4ck@d4wn
 date: 23.02.22
 description: Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.

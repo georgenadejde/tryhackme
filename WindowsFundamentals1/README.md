@@ -1,5 +1,5 @@
 ---
-title: "Windows Fundamentals1"
+title: Windows Fundamentals 1
 user:
   - bung3r
 date: 12.06.22

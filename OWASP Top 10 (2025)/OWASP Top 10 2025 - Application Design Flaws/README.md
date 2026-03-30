@@ -1,5 +1,5 @@
 ---
-title: "OWASP Top 10 2025 Application Design Flaws"
+title: OWASP Top 10 2025 - Application Design Flaws
 user: bung3r
 date: 19.12.25
 description: Learn about A02, A03, A06, and A10 and how they related to design flaws in the application.

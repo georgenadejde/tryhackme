@@ -1,5 +1,5 @@
 ---
-title: "OWASPTop10"
+title: OWASP Top 10
 user:
   - bung3r
 date: 04.06.22

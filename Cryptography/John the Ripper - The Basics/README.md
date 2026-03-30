@@ -1,5 +1,5 @@
 ---
-title: "John the Ripper The Basics"
+title: "John the Ripper: The Basics"
 user: bung3r
 date: 16.12.25
 description: Learn how to use John the Ripper, a powerful and adaptable hash-cracking tool.

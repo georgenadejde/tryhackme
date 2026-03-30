@@ -1,5 +1,5 @@
 ---
-title: "Bashscripting"
+title: Bash Scripting
 user: bung3r
 description: A Walkthrough room to teach you the basics of bash scripting
 tags:

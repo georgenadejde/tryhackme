@@ -1,5 +1,5 @@
 ---
-title: "Gobuster The Basics"
+title: "Gobuster: The Basics"
 user: bung3r
 date: 23.12.25
 description: This room focuses on an introduction to Gobuster, an offensive security tool used for enumeration.

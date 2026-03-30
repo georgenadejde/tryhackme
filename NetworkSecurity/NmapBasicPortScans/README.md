@@ -1,5 +1,5 @@
 ---
-title: "Nmap Basic Port Scans"
+title: "Nmap: Basic Port Scans"
 user: bung3r
 date: 26.03.2026
 description: Learn in-depth how nmap TCP connect scan, TCP SYN port scan, and UDP port scan work.

@@ -1,5 +1,5 @@
 ---
-title: "SQLMap The Basics"
+title: "SQLMap: The Basics"
 user: bung3r
 date: 23.12.25
 description: Learn about SQL injection and exploit this vulnerability through the SQLMap tool.

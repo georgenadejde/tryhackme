@@ -1,5 +1,5 @@
 ---
-title: "Windows Fundamentals3"
+title: Windows Fundamentals 3
 user: bung3r
 date: 15.06.22
 description: In part 3 of the Windows Fundamentals module, learn about the built-in Microsoft tools that help keep the device secure, such as Windows Updates, Windows Security, BitLocker, and more...

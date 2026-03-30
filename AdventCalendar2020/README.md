@@ -1,5 +1,5 @@
 ---
-title: "Advent Calendar2020"
+title: Advent Calendar 2020
 user: bung3r
 date: 23.02.22
 description: Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.
@@ -15,6 +15,27 @@ tags:
   - xss
   - wireshark
   - nmap
+  - ftp
+  - samba
+  - privesc
+  - suid
+  - osint
+  - python
+  - radare2
+  - reverseengineering
+  - reverse
+  - remmina
+  - ssrf
+  - powershell
+  - hash
+  - ads
+  - ntfs
+  - cyberchef
+  - keepass
+  - passwordmanagers
+  - ransomware
+  - vss
+  - client-sidefilters
 ---
 # [Advent Calendar 2020](https://tryhackme.com/room/adventofcyber2)
 
@@ -775,7 +796,7 @@ A: jingle-tunes
 
 	- **/var/log/syslog** (System events such as firewall alerts)
 
-	- "/var/log/<service>
+	- `"/var/log/<service>`
 		- Logs of apache2: `/var/log/apache2/access/log`
 
 ### Questions
@@ -1482,7 +1503,7 @@ A: THM{657012dcf3d1318dca0ed864f0e70535}
 
 ## [Day 23] `Blue Teaming` The Grinch strikes again!
 
-#ransomeware #vss
+#ransomware #vss
 
 - **Ransomware** is a type of malware that threatens to publish the victim's data or perpetually block access to it unless a ransom is paid. 
 

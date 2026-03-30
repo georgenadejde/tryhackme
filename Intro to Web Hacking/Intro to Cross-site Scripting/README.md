@@ -1,5 +1,5 @@
 ---
-title: "Intro to Cross site Scripting"
+title: Intro to Cross-site Scripting
 user: bung3r
 date: 05.01.26
 description: Learn how to detect and exploit XSS vulnerabilities, giving you control of other visitor's browsers.
