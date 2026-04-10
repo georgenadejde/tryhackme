@@ -3,8 +3,11 @@ title: Vulnerabilities 101
 date: 2026-04-10
 description: Understand the flaws of an application and  apply your researching skills on some vulnerability databases.
 tags:
-  - tryhackme
-  - vulnerabilities101
+  - vulnerability
+  - cvss
+  - vpr
+  - nvd
+  - exploitdb
 ---
 
 # [Vulnerabilities 101](https://tryhackme.com/room/vulnerabilities101)
