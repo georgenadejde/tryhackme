@@ -35,6 +35,7 @@ NIST: "weakness in an information system, system security procedures, internal c
 | Weak or Default Credentials | Applications and services that have an element of authentication will come with default credentials when installed. For example, an administrator dashboard may have the username and password of "admin". These are easy to guess by an attacker. |
 | Application Logic           | These vulnerabilities are a result of poorly designed applications. For example, poorly implemented authentication mechanisms that may result in an attacker being able to impersonate a user.                                                     |
 | Human-Factor                | Human-Factor vulnerabilities are vulnerabilities that leverage human behaviour. For example, phishing emails are designed to trick humans into believing they are legitimate.                                                                      |
+
 ### Questions
 
 Q: An attacker has been able to upgrade the permissions of their system account from "user" to "administrator". What type of vulnerability is this?
@@ -67,9 +68,8 @@ A vulnerability is given a classification (out of five) depending on the score t
 
 ![](2026-04-10_15-07.png)
 
-|                                                                                  |                                                                                                                                                                                                                   |
-| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Advantages of CVSS**                                                           | **Disadvantages of CVSS**                                                                                                                                                                                         |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | CVSS has been around for a long time.                                            | CVSS was never designed to help prioritise vulnerabilities, instead, just assign a value of severity.                                                                                                             |
 | CVSS is popular in organisations.                                                | CVSS heavily assesses vulnerabilities on an exploit being available. However, only 20% of all vulnerabilities have an exploit available ([Tenable., 2020 (opens in new tab)](https://www.tenable.com/research)) . |
 | CVSS is a free framework to adopt and recommended by organisations such as NIST. | Vulnerabilities rarely change scoring after assessment despite the fact that new developments such as exploits may be found.                                                                                      |
@@ -110,6 +110,7 @@ A: `CVSS`
 | Vulnerability          | A vulnerability is defined as a weakness or flaw in the design, implementation or behaviours of a system or application. |
 | Exploit                | An exploit is something such as an action or behaviour that utilises a vulnerability on a system or application.         |
 | Proof of Concept (PoC) | A PoC is a technique or tool that often demonstrates the exploitation of a vulnerability.                                |
+
 ### NVD – National Vulnerability Database
 
 The National Vulnerability Database is a website that lists all publically categorised vulnerabilities. In cybersecurity, vulnerabilities are classified under “**C**ommon **V**ulnerabilities and **E**xposures” (Or CVE for short).
