@@ -1,0 +1,20 @@
+---
+layout: none
+---
+[
+  {% assign writeups = site.pages | sort: 'title' %}
+  {% assign first = true %}
+  {% for page in writeups %}
+    {% if page.layout == 'writeup' and page.name == 'README.md' %}
+      {% unless first %},{% endunless %}
+      {% assign first = false %}
+      {
+        "title": {{ page.title | default: page.dir | remove: '/' | replace: '-', ' ' | jsonify }},
+        "url": {{ page.url | relative_url | jsonify }},
+        "description": {{ page.description | default: '' | jsonify }},
+        "tags": {{ page.tags | default: '' | join: ' ' | jsonify }},
+        "content": {{ page.content | strip_html | normalize_whitespace | jsonify }}
+      }
+    {% endif %}
+  {% endfor %}
+]

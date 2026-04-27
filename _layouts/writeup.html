@@ -68,18 +68,197 @@
       </div>
     </div>
 
-    <!-- Content -->
-    <article class="writeup-content">
-      {{ content }}
-    </article>
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
 
-    <!-- Back button -->
-    <div class="writeup-footer-nav">
-      <a href="{{ '/' | relative_url }}" class="btn-ghost">← Back to Index</a>
-    </div>
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          {{ content }}
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="{{ '/' | relative_url }}" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
 
   </div>
 </main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Spoiler: hide answers until clicked ── */
+(function () {
+  const articleContent = document.getElementById('writeupContent');
+  if (!articleContent) return;
+
+  // Walk every <p> in the article
+  const paragraphs = Array.from(articleContent.querySelectorAll('p'));
+
+  paragraphs.forEach(p => {
+    const text = p.textContent.trim();
+
+    // Match paragraphs that start with "A:" (answer line)
+    if (/^A:\s/.test(text) || (text === 'A:' && p.nextElementSibling)) {
+      wrapAnswer(p);
+    }
+  });
+
+  function wrapAnswer(answerP) {
+    // Collect consecutive sibling nodes that belong to this answer
+    // (images that immediately follow the A: line count as part of the answer)
+    const siblings = [];
+    let next = answerP.nextElementSibling;
+    while (next && (next.tagName === 'P' && next.querySelector('img') ||
+                    next.tagName === 'BLOCKQUOTE' ||
+                    next.tagName === 'PRE')) {
+      // Stop if the next paragraph starts a new Q: or A:
+      const nextText = next.textContent.trim();
+      if (/^[QA]:\s/.test(nextText)) break;
+      siblings.push(next);
+      next = next.nextElementSibling;
+    }
+
+    // Build wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'answer-spoiler';
+
+    // Button
+    const btn = document.createElement('button');
+    btn.className = 'spoiler-btn';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '<span class="spoiler-icon">▶</span><span class="spoiler-label">Show answer</span>';
+
+    // Reveal container
+    const reveal = document.createElement('div');
+    reveal.className = 'spoiler-reveal';
+    reveal.setAttribute('aria-hidden', 'true');
+
+    // Move the A: paragraph + any trailing image/code siblings into the reveal div
+    answerP.parentNode.insertBefore(wrapper, answerP);
+    reveal.appendChild(answerP);
+    siblings.forEach(s => reveal.appendChild(s));
+
+    wrapper.appendChild(btn);
+    wrapper.appendChild(reveal);
+
+    // Toggle
+    btn.addEventListener('click', () => {
+      const open = reveal.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.querySelector('.spoiler-icon').textContent = open ? '▼' : '▶';
+      btn.querySelector('.spoiler-label').textContent = open ? 'Hide answer' : 'Show answer';
+      reveal.setAttribute('aria-hidden', open ? 'false' : 'true');
+    });
+  }
+})();
+</script>
 
 <footer class="site-footer">
   <div class="footer-inner">
