@@ -193,69 +193,156 @@
 </script>
 
 <script>
-/* ── Spoiler: hide answers until clicked ── */
+/* ── Q&A Card Builder ── */
 (function () {
-  const articleContent = document.getElementById('writeupContent');
-  if (!articleContent) return;
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
 
-  // Walk every <p> in the article
-  const paragraphs = Array.from(articleContent.querySelectorAll('p'));
-
-  paragraphs.forEach(p => {
-    const text = p.textContent.trim();
-
-    // Match paragraphs that start with "A:" (answer line)
-    if (/^A:\s/.test(text) || (text === 'A:' && p.nextElementSibling)) {
-      wrapAnswer(p);
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
     }
   });
 
-  function wrapAnswer(answerP) {
-    // Collect consecutive sibling nodes that belong to this answer
-    // (images that immediately follow the A: line count as part of the answer)
-    const siblings = [];
-    let next = answerP.nextElementSibling;
-    while (next && (next.tagName === 'P' && next.querySelector('img') ||
-                    next.tagName === 'BLOCKQUOTE' ||
-                    next.tagName === 'PRE')) {
-      // Stop if the next paragraph starts a new Q: or A:
-      const nextText = next.textContent.trim();
-      if (/^[QA]:\s/.test(nextText)) break;
-      siblings.push(next);
-      next = next.nextElementSibling;
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
     }
 
-    // Build wrapper
-    const wrapper = document.createElement('div');
-    wrapper.className = 'answer-spoiler';
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
 
-    // Button
-    const btn = document.createElement('button');
-    btn.className = 'spoiler-btn';
-    btn.setAttribute('aria-expanded', 'false');
-    btn.innerHTML = '<span class="spoiler-icon">▶</span><span class="spoiler-label">Show answer</span>';
-
-    // Reveal container
-    const reveal = document.createElement('div');
-    reveal.className = 'spoiler-reveal';
-    reveal.setAttribute('aria-hidden', 'true');
-
-    // Move the A: paragraph + any trailing image/code siblings into the reveal div
-    answerP.parentNode.insertBefore(wrapper, answerP);
-    reveal.appendChild(answerP);
-    siblings.forEach(s => reveal.appendChild(s));
-
-    wrapper.appendChild(btn);
-    wrapper.appendChild(reveal);
-
-    // Toggle
+    /* ── Toggle ── */
     btn.addEventListener('click', () => {
-      const open = reveal.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      btn.querySelector('.spoiler-icon').textContent = open ? '▼' : '▶';
-      btn.querySelector('.spoiler-label').textContent = open ? 'Hide answer' : 'Show answer';
-      reveal.setAttribute('aria-hidden', open ? 'false' : 'true');
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
     });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
   }
 })();
 </script>
