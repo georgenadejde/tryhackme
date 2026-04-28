@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction To Cryptography · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Introduction To Cryptography</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Introduction To Cryptography/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">crypto</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="introduction-to-cryptography">Introduction To Cryptography</h1>
+
+<h2 id="introduction">Introduction</h2>
+
+<h3 id="caesar-cipher">Caesar Cipher</h3>
+
+<ul>
+  <li>Caesar Cipher shifts the letter by a fixed number of places to the left or to the right.</li>
+  <li>The Caesar Cipher that we have described above can use a key between 1 and 25.
+    <ul>
+      <li>With a key of 1, each letter is shifted by one position, where A becomes B, and Z becomes A.</li>
+      <li>With a key of 25, each letter is shifted by 25 positions, where A becomes Z, and B becomes A.</li>
+      <li>A key of 0 means no change; moreover, a key of 26 will also lead to no change as it would lead to a full rotation.</li>
+      <li>Consequently, we conclude that Caesar Cipher has a <strong>keyspace</strong> of 25; there are 25 different keys that the user can choose from.</li>
+    </ul>
+  </li>
+  <li>Caesar cipher is considered a <strong>substitution cipher</strong> because each letter in the alphabet is substituted with another.</li>
+  <li>
+    <p>Another type of cipher is called <strong>transposition cipher</strong>, which encrypts the message by changing the order of the letters.</p>
+  </li>
+  <li>We don’t really need to use the encryption key to decrypt the received ciphertext, “Uyv sxd gyi siqvw x sinduxjd pvzjdw po axffojdz xgxo wsxcc wuidvw.”</li>
+  <li>As shown in the figure below, using a website such as <a href="https://www.quipqiup.com/">quipqiup</a>, it will take a moment to discover that the original text was “The man who moves a mountain begins by carrying away small stones.”</li>
+</ul>
+
+<h4 id="questions">Questions</h4>
+
+<p>You have received the following encrypted message:</p>
+
+<p><em>“Xjnvw lc sluxjmw jsqm wjpmcqbg jg wqcxqmnvw; xjzjmmjd lc wjpm sluxjmw jsqm bqccqm zqy.” Zlwvzjxj Zpcvcol</em></p>
+
+<p>You can guess that it is a quote. Who said it?</p>
+
+<ul>
+  <li>Paste the quote on <a href="https://www.quipqiup.com/">quipqiup</a></li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240906150440.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Miyamoto Musashi`
+</code></pre></div></div>
+
+<h2 id="symmetric-encryption">Symmetric Encryption</h2>
+
+<h3 id="terminology">Terminology</h3>
+
+<ul>
+  <li>
+    <p><strong>Cryptographic Algorithm</strong> or <strong>Cipher</strong> = algorithm that defines the encryption and decryption processes.</p>
+  </li>
+  <li>
+    <p><strong>Key</strong> = the cryptographic algorithm needs a key to convert the plaintext into ciphertext and vice versa.</p>
+  </li>
+  <li>
+    <p><strong>plaintext</strong> = original message that we want to encrypt</p>
+  </li>
+  <li>
+    <p><strong>ciphertext</strong> = message in its encrypted form</p>
+  </li>
+</ul>
+
+<h3 id="symmetric-encryption-1">Symmetric encryption</h3>
+
+<ul>
+  <li>A symmetric encryption algorithm uses the same key for encryption and decryption.</li>
+  <li>Consequently, the communicating parties need to agree on a secret key before being able to exchange any messages.</li>
+</ul>
+
+<h3 id="des">DES</h3>
+
+<ul>
+  <li>National Institute of Standard and Technology (NIST) published the <strong>Data Encryption Standard (DES)</strong> in 1977. 
+    <ul>
+      <li>DES is a symmetric encryption algorithm that uses a key size of 56 bits.</li>
+    </ul>
+  </li>
+  <li>In 1997, a challenge to break a message encrypted using DES was solved.
+    <ul>
+      <li>Consequently, it was demonstrated that it had become feasible to use a brute-force search to find the key and break a message encrypted using DES.</li>
+    </ul>
+  </li>
+  <li>In 1998, a DES key was broken in 56 hours.</li>
+  <li>These cases indicated that DES could no longer be considered secure.</li>
+</ul>
+
+<h3 id="aes">AES</h3>
+
+<ul>
+  <li>NIST published the <strong>Advanced Encryption Standard (AES)</strong> in 2001.
+    <ul>
+      <li>Like DES, it is a symmetric encryption algorithm; however, it uses a key size of 128, 192, or 256 bits, and it is still considered secure and in use today. </li>
+    </ul>
+  </li>
+  <li>AES repeats the following four transformations multiple times:
+    <ol>
+      <li><code class="language-plaintext highlighter-rouge">SubBytes(state)</code>: This transformation looks up each byte in a given substitution table (S-box) and substitutes it with the respective value. The <code class="language-plaintext highlighter-rouge">state</code> is 16 bytes, i.e., 128 bits, saved in a 4 by 4 array.</li>
+      <li><code class="language-plaintext highlighter-rouge">ShiftRows(state)</code>: The second row is shifted by one place, the third row is shifted by two places, and the fourth row is shifted by three places. This is shown in the figure below.</li>
+      <li><code class="language-plaintext highlighter-rouge">MixColumns(state)</code>: Each column is multiplied by a fixed matrix (4 by 4 array).</li>
+      <li><code class="language-plaintext highlighter-rouge">AddRoundKey(state)</code>: A round key is added to the state using the XOR operation.</li>
+    </ol>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/049bad7deb4e6dd426335d7c3477f10a.png" alt="Illustration of the ShiftRows function when applied on a four by four array" /></p>
+
+<ul>
+  <li>The total number of transformation rounds depends on the key size.</li>
+</ul>
+
+<h3 id="block-ciphers">Block ciphers</h3>
+
+<ul>
+  <li>A <strong>block cipher algorithm</strong> converts the input (plaintext) into blocks and encrypts each block.</li>
+  <li>A block is usually 128 bits.</li>
+  <li>A block of 128 bits is practically 16 bytes and is represented in a 4 by 4 array.
+    <ul>
+      <li>The 128-bit block is fed as one unit to the encryption method.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The other type of symmetric encryption algorithm is stream ciphers, which encrypt the plaintext byte by byte.</p>
+  </li>
+  <li><strong>Confidentiality</strong>:
+    <ul>
+      <li>If Eve intercepted the encrypted message, she wouldn’t be able to recover the plaintext.</li>
+      <li>Consequently, all messages exchanged between Alice and Bob are confidential as long as they are sent encrypted.</li>
+    </ul>
+  </li>
+  <li><strong>Integrity</strong>:
+    <ul>
+      <li>When Bob receives an encrypted message and decrypts it successfully using the key he agreed upon with Alice, Bob can be sure that no one could tamper with the message across the channel.</li>
+      <li>When using secure modern encryption algorithms, any minor modification to the ciphertext would prevent successful decryption or would lead to gibberish as plaintext.</li>
+    </ul>
+  </li>
+  <li><strong>Authenticity</strong>:
+    <ul>
+      <li>Being able to decrypt the ciphertext using the secret key also proves the authenticity of the message because only Alice and Bob know the secret key.</li>
+    </ul>
+  </li>
+  <li>With Alice and Bob, we needed one key. If we have Alice, Bob, and Charlie, we need three keys: one for Alice and Bob, another for Alice and Charlie, and a third for Bob and Charlie.
+    <ul>
+      <li>However, the number of keys grows quickly; communication between 100 users requires almost 5000 different secret keys. (If you are curious about the mathematics behind it, that’s 99 + 98 + 97 + … + 1 = 4950).</li>
+    </ul>
+  </li>
+  <li>There are many programs available for symmetric encryption.</li>
+  <li>We will focus on two, which are widely used for asymmetric encryption as well:
+    <ul>
+      <li><strong>GNU Privacy Guard</strong></li>
+      <li><strong>OpenSSL Project</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="gnu-privacy-guard">GNU Privacy Guard</h3>
+
+<ul>
+  <li>
+    <p>The <a href="https://gnupg.org/">GNU Privacy Guard</a>, also known as GnuPG or GPG, implements the OpenPGP standard.</p>
+  </li>
+  <li>We can encrypt a file using GnuPG (GPG) using the following command: <code class="language-plaintext highlighter-rouge">gpg --symmetric --cipher-algo CIPHER message.txt</code>, where CIPHER is the name of the encryption algorithm.</li>
+  <li>You can check supported ciphers using the command <code class="language-plaintext highlighter-rouge">gpg --version</code>.
+    <ul>
+      <li>The encrypted file will be saved as <code class="language-plaintext highlighter-rouge">message.txt.gpg</code>.</li>
+    </ul>
+  </li>
+  <li>The default output is in the binary OpenPGP format; however, if you prefer to create an ASCII armoured output, which can be opened in any text editor, you should add the option <code class="language-plaintext highlighter-rouge">--armor</code>.
+    <ul>
+      <li>For example, <code class="language-plaintext highlighter-rouge">gpg --armor --symmetric --cipher-algo CIPHER message.txt</code>.</li>
+    </ul>
+  </li>
+  <li>You can decrypt using the following command: <code class="language-plaintext highlighter-rouge">gpg --output original_message.txt --decrypt message.gpg</code></li>
+</ul>
+
+<h3 id="openssl-project">OpenSSL Project</h3>
+
+<ul>
+  <li>
+    <p>The <a href="https://www.openssl.org/">OpenSSL Project</a> maintains the OpenSSL software.</p>
+  </li>
+  <li>
+    <p>We can encrypt a file using OpenSSL using the following command:</p>
+  </li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">openssl aes-256-cbc -e -in message.txt -out encrypted_message</code></p>
+
+<ul>
+  <li>We can decrypt the resulting file using the following command:</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">openssl aes-256-cbc -d -in encrypted_message -out original_message.txt</code></p>
+
+<ul>
+  <li>To make the encryption more secure and resilient against brute-force attacks, we can add <code class="language-plaintext highlighter-rouge">-pbkdf2</code> to use the Password-Based Key Derivation Function 2 (PBKDF2); moreover, we can specify the number of iterations on the password to derive the encryption key using <code class="language-plaintext highlighter-rouge">-iter NUMBER</code>. To iterate 10,000 times, the previous command would become:</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">openssl aes-256-cbc -pbkdf2 -iter 10000 -e -in message.txt -out encrypted_message</code></p>
+
+<ul>
+  <li>Consequently, the decryption command becomes:</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">openssl aes-256-cbc -pbkdf2 -iter 10000 -d -in encrypted_message -out original_message.txt</code></p>
+
+<h3 id="questions-1">Questions</h3>
+
+<ul>
+  <li>Decrypt the file <code class="language-plaintext highlighter-rouge">quote01</code> encrypted (using AES256) with the key <code class="language-plaintext highlighter-rouge">s!kR3T55</code> using <code class="language-plaintext highlighter-rouge">gpg</code>. What is the third word in the file?</li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240906154749.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: waste`
+</code></pre></div></div>
+
+<ul>
+  <li>Decrypt the file <code class="language-plaintext highlighter-rouge">quote02</code> encrypted (using AES256-CBC) with the key <code class="language-plaintext highlighter-rouge">s!kR3T55</code> using <code class="language-plaintext highlighter-rouge">openssl</code>. What is the third word in the file?</li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240906155024.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: science`
+</code></pre></div></div>
+
+<p>Decrypt the file <code class="language-plaintext highlighter-rouge">quote03</code> encrypted (using CAMELLIA256) with the key <code class="language-plaintext highlighter-rouge">s!kR3T55</code> using <code class="language-plaintext highlighter-rouge">gpg</code>. What is the third word in the file?</p>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240906155217.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: understand`
+</code></pre></div></div>
+
+<h2 id="asymmetric-encryption">Asymmetric Encryption’</h2>
+
+<ul>
+  <li>Symmetric encryption requires the users to find a secure channel to exchange keys.
+    <ul>
+      <li>By secure channel, we are mainly concerned with confidentiality and integrity.</li>
+    </ul>
+  </li>
+  <li>
+    <p>In other words, we need a channel where no third party can eavesdrop and read the traffic; moreover, no one can change the sent messages and data.</p>
+  </li>
+  <li>Asymmetric encryption makes it possible to exchange encrypted messages without a secure channel; we just need a reliable channel.</li>
+  <li>By reliable channel, we mean that we are mainly concerned with the channel’s integrity and not confidentiality.</li>
+  <li>When using an asymmetric encryption algorithm, we would generate a key pair: a public key and a private key.
+    <ul>
+      <li>The public key is shared with the world, or more specifically, with the people who want to communicate with us securely.</li>
+      <li>The private key must be saved securely, and we must never let anyone access it.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="rsa">RSA</h3>
+
+<ul>
+  <li>RSA got its name from its inventors, Rivest, Shamir, and Adleman. It works as follows:</li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240906160946.png" alt="" /></p>
+
+<ul>
+  <li>RSA security relies on factorization being a hard problem.
+    <ul>
+      <li>It is easy to multiply <em>p</em> by <em>q</em>; however, it is time-consuming to find <em>p</em> and <em>q</em> given <em>N</em>.</li>
+      <li>Moreover, for this to be secure, <em>p</em> and <em>q</em> should be pretty large numbers, for example, each being 1024 bits (that’s a number with more than 300 digits).</li>
+    </ul>
+  </li>
+  <li>It is important to note that RSA relies on secure random number generation, as with other asymmetric encryption algorithms.
+    <ul>
+      <li>If an adversary can guess <em>p</em> and <em>q</em>, the whole system would be considered insecure.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240906161214.png" alt="" /></p>
+
+<ul>
+  <li>Generate RSA key pair:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">openssl genrsa -out private-key.pem 2048</code>: With <code class="language-plaintext highlighter-rouge">openssl</code>, we used <code class="language-plaintext highlighter-rouge">genrsa</code> to generate an RSA private key. Using <code class="language-plaintext highlighter-rouge">-out</code>, we specified that the resulting private key is saved as <code class="language-plaintext highlighter-rouge">private-key.pem</code>. We added <code class="language-plaintext highlighter-rouge">2048</code> to specify a key size of 2048 bits.</li>
+      <li><code class="language-plaintext highlighter-rouge">openssl rsa -in private-key.pem -pubout -out public-key.pem</code>: Using <code class="language-plaintext highlighter-rouge">openssl</code>, we specified that we are using the RSA algorithm with the <code class="language-plaintext highlighter-rouge">rsa</code> option. We specified that we wanted to get the public key using <code class="language-plaintext highlighter-rouge">-pubout</code>. Finally, we set the private key as input using <code class="language-plaintext highlighter-rouge">-in private-key.pem</code> and saved the output using <code class="language-plaintext highlighter-rouge">-out public-key.pem</code>.</li>
+      <li><code class="language-plaintext highlighter-rouge">openssl rsa -in private-key.pem -text -noout</code>: We are curious to see real RSA variables, so we used <code class="language-plaintext highlighter-rouge">-text -noout</code>. The values of <em>p</em>, <em>q</em>, <em>N</em>, <em>e</em>, and <em>d</em> are <code class="language-plaintext highlighter-rouge">prime1</code>, <code class="language-plaintext highlighter-rouge">prime2</code>, <code class="language-plaintext highlighter-rouge">modulus</code>, <code class="language-plaintext highlighter-rouge">publicExponent</code>, and <code class="language-plaintext highlighter-rouge">privateExponent</code>, respectively.</li>
+    </ul>
+  </li>
+  <li>
+    <p>If we already have the recipient’s public key, we can encrypt it with the command <code class="language-plaintext highlighter-rouge">openssl pkeyutl -encrypt -in plaintext.txt -out ciphertext -inkey public-key.pem -pubin</code></p>
+  </li>
+  <li>The recipient can decrypt it using the command <code class="language-plaintext highlighter-rouge">openssl pkeyutl -decrypt -in ciphertext -inkey private-key.pem -out decrypted.txt</code></li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Bob has received the file <code class="language-plaintext highlighter-rouge">ciphertext_message</code> sent to him from Alice. You can find the key you need in the same folder. What is the first word of the original plaintext?</p>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240906162000.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Perception`
+</code></pre></div></div>
+
+<p>Take a look at Bob’s private RSA key. What is the last byte of <em>p</em>?</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">openssl rsa -in private-key-bob.pem -text -noout</code></li>
+  <li>
+    <p><em>p</em> is named <em>prime1</em></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: e7</code></p>
+  </li>
+</ul>
+
+<p>Take a look at Bob’s private RSA key. What is the last byte of <em>q</em>?</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">openssl rsa -in private-key-bob.pem -text -noout</code></li>
+  <li>
+    <p><em>q</em> is named <em>prime2</em></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: 27</code></p>
+  </li>
+</ul>
+
+<h2 id="diffie-hellman-key-exchange">Diffie-Hellman Key Exchange</h2>
+
+<ul>
+  <li>Alice and Bob can communicate over an insecure channel.
+    <ul>
+      <li>By insecure, we mean that there are eavesdroppers who can read the messages exchanged on this channel.</li>
+    </ul>
+  </li>
+  <li>How can Alice and Bob agree on a secret key in such a setting?
+    <ul>
+      <li>One way would be to use the Diffie-Hellman key exchange, which allows the exchange of a secret over a public channel.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240909163855.png" alt="" /></p>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240909164104.png" alt="" /></p>
+
+<ul>
+  <li>We can use <code class="language-plaintext highlighter-rouge">openssl</code> to generate Diffie-Hellman parameters; we need to specify the option <code class="language-plaintext highlighter-rouge">dhparam</code> to indicate that we want to generate Diffie-Hellman parameters along with the specified size in bits, such as <code class="language-plaintext highlighter-rouge">2048</code> or <code class="language-plaintext highlighter-rouge">4096</code>.
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">openssl dhparam -out dhparams.pem 2048</code></li>
+      <li><code class="language-plaintext highlighter-rouge">openssl dhparam -in dhparams.pem -text -noout</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>A set of Diffie-Hellman parameters can be found in the file <code class="language-plaintext highlighter-rouge">dhparam.pem</code>. What is the size of the prime number in bits?</p>
+
+<ul>
+  <li>
+    <p>Use command <code class="language-plaintext highlighter-rouge">openssl dhparam -in dhparams.pem -text -noout</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: 4096</code></p>
+  </li>
+</ul>
+
+<p>What is the prime number’s last byte (least significant byte)?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 4f`
+</code></pre></div></div>
+
+<h2 id="hashing">Hashing</h2>
+
+<ul>
+  <li>A cryptographic hash function is an algorithm that takes data of arbitrary size as its input and returns a fixed size value, called <em>message digest</em> or <em>checksum</em>, as its output.
+    <ul>
+      <li>For example, <code class="language-plaintext highlighter-rouge">sha256sum</code> calculates the SHA256 (Secure Hash Algorithm 256) message digest.</li>
+    </ul>
+  </li>
+  <li><strong>SHA256</strong>, as the name indicates, returns a checksum of size 256 bits (32 bytes).
+    <ul>
+      <li>This checksum is usually written using hexadecimal digits.</li>
+      <li>Knowing that a hexadecimal digit represents 4 bits, the 256 bits checksum can be represented as 64 hexadecimal digits.</li>
+    </ul>
+  </li>
+  <li>But why would we need such a function?
+    <ul>
+      <li>Storing passwords: Instead of storing passwords in plaintext, a hash of the password is stored instead.
+        <ul>
+          <li>Consequently, if a data breach occurs, the attacker will get a list of password hashes instead of the original passwords. (In practice, passwords are also “salted”, as discussed in a later task.)</li>
+        </ul>
+      </li>
+      <li>Detecting modifications: Any minor modification to the original file would lead to a drastic change in hash value, i.e. checksum.</li>
+    </ul>
+  </li>
+  <li>Some of the hashing algorithms in use and still considered secure are:
+    <ul>
+      <li>SHA224, SHA256, SHA384, SHA512</li>
+      <li>RIPEMD160</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="hmac">HMAC</h3>
+
+<ul>
+  <li>
+    <p>Hash-based message authentication code (HMAC) is a message authentication code (MAC) that uses a cryptographic key in addition to a hash function.</p>
+  </li>
+  <li>
+    <p>According to <a href="https://www.rfc-editor.org/rfc/rfc2104">RFC2104</a>, HMAC needs:</p>
+    <ul>
+      <li>secret key</li>
+      <li>inner pad (ipad) a constant string. (RFC2104 uses the byte <code class="language-plaintext highlighter-rouge">0x36</code> repeated B times. The value of B depends on the chosen hash function.)</li>
+      <li>outer pad (opad) a constant string. (RFC2104 uses the byte <code class="language-plaintext highlighter-rouge">0x5C</code> repeated B times.)</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240909170906.png" alt="" /></p>
+
+<ul>
+  <li>To calculate the HMAC on a Linux system, you can use any of the available tools such as <code class="language-plaintext highlighter-rouge">hmac256</code> (or <code class="language-plaintext highlighter-rouge">sha224hmac</code>, <code class="language-plaintext highlighter-rouge">sha256hmac</code>, <code class="language-plaintext highlighter-rouge">sha384hmac</code>, and <code class="language-plaintext highlighter-rouge">sha512hmac</code>, where the secret key is added after the option <code class="language-plaintext highlighter-rouge">--key</code>)</li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>What is the SHA256 checksum of the file <code class="language-plaintext highlighter-rouge">order.json</code>?</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">sha256sum order.json</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: 2c34b68669427d15f76a1c06ab941e3e6038dacdfb9209455c87519a3ef2c660</code></p>
+  </li>
+</ul>
+
+<p>Open the file <code class="language-plaintext highlighter-rouge">order.json</code> and change the amount from <code class="language-plaintext highlighter-rouge">1000</code> to <code class="language-plaintext highlighter-rouge">9000</code>. What is the new SHA256 checksum?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 11faeec5edc2a2bad82ab116bbe4df0f4bc6edd96adac7150bb4e6364a238466`
+</code></pre></div></div>
+
+<p>Using SHA256 and the key <code class="language-plaintext highlighter-rouge">3RfDFz82</code>, what is the HMAC of <code class="language-plaintext highlighter-rouge">order.txt</code>?</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">hmac256 3RfDFz82 order.txt</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: c7e4de386a09ef970300243a70a444ee2a4ca62413aeaeb7097d43d2c5fac89f</code></p>
+  </li>
+</ul>
+
+<h2 id="pki-and-ssltls">PKI and SSL/TLS</h2>
+
+<ul>
+  <li>the key exchange we described earlier (i.e. Diffie-Hellman) is not immune to Man-in-the-Middle (MITM) attack.
+    <ul>
+      <li>The reason is that Alice has no way of ensuring that she is communicating with Bob, and Bob has no way of ensuring that he is communicating with Alice when exchanging the secret key.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Introduction%20To%20Cryptography/Pasted%20image%2020240910133043.png" alt="" /></p>
+
+<ul>
+  <li>This susceptibility necessitates some mechanism that would allow us to confirm the other party’s identity.
+    <ul>
+      <li>This brings us to <strong>Public Key Infrastructure (PKI)</strong>.</li>
+    </ul>
+  </li>
+  <li>Consider the case where you are browsing the website <a href="https://example.org/">example.org</a> over HTTPS.
+    <ul>
+      <li>How can you be confident that you are indeed communicating with the <code class="language-plaintext highlighter-rouge">example.org</code> server(s)?</li>
+    </ul>
+  </li>
+  <li>In other words, how can you be sure that no man-in-the-middle intercepted the packets and altered them before they reached you?
+    <ul>
+      <li>The answer lies in the <strong>website certificate</strong>.</li>
+    </ul>
+  </li>
+  <li>For a certificate to get signed by a certificate authority, we need to:</li>
+</ul>
+
+<ol>
+  <li>Generate <strong>Certificate Signing Request (CSR)</strong>: You create a certificate and send your public key to be signed by a third party.</li>
+  <li>Send your CSR to a <strong>Certificate Authority (CA)</strong>: The purpose is for the CA to sign your certificate.
+    <ul>
+      <li>The alternative and usually insecure solution would be to self-sign your certificate.</li>
+    </ul>
+  </li>
+</ol>
+
+<ul>
+  <li>For this to work, the recipient should recognize and trust the CA that signed the certificate.
+    <ul>
+      <li>And as we would expect, our browser trusts DigiCert Inc as a signing authority; otherwise, it would have issued a security warning instead of proceeding to the requested website.</li>
+    </ul>
+  </li>
+  <li>You can use <code class="language-plaintext highlighter-rouge">openssl</code> to generate a certificate signing request using the command <code class="language-plaintext highlighter-rouge">openssl req -new -nodes -newkey rsa:4096 -keyout key.pem -out cert.csr</code>.</li>
+  <li>Options:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">req -new</code> create a new certificate signing request</li>
+      <li><code class="language-plaintext highlighter-rouge">-nodes</code> save private key without a passphrase</li>
+      <li><code class="language-plaintext highlighter-rouge">-newkey</code> generate a new private key</li>
+      <li><code class="language-plaintext highlighter-rouge">rsa:4096</code> generate an RSA key of size 4096 bits</li>
+      <li><code class="language-plaintext highlighter-rouge">-keyout</code> specify where to save the key</li>
+      <li><code class="language-plaintext highlighter-rouge">-out</code> save the certificate signing request</li>
+    </ul>
+  </li>
+  <li>
+    <p>Once the CSR file is ready, you can send it to a CA of your choice to get it signed and ready to use on your server.</p>
+  </li>
+  <li>Once the client, i.e., the browser, receives a signed certificate it trusts, the SSL/TLS handshake takes place.
+    <ul>
+      <li>The purpose would be to agree on the ciphers and the secret key.</li>
+    </ul>
+  </li>
+  <li> the following command will generate a self-signed certificate.</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">openssl req -x509 -newkey -nodes rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365</code></p>
+
+<ul>
+  <li>Options:
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">-x509</code> indicates that we want to generate a self-signed certificate instead of a certificate request.</li>
+      <li>The <code class="language-plaintext highlighter-rouge">-sha256</code> specifies the use of the SHA-256 digest.</li>
+      <li>It will be valid for one year as we added <code class="language-plaintext highlighter-rouge">-days 365</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-5">Questions</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">openssl x509 -in cert.pem -text</code></li>
+</ul>
+
+<p>What is the size of the public key in bits?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 4096`
+</code></pre></div></div>
+
+<p>Till which year is this certificate valid?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 2039`
+</code></pre></div></div>
+
+<h2 id="authenticating-with-passwords">Authenticating with Passwords</h2>
+
+<ul>
+  <li>With PKI and SSL/TLS, we can communicate with any server and provide our login credentials while ensuring that no one can read our passwords as they move across the network.
+    <ul>
+      <li>This is an example of protecting data in transit.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Let’s explore how we can safeguard passwords as they are saved in a database, i.e., data at rest.</p>
+  </li>
+  <li>The least secure method would be to save the username and the password in a database.
+    <ul>
+      <li>This way, any data breach would expose the users’ passwords.</li>
+      <li>No effort is required beyond reading the database containing the passwords.</li>
+    </ul>
+  </li>
+  <li>The improved approach would be to save the username and a hashed version of the password in a database.
+    <ul>
+      <li>This way, a data breach will expose the hashed versions of the passwords.</li>
+      <li>Since a hash function is irreversible, the attacker needs to keep trying different passwords to find the one that would result in the same hash.</li>
+    </ul>
+  </li>
+  <li>The previous approach looks secure; however, the availability of rainbow tables has made this approach insecure.
+    <ul>
+      <li>A <strong>rainbow table</strong> contains a list of passwords along with their hash value.</li>
+      <li>Hence, the attacker only needs to look up the hash to recover the password.
+        <ul>
+          <li>For example, it would be easy to look up <code class="language-plaintext highlighter-rouge">d8578edf8458ce06fbc5bb76a58c5ca4</code> to discover the original password of <code class="language-plaintext highlighter-rouge">alice</code>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Consequently, we need to find more secure approaches to save passwords securely; we can add salt.
+    <ul>
+      <li>A <strong>salt</strong> is a random value we can append to the password before hashing it.</li>
+    </ul>
+  </li>
+  <li>Another improvement we can make before saving the password is to use a key derivation function such as <strong>PBKDF2 (Password-Based Key Derivation Function 2).</strong>
+    <ul>
+      <li>PBKDF2 takes the password and the salt and submits it through a certain number of iterations, usually hundreds of thousands.</li>
+    </ul>
+  </li>
+  <li>Check the <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">Password Storage Cheat Sheet</a> to learn about other techniques related to password storage.</li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<ul>
+  <li>You were auditing a system when you discovered that the MD5 hash of the admin password is <code class="language-plaintext highlighter-rouge">3fc0a7acf087f549ac2b266baf94b8b1</code>.
+    <ul>
+      <li>What is the original password?</li>
+    </ul>
+
+    <p><code class="language-plaintext highlighter-rouge">A: qwerty123</code></p>
+  </li>
+</ul>
+
+<h2 id="cryptography-and-data---example">Cryptography and Data - Example</h2>
+
+<ul>
+  <li>
+    <p>how symmetric and asymmetric encryption are used along with hashing in many secure communications?</p>
+  </li>
+  <li>We would like to explore what happens when we log into a website over HTTPS.
+    <ol>
+      <li>Client requests server’s SSL/TLS certificate</li>
+      <li>Server sends SSL/TLS certificate to the client</li>
+      <li>Client confirms that the certificate is valid</li>
+    </ol>
+  </li>
+  <li>Cryptography’s role starts with checking the certificate.
+    <ul>
+      <li>For a certificate to be considered valid, it means it is <strong>signed</strong>.
+        <ul>
+          <li>Signing means that a hash of the certificate is encrypted with the private key of a trusted third party; the encrypted hash is appended to the certificate.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>If the third party is trusted, the client will use the third party’s public key to decrypt the encrypted hash and compare it with the certificate’s hash.
+    <ul>
+      <li>However, if the third party is not recognized, the connection will not proceed automatically.</li>
+    </ul>
+  </li>
+  <li>Once the client confirms that the certificate is valid, an SSL/TLS handshake is started.
+    <ul>
+      <li>This handshake allows the client and the server to agree on the secret key and the symmetric encryption algorithm, among other things.</li>
+      <li>From this point onward, all the related session communication will be encrypted using symmetric encryption.</li>
+    </ul>
+  </li>
+  <li>The final step would be to provide login credentials.
+    <ul>
+      <li>The client uses the encrypted SSL/TLS session to send them to the server.</li>
+      <li>The server receives the username and password and needs to confirm that they match.</li>
+    </ul>
+  </li>
+  <li>Following security guidelines, we expect the server to save a hashed version of the password after appending a random salt to it.</li>
+  <li>This way, if the database were breached, the passwords would be challenging to recover.</li>
+</ul>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

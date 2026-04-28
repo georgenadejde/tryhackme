@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Packets And Frames · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Packets And Frames</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Packets And Frames/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">network</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="packets-and-frames">Packets and Frames</h1>
+
+<h2 id="what-are-packets-and-frames">What are Packets and Frames</h2>
+
+<ul>
+  <li>Packets and frames are small pieces of data that, when forming together, make a larger piece of information or message.
+    <ul>
+      <li>However, they are two different things in the OSI model.</li>
+    </ul>
+  </li>
+  <li>A frame is at layer 2 - the data link layer, meaning there is no such information as IP addresses.
+    <ul>
+      <li>Think of this as putting an envelope within an envelope and sending it away.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The first envelope will be the packet that you mail, but once it is opened, the envelope within still exists and contains data (this is a frame).</p>
+  </li>
+  <li>This process is called encapsulation which we discussed in <a href="https://tryhackme.com/room/osimodelzi">room 3: the OSI model</a>.</li>
+  <li>At this stage, it’s safe to assume that when we are talking about anything IP addresses, we are talking about packets.</li>
+  <li>
+    <p>When the encapsulating information is stripped away, we’re talking about the frame itself.</p>
+  </li>
+  <li>Packets are an efficient way of communicating data across networked devices such as those explained in Task 1.</li>
+  <li>
+    <p>Because this data is exchanged in small pieces, there is less chance of bottlenecking occurring across a network than large messages being sent at once.</p>
+  </li>
+  <li>
+    <p>For example, when loading an image from a website, this image is not sent to your computer as a whole, but rather small pieces where it is reconstructed on your computer.</p>
+  </li>
+  <li>Packets have different structures that are dependant upon the type of packet that is being sent.</li>
+  <li>
+    <p>As we’ll come on to discuss, networking is full of standards and protocols that act as a set of rules for how the packet is handled on a device.</p>
+  </li>
+  <li>Let’s continue with our example of the Internet Protocol.</li>
+  <li>A packet using this protocol will have a set of headers that contain additional pieces of information to the data that is being sent across a network.</li>
+</ul>
+
+<p>Some notable headers include:</p>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/05_6_2023_19-55.png" alt="" /></p>
+
+<h3 id="questions">Questions</h3>
+
+<p>What is the name for a piece of data when it <strong>does have</strong> IP addressing information?</p>
+
+<p>A: packet</p>
+
+<p>What is the name for a piece of data when it <strong>does not have</strong> IP addressing information?</p>
+
+<p>A: frame</p>
+
+<h2 id="tcpip-the-three-way-handshake">TCP/IP (The Three-Way Handshake)</h2>
+<p>#tcp</p>
+
+<ul>
+  <li>
+    <p><strong>TCP</strong> (or <strong>T</strong>ransmission <strong>C</strong>ontrol <strong>P</strong>rotocol for short) is another one of these rules used in networking.</p>
+  </li>
+  <li>This protocol is very similar to the OSI model that we have previously discussed in room three of this module so far.</li>
+  <li>The TCP/IP protocol consists of four layers and is arguably just a summarised version of the OSI model. These layers are:
+    <ul>
+      <li>Application</li>
+      <li>Transport</li>
+      <li>Internet</li>
+      <li>Network Interface</li>
+    </ul>
+  </li>
+  <li>Very similar to how the OSI model works, information is added to each layer of the TCP model as the piece of data (or packet) traverses it.
+    <ul>
+      <li>As you may recall, this process is known as encapsulation - where the reverse of this process is decapsulation.</li>
+    </ul>
+  </li>
+  <li>
+    <p>One defining feature of TCP is that it is <strong>connection-based</strong>, which means that TCP must establish a connection between both a client and a device acting as a server <strong>before</strong> data is sent.</p>
+  </li>
+  <li>Because of this, TCP guarantees that any data sent will be received on the other end.
+    <ul>
+      <li>This process is named the Three-way handshake, which is something we’ll come on to discuss shortly. </li>
+    </ul>
+  </li>
+  <li>A table comparing the advantages and disadvantages of TCP is located below:</li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/05_6_2023_20-01.png" alt="" /></p>
+
+<ul>
+  <li>TCP packets contain various sections of information known as headers that are added from encapsulation. Let’s explain some of the crucial headers in the table below:</li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/05_6_2023_20-03.png" alt="" /></p>
+
+<ul>
+  <li>Next, we’ll come on to discuss the <em>Three-way handshake -</em> the term given for the process used to establish a connection between two devices. </li>
+  <li>The Three-way handshake communicates using a few special messages - the table below highlights the main ones:</li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/05_6_2023_20-06.png" alt="" /></p>
+
+<ul>
+  <li>The diagram below shows a normal Three-way handshake process between Alice and Bob.
+    <ul>
+      <li>In real life, this would be between two devices.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/tcphandshake.png" alt="" /></p>
+
+<ul>
+  <li>Any sent data is given a random number sequence and is reconstructed using this number sequence and incrementing by 1.</li>
+  <li>Both computers must agree on the same number sequence for data to be sent in the correct order.</li>
+  <li>This order is agreed upon during three steps:</li>
+</ul>
+
+<ol>
+  <li>SYN - Client: Here’s my Initial Sequence Number(ISN) to <strong>SYN</strong>chronise with (0)</li>
+  <li>SYN/ACK - Server: Here’s my Initial Sequence Number (ISN) to <strong>SYN</strong>chronise with (5,000), and I <strong>ACK</strong>nowledge your initial number sequence (0)</li>
+  <li>ACK - Client: I <strong>ACK</strong>nowledge your Initial Sequence Number (ISN) of (5,000), here is some data that is my ISN+1 (5,000 + 1)</li>
+</ol>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/05_6_2023_20-10.png" alt="" /></p>
+
+<h3 id="tcpclosing-a-connection"><strong>TCP Closing a Connection:</strong></h3>
+
+<ul>
+  <li>Let’s quickly explain the process behind TCP closing a connection.
+    <ul>
+      <li>First, TCP will close a connection once a device has determined that the other device has successfully received all of the data.</li>
+    </ul>
+  </li>
+  <li>Because TCP reserves system resources on a device, it is best practice to close TCP connections as soon as possible.</li>
+  <li>To initiate the closure of a TCP connection, the device will send a “FIN” packet to the other device.
+    <ul>
+      <li>Of course, with TCP, the other device will also have to acknowledge this packet.</li>
+    </ul>
+  </li>
+  <li>Let’s show this process using Alice and Bob as we have previously.</li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/tcphandshake-2.png" alt="" /></p>
+
+<ul>
+  <li>In the illustration, we can see that Alice has sent Bob a “<strong>FIN</strong>” packet.
+    <ul>
+      <li>Because Bob received this, he will let Alice know that he received it and that he also wants to close the connection (using FIN).</li>
+    </ul>
+  </li>
+  <li>Alice has heard Bob loud and clear and will let Bob know that she acknowledges this.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>What is the header in a TCP packet that ensures the integrity of data?</p>
+
+<p>A: checksum</p>
+
+<p>Provide the order of a normal Three-way handshake (with each step separated by a comma</p>
+
+<p>A: SYN,SYN/ACK,ACK</p>
+
+<h2 id="practical---handshake">Practical - Handshake</h2>
+
+<ul>
+  <li>Help Alice and Bob communicate by re-assembling the TCP handshake in the correct order in the static lab attached to this task!</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>What is the value of the flag given at the end of the conversation?</p>
+
+<p>A: THM{TCP_CHATTER}</p>
+
+<h2 id="udpip">UDP/IP</h2>
+<p>#udp</p>
+
+<ul>
+  <li>
+    <p>The <strong>U</strong>ser <strong>D</strong>atagram <strong>P</strong>rotocol (<strong>UDP</strong>) is another protocol that is used to communicate data between devices.</p>
+  </li>
+  <li>Unlike its brother TCP, UDP is a <strong>stateless</strong> protocol that doesn’t require a constant connection between the two devices for data to be sent.
+    <ul>
+      <li>For example, the Three-way handshake does not occur, nor is there any synchronisation between the two devices.</li>
+    </ul>
+  </li>
+  <li>Recall some of the comparisons made about these two protocols in Room 3: “OSI Model”.
+    <ul>
+      <li>Namely, UDP is used in situations where applications can tolerate data being lost (such as video streaming or voice chat) or in scenarios where an unstable connection is not the end-all.</li>
+    </ul>
+  </li>
+  <li>A table comparing the advantages and disadvantages of UDP is located below:</li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/05_6_2023_20-38.png" alt="" /></p>
+
+<ul>
+  <li>As mentioned, no process takes place in setting up a connection between two devices.</li>
+  <li>
+    <p>Meaning that there is no regard for whether or not data is received, and there are no safeguards such as those offered by TCP, such as data integrity.</p>
+  </li>
+  <li>UDP packets are much simpler than TCP packets and have fewer headers.</li>
+  <li>However, both protocols share some standard headers, which are what is annotated in the table below:</li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/05_6_2023_20-39.png" alt="" /></p>
+
+<ul>
+  <li>Next, we’ll come on to discuss how the process of a connection via UDP differs from that of something such as TCP. </li>
+  <li>We should recall that UDP is <strong>stateless</strong>.
+    <ul>
+      <li>No acknowledgement is sent during a connection.</li>
+    </ul>
+  </li>
+  <li>The diagram below shows a normal UDP connection between Alice and Bob.</li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/udpshake-1.png" alt="" /></p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>What does the term “UDP” stand for?</p>
+
+<p>A: User Datagram Protocol</p>
+
+<p>What type of connection is “UDP”?</p>
+
+<p>A: stateless</p>
+
+<p>What protocol would you use to transfer a file?</p>
+
+<p> A: TCP</p>
+
+<p>What protocol would you use to have a video call?</p>
+
+<p>A: UDP</p>
+
+<h2 id="ports-101-practical">Ports 101 (Practical)</h2>
+<p>#ports</p>
+
+<ul>
+  <li>Perhaps aptly titled by their name, ports are an essential point in which data can be exchanged.
+    <ul>
+      <li>Think of a harbour and port.</li>
+    </ul>
+  </li>
+  <li>Ships wishing to dock at the harbour will have to go to a port compatible with the dimensions and the facilities located on the ship.
+    <ul>
+      <li>When the ship lines up, it will connect to a <strong>port</strong> at the harbour.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Take, for instance, that a cruise liner cannot dock at a port made for a fishing vessel and vice versa.</p>
+  </li>
+  <li>These ports enforce what can park and where — if it isn’t compatible, it cannot park here.</li>
+  <li>Networking devices also use ports to enforce strict rules when communicating with one another.
+    <ul>
+      <li>When a connection has been established (recalling from the OSI model’s room), any data sent or received by a device will be sent through these ports.</li>
+      <li>In computing, ports are a numerical value between <strong>0</strong> and <strong>65535</strong> (65,535).</li>
+    </ul>
+  </li>
+  <li>Because ports can range from anywhere between 0-65535, there quickly runs the risk of losing track of what application is using what port.</li>
+  <li>A busy harbour is chaos!</li>
+  <li>Thankfully, we associate applications, software and behaviours with a standard set of rules.</li>
+  <li>
+    <p>For example, by enforcing that any web browser data is sent over port 80, software developers can design a web browser such as Google Chrome or Firefox to interpret the data the same way as one another.</p>
+  </li>
+  <li>This means that all web browsers now share one common rule: data is sent over port 80.
+    <ul>
+      <li>How the browsers look, feel and easy to use is up to the designer or the user’s decision.</li>
+    </ul>
+  </li>
+  <li>While the standard rule for web data is <em>port 80</em>, a few other protocols have been allocated a standard rule.
+    <ul>
+      <li>Any port that is within <strong>0</strong> and <strong>1024</strong> (1,024) is known as a common port.</li>
+    </ul>
+  </li>
+  <li>Let’s explore some of these other protocols below:</li>
+</ul>
+
+<p><img src="/tryhackme/Packets%20And%20Frames/05_6_2023_20-45.png" alt="" /></p>
+
+<ul>
+  <li>We have only briefly covered the more common protocols in cybersecurity.
+    <ul>
+      <li>You can <a href="http://www.vmaxx.net/techinfo/ports.htm">find a table of the 1024 common ports listed</a> for more information.</li>
+    </ul>
+  </li>
+  <li>What is worth noting here is that these protocols only follow the standards.
+    <ul>
+      <li>I.e. you can administer applications that interact with these protocols on a different port other than what is the standard (running a web server on 8080 instead of the 80 standard port).</li>
+      <li>Note, however, applications will presume that the standard is being followed, so you will have to provide a <strong>colon (:)</strong> along with the port number.</li>
+    </ul>
+  </li>
+  <li><strong>Practical Challenge:</strong>
+    <ul>
+      <li>Open the site attached to this task and connect to the IP address “<strong>8.8.8.8</strong>” on port “<strong>1234</strong>”, and you’ll receive a flag.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>What is the flag received from the challenge?</p>
+
+<p>A: THM{YOU_CONNECTED_TO_A_PORT}</p>
+
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

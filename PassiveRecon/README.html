@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Passive Recon · THM Writeups</title>
+  
+  <meta name="description" content="Learn about the essential tools for passive reconnaissance, such as whois, nslookup, and dig." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Passive Recon</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">PassiveRecon/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">whois</span>
+          
+          <span class="tag-pill">nslookup</span>
+          
+          <span class="tag-pill">dig</span>
+          
+          <span class="tag-pill">dns</span>
+          
+          <span class="tag-pill">dnsdumpster</span>
+          
+          <span class="tag-pill">shodan</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about the essential tools for passive reconnaissance, such as whois, nslookup, and dig.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="passive-recon"><a href="https://tryhackme.com/room/passiverecon">Passive Recon</a></h1>
+
+<h2 id="passive-vs-active-recon">Passive vs Active Recon</h2>
+
+<ul>
+  <li>
+    <p><em>Reconnaissance</em> = preliminary survey to gather information about a target.</p>
+  </li>
+  <li>
+    <p>Two types of reconnaissance:</p>
+  </li>
+</ul>
+
+<p>1). <strong>Passive Recon</strong></p>
+
+<p><img src="/tryhackme/PassiveRecon/PassiveRecon.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>rely on publicly available information without actually engaging with the target.</p>
+  </li>
+  <li>
+    <p>just observing the territory wihout actually ‘stepping’ on it.</p>
+  </li>
+  <li>
+    <p>Passive recon activities:</p>
+
+    <ul>
+      <li>
+        <p>Looking up DNS records of a domain from a public website</p>
+      </li>
+      <li>
+        <p>Checking job ads related to the target website.</p>
+      </li>
+      <li>
+        <p>Reading news articles about the target company</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>2). <strong>Active Recon</strong></p>
+
+<p><img src="/tryhackme/PassiveRecon/ActiveRecon.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>requires direct engagement with the target.</p>
+  </li>
+  <li>
+    <p>Active Recon activities:</p>
+
+    <ul>
+      <li>
+        <p>Connecting to one of the company servers such as HTTP, FTP and SMTP.</p>
+      </li>
+      <li>
+        <p>Calling the company in an attempt to get information (social engineering)</p>
+      </li>
+      <li>
+        <p>Entering company premises pretending to be a repairman</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>You visit the Facebook page of the target company, hoping to get some of their employee names. What kind of reconnaissance activity is this? (A for active, P for passive)</li>
+</ol>
+
+<p>R: Passive</p>
+
+<ol>
+  <li>You ping the IP address of the company webserver to check if ICMP traffic is blocked. What kind of reconnaissance activity is this? (A for active, P for passive)</li>
+</ol>
+
+<p>R: Active</p>
+
+<ol>
+  <li>You happen to meet the IT administrator of the target company at a party. You try to use social engineering to get more information about their systems and network infrastructure. What kind of reconnaissance activity is this? (A for active, P for passive)</li>
+</ol>
+
+<p>R: Active</p>
+
+<h2 id="whois">Whois</h2>
+
+<ul>
+  <li>
+    <p>request and response protocol that follows <a href="https://www.ietf.org/rfc/rfc3912.txt">RFC 3912</a></p>
+  </li>
+  <li>
+    <p>it listens for <strong>TCP requests on port 43</strong></p>
+  </li>
+  <li>
+    <p>the domain registrar is responsible for maintaining the WHOIS server</p>
+  </li>
+  <li>
+    <p>we can learn:</p>
+
+    <ul>
+      <li>
+        <p><em>Registrar</em>: Via which registrar was the domain name registered?</p>
+      </li>
+      <li>
+        <p><em>Contact info of registrant</em>: Name, organization, address, phone, among other things. (unless made hidden via a privacy service)</p>
+      </li>
+      <li>
+        <p><em>Creation, update, and expiration dates</em>: When was the domain name first registered? When was it last updated? And when does it need to be renewed?</p>
+      </li>
+      <li>
+        <p><em>Name Server</em>: Which server to ask to resolve the domain name?</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p><img src="/tryhackme/PassiveRecon/WHOIS_tryhackme.png" alt="" /></p>
+
+<ol>
+  <li>When was TryHackMe.com registered?</li>
+</ol>
+
+<p>R: 2018 07 05</p>
+
+<ol>
+  <li>What is the registrar of TryHackMe.com?</li>
+</ol>
+
+<p>R:namecheap.com</p>
+
+<ol>
+  <li>Which company is TryHackMe.com using for name servers?</li>
+</ol>
+
+<p>R: cloudfare.com</p>
+
+<h2 id="nslookup-and-dig">Nslookup and dig</h2>
+
+<ul>
+  <li>
+    <p>with nslookup (<em>Name Server Look Up</em>) we can get the IP address of a domain name.</p>
+  </li>
+  <li>
+    <p>Command:</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nslookup OPTIONS DOMAIN_NAME SERVER
+</code></pre></div></div>
+
+<ul>
+  <li><em>Options</em>:</li>
+</ul>
+
+<p><img src="/tryhackme/PassiveRecon/nslookup.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><em>Domain_Name</em>: the domain name you are looking up</p>
+  </li>
+  <li>
+    <p><em>Server</em>: the DNS Server you want to query:</p>
+
+    <ul>
+      <li>
+        <p>Cloudfare offers <strong>1.1.1.1</strong> and <strong>1.0.0.1</strong></p>
+      </li>
+      <li>
+        <p>Google offers <strong>8.8.8.8</strong> and <strong>8.8.4.4</strong></p>
+      </li>
+      <li>
+        <p>Quad9 offers <strong>9.9.9.9</strong> and <strong>149.112.112.112</strong></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>return all the IPv4 addresses used by tryhackme.com by using the command:</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nslookup <span class="nt">-type</span><span class="o">=</span>A tryhackme.com 1.1.1.1
+</code></pre></div></div>
+
+<p><img src="/tryhackme/PassiveRecon/NSLOOKUPEXAMPLE.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>you want to learn about the email servers and configurations for a particular domain.</p>
+
+    <ul>
+      <li>you can use: <code class="language-plaintext highlighter-rouge">nslookup -type=MX tryhackme.com</code>:</li>
+    </ul>
+
+    <p><img src="/tryhackme/PassiveRecon/nslokkupex2.png" alt="" /></p>
+  </li>
+  <li>
+    <p>e can see that tryhackme.com’s current email configuration uses Google.</p>
+  </li>
+  <li>
+    <p>Since MX is looking up the Mail Exchange servers, we notice that when a mail server tries to deliver email @tryhackme.com, it will try to connect to the <em>aspmx.l.google.com</em>, which has order 1.</p>
+  </li>
+  <li>
+    <p>If it is busy or unavailable, the mail server will attempt to connect to the next in order mail exchange servers, <em>alt1.aspmx.l.google.com</em> or <em>alt2.aspmx.l.google.com</em>.</p>
+  </li>
+  <li>
+    <p>for more advances DNS queries, we can use <strong>dig</strong> (<em>Domain Information Groper</em>)</p>
+  </li>
+  <li>
+    <p>How to use dig:</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dig SERVER DOMAIN_NAME TYPE
+</code></pre></div></div>
+
+<ul>
+  <li>Server: the DNS server you want to query</li>
+  <li>Domain_name: the domain name you are looking up</li>
+  <li>Type: the DNS record type</li>
+</ul>
+
+<p><img src="/tryhackme/PassiveRecon/digexample.png" alt="" /></p>
+
+<ul>
+  <li>if you want to query a 1.1.1.1 DNS server, use:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dig @1.1.1.1 tryhackme.com MX
+</code></pre></div></div>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>Check the TXT records of thmlabs.com. What is the flag there?</li>
+</ol>
+
+<p>R: <img src="/tryhackme/PassiveRecon/nslookupquestion.png" alt="" /></p>
+
+<h2 id="dnsdumpster">DNSDumpster</h2>
+
+<ul>
+  <li>
+    <p>nslookup and dig cannot find <em>subdomains</em> on their own</p>
+  </li>
+  <li>
+    <p>maybe tryhackme has the subdomains webmail.tryhackme.com or wiki.tryhackme.com that haven’t been updated lately and which we can take advantage of.</p>
+  </li>
+  <li>
+    <p>online service that offers detailed answers to DNS queries: <a href="https://dnsdumpster.com/">DNSDumpster</a></p>
+  </li>
+  <li>
+    <p>We will search for tryhackme.com on DNSDumpster.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/PassiveRecon/DNSDumpster.png" alt="" /></p>
+
+<p><img src="/tryhackme/PassiveRecon/DNSDumpster2.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Among the results, we got a list of DNS servers for the domain we are looking up.</p>
+  </li>
+  <li>
+    <p>DNSDumpster also resolved the domain names to IP addresses and even tried to geolocate them.</p>
+  </li>
+  <li>
+    <p>We can also see the MX records; DNSDumpster resolved all five mail exchange servers to their respective IP addresses and provided more information about the owner and location.</p>
+  </li>
+  <li>
+    <p>Finally, we can see TXT records.</p>
+  </li>
+</ul>
+
+<h3 id="question">Question</h3>
+
+<ol>
+  <li>Lookup tryhackme.com on DNSDumpster. What is one interesting subdomain that you would discover in addition to www and blog?</li>
+</ol>
+
+<p>R: remote</p>
+
+<h2 id="shodanio">Shodan.io</h2>
+
+<ul>
+  <li>
+    <p>an attacker can use <a href="https://www.shodan.io/">Shodan.io</a> to gain information about the client’s network without actually connecting to it</p>
+  </li>
+  <li>
+    <p>on the defensive side, one can use this to learn about connected and exposed devices belonging to the organization.</p>
+  </li>
+  <li>
+    <p>Shodan.io tries to connect to every reachable device online to build a search engine of connected ‘things’.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/PassiveRecon/shodanio.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>we can learn several things from a Shodan.io search:</p>
+
+    <ul>
+      <li>IP addresses</li>
+      <li>hosting company</li>
+      <li>geographic location</li>
+      <li>server type and version</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>According to Shodan.io, what is the 2nd country in the world in terms of the number of publicly accessible Apache servers?</li>
+</ol>
+
+<p><img src="/tryhackme/PassiveRecon/shodanioQuestions.png" alt="" /></p>
+
+<p>R: Germany</p>
+
+<ol>
+  <li>Based on Shodan.io, what is the 3rd most common port used for Apache?</li>
+</ol>
+
+<p>R: 8080</p>
+
+<ol>
+  <li>Based on Shodan.io, what is the 3rd most common port used for nginx?</li>
+</ol>
+
+<p><img src="/tryhackme/PassiveRecon/shodan_nginx.png" alt="" /></p>
+
+<p>R: 8888</p>
+
+<h2 id="recap">Recap</h2>
+
+<p><img src="/tryhackme/PassiveRecon/Recap.png" alt="" /></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

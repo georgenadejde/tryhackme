@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extending Your Network · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Extending Your Network</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Extending Your Network/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">network</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="extending-your-network">Extending Your Network</h1>
+
+<h2 id="introduction-to-port-forwarding">Introduction to Port Forwarding</h2>
+
+<p>#portforwarding</p>
+
+<ul>
+  <li>Port forwarding is an essential component in connecting applications and services to the Internet.
+    <ul>
+      <li>Without port forwarding, applications and services such as web servers are only available to devices within the same direct network.</li>
+    </ul>
+  </li>
+  <li>Take the network below as an example.
+    <ul>
+      <li>Within this network, the server with an IP address of “192.168.1.10” runs a webserver on port 80.</li>
+    </ul>
+  </li>
+  <li>Only the two other computers on this network will be able to access it (this is known as an intranet).</li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/portforwarding-int.png" alt="" /></p>
+
+<ul>
+  <li>If the administrator wanted the website to be accessible to the public (using the Internet), they would have to implement port forwarding, like in the diagram below:</li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/portforwarding.png" alt="" /></p>
+
+<ul>
+  <li>With this design, Network #2 will now be able to access the webserver running on Network #1 using the public IP address of Network #1 (82.62.51.70).</li>
+</ul>
+
+<blockquote>
+  <p>It is easy to confuse port forwarding with the behaviours of a firewall.</p>
+</blockquote>
+
+<ul>
+  <li>However, at this stage, just understand that port forwarding opens specific ports (recall how packets work).
+    <ul>
+      <li>In comparison, firewalls determine if traffic can travel across these ports (even if these ports are open by port forwarding).</li>
+    </ul>
+  </li>
+  <li>Port forwarding is configured at the router of a network.</li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>What is the name of the device that is used to configure port forwarding?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: router
+</code></pre></div></div>
+
+<h2 id="firewalls-101">Firewalls 101</h2>
+<p>#firewall</p>
+
+<ul>
+  <li>A firewall is a device within a network responsible for determining what traffic is allowed to enter and exit.
+    <ul>
+      <li>Think of a firewall as border security for a network.</li>
+    </ul>
+  </li>
+  <li>An administrator can configure a firewall to <strong>permit</strong> or <strong>deny</strong> traffic from entering or exiting a network based on numerous factors such as:
+    <ul>
+      <li>Where the traffic is coming from? (has the firewall been told to accept/deny traffic from a specific network?)</li>
+      <li>Where is the traffic going to? (has the firewall been told to accept/deny traffic destined for a specific network?)</li>
+      <li>What port is the traffic for? (has the firewall been told to accept/deny traffic destined for port 80 only?)</li>
+      <li>What protocol is the traffic using? (has the firewall been told to accept/deny traffic that is UDP, TCP or both?)</li>
+    </ul>
+  </li>
+  <li>
+    <p>Firewalls perform packet inspection to determine the answers to these questions.</p>
+  </li>
+  <li>Firewalls come in all shapes and sizes.</li>
+  <li>
+    <p>From dedicated pieces of hardware (often found in large networks like businesses) that can handle a magnitude of data to residential routers (like at your home!) or software such as <a href="https://www.snort.org/">Snort</a>, firewalls can be categorised into 2 to 5 categories.</p>
+  </li>
+  <li>We’ll cover the two primary categories of firewalls in the table below:</li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/05_6_2023_22-42.png" alt="" /></p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>What layers of the OSI model do firewalls operate at?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: layer 3, layer 2
+</code></pre></div></div>
+
+<p>What category of firewall inspects the <strong>entire connection</strong>?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: statefull
+</code></pre></div></div>
+
+<p>What category of firewall inspects individual packets?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: stateless
+</code></pre></div></div>
+
+<h2 id="practical---firewall">Practical - Firewall</h2>
+
+<ul>
+  <li>Deploy the static site attached to this task. You must <strong>correctly configure the firewall to prevent the device from overloading</strong> to receive the flag!</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>What is the flag?</p>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/05_6_2023_22-46.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: **THM{FIREWALLS_RULE}**
+</code></pre></div></div>
+
+<h2 id="vpn-basics">VPN Basics</h2>
+
+<p>#vpn</p>
+
+<ul>
+  <li>A <strong>V</strong>irtual <strong>P</strong>rivate <strong>N</strong>etwork (or <strong>VPN</strong> for short) is a technology that allows devices on separate networks to communicate securely by creating a dedicated path between each other over the Internet (known as a tunnel).
+    <ul>
+      <li>Devices connected within this tunnel form their own private network.</li>
+    </ul>
+  </li>
+  <li>For example, only devices within the same network (such as within a business) can directly communicate.
+    <ul>
+      <li>However, a VPN allows two offices to be connected.</li>
+    </ul>
+  </li>
+  <li>Let’s take the diagram below, where there are three networks:</li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/vpn1.png" alt="" /></p>
+
+<ol>
+  <li>Network #1 (Office #1)</li>
+  <li>Network #2 (Office #2)</li>
+  <li>Network #3 (Two devices connected via a VPN)</li>
+</ol>
+
+<ul>
+  <li>
+    <p>The devices connected on Network #3 are still a part of Network #1 and Network #2 but also form together to create a private network (Network #3) that only devices that are connected via this VPN can communicate over.</p>
+  </li>
+  <li>
+    <p>Let’s cover some of the other benefits offered by a VPN in the table below:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/05_6_2023_23-18.png" alt="" /></p>
+
+<ul>
+  <li>TryHackMe uses a VPN to connect you to our vulnerable machines without making them directly accessible on the Internet! This means that:
+    <ul>
+      <li>You can securely interact with our machines</li>
+      <li>Service providers such as ISPs don’t think you are attacking another machine on the Internet (which could be against the terms of service)</li>
+      <li>The VPN provides security to TryHackMe as vulnerable machines are not accessible using the Internet.</li>
+    </ul>
+  </li>
+  <li>VPN technology has improved over the years. Let’s explore some existing VPN technologies below:</li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/05_6_2023_23-21.png" alt="" /></p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>What VPN technology <strong>only</strong> encrypts &amp; provides the authentication of data?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: PPP
+</code></pre></div></div>
+
+<p>What VPN technology uses the IP framework?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: IPSec
+</code></pre></div></div>
+
+<h2 id="lan-networking-devices">LAN Networking Devices</h2>
+<p>#lan</p>
+
+<h3 id="what-is-a-router"><strong>What is a Router?</strong></h3>
+<p>#router</p>
+
+<ul>
+  <li>It’s a router’s job to connect networks and pass data between them.
+    <ul>
+      <li>It does this by using routing (hence the name router!).</li>
+    </ul>
+  </li>
+  <li>Routing is the label given to the process of data travelling across networks.</li>
+  <li>Routing involves creating a path between networks so that this data can be successfully delivered.
+    <ul>
+      <li>Routers operate at Layer 3 of the OSI model.</li>
+    </ul>
+  </li>
+  <li>
+    <p>They often feature an interactive interface (such as a website or a console) that allows an administrator to configure various rules such as port forwarding or firewalling.</p>
+  </li>
+  <li>Routing is useful when devices are connected by many paths, such as in the example diagram below, where the most optimal path is taken:</li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/routing2.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Routers are dedicated devices and do not perform the same functions as switches.</p>
+  </li>
+  <li>
+    <p>We can see that Computer A’s network is connected to the network of Computer B by two routers in the middle.</p>
+    <ul>
+      <li>The question is: what path will be taken?</li>
+      <li>Different protocols will decide what path should be taken, but factors include:
+        <ul>
+          <li>What path is the shortest?</li>
+          <li>What path is the most reliable?</li>
+          <li>Which path has the faster medium (e.g. copper or fibre)?</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="what-is-a-switch">What is a Switch?</h3>
+<p>#switch</p>
+
+<ul>
+  <li>A switch is a dedicated networking device responsible for providing a means of connecting to multiple devices.
+    <ul>
+      <li>Switches can facilitate many devices (from 3 to 63) using Ethernet cables.</li>
+    </ul>
+  </li>
+  <li>Switches can operate at both layer 2 and layer 3 of the OSI model.
+    <ul>
+      <li>However, these are exclusive in the sense that Layer 2 switches cannot operate at layer 3.</li>
+    </ul>
+  </li>
+  <li>Take, for example, a layer 2 switch in the diagram below.</li>
+  <li>These switches will forward frames (remember these are no longer packets as the IP protocol has been stripped) onto the connected devices using their MAC address.</li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/layer2switch.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>These switches are solely responsible for sending frames to the correct device.</p>
+  </li>
+  <li>Now, let’s move onto layer 3 switches.</li>
+  <li>These switches are more sophisticated than layer 2, as they can perform <em>some</em> of the responsibilities of a router.</li>
+  <li>
+    <p>Namely, these switches will send frames to devices (as layer 2 does) and route packets to other devices using the IP protocol. </p>
+  </li>
+  <li>Let’s take a look at the diagram below of a layer 3 switch in action.</li>
+  <li>We can see that there are two IP addresses: 
+    <ul>
+      <li>192.168.1.1</li>
+      <li>192.168.2.1
+#vlan</li>
+    </ul>
+  </li>
+  <li>A technology called <strong>VLAN</strong> (<strong>V</strong>irtual <strong>L</strong>ocal <strong>A</strong>rea <strong>N</strong>etwork) allows specific devices within a network to be virtually split up.
+    <ul>
+      <li>This split means they can all benefit from things such as an Internet connection but are treated separately.</li>
+    </ul>
+  </li>
+  <li>This network separation provides security because it means that rules in place determine how specific devices communicate with each other.
+    <ul>
+      <li>This segregation is illustrated in the diagram below:</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/vlans.png" alt="" /></p>
+
+<ul>
+  <li>In the context of the diagram above, the “Sales Department” and “Accounting Department” will be able to access the Internet, but not able to communicate with each other (although they are connected to the same switch).</li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>What is the verb for the action that a router does?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: routing
+</code></pre></div></div>
+
+<p>What are the two different layers of switches? Separate these by a comma I.e.: LayerX,LayerY</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: Layer2,Layer3
+</code></pre></div></div>
+
+<h2 id="practical---network-simulator">Practical - Network Simulator</h2>
+
+<ul>
+  <li>Deploy the static site attached to this task.
+    <ul>
+      <li>And experiment with the network simulator.</li>
+    </ul>
+  </li>
+  <li>The simulator will break down every step a packet needs to take to get from point a to b.
+    <ul>
+      <li>Try sending a TCP packet from computer1 to computer3 to reveal a flag.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>What is the flag from the network simulator?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: THM{YOU'VE_GOT_DATA}
+</code></pre></div></div>
+
+<p>How many HANDSHAKE entries are there in the Network Log?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: 5
+</code></pre></div></div>
+
+<p><img src="/tryhackme/Extending%20Your%20Network/05_6_2023_23-44.png" alt="" /></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

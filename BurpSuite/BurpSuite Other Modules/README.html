@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burp Suite Other Modules · THM Writeups</title>
+  
+  <meta name="description" content="Take a dive into some of Burp Suite&#39;s lesser-known modules." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Burp Suite Other Modules</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">BurpSuite/BurpSuite Other Modules/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">burp</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Take a dive into some of Burp Suite's lesser-known modules.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="burp-suite-other-modules"><a href="https://tryhackme.com/room/burpsuiteom">Burp Suite: Other Modules</a></h1>
+
+<h2 id="decoder-overview">Decoder: Overview</h2>
+
+<p>The Decoder module of Burp gives user data manipulation capabilities. As implied by its name, it not only decodes data intercepted during an attack but also provides the function to encode our own data, prepping it for transmission to the target. Decoder also allows us to create hashsums of data, as well as providing a Smart Decode feature, which attempts to decode provided data recursively until it is back to being plaintext (like the “Magic” function of <a href="https://gchq.github.io/CyberChef/">Cyberchef (opens in new tab)</a>).</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/f795b0f0701d019d37025310fa4ae285.png" alt="" /></p>
+
+<ol>
+  <li>This box serves as the workspace for entering or pasting data that requires encoding or decoding. Consistent with other modules of Burp, data can be moved to this area from different parts of the framework via the <strong>Send to Decoder</strong> option upon right-clicking.</li>
+  <li>At the top of the list on the right, there’s an option to treat the input as either text or hexadecimal byte values.</li>
+  <li>As we move down the list, dropdown menus are present to encode, decode, or hash the input.</li>
+  <li>The <strong>Smart Decode</strong> feature, located at the end, attempts to auto-decode the input.</li>
+</ol>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Which feature attempts auto-decode of the input?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">smart decode</code></p>
+
+<h2 id="decoder-encodingdecoding">Decoder: Encoding/Decoding</h2>
+
+<p>Now, let’s examine the manual encoding and decoding options in detail. These are identical whether the decoding or encoding menu is chosen:</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/8ce7c550edf3a79cafbb7be8468793ff.png" alt="" /></p>
+
+<ul>
+  <li><strong>Plain</strong>: This refers to the raw text before any transformations are applied.</li>
+  <li><strong>URL</strong>: URL encoding is utilized to ensure the safe transfer of data in the URL of a web request. It involves substituting characters for their ASCII character code in hexadecimal format, preceded by a percentage symbol (%). This method is vital for any type of web application testing.</li>
+  <li><strong>HTML</strong>: HTML Entities encoding replaces special characters with an ampersand (&amp;), followed by either a hexadecimal number or a reference to the character being escaped, and ending with a semicolon (;). This method ensures the safe rendering of special characters in HTML and helps prevent attacks such as XSS. The HTML option in Decoder allows any character to be encoded into its HTML escaped format or decode captured HTML entities.</li>
+  <li><strong>Base64</strong>: Base64, a commonly used encoding method, converts any data into an ASCII-compatible format. The under-the-hood functioning isn’t crucial at this stage; however, interested individuals can find the underlying mathematics <a href="https://stackabuse.com/encoding-and-decoding-base64-strings-in-python">here (opens in new tab)</a>.</li>
+  <li><strong>ASCII Hex</strong>: This option transitions data between ASCII and hexadecimal representations. For instance, the word “ASCII” can be converted into the hexadecimal number “4153434949”. Each character is converted from its numeric ASCII representation into hexadecimal.</li>
+  <li><strong>Hex, Octal, and Binary</strong>: These encoding methods apply solely to numeric inputs, converting between decimal, hexadecimal, octal (base eight), and binary representations.</li>
+  <li><strong>Gzip</strong>: Gzip compresses data, reducing file and page sizes before browser transmission. Faster load times are highly desirable for developers looking to enhance their SEO score and avoid user inconvenience. Decoder facilitates the manual encoding and decoding of gzip data, although it often isn’t valid ASCII/Unicode.
+    <h3 id="questions-1">Questions</h3>
+  </li>
+</ul>
+
+<p>Q: Base64 encode the phrase: Let’s Start Simple.What is the base64 encoded version of this text?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">TGV0J3MgU3RhcnQgU2ltcGxl</code></p>
+
+<p>Q: URL Decode this data: %4e%65%78%74%3a%20%44%65%63%6f%64%69%6e%67.What is the plaintext returned?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Next: Decoding</code></p>
+
+<p>Q: Use Smart decode to decode this data: %34%37.What is the decoded text?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">47</code></p>
+
+<p>Q: Encode this phrase: Encoding Challenge.Start with base64 encoding. Take the output of this and convert it into ASCII Hex. Finally, encode the hex string into octal.What is the final string?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">24034214a720270024142d541357471232250253552c1162d1206c</code></p>
+
+<h2 id="decoder-hashing">Decoder: Hashing</h2>
+
+<p>Hashing is a one-way process that transforms data into a unique signature. For a function to qualify as a hashing algorithm, the output it generates must be irreversible. A proficient hashing algorithm ensures that every data input will generate a completely unique hash. For instance, using the MD5 algorithm to produce a hashsum for the text “MD5sum” returns <code class="language-plaintext highlighter-rouge">4ae1a02de5bd02a5515f583f4fca5e8c</code>. Using the same algorithm for “MD5SUM” yields an entirely different hash despite the close resemblance of the input: <code class="language-plaintext highlighter-rouge">13b436b09172400c9eb2f69fbd20adad</code>. Therefore, hashes are commonly used to verify the integrity of files and documents, as even a tiny alteration to the file significantly changes the hashsum.</p>
+
+<p>Moreover, hashes are used to securely store passwords since the one-way hashing process makes the passwords relatively secure, even if the database is compromised. When a user creates a password, the application hashes and stores it. During login, the application hashes the submitted password and compares it against the stored hash; if they match, the password is correct. Using this method, an application never needs to store the original (plaintext) password.</p>
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Using Decoder, what is the SHA-256 hashsum of the phrase: Let’s get Hashing!?Convert this into an ASCII Hex string for the answer to this question.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">6b72350e719a8ef5af560830164b13596cb582757437e21d1879502072238abe</code></p>
+
+<p>Q: Generate an MD4 hashsum of the phrase: Insecure Algorithms.Encode this as base64 (not ASCII Hex) before submitting.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">TcV4QGZZN7y7lwYFRMMoeA==</code></p>
+
+<p>Q: Let’s look at an in-context example:First, download the file attached to this task.Note: This file can also be downloaded from the deployed VM with wget http://MACHINE_IP:9999/AlteredKeys.zip — you may find this helpful if you are using the AttackBox.Now read the problem specification below:”Some joker has messed with my SSH key! There are four keys in the directory, and I have no idea which is the real one. The MD5 hashsum for my key is 3166226048d6ad776370dc105d40d9f8 — could you find it for me?”What is the correct key name?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">key3</code></p>
+
+<h2 id="comparer-overview">Comparer: Overview</h2>
+
+<p>Comparer, as the name implies, lets us compare two pieces of data, either by ASCII words or by bytes.</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/f05e8f491facd01264f53759714120db.png" alt="" /></p>
+
+<p>The interface can be divided into three main sections:</p>
+
+<ol>
+  <li>On the left, we see the items to be compared. When we load data into Comparer, it appears as rows in these tables. We select two datasets to compare.</li>
+  <li>On the upper right, we have options for pasting data from the clipboard (Paste), loading data from a file (Load), removing the current row (Remove), and clearing all datasets (Clear).</li>
+  <li>Lastly, on the lower right, we can choose to compare our datasets by either words or bytes. It doesn’t matter which of these buttons you select initially because this can be changed later. These are the buttons we click when we’re ready to compare the selected data.</li>
+</ol>
+
+<p>Once we’ve added at least 2 datasets to compare and press on either <strong>Words</strong> or <strong>Bytes</strong>, a pop-up window shows us the comparison:</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/221f10f4817c0ee660248edea10dd041.png" alt="" /></p>
+
+<p>This window also has three distinct sections:</p>
+
+<ol>
+  <li>The compared data occupies most of the window; it can be viewed in either text or hex format. The initial format depends on whether we chose to compare by words or bytes in the previous window, but this can be overridden by using the buttons above the comparison boxes.</li>
+  <li>The comparison key is at the bottom left, showing which colors represent modified, deleted, and added data between the two datasets.</li>
+  <li>The <strong>Sync views</strong> checkbox is at the bottom right of the window. When selected, it ensures that both sets of data will sync formats. In other words, if you change one of them into Hex view, the other will adjust to match.</li>
+</ol>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Click me to proceed to the next task.</p>
+
+<p>A: ``</p>
+
+<h2 id="comparer-example">Comparer: Example</h2>
+
+<p>There are many situations where being able to quickly compare two (potentially very large) pieces of data can come in handy.</p>
+
+<p>For example, when performing a login bruteforce or credential stuffing attack with Intruder, you may wish to compare two responses with different lengths to see where the differences lie and whether the differences indicate a successful login.</p>
+
+<h2 id="sequencer-overview">Sequencer: Overview</h2>
+
+<p>Sequencer allows us to evaluate the entropy , or randomness, of “tokens”. Tokens are strings used to identify something and should ideally be generated in a cryptographically secure manner. These tokens could be session cookies or <strong>C</strong>ross-<strong>S</strong>ite <strong>R</strong>equest <strong>F</strong>orgery (CSRF) tokens used to protect form submissions. If these tokens aren’t generated securely, then, in theory, we could predict upcoming token values. The implications could be substantial, for instance, if the token in question is used for password resets.</p>
+
+<p>Let’s start by looking at the Sequencer interface:</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/dab1d10ba6ae4740453d593706cff315.png" alt="" /></p>
+
+<p>We have two main ways to perform token analysis with Sequencer:</p>
+
+<ul>
+  <li>
+    <p><strong>Live Capture</strong>: This is the more common method and is the default sub-tab for Sequencer. Live capture lets us pass a request that will generate a token to Sequencer for analysis. For instance, we might want to pass a POST request to a login endpoint to Sequencer, knowing that the server will respond with a cookie. With the request passed in, we can instruct Sequencer to start a live capture. It will then automatically make the same request thousands of times, storing the generated token samples for analysis. After collecting enough samples, we stop the Sequencer and allow it to analyze the captured tokens.</p>
+  </li>
+  <li>
+    <p><strong>Manual Load</strong>: This allows us to load a list of pre-generated token samples directly into Sequencer for analysis. Using Manual Load means we don’t need to make thousands of requests to our target, which can be noisy and resource-intensive. However, it does require that we have a large list of pre-generated tokens.</p>
+  </li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: What does Sequencer allow us to evaluate?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">entropy</code></p>
+
+<h2 id="sequencer-live-capture">Sequencer: Live Capture</h2>
+
+<p>First, capture a request to <code class="language-plaintext highlighter-rouge">http://MACHINE_IP/admin/login/</code> in the</p>
+
+<p>. Right-click on the request and select <strong>Send to Sequencer</strong>.</p>
+
+<p>In the “Token Location Within Response” section, we can select between <strong>Cookie</strong>, <strong>Form field</strong>, and <strong>Custom location</strong>. Since we’re testing the loginToken in this case, select the “Form field” radio button and choose the loginToken from the dropdown menu:</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/9bb4ea43eb0acb59dee493699d336930.png" alt="" /></p>
+
+<p>In this situation, we can safely leave all other options at their default values</p>
+
+<p>A new window will pop up indicating that a live capture is in progress and displaying the number of tokens captured so far. Wait until a sufficient number of tokens are captured (approximately 10,000 should suffice); the more tokens we have, the more precise our analysis will be.</p>
+
+<p>Once around 10,000 tokens are captured, click on <strong>Pause</strong> and then select the <strong>Analyze now</strong> button:</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/715caf9a950bdd3a3c9ec4a5360ae9ca.png" alt="" /></p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/2026-03-23_11-49.jpg" alt="" /></p>
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: What is the overall quality of randomness estimated to be?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">excellent</code></p>
+
+<h2 id="sequencer-analysis">Sequencer: Analysis</h2>
+
+<p>The generated entropy analysis report is split into four primary sections. The first of these is the <strong>Summary</strong> of the results. The summary gives us the following:</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/ff780f0e74d75191ea4945dbe7794a29.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><strong>Overall result</strong>: This gives a broad assessment of the security of the token generation mechanism. In this case, the level of entropy indicates that the tokens are likely securely generated.</p>
+  </li>
+  <li>
+    <p><strong>Effective</strong> entropy: This measures the randomness of the tokens. The effective- of 117 bits is relatively high, indicating that the tokens are sufficiently random and, therefore, secure against prediction or brute force attacks.</p>
+  </li>
+  <li>
+    <p><strong>Reliability</strong>: The significance level of 1% implies that there is 99% confidence in the accuracy of the results. This level of confidence is quite high, providing assurance in the accuracy of the effective entropy estimation.</p>
+  </li>
+  <li>
+    <p><strong>Sample</strong>: This provides details about the token samples analyzed during the entropy testing process, including the number of tokens and their characteristics.</p>
+  </li>
+</ul>
+
+<p>While the summary report often provides enough information to assess the security of the token generation process, it’s important to remember that further investigation may be necessary in some cases. The character-level and bit-level analysis can provide more detailed insights into the randomness of the tokens, especially when the summary results raise potential concerns.</p>
+
+<p>While the entropy report can provide a strong indicator of the security of the token generation mechanism, there needs to be more definitive proof. Other factors could also impact the security of the tokens, and the nature of probability and statistics means there’s always a degree of uncertainty. That said, an effective entropy of 117 bits with a significance level of 1% suggests a robustly secure token generation process.</p>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>Q: Click me to proceed to the next task.</p>
+
+<p>A: ``</p>
+
+<h2 id="organizer-overview">Organizer: Overview</h2>
+
+<p>The Organizer module of  Burp is designed to help you store and annotate copies of HTTP requests that you may want to revisit later. This tool can be particularly useful for organizing your penetration testing workflow. Here are some of its key features:</p>
+
+<ul>
+  <li>
+    <p>You can store requests that you want to investigate later, save requests that you’ve already identified as interesting, or save requests that you want to add to a report later.</p>
+  </li>
+  <li>
+    <p>You can send HRRP requests to Burp Organizer from other Burp Modules such as <strong>Proxy</strong> or <strong>Repeater</strong>. Each request that you send to Organizer is a read-only copy of the original request saved at the point you sent it to Organizer.</p>
+  </li>
+</ul>
+
+<p>Requests are stored in a table, which contains columns such as the request index number, the time the request was made, workflow status, Burp tool that the request was sent from, HTTP method, server hostname, URL file path, URL query string, number of parameters in the request, HTTP status code of the response, length of the response in bytes, and any notes that you have made.</p>
+
+<h3 id="questions-7">Questions</h3>
+
+<p>Q: Are saved requests read-only? (yea/nay)</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">yea</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

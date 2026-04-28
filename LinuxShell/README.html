@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux Shell · THM Writeups</title>
+  
+  <meta name="description" content="Learn about scripting and the different types of Linux shells." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Linux Shell</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">LinuxShell/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">linux</span>
+          
+          <span class="tag-pill">shell</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about scripting and the different types of Linux shells.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="linux-shell"><a href="https://tryhackme.com/room/linuxshells">Linux Shell</a></h1>
+
+<h2 id="intro-to-linux-shells">Intro to Linux Shells</h2>
+
+<h3 id="questions">Questions</h3>
+
+<p>Who is the facilitator between the user and the OS?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">shell</code></p>
+
+<h2 id="how-to-interact-with-a-shell">How to interact with a Shell?</h2>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>What is the default shell in most Linux distributions?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">bash</code></p>
+
+<p>Which command utility is used to list down the contents of a directory?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">ls</code></p>
+
+<p>Which command utility can help you search for anything in a file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">grep</code></p>
+
+<h2 id="types-of-linux-shells">Types of Linux Shells</h2>
+
+<p>To see which shell you are using, type the command <code class="language-plaintext highlighter-rouge">echo $SHELL</code>.</p>
+
+<p>You can also list down the available shells in your Linux OS. The file <code class="language-plaintext highlighter-rouge">/etc/shells</code> contains all the installed shells on a Linux system. You can list down the available shells in your Linux OS by typing <code class="language-plaintext highlighter-rouge">cat /etc/shells</code> in the terminal.</p>
+
+<p>To switch between these shells, you can type the shell name that is present on your OS, and it will open for you.</p>
+
+<p>If you want to permanently change your default shell, you can use the command: <code class="language-plaintext highlighter-rouge">chsh -s /usr/bin/zsh</code>. This will make this shell as the default shell for your terminal.</p>
+
+<h4 id="bourne-again-shell">Bourne Again Shell</h4>
+
+<p>Bourne Again Shell (Bash) is the default shell for most Linux distributions. When you open the terminal, bash is present for you to enter commands. Before bash, some shells like sh, ksh, and csh had different capabilities. Bash came as an enhanced replacement for these shells, borrowing capabilities from all of them. This means that it has many of the features of these old shells and some of its unique abilities. Some of the key features provided by bash are listed below:</p>
+
+<ul>
+  <li>Bash is a widely used shell with scripting capabilities.</li>
+  <li>It offers a tab completion feature, which means if you are in the middle of completing a command, you can press the tab key on your keyboard. It will automatically complete the command based on a possible match or give you multiple suggestions for completing it.</li>
+  <li>Bash keeps a history file and logs all of your commands. You can use the up and down arrow keys to use the previous commands without typing them again. You can also type <code class="language-plaintext highlighter-rouge">history</code> to display all your previous commands.</li>
+</ul>
+
+<h4 id="friendly-interactive-shell">Friendly Interactive Shell</h4>
+
+<p>Friendly Interactive Shell (Fish) is also not default in most Linux distributions. As its name suggests, it focuses more on user-friendliness than other shells. Some of the key features provided by fish are listed below:</p>
+
+<ul>
+  <li>It offers a very simple syntax, which is feasible for beginner users.</li>
+  <li>Unlike bash, it has auto spell correction for the commands you write.</li>
+  <li>You can customize the command prompt with some cool themes using fish.</li>
+  <li>The syntax highlighting feature of fish colors different parts of a command based on their roles, which can improve the readability of commands. It also helps us to spot errors with their unique colors.</li>
+  <li>Fish also provides scripting, tab completion, and command history functionality like the shells mentioned in this task.</li>
+</ul>
+
+<h4 id="z-shell">Z Shell</h4>
+
+<p>Z Shell (Zsh) is not installed by default in most Linux distributions. It is considered a modern shell that combines the functionalities of some previous shells. Some of the key features provided by zsh are listed below:</p>
+
+<ul>
+  <li>Zsh provides advanced tab completion and is also capable of writing scripts.</li>
+  <li>Just like fish, it also provides auto spell correction for the commands.</li>
+  <li>It offers extensive customization that may make it slower than other shells.</li>
+  <li>It also provides tab completion, command history functionality, and several other features.</li>
+</ul>
+
+<p><img src="/tryhackme/LinuxShell/2025-12-01_13-08.png" alt="" /></p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Which shell comes with syntax highlighting as an out-of-the-box feature?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">fish</code></p>
+
+<p>Which shell does not have auto spell correction?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">bash</code></p>
+
+<p>Which command displays all the previously executed commands of the current session?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">history</code></p>
+
+<h2 id="shell-scripting-and-components">Shell Scripting and Components</h2>
+
+<p>Unlike the other commands we type in the shell, we first need to create a file using any text editor for the script. The file must be named with an extension <code class="language-plaintext highlighter-rouge">.sh</code>, the default extension for bash scripts</p>
+
+<p>Every script should start from shebang. Shebang is a combination of some characters that are added at the beginning of a script, starting with <code class="language-plaintext highlighter-rouge">#!</code> followed by the name of the interpreter to use while executing the script.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">#</span><span class="o">!</span>/bin/bash
+</code></pre></div></div>
+
+<p>The script below displays a string on the screen: “Hey, what’s your name?” This is done by <code class="language-plaintext highlighter-rouge">echo</code> command. The second line of the script contains the code <code class="language-plaintext highlighter-rouge">read name</code>. <code class="language-plaintext highlighter-rouge">read</code> is used to take input from the user, and <code class="language-plaintext highlighter-rouge">name</code> is the variable in which the input would be stored. The last line uses <code class="language-plaintext highlighter-rouge">echo</code> to display the welcome line for the user, along with its name stored in the variable.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Defining the Interpreter </span>
+<span class="c">#!/bin/bash</span>
+<span class="nb">echo</span> <span class="s2">"Hey, what’s your name?"</span>
+<span class="nb">read </span>name
+<span class="nb">echo</span> <span class="s2">"Welcome, </span><span class="nv">$name</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>To execute the script, we first need to make sure that the script has execution permissions. To give these permissions to the script, we can type the following command in our terminal:</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">user@tryhackme:~$</span><span class="w"> </span><span class="nb">chmod</span> +x first_script.sh
+</code></pre></div></div>
+
+<p>For a general explanation of loops, let’s write a loop that will display all numbers starting from 1 to 10 on the screen.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Defining the Interpreter </span>
+<span class="c">#!/bin/bash</span>
+<span class="k">for </span>i <span class="k">in</span> <span class="o">{</span>1..10<span class="o">}</span><span class="p">;</span>
+<span class="k">do
+</span><span class="nb">echo</span> <span class="nv">$i</span>
+<span class="k">done</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Defining the Interpreter </span>
+<span class="c">#!/bin/bash</span>
+<span class="nb">echo</span> <span class="s2">"Please enter your name first:"</span>
+<span class="nb">read </span>name
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$name</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"Stewart"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+        </span><span class="nb">echo</span> <span class="s2">"Welcome Stewart! Here is the secret: THM_Script"</span>
+<span class="k">else
+        </span><span class="nb">echo</span> <span class="s2">"Sorry! You are not authorized to access the secret."</span>
+<span class="k">fi</span>
+</code></pre></div></div>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>What is the shebang used in a Bash script?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">#!/bin/bash</code></p>
+
+<p>Which command gives executable permissions to a script?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">chmod +x</code></p>
+
+<p>Which scripting functionality helps us configure iterative tasks?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">loops</code></p>
+
+<h2 id="the-locker-script">The Locker Script</h2>
+
+<p>A user has a locker in a bank. To secure the locker, we have to have a script in place that verifies the user before opening it. When executed, the script should ask the user for their name, company name, and PIN. If the user enters the following details, they should be allowed to enter, or else they should be denied access.</p>
+
+<ul>
+  <li>Username: John</li>
+  <li>Company name: Tryhackme</li>
+  <li>PIN: 7385</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Defining the Interpreter </span>
+<span class="c">#!/bin/bash </span>
+
+<span class="c"># Defining the variables</span>
+<span class="nv">username</span><span class="o">=</span><span class="s2">""</span>
+<span class="nv">companyname</span><span class="o">=</span><span class="s2">""</span>
+<span class="nv">pin</span><span class="o">=</span><span class="s2">""</span>
+
+<span class="c"># Defining the loop</span>
+<span class="k">for </span>i <span class="k">in</span> <span class="o">{</span>1..3<span class="o">}</span><span class="p">;</span> <span class="k">do</span>
+<span class="c"># Defining the conditional statements</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span> <span class="nt">-eq</span> 1 <span class="o">]</span><span class="p">;</span> <span class="k">then
+                </span><span class="nb">echo</span> <span class="s2">"Enter your Username:"</span>
+                <span class="nb">read </span>username
+        <span class="k">elif</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span> <span class="nt">-eq</span> 2 <span class="o">]</span><span class="p">;</span> <span class="k">then
+                </span><span class="nb">echo</span> <span class="s2">"Enter your Company name:"</span>
+                <span class="nb">read </span>companyname
+        <span class="k">else
+                </span><span class="nb">echo</span> <span class="s2">"Enter your PIN:"</span>
+                <span class="nb">read </span>pin
+        <span class="k">fi
+done</span>
+
+<span class="c"># Checking if the user entered the correct details</span>
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$username</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"John"</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$companyname</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"Tryhackme"</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$pin</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"7385"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+        </span><span class="nb">echo</span> <span class="s2">"Authentication Successful. You can now access your locker, John."</span>
+<span class="k">else
+        </span><span class="nb">echo</span> <span class="s2">"Authentication Denied!!"</span>
+<span class="k">fi</span>
+</code></pre></div></div>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>What would be the correct PIN to authenticate in the locker script?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">7385</code></p>
+
+<h2 id="practical-exercise">Practical Exercise</h2>
+
+<p>The script looks like this:</p>
+
+<p><img src="/tryhackme/LinuxShell/2025-12-02_13-22.png" alt="" /></p>
+
+<p>Changed the script according to the hints as follows:</p>
+
+<p><img src="/tryhackme/LinuxShell/2025-12-02_13-25.png" alt="" /></p>
+
+<p>Then ran the script and made sure we ignore the files which we cannot access:</p>
+
+<p><img src="/tryhackme/LinuxShell/2025-12-02_13-26.png" alt="" /></p>
+
+<p>If we <code class="language-plaintext highlighter-rouge">cat</code> the file we get the answer to the next question:</p>
+
+<p><img src="/tryhackme/LinuxShell/2025-12-02_13-27.png" alt="" /></p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>Which file has the keyword?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">authentication.log</code></p>
+
+<p>Where is the cat sleeping?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">under the table</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

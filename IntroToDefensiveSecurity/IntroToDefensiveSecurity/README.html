@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intro To Defensive Security · THM Writeups</title>
+  
+  <meta name="description" content="Defense Security" />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Intro To Defensive Security</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">IntroToDefensiveSecurity/IntroToDefensiveSecurity/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">blueteam</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Defense Security</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="intro-to-defensive-security"><a href="https://tryhackme.com/room/defensivesecurity">Intro To Defensive Security</a></h1>
+
+<h2 id="introduction-to-defensive-security">Introduction to Defensive Security</h2>
+
+<ul>
+  <li>Offensive security focuses on one thing: breaking into systems.</li>
+  <li>Breaking into systems might be achieved through exploiting bugs, abusing insecure setups, and taking advantage of unenforced access control policies, among other things.
+    <ul>
+      <li>Red teams and penetration testers specialize in offensive security.</li>
+    </ul>
+  </li>
+  <li>Defensive security is somewhat the opposite of offensive security, as it is concerned with two main tasks:</li>
+</ul>
+
+<ol>
+  <li>Preventing intrusions from occurring</li>
+  <li>Detecting intrusions when they occur and responding properly</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Blue teams are part of the defensive security landscape.</p>
+  </li>
+  <li>
+    <p>Some of the tasks that are related to defensive security include:</p>
+    <ul>
+      <li><strong>User cyber security awareness:</strong> Training users about cyber security helps protect against various attacks that target their systems.</li>
+      <li><strong>Documenting and managing assets</strong>: We need to know the types of systems and devices that we have to manage and protect properly.</li>
+      <li><strong>Updating and patching systems</strong>: Ensuring that computers, servers, and network devices are correctly updated and patched against any known vulnerability (weakness).</li>
+      <li><strong>Setting up preventative security devices</strong>: firewall and intrusion prevention systems (IPS) are critical components of preventative security.
+        <ul>
+          <li>Firewalls control what network traffic can go inside and what can leave the system or network.</li>
+          <li>IPS blocks any network traffic that matches present rules and attack signatures.</li>
+        </ul>
+      </li>
+      <li><strong>Setting up logging and monitoring devices</strong>: Without proper logging and monitoring of the network, it won’t be possible to detect malicious activities and intrusions.
+        <ul>
+          <li>If a new unauthorized device appears on our network, we should be able to know.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>Which team focuses on defensive security?</p>
+
+<p>A: blue team</p>
+
+<h2 id="areas-of-defensive-security">Areas of Defensive Security</h2>
+
+<h3 id="security-operations-center-soc">Security Operations Center (SOC)</h3>
+<p>#soc</p>
+
+<ul>
+  <li>A <em>Security Operations Center</em> (SOC) is a team of cyber security professionals that monitors the network and its systems to detect malicious cyber security events.</li>
+  <li>Some of the main areas of interest for a SOC are:
+    <ul>
+      <li>Vulnerabilities: Whenever a system vulnerability (weakness) is discovered, it is essential to fix it by installing a proper update or patch.
+        <ul>
+          <li>When a fix is not available, the necessary measures should be taken to prevent an attacker from exploiting it.</li>
+          <li>Although remediating vulnerabilities is of vital interest to a SOC, it is not necessarily assigned to them.</li>
+        </ul>
+      </li>
+      <li>Policy violations: We can think of a security policy as a set of rules required for the protection of the network and systems.
+        <ul>
+          <li>For example, it might be a policy violation if users start uploading confidential company data to an online storage service.</li>
+        </ul>
+      </li>
+      <li>Unauthorized activity: Consider the case where a user’s login name and password are stolen, and the attacker uses them to log into the network.
+        <ul>
+          <li>A SOC needs to detect such an event and block it as soon as possible before further damage is done.</li>
+        </ul>
+      </li>
+      <li>Network intrusions: No matter how good your security is, there is always a chance for an intrusion.
+        <ul>
+          <li>An intrusion can occur when a user clicks on a malicious link or when an attacker exploits a public server.</li>
+          <li>Either way, when an intrusion occurs, we must detect it as soon as possible to prevent further damage.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Security operations cover various tasks to ensure protection; one such task is threat intelligence.</li>
+</ul>
+
+<h4 id="threat-intelligence">Threat Intelligence</h4>
+<p>#threatintelligence</p>
+
+<ul>
+  <li>In this context, <em>intelligence</em> refers to information you gather about actual and potential enemies.</li>
+  <li>A <em>threat</em> is any action that can disrupt or adversely affect a system.</li>
+  <li>Threat intelligence aims to gather information to help the company better prepare against potential adversaries.
+    <ul>
+      <li>The purpose would be to achieve a <em>threat-informed defense</em>.</li>
+    </ul>
+  </li>
+  <li>Different companies have different adversaries.</li>
+  <li>Some adversaries might seek to steal customer data from a mobile operator; however, other adversaries are interested in halting the production in a petroleum refinery.</li>
+  <li>Example adversaries include a nation-state cyber army working for political reasons and a ransomware group acting for financial purposes.
+    <ul>
+      <li>Based on the company (target), we can expect adversaries.</li>
+    </ul>
+  </li>
+  <li>Intelligence needs data.
+    <ul>
+      <li>Data has to be collected, processed, and analyzed.</li>
+    </ul>
+  </li>
+  <li>Data collection is done from local sources such as network logs and public sources such as forums.</li>
+  <li>Processing of data aims to arrange them into a format suitable for analysis.</li>
+  <li>
+    <p>The analysis phase seeks to find more information about the attackers and their motives; moreover, it aims to create a list of recommendations and actionable steps.</p>
+  </li>
+  <li>Learning about your adversaries allows you to know their tactics, techniques, and procedures.</li>
+  <li>As a result of threat intelligence, we identify the threat actor (adversary), predict their activity, and consequently, we will be able to mitigate their attacks and prepare a response strategy.</li>
+</ul>
+
+<h3 id="digital-forensics-and-incident-response-dfir">Digital Forensics and Incident Response (DFIR)</h3>
+<p>#dfir</p>
+
+<h4 id="digital-forensics">Digital Forensics</h4>
+<p>#digitalforensics</p>
+
+<ul>
+  <li>Forensics is the application of science to investigate crimes and establish facts.</li>
+  <li>
+    <p>With the use and spread of digital systems, such as computers and smartphones, a new branch of forensics was born to investigate related crimes: computer forensics, which later evolved into, <em>digital forensics</em>.</p>
+  </li>
+  <li>In defensive security, the focus of digital forensics shifts to analyzing evidence of an attack and its perpetrators and other areas such as intellectual property theft, cyber espionage, and possession of unauthorized content.</li>
+  <li>Consequently, digital forensics will focus on different areas such as:
+    <ul>
+      <li>File System: Analyzing a digital forensics image (low-level copy) of a system’s storage reveals much information, such as installed programs, created files, partially overwritten files, and deleted files.</li>
+      <li>System memory: If the attacker is running their malicious program in memory without saving it to the disk, taking a forensic image (low-level copy) of the system memory is the best way to analyze its contents and learn about the attack.</li>
+      <li>System logs: Each client and server computer maintains different log files about what is happening. Log files provide plenty of information about what happened on a system.
+        <ul>
+          <li>Some traces will be left even if the attacker tries to clear their traces.</li>
+        </ul>
+      </li>
+      <li>Network logs: Logs of the network packets that have traversed a network would help answer more questions about whether an attack is occurring and what it entails.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="incident-response">Incident Response</h4>
+<p>#incidentresponse</p>
+
+<ul>
+  <li>An <em>incident</em> usually refers to a data breach or cyber attack; however, in some cases, it can be something less critical, such as a misconfiguration, an intrusion attempt, or a policy violation.
+    <ul>
+      <li>Examples of a cyber attack include an attacker making our network or systems inaccessible, defacing (changing) the public website, and data breach (stealing company data).</li>
+    </ul>
+  </li>
+  <li>How would you <em>respond</em> to a cyber attack?</li>
+  <li>Incident response specifies the methodology that should be followed to handle such a case.</li>
+  <li>The aim is to reduce damage and recover in the shortest time possible.
+    <ul>
+      <li>Ideally, you would develop a plan ready for incident response.</li>
+    </ul>
+  </li>
+  <li>The four major phases of the incident response process are:</li>
+</ul>
+
+<ol>
+  <li>Preparation: This requires a team trained and ready to handle incidents. Ideally, various measures are put in place to prevent incidents from happening in the first place.</li>
+  <li>Detection and Analysis: The team has the necessary resources to detect any incident; moreover, it is essential to further analyze any detected incident to learn about its severity.</li>
+  <li>Containment, Eradication, and Recovery: Once an incident is detected, it is crucial to stop it from affecting other systems, eliminate it, and recover the affected systems. For instance, when we notice that a system is infected with a computer virus, we would like to stop (contain) the virus from spreading to other systems, clean (eradicate) the virus, and ensure proper system recovery.</li>
+  <li>Post-Incident Activity: After successful recovery, a report is produced, and the learned lesson is shared to prevent similar future incidents.</li>
+</ol>
+
+<p><img src="/tryhackme/IntroToDefensiveSecurity/IntroToDefensiveSecurity/Pasted%20image%2020221231234627.png" alt="" /></p>
+<h4 id="malware-analysis">Malware Analysis</h4>
+<p>#malwareanalysis</p>
+
+<ul>
+  <li>Malware stands for malicious software. </li>
+  <li><em>Software</em> refers to programs, documents, and files that you can save on a disk or send over the network.</li>
+  <li>Malware includes many types, such as:
+    <ul>
+      <li>Virus is a piece of code (part of a program) that attaches itself to a program. It is designed to spread from one computer to another; moreover, it works by altering, overwriting, and deleting files once it infects a computer. The result ranges from the computer becoming slow to unusable.</li>
+      <li>Trojan Horse is a program that shows one desirable function but hides a malicious function underneath. For example, a victim might download a video player from a shady website that gives the attacker complete control over their system.</li>
+      <li>Ransomware is a malicious program that encrypts the user’s files. Encryption makes the files unreadable without knowing the encryption password. The attacker offers the user the encryption password if the user is willing to pay a “ransom.”</li>
+    </ul>
+  </li>
+  <li>Malware analysis aims to learn about such malicious programs using various means:</li>
+</ul>
+
+<ol>
+  <li>Static analysis works by inspecting the malicious program without running it. Usually, this requires solid knowledge of assembly language (processor’s instruction set, i.e., computer’s fundamental instructions).</li>
+  <li>Dynamic analysis works by running the malware in a controlled environment and monitoring its activities. It lets you observe how the malware behaves when running.</li>
+</ol>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>What would you call a team of cyber security professionals that monitors a network and its systems for malicious events?</p>
+
+<p> A: Security Operation Center</p>
+
+<p>What does DFIR stand for?</p>
+
+<p> A: ### Digital Forensics and Incident Response</p>
+
+<p>Which kind of malware requires the user to pay money to regain access to their files?</p>
+
+<p>A: Ransomware</p>
+
+<h2 id="practical-example-of-defensive-security">Practical Example of Defensive Security</h2>
+
+<ul>
+  <li>You are part of a <em>Security Operations Center</em> (SOC) responsible for protecting a bank.</li>
+  <li>This bank’s SOC uses a <em>Security Information and Event Management</em> (SIEM) system.</li>
+  <li>A SIEM gathers security-related information and events from various sources and presents them via one system.
+    <ul>
+      <li>For instance, you would be notified if there is a failed login attempt or a login attempt from an unexpected geographic location.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Moreover, with the advent of machine learning, a SIEM might detect unusual behavior, such as a user logging in at 3 AM when he usually logs in only during work hours.</p>
+  </li>
+  <li>In this exercise, we will interact with a SIEM to monitor the different events on our network and systems in real-time.</li>
+  <li>Some of the events are typical and harmless; others might require further intervention from us.</li>
+  <li>
+    <p>Find the event flagged in red, take note of it, and click on it for further inspection.</p>
+  </li>
+  <li>Next, we want to learn more about the suspicious activity or event.</li>
+  <li>The suspicious event might have been triggered by an event, such as a local user, a local computer, or a remote IP address.</li>
+  <li>To send and receive postal mail, you need a physical address; similarly, you need an IP address to send and receive data over the Internet.</li>
+  <li>An IP address is a logical address that allows you to communicate over the Internet.</li>
+  <li>We inspect the cause of the trigger to confirm whether the event is indeed malicious.</li>
+  <li>If it is malicious, we need to take due action, such as reporting to someone else in the SOC and blocking the IP address.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>What is the flag that you obtained by following along?</p>
+
+<p><img src="/tryhackme/IntroToDefensiveSecurity/IntroToDefensiveSecurity/Pasted%20image%2020230101001751.png" alt="" /></p>
+
+<p><img src="/tryhackme/IntroToDefensiveSecurity/IntroToDefensiveSecurity/Pasted%20image%2020230101001848.png" alt="" /></p>
+
+<p><img src="/tryhackme/IntroToDefensiveSecurity/IntroToDefensiveSecurity/Pasted%20image%2020230101001937.png" alt="" /></p>
+
+<p><img src="/tryhackme/IntroToDefensiveSecurity/IntroToDefensiveSecurity/Pasted%20image%2020230101002109.png" alt="" /></p>
+
+<p><img src="/tryhackme/IntroToDefensiveSecurity/IntroToDefensiveSecurity/Pasted%20image%2020230101002158.png" alt="" /></p>
+
+<p>A: THM{THREAT-BLOCKED}</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Application Basics · THM Writeups</title>
+  
+  <meta name="description" content="Learn the basics of web applications: HTTP, URLs, request methods, response codes, and headers." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Web Application Basics</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Web Hacking/Web Application Basics/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">web</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn the basics of web applications: HTTP, URLs, request methods, response codes, and headers.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="web-application-basics"><a href="https://tryhackme.com/room/webapplicationbasics">Web Application Basics</a></h1>
+
+<h2 id="web-application-overview">Web Application Overview</h2>
+
+<p>The <strong>Front End</strong> can be considered similar to the surface of the planet, the parts that an astronaut can see and interact with based on the laws of nature. A web application would have a user interact with it and use a number of technologies such as HTML, CSS, and JavaScript to do this.</p>
+
+<p><strong>HTML</strong> (Hypertext Markup Language) is a foundational aspect of web applications. It is a set of instructions or code that instructs a web browser on what to display and how to display it. It could be compared to simple organisms living on the planet; these organisms have DNA, which is the instructions for how simple organisms are put together.</p>
+
+<p><strong>CSS</strong> (Cascading Style Sheets) in web applications describes a standard appearance, such as certain colours, types of text, and layouts. Continuing the analogy with DNA, these could be compared to the parts of DNA that describe the colour, shape, size, and texture of the simple organism.</p>
+
+<p><strong>JS</strong> (JavaScript) is part of a web application front end that enables more complex activity in the web browser. Whereas HTML can be considered a simple set of instructions on what to display, JavaScript is a more advanced set of instructions that allows choices and decisions to be made on what to display. In the planet analogy, JavaScript can be considered the brain of an advanced organism, which allows decisions to be made based on what and how something interacts with it.</p>
+
+<p>he <strong>Back End</strong> of a web application is things you don’t see within a web browser but are important for the web application to work. On a planet, these are the non-visual things: the structures that keep a building standing, the air, and the gravity that keeps feet on the ground.</p>
+
+<p>A <strong>Database</strong> is where information can be stored, modified, and retrieved. A web application may want to store and retrieve information about a visitor’s preferences on what to show or not; this would be stored in a database. A planet may have more advanced inhabitants who store information about locations in maps, write notes in a diary or put books in a library and files in a filing cabinet.</p>
+
+<p>There are many other <strong>Infrastructure</strong> components underpinning Web Applications, such as web servers, application servers, storage, various networking devices, and other software that support the web application. On a planet, these are the roads that are present, the cars that run on those roads, the fuel that powers the cars.</p>
+
+<p><strong>WAF</strong> (Web Application Firewall) is an optional component for web applications. It helps filter out dangerous requests away from the Web Server and provides an element of protection. This could be considered similar to how a planet’s atmosphere can protect inhabitants from harmful UV rays.</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Which component on a computer is responsible for hosting and delivering content for web applications?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">web server</code></p>
+
+<p>Q: Which tool is used to access and interact with web applications?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">web browser</code></p>
+
+<p>Q: Which component acts as a protective layer, filtering incoming traffic to block malicious attacks, and ensuring the security of the the web application?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">web application firewall</code></p>
+
+<h2 id="uniform-resource-locator">Uniform Resource Locator</h2>
+
+<p>A Uniform Resource Locator (URL) is a web address that lets you access all kinds of online content—whether it’s a webpage, a video, a photo, or other media. It guides your browser to the right place on the Internet.</p>
+
+<h3 id="anatomy-of-a-url">Anatomy of a URL</h3>
+
+<p><img src="/tryhackme/Web%20Hacking/Web%20Application%20Basics/34ad66d8b90aaaa35f9536d3b152ea97.png" alt="Illustration depicting the various parts of a URL, including the protocol, domain name, path, query parameters, and fragment. Each component is labeled and visually distinct, demonstrating how they work together to form a complete web address." /></p>
+
+<p>Think of a URL as being made up of several parts, each playing a different role in helping you find the right resource. Understanding how these parts fit together is important for browsing the web, developing web applications, and even troubleshooting problems.</p>
+
+<p>Here’s a breakdown of the key components:</p>
+
+<p><strong>Scheme</strong></p>
+
+<p>The <strong>scheme</strong> is the protocol used to access the website. The most common are <strong>HTTP</strong> (HyperText Transfer Protocol) and <strong>HTTPS</strong> (Hypertext Transfer Protocol Secure). HTTPS is more secure because it encrypts the connection, which is why browsers and cyber security experts recommend it. Websites often enforce HTTPS for added protection.</p>
+
+<p><strong>User</strong></p>
+
+<p>Some URLs can include a user’s login details (usually a username) for sites that require authentication. This happens mostly in URLs that need credentials to access certain resources. However, it’s rare nowadays because putting login details in the URL isn’t very safe—it can expose sensitive information, which is a security risk.</p>
+
+<p><strong>Host/Domain</strong></p>
+
+<p>The <strong>host</strong> or <strong>domain</strong> is the most important part of the URL because it tells you which website you’re accessing. Every domain name has to be unique and is registered through domain registrars. From a security standpoint, look for domain names that appear almost like real ones but have small differences (this is called <strong>typosquatting</strong>). These fake domains are often used in phishing attacks to trick people into giving up sensitive info.</p>
+
+<p><strong>Port</strong></p>
+
+<p>The <strong>port number</strong> helps direct your browser to the right service on the web server. It’s like telling the server which doorway to use for communication. Port numbers range from 1 to 65,535, but the most common are <strong>80</strong> for HTTP and <strong>443</strong> for HTTPS.</p>
+
+<p><strong>Path</strong></p>
+
+<p>The <strong>path</strong> points to the specific file or page on the server that you’re trying to access. It’s like a roadmap that shows the browser where to go. Websites need to secure these paths to make sure only authorised users can access sensitive resources.</p>
+
+<p><strong>Query String</strong></p>
+
+<p>The <strong>query string</strong> is the part of the URL that starts with a question mark (?). It’s often used for things like search terms or form inputs. Since users can modify these query strings, it’s important to handle them securely to prevent attacks like <strong>injections</strong>, where malicious code could be added.</p>
+
+<p><strong>Fragment</strong></p>
+
+<p>The <strong>fragment</strong> starts with a hash symbol (#) and helps point to a specific section of a webpage—like jumping directly to a particular heading or table. Users can modify this too, so like with query strings, it’s important to check and clean up any data here to avoid issues like injection attacks.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: Which protocol provides encrypted communication to ensure secure data transmission between a web browser and a web server?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">HTTPS</code></p>
+
+<p>Q: What term describes the practice of registering domain names that are misspelt variations of popular websites to exploit user errors and potentially engage in fraudulent activities?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">typosquatting</code></p>
+
+<p>Q: What part of a URL is used to pass additional information, such as search terms or form inputs, to the web server?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Query String</code></p>
+
+<h2 id="http-messages">HTTP Messages</h2>
+
+<p>HTTP messages are packets of data exchanged between a user (the client) and the web server. These messages are very important for understanding how web applications work because they show how users’ requests and the server’s responses are communicated.</p>
+
+<p>Imagine an example of an HTTP Request and an HTTP Response, where you can see key parts like the method, URL, headers, and status codes. These are what make the client-server interaction possible.</p>
+
+<p>There are two types of HTTP messages:</p>
+
+<ul>
+  <li><strong>HTTP Requests</strong>: Sent by the user to trigger actions on the web application.</li>
+  <li><strong>HTTP Responses</strong>: Sent by the server in response to the user’s request.</li>
+</ul>
+
+<p>Each message follows a specific format that helps both the user and the server communicate smoothly.</p>
+
+<p><strong>Start Line</strong></p>
+
+<p>The start line is like the introduction of the message. It tells you what kind of message is being sent—whether it’s a request from the user or a response from the server. This line also gives important details about how the message should be handled.</p>
+
+<p><strong>Headers</strong></p>
+
+<p>Headers are made up of key-value pairs that provide extra information about the HTTP message. They give instructions to both the client and the server handling the request or response. These headers cover all sorts of things, like security, content types, and more, making sure everything goes smoothly in the communication.</p>
+
+<p><strong>Empty Line</strong></p>
+
+<p>The empty line is a little divider that separates the header from the body. It’s essential because it shows where the headers stop and where the actual content of the message begins. Without this empty line, the message might get messed up, and the client or server could misinterpret it, causing errors.</p>
+
+<p><strong>Body</strong></p>
+
+<p>The body is where the actual data is stored. In a request, the body might include data the user wants to send to the server (like form data). In a response, it’s where the server puts the content that the user requested (like a webpage or API data).</p>
+
+<h3 id="why-understanding-http-messages-matters">Why Understanding HTTP Messages Matters</h3>
+
+<ul>
+  <li>These messages are the foundation of how web applications communicate. If they’re structured properly, everything works smoothly.</li>
+  <li>Knowing how they work will help you diagnose issues in web communication, which means better performance and reliability for your web application.</li>
+  <li>It’s also crucial for security. Understanding HTTP messages helps you implement strong security measures to protect data during transmission.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Which HTTP message is returned by the web server after processing a client’s request?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">HTTP response</code></p>
+
+<p>Q: What follows the headers in an HTTP message?</p>
+
+<p>A:  <code class="language-plaintext highlighter-rouge">Empty Line</code></p>
+
+<h2 id="http-request-request-line-and-methods">HTTP Request: Request Line and Methods</h2>
+
+<p>An <strong>HTTP request</strong> is what a user sends to a web server to interact with a web application and make something happen. Since these requests are often the first point of contact between the user and the web server, knowing how they work is super important—especially if you’re into cyber security.</p>
+
+<p><img src="/tryhackme/Web%20Hacking/Web%20Application%20Basics/5f04259cf9bf5b57aed2c476-1730445201524.png" alt="Illustration showing a GET request and all of the different headers that are used." /></p>
+
+<p>Imagine an HTTP request showing the key parts like the method (e.g., GET or POST), path (e.g., /login), and version (e.g., HTTP/1.1). These elements make up the basics of how a client (user) communicates with a server.</p>
+
+<h3 id="request-line">Request Line</h3>
+
+<p>The <strong>request line</strong> (or start line) is the first part of an HTTP request and tells the server what kind of request it’s dealing with. It has three main parts: the <strong>HTTP method</strong>, the <strong>URL path</strong>, and the <strong>HTTP version</strong>.</p>
+
+<p><strong>Example:</strong> <code class="language-plaintext highlighter-rouge">METHOD /path HTTP/version</code></p>
+
+<h3 id="http-methods">HTTP Methods</h3>
+
+<p>The <strong>HTTP method</strong> tells the server what action the user wants to perform on the resource identified by the URL path. Here are some of the most common methods and their possible security issue:</p>
+
+<p><strong>GET<br />
+**Used to **fetch</strong> data from the server without making any changes. Reminder! Make sure you’re only exposing data the user is allowed to see. Avoid putting sensitive info like tokens or passwords in GET requests since they can show up as plaintext.</p>
+
+<p><strong>POST<br />
+**</strong>Sends** data to the server, usually to create or update something. Reminder! Always validate and clean the input to avoid attacks like SQL injection or XSS.</p>
+
+<p><strong>PUT<br />
+**Replaces or **updates</strong> something on the server. Reminder! Make sure the user is authorised to make changes before accepting the request.</p>
+
+<p><strong>DELETE<br />
+**</strong>Removes** something from the server. Reminder! Just like with PUT, make sure only authorised users can delete resources.</p>
+
+<p>Besides these common methods, there are a few others used in specific cases:</p>
+
+<p>**PATCH<br />
+**Updates part of a resource. It’s useful for making small changes without replacing the whole thing, but always validate the data to avoid inconsistencies.</p>
+
+<p>**HEAD<br />
+**Works like GET but only retrieves headers, not the full content. It’s handy for checking metadata without downloading the full response.</p>
+
+<p>**OPTIONS<br />
+**Tells you what methods are available for a specific resource, helping clients understand what they can do with the server.</p>
+
+<p>**TRACE<br />
+**Similar to OPTIONS, it shows which methods are allowed, often for debugging. Many servers disable it for security reasons.</p>
+
+<p>**CONNECT<br />
+**Used to create a secure connection, like for HTTPS. It’s not as common but is critical for encrypted communication.</p>
+
+<p>Each of these methods has its own set of security rules. For example, PATCH requests should be validated to avoid inconsistencies, and OPTIONS and TRACE should be turned off if not needed to avoid possible security risks.</p>
+
+<h3 id="url-path">URL Path</h3>
+
+<p>The <strong>URL path</strong> tells the server where to find the resource the user is asking for. For instance, in the URL <code class="language-plaintext highlighter-rouge">https://tryhackme.com/api/users/123</code>, the path <code class="language-plaintext highlighter-rouge">/api/users/123</code> identifies a specific user.</p>
+
+<p>Attackers often try to manipulate the URL path to exploit vulnerabilities, so it’s crucial to:</p>
+
+<ul>
+  <li>Validate the URL path to prevent unauthorised access</li>
+  <li>Sanitise the path to avoid injection attacks</li>
+  <li>Protect sensitive data by conducting privacy and risk assessments</li>
+</ul>
+
+<p>Following these practices helps protect your web application from common attacks.</p>
+
+<h3 id="http-version">HTTP Version</h3>
+
+<p>The <strong>HTTP version</strong> shows the protocol version used to communicate between the client and server. Here’s a quick rundown of the most common ones:</p>
+
+<p><strong>HTTP/0.9</strong> (1991)The first version, only supported GET requests.</p>
+
+<p><strong>HTTP/1.0</strong> (1996)Added headers and better support for different types of content, improving caching.</p>
+
+<p><strong>HTTP/1.1</strong> (1997)Brought persistent connections, chunked transfer encoding, and better caching. It’s still widely used today.</p>
+
+<p><strong>HTTP/2</strong> (2015)Introduced features like multiplexing, header compression, and prioritisation for faster performance.</p>
+
+<p><strong>HTTP/3</strong> (2022)Built on HTTP/2, but uses a new protocol (QUIC) for quicker and more secure connections.</p>
+
+<p>Although HTTP/2 and HTTP/3 offer better speed and security, many systems still use <strong>HTTP/1.1</strong> because it’s well-supported and works with most existing setups. However, upgrading to HTTP/2 or HTTP/3 can provide significant performance and security improvements as more systems adopt them.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Which HTTP protocol version became widely adopted and remains the most commonly used version for web communication, known for introducing features like persistent connections and chunked transfer encoding?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">HTTP/1.1</code></p>
+
+<p>Q: Which HTTP request method describes the communication options for the target resource, allowing clients to determine which HTTP methods are supported by the web server?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">OPTIONS</code></p>
+
+<p>Q: In an HTTP request, which component specifies the specific resource or endpoint on the web server that the client is requesting, typically appearing after the domain name in the URL?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">URL Path</code></p>
+
+<h2 id="http-request-headers-and-body">HTTP Request: Headers and Body</h2>
+
+<h2 id="request-headers">Request Headers</h2>
+
+<p>Request Headers allow extra information to be conveyed to the web server about the request. Some common headers are as follows:</p>
+
+<p><strong>Common Request Headers</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Request Header</strong></td>
+      <td><strong>Example</strong></td>
+      <td><strong>Description</strong></td>
+    </tr>
+    <tr>
+      <td>Host</td>
+      <td><code class="language-plaintext highlighter-rouge">Host: tryhackme.com</code></td>
+      <td>Specifies the name of the web server the request is for.</td>
+    </tr>
+    <tr>
+      <td>User-Agent</td>
+      <td><code class="language-plaintext highlighter-rouge">User-Agent: Mozilla/5.0</code></td>
+      <td>Shares information about the web browser the request is coming from.</td>
+    </tr>
+    <tr>
+      <td>Referer</td>
+      <td><code class="language-plaintext highlighter-rouge">Referer: https://www.google.com/</code></td>
+      <td>Indicates the URL from which the request came from.</td>
+    </tr>
+    <tr>
+      <td>Cookie</td>
+      <td><code class="language-plaintext highlighter-rouge">Cookie: user_type=student; room=introtowebapplication; room_status=in_progress</code></td>
+      <td>Information the web server previously asked the web browser to store is held in cookies.</td>
+    </tr>
+    <tr>
+      <td>Content-Type</td>
+      <td><code class="language-plaintext highlighter-rouge">Content-Type: application/json</code></td>
+      <td>Describes what type or format of data is in the request.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="request-body">Request Body</h2>
+
+<p>In HTTP requests such as POST and PUT, where data is sent to the web server as opposed to requested from the web server, the data is located inside the HTTP Request Body. The formatting of the data can take many forms, but some common ones are <code class="language-plaintext highlighter-rouge">URL Encoded</code>, <code class="language-plaintext highlighter-rouge">Form Data</code>, <code class="language-plaintext highlighter-rouge">JSON</code>, or <code class="language-plaintext highlighter-rouge">XML</code>.</p>
+
+<p><strong>URL Encoded (application/x-www-form-urlencoded)</strong><br />
+    A format where data is structured in pairs of key and value where (<code class="language-plaintext highlighter-rouge">key=value</code>). Multiple pairs are separated by an (<code class="language-plaintext highlighter-rouge">&amp;</code>) symbol, such as <code class="language-plaintext highlighter-rouge">key1=value1&amp;key2=value2</code>. Special characters are percent-encoded.</p>
+
+<p><strong>Form Data (multipart/form-data)</strong><br />
+Allows multiple data blocks to be sent where each block is separated by a boundary string. The boundary string is the defined header of the request itself. This type of formatting can be used to send binary data, such as when uploading files or images to a web server.</p>
+
+<p><strong>JSON (application/json)</strong><br />
+In this format, the data can be sent using the JSON (JavaScript Object Notation) structure. Data is formatted in pairs of name : value. Multiple pairs are separated by commas, all contained within curly braces { }.</p>
+
+<p><strong>XML (application/xml)</strong><br />
+In XML formatting, data is structured inside labels called tags, which have an opening and closing. These labels can be nested within each other. You can see in the example below the opening and closing of the tags to send details about a user called Aleksandra.</p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: Which HTTP request header specifies the domain name of the web server to which the request is being sent?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">HOST</code></p>
+
+<p>Q: What is the default content type for form submissions in an HTTP request where the data is encoded as key=value pairs in a query string format?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">application/x-www-form-urlencoded</code></p>
+
+<p>Q: Which part of an HTTP request contains additional information like host, user agent, and content type, guiding how the web server should process the request?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Request Headers</code></p>
+
+<h2 id="http-response-status-line-and-status-codes">HTTP Response: Status Line and Status Codes</h2>
+
+<p>When you interact with a web application, the server sends back an <strong>HTTP response</strong> to let you know whether your request was successful or something went wrong. These responses include a <strong>status code</strong> and a short explanation (called the <strong>Reason Phrase</strong>) that gives insight into how the server handled your request.</p>
+
+<h3 id="status-line">Status Line</h3>
+
+<p>The first line in every HTTP response is called the <strong>Status Line</strong>. It gives you three key pieces of info:</p>
+
+<ol>
+  <li><strong>HTTP Version</strong>: This tells you which version of HTTP is being used.</li>
+  <li><strong>Status Code</strong>: A three-digit number showing the outcome of your request.</li>
+  <li><strong>Reason Phrase</strong>: A short message explaining the status code in human-readable terms.</li>
+</ol>
+
+<h3 id="status-codes-and-reason-phrases">Status Codes and Reason Phrases</h3>
+
+<p>The <strong>Status Code</strong> is the number that tells you if the request succeeded or failed, while the <strong>Reason Phrase</strong> explains what happened. These codes fall into five main categories:</p>
+
+<p><strong>Informational Responses (100-199)</strong><br />
+These codes mean the server has received part of the request and is waiting for the rest. It’s a “keep going” signal.</p>
+
+<p><strong>Successful Responses (200-299)</strong><br />
+These codes mean everything worked as expected. The server processed the request and sent back the requested data.</p>
+
+<p><strong>Redirection Messages (300-399)</strong><br />
+These codes tell you that the resource you requested has moved to a different location, usually providing the new URL.</p>
+
+<p><strong>Client Error Responses (400-499)</strong><br />
+These codes indicate a problem with the request. Maybe the URL is wrong, or you’re missing some required info, like authentication.</p>
+
+<p><strong>Server Error Responses (500-599)</strong><br />
+These codes mean the server encountered an error while trying to fulfil the request. These are usually server-side issues and not the client’s fault.</p>
+
+<h3 id="common-status-codes">Common Status Codes</h3>
+
+<p>Here are some of the most frequently seen status codes:</p>
+
+<p><strong>100 (Continue)</strong><br />
+The server got the first part of the request and is ready for the rest.</p>
+
+<p><strong>200 (OK)</strong><br />
+The request was successful, and the server is sending back the requested resource.</p>
+
+<p><strong>301 (Moved Permanently)</strong><br />
+The resource you’re requesting has been permanently moved to a new URL. Use the new URL from now on.</p>
+
+<p><strong>404 (Not Found)</strong><br />
+The server couldn’t find the resource at the given URL. Double-check that you’ve got the right address.</p>
+
+<p><strong>500 (Internal Server Error)</strong><br />
+Something went wrong on the server’s end, and it couldn’t process your request.</p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: What part of an HTTP response provides the HTTP version, status code, and a brief explanation of the response’s outcome?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Status Line</code></p>
+
+<p>Q: Which category of HTTP response codes indicates that the web server encountered an internal issue or is unable to fulfil the client’s request?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Server Error Responses</code></p>
+
+<p>Q: Which HTTP status code indicates that the requested resource could not be found on the web server?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">404</code></p>
+
+<h2 id="http-response-headers-and-body">HTTP Response: Headers and Body</h2>
+
+<h3 id="response-headers">Response Headers</h3>
+
+<p>When a web server responds to an HTTP request, it includes <strong>HTTP response headers</strong>, which are basically key-value pairs. These headers provide important info about the response and tell the client (usually the browser) how to handle it.</p>
+
+<p>Picture an example of an HTTP response with the headers highlighted. Key headers like <code class="language-plaintext highlighter-rouge">Content-Type</code>, <code class="language-plaintext highlighter-rouge">Content-Length</code>, and <code class="language-plaintext highlighter-rouge">Date</code> give us important details about the response the server sends back.</p>
+
+<p><img src="/tryhackme/Web%20Hacking/Web%20Application%20Basics/5f04259cf9bf5b57aed2c476-1741854427607.svg" alt="HTTP response header" /></p>
+
+<h3 id="required-response-headers">Required Response Headers</h3>
+
+<p>Some response headers are crucial for making sure the HTTP response works properly. They provide essential info that both the client and server need to process everything correctly. Here are a few important ones:</p>
+
+<ul>
+  <li>
+    <p><strong>Date</strong>:<br />
+  Example: <code class="language-plaintext highlighter-rouge">Date: Fri, 23 Aug 2024 10:43:21 GMT</code><br />
+  This header shows the exact date and time when the response was generated by the server.</p>
+  </li>
+  <li>
+    <p><strong>Content-Type</strong>:<br />
+  Example: <code class="language-plaintext highlighter-rouge">Content-Type: text/html; charset=utf-8</code><br />
+  It tells the client what kind of content it’s getting, like whether it’s HTML, JSON, or something else. It also includes the character set (like UTF-8) to help the browser display it properly.</p>
+  </li>
+  <li>
+    <p><strong>Server</strong>:<br />
+  Example: <code class="language-plaintext highlighter-rouge">Server: nginx</code><br />
+  This header shows what kind of server software is handling the request. It’s good for debugging, but it can also reveal server information that might be useful for attackers, so many people remove or obscure this one.</p>
+  </li>
+</ul>
+
+<h3 id="other-common-response-headers">Other Common Response Headers</h3>
+
+<p>Besides the essential ones, there are other common headers that give additional instructions to the client or browser and help control how the response should be handled.</p>
+
+<ul>
+  <li>
+    <p><strong>Set-Cookie</strong>:<br />
+  Example: <code class="language-plaintext highlighter-rouge">Set-Cookie: sessionId=38af1337es7a8</code><br />
+  This one sends cookies from the server to the client, which the client then stores and sends back with future requests. To keep things secure, make sure cookies are set with the <code class="language-plaintext highlighter-rouge">HttpOnly</code> flag (so they can’t be accessed by JavaScript) and the <code class="language-plaintext highlighter-rouge">Secure</code> flag (so they’re only sent over HTTPS).</p>
+  </li>
+  <li>
+    <p><strong>Cache-Control</strong>:<br />
+  Example: <code class="language-plaintext highlighter-rouge">Cache-Control: max-age=600</code><br />
+  This header tells the client how long it can cache the response before checking with the server again. It can also prevent sensitive info from being cached if needed (using <code class="language-plaintext highlighter-rouge">no-cache</code>).</p>
+  </li>
+  <li>
+    <p><strong>Location</strong>:<br />
+  Example: <code class="language-plaintext highlighter-rouge">Location: /index.html</code><br />
+  This one’s used in redirection (3xx) responses. It tells the client where to go next if the resource has moved. If users can modify this header during requests, be careful to validate and sanitise it—otherwise, you could end up with open redirect vulnerabilities, where attackers can redirect users to harmful sites.</p>
+  </li>
+</ul>
+
+<h3 id="response-body">Response Body</h3>
+
+<p>The <strong>HTTP response body</strong> is where the actual data lives—things like HTML, JSON, images, etc., that the server sends back to the client. To prevent <strong>injection attacks</strong> like Cross-Site Scripting (XSS), always sanitise and escape any data (especially user-generated content) before including it in the response.</p>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>Q: Which HTTP response header can reveal information about the web server’s software and version, potentially exposing it to security risks if not removed?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Server</code></p>
+
+<p>Q: Which flag should be added to cookies in the Set-Cookie HTTP response header to ensure they are only transmitted over HTTPS, protecting them from being exposed during unencrypted transmissions?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Secure</code></p>
+
+<p>Q: Which flag should be added to cookies in the Set-Cookie HTTP response header to prevent them from being accessed via JavaScript, thereby enhancing security against XSS attacks?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">HttpOnly</code></p>
+
+<h2 id="security-headers">Security Headers</h2>
+
+<p>HTTP Security Headers help improve the overall security of the web application by providing mitigations against attacks like Cross-Site Scripting (XSS), clickjacking, and others. We will now dig deeper into the following security headers:</p>
+
+<ul>
+  <li>Content-Security-Policy (CSP)</li>
+  <li>Strict-Transport-Security (HSTS)</li>
+  <li>X-Content-Type-Options</li>
+  <li>Referrer-Policy</li>
+</ul>
+
+<p>You can use a site like <a href="https://securityheaders.io/">https://securityheaders.io/</a> to analyse the security headers of any website. After the discussion in this task, you will hopefully have a better understanding of what it is reporting on.</p>
+
+<h3 id="content-security-policy-csp">Content-Security-Policy (CSP)</h3>
+
+<p>A CSP header is an additional security layer that can help mitigate against common attacks like Cross-Site Scripting (XSS). Malicious code could be hosted on a separate website or domain and injected into the vulnerable website. A CSP provides a way for administrators to say what domains or sources are considered safe and provides a layer of mitigation to such attacks.</p>
+
+<p>Within the header itself, you may see properties such as <code class="language-plaintext highlighter-rouge">default-src</code> or <code class="language-plaintext highlighter-rouge">script-src</code> defined and many more. Each of these give an option to an administrator to define at various levels of granularity, what domains are allowed for what type of content. The use of self is a special keyword that reflects the same domain on which the website is hosted.</p>
+
+<p>Looking at an example CSP header:</p>
+
+<p><code class="language-plaintext highlighter-rouge">Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.tryhackme.com; style-src 'self'</code></p>
+
+<p>We see the use of:</p>
+
+<ul>
+  <li><strong>default-src</strong>
+    <ul>
+      <li>which specifies the default policy of self, which means only the current website.</li>
+    </ul>
+  </li>
+  <li><strong>script-src</strong>
+    <ul>
+      <li>which specifics the policy for where scripts can be loaded from, which is self along with scripts hosted on <code class="language-plaintext highlighter-rouge">https://cdn.tryhackme.com</code></li>
+    </ul>
+  </li>
+  <li><strong>style-src</strong>
+    <ul>
+      <li>which specifies the policy for where style CSS style sheets can be loaded from the current website (self)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="strict-transport-security-hsts">Strict-Transport-Security (HSTS)</h3>
+
+<p>The HSTS header ensures that web browsers will always connect over HTTPS. Let’s look at an example of HSTS:</p>
+
+<p><code class="language-plaintext highlighter-rouge">Strict-Transport-Security: max-age=63072000; includeSubDomains; preload</code></p>
+
+<p>Here’s a breakdown of the example HSTS header by directive:</p>
+
+<ul>
+  <li><strong>max-age</strong>
+    <ul>
+      <li>This is the expiry time in seconds for this setting</li>
+    </ul>
+  </li>
+  <li><strong>includeSubDomains</strong>
+    <ul>
+      <li>An optional setting that instructs the browser to also apply this setting to all subdomains.</li>
+    </ul>
+  </li>
+  <li>**preload<br />
+  **- This optional setting allows the website to be included in preload lists. Browsers can use preload lists to enforce HSTS before even having their first visit to a website.</li>
+</ul>
+
+<h3 id="x-content-type-options">X-Content-Type-Options</h3>
+
+<p>The X-Content-Type-Options header can be used to instruct browsers not to guess the MIME time of a resource but only use the Content-Type header. Here’s an example:</p>
+
+<p><code class="language-plaintext highlighter-rouge">X-Content-Type-Options: nosniff</code></p>
+
+<p>Here’s a breakdown of the X-Content-Type-Options header by directives:</p>
+
+<ul>
+  <li><strong>nosniff</strong>
+    <ul>
+      <li>This directive instructs the browser not to sniff or guess the MIME type.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="referrer-policy">Referrer-Policy</h3>
+
+<p>This header controls the amount of information sent to the destination web server when a user is redirected from the source web server, such as when they click a hyperlink. The header is available to allow a web administrator to control what information is shared.  Here are some examples of Referrer-Policy:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Referrer-Policy: no-referrer</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Referrer-Policy: same-origin</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Referrer-Policy: strict-origin</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Referrer-Policy: strict-origin-when-cross-origin</code></li>
+</ul>
+
+<p>Here’s a breakdown of the Referrer-Policy header by directives:</p>
+
+<ul>
+  <li><strong>no-referrer</strong>
+    <ul>
+      <li>This completely disables any information being sent about the referrer</li>
+    </ul>
+  </li>
+  <li><strong>same-origin</strong>
+    <ul>
+      <li>This policy will only send referrer information when the destination is part of the same origin. This is helpful when you want referrer information passed when hyperlinks are within the same website but not outside to external websites.</li>
+    </ul>
+  </li>
+  <li><strong>strict-origin</strong>
+    <ul>
+      <li>This policy only sends the referrer as the origin when the protocol stays the same. So, a referrer is sent when an HTTPS connection goes to another HTTPS connection.</li>
+    </ul>
+  </li>
+  <li><strong>strict-origin-when-cross-origin</strong>
+    <ul>
+      <li>This is similar to strict-origin except for same-origin requests, where it sends the full URL path in the origin header.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-7">Questions</h3>
+
+<p>Q: In a Content Security Policy (CSP) configuration, which property can be set to define where scripts can be loaded from?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">script-src</code></p>
+
+<p>Q: When configuring the Strict-Transport-Security (HSTS) header to ensure that all subdomains of a site also use HTTPS, which directive should be included to apply the security policy to both the main domain and its subdomains?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">includeSubDomains</code></p>
+
+<p>Q: Which HTTP header directive is used to prevent browsers from interpreting files as a different MIME type than what is specified by the server, thereby mitigating content type sniffing attacks?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">**nosniff**</code></p>
+
+<h2 id="practical-task-making-http-requests">Practical Task: Making HTTP Requests</h2>
+
+<h3 id="questions-8">Questions</h3>
+
+<p>Q:  Make a <strong>GET</strong> request to <code class="language-plaintext highlighter-rouge">/api/users</code>. What is the flag?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{YOU_HAVE_JUST_FOUND_THE_USER_LIST}</code></p>
+
+<p>Q: Make a <strong>POST</strong> request to <code class="language-plaintext highlighter-rouge">/api/user/2</code> and update the <strong>country</strong> of Bob from <strong>UK</strong> to <strong>US</strong>. What is the flag?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{YOU_HAVE_MODIFIED_THE_USER_DATA}</code></p>
+
+<p>Q: Make a <strong>DELETE</strong> request to <code class="language-plaintext highlighter-rouge">/api/user/1</code> to delete the user. What is the flag?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{YOU_HAVE_JUST_DELETED_A_USER}</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

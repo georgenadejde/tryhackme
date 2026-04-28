@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Networking · THM Writeups</title>
+  
+  <meta name="description" content="Learn the basics of networking and network addressing" />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Networking</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Networking/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">networking</span>
+          
+          <span class="tag-pill">networkaddressing</span>
+          
+          <span class="tag-pill">gateway</span>
+          
+          <span class="tag-pill">broadcast</span>
+          
+          <span class="tag-pill">network</span>
+          
+          <span class="tag-pill">loopback</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn the basics of networking and network addressing</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="networking"><a href="https://tryhackme.com/room/bpnetworking">Networking</a></h1>
+
+<h2 id="kinda-like-a-street-address-just-cooler">Kinda like a street address, just cooler</h2>
+
+<ul>
+  <li>IP Address Classes (<strong>NOTE</strong>: if you look on the first terms of the ranges, the difference between two consecutive ones is 2^7-1, then 2^6, 2^5 and 2^4)</li>
+</ul>
+
+<p><img src="/tryhackme/Networking/ipclasses.png" alt="" /></p>
+
+<ul>
+  <li>Private Address Space:</li>
+</ul>
+
+<p><img src="/tryhackme/Networking/private.png" alt="" /></p>
+
+<ul>
+  <li>The first address of a subnet is the Network address, while the last one is the Broadcast.</li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>How many categories of IPv4 addresses are there?</li>
+</ol>
+
+<p>A: 5</p>
+
+<ol>
+  <li>Which type is for research? <em>Looking for a letter rather than a number here</em></li>
+</ol>
+
+<p>A: E</p>
+
+<ol>
+  <li>How many private address ranges are there?</li>
+</ol>
+
+<p>A: 3</p>
+
+<ol>
+  <li>Which private range is typically used by businesses?</li>
+</ol>
+
+<p>A: A</p>
+
+<ol>
+  <li>There are two common default private ranges for home routers, what is the first one?</li>
+</ol>
+
+<p>A: 192.168.0.0</p>
+
+<ol>
+  <li>How about the second common private home range?</li>
+</ol>
+
+<p>A: 192.168.1.0</p>
+
+<ol>
+  <li>How many addresses make up a typical class C range? Specifically a /24</li>
+</ol>
+
+<p>A: 256</p>
+
+<ol>
+  <li>Of these addresses two are reserved, what is the first addresses typically reserved as?</li>
+</ol>
+
+<p>A: network</p>
+
+<ol>
+  <li>The very last address in a range is typically reserved as what address type?</li>
+</ol>
+
+<p>A: broadcast</p>
+
+<ol>
+  <li>A third predominant address type is typically reserved for the router, what is the name of this address type?</li>
+</ol>
+
+<p>A: gateway</p>
+
+<ol>
+  <li>Which address is reserved for testing on individual computers? (Hint: This is sometimes reffered to as the <em>loopback address</em>)</li>
+</ol>
+
+<p>A: 127.0.0.1</p>
+
+<ol>
+  <li>A particularly unique address is reserved for unroutable packets, what is that address? This can also refer to all IPv4 addresses on the local machine. (Hint: This is <em>typically seen within the context of servers</em>, it’s before the A range.)</li>
+</ol>
+
+<p>A: 0.0.0.0 (the <em>default route</em>)</p>
+
+<h2 id="binary-to-decimal">Binary to Decimal</h2>
+
+<ul>
+  <li>an IP address consists of 32 bits (8 bytes) split up into 4 sections</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>1001 0010</li>
+</ol>
+
+<p>A: 146</p>
+
+<ol>
+  <li>0111 0111</li>
+</ol>
+
+<p>A: 119</p>
+
+<ol>
+  <li>1111 1111</li>
+</ol>
+
+<p>A: 255</p>
+
+<ol>
+  <li>1100 0101</li>
+</ol>
+
+<p>A: 197</p>
+
+<ol>
+  <li>1111 0110</li>
+</ol>
+
+<p>A: 246</p>
+
+<ol>
+  <li>0001 0011</li>
+</ol>
+
+<p>A: 19</p>
+
+<ol>
+  <li>1000 0001</li>
+</ol>
+
+<p>A: 129</p>
+
+<ol>
+  <li>0011 0001</li>
+</ol>
+
+<p>A: 39</p>
+
+<ol>
+  <li>0111 1000</li>
+</ol>
+
+<p>A: 120</p>
+
+<ol>
+  <li>1111 0000</li>
+</ol>
+
+<p>A: 240</p>
+
+<ol>
+  <li>0011 1011</li>
+</ol>
+
+<p>A: 59</p>
+
+<ol>
+  <li>0000 0111</li>
+</ol>
+
+<p>A: 7</p>
+
+<h2 id="decimal-to-binary">Decimal to Binary</h2>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>238</li>
+</ol>
+
+<p>A: 11101110</p>
+
+<ol>
+  <li>34</li>
+</ol>
+
+<p>A: 00100010</p>
+
+<ol>
+  <li>123</li>
+</ol>
+
+<p>A: 01111011</p>
+
+<ol>
+  <li>50</li>
+</ol>
+
+<p>A: 00110010</p>
+
+<ol>
+  <li>255</li>
+</ol>
+
+<p>A: 11111111</p>
+
+<ol>
+  <li>200</li>
+</ol>
+
+<p>A: 11000100</p>
+
+<ol>
+  <li>10</li>
+</ol>
+
+<p>A: 00001010</p>
+
+<ol>
+  <li>138</li>
+</ol>
+
+<p>A: 10001010</p>
+
+<ol>
+  <li>1</li>
+</ol>
+
+<p>A: 00000001</p>
+
+<ol>
+  <li>13</li>
+</ol>
+
+<p>A: 00001101</p>
+
+<ol>
+  <li>250</li>
+</ol>
+
+<p>A: 11111010</p>
+
+<ol>
+  <li>114</li>
+</ol>
+
+<p>A: 01110010</p>
+
+<h2 id="address-class-identification">Address Class Identification</h2>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>10.240.1.1</li>
+</ol>
+
+<p>A: A</p>
+
+<ol>
+  <li>150.10.15.0</li>
+</ol>
+
+<p>A: B</p>
+
+<ol>
+  <li>192.14.2.0</li>
+</ol>
+
+<p>A: C</p>
+
+<ol>
+  <li>148.17.9.1</li>
+</ol>
+
+<p>A: B</p>
+
+<ol>
+  <li>193.42.1.1</li>
+</ol>
+
+<p>A: C</p>
+
+<ol>
+  <li>126.8.156.0</li>
+</ol>
+
+<p>A: A</p>
+
+<ol>
+  <li>220.200.23.1</li>
+</ol>
+
+<p>A: C</p>
+
+<ol>
+  <li>230.230.45.58</li>
+</ol>
+
+<p>A: D</p>
+
+<ol>
+  <li>177.100.18.4</li>
+</ol>
+
+<p>A: B</p>
+
+<ol>
+  <li>119.18.45.0</li>
+</ol>
+
+<p>A: A</p>
+
+<ol>
+  <li>117.89.56.45</li>
+</ol>
+
+<p>A: A</p>
+
+<ol>
+  <li>215.45.45.0</li>
+</ol>
+
+<p>A: C</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

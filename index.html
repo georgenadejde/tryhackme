@@ -1,0 +1,4727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THM Writeups · George Nădejde</title>
+  <meta name="description" content="TryHackMe room writeups by George Nădejde — penetration testing, forensics, reverse engineering and more." />
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+      <a href="https://github.com/georgenadejde/tryhackme" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>github
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="index-main">
+  <div class="container">
+
+    <div class="index-header">
+      <span class="section-tag">$ ls -la ~/writeups/tryhackme/</span>
+      <h1 class="index-title">TryHackMe Writeups</h1>
+      <p class="index-desc">Room walkthroughs and notes — penetration testing, forensics, reverse engineering and more.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-num" id="totalCount">0</span>
+        <span class="stat-label">Total Rooms</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="shownCount">0</span>
+        <span class="stat-label">Showing</span>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <span class="search-prefix">$ grep -r "</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="search rooms..." autocomplete="off" spellcheck="false" />
+      <span class="search-suffix">" ./</span>
+    </div>
+
+    <!-- Tags Filter -->
+    <div class="tag-filter" id="tagFilter">
+      <span class="tag-filter-label">$ filter --tag</span>
+      
+      <div class="tag-list" id="tagList">
+        <button class="tag-btn active" data-tag="all">all</button>
+        
+        
+        
+        
+        <button class="tag-btn" data-tag="#webserver">#webserver</button>
+        
+        <button class="tag-btn" data-tag="PATH">PATH</button>
+        
+        <button class="tag-btn" data-tag="RSA">RSA</button>
+        
+        <button class="tag-btn" data-tag="ackscan">ackscan</button>
+        
+        <button class="tag-btn" data-tag="activedirectory">activedirectory</button>
+        
+        <button class="tag-btn" data-tag="ads">ads</button>
+        
+        <button class="tag-btn" data-tag="animal">animal</button>
+        
+        <button class="tag-btn" data-tag="arp">arp</button>
+        
+        <button class="tag-btn" data-tag="arpanet">arpanet</button>
+        
+        <button class="tag-btn" data-tag="assembly">assembly</button>
+        
+        <button class="tag-btn" data-tag="attackvectors">attackvectors</button>
+        
+        <button class="tag-btn" data-tag="authentication">authentication</button>
+        
+        <button class="tag-btn" data-tag="authorisation">authorisation</button>
+        
+        <button class="tag-btn" data-tag="aws">aws</button>
+        
+        <button class="tag-btn" data-tag="awsarn">awsarn</button>
+        
+        <button class="tag-btn" data-tag="base64">base64</button>
+        
+        <button class="tag-btn" data-tag="bashscripting">bashscripting</button>
+        
+        <button class="tag-btn" data-tag="beEF">beEF</button>
+        
+        <button class="tag-btn" data-tag="binwalk">binwalk</button>
+        
+        <button class="tag-btn" data-tag="blockcahin">blockcahin</button>
+        
+        <button class="tag-btn" data-tag="blockchain">blockchain</button>
+        
+        <button class="tag-btn" data-tag="blueteam">blueteam</button>
+        
+        <button class="tag-btn" data-tag="broadcast">broadcast</button>
+        
+        <button class="tag-btn" data-tag="buckets">buckets</button>
+        
+        <button class="tag-btn" data-tag="burp">burp</button>
+        
+        <button class="tag-btn" data-tag="burpsuite">burpsuite</button>
+        
+        <button class="tag-btn" data-tag="capa">capa</button>
+        
+        <button class="tag-btn" data-tag="career">career</button>
+        
+        <button class="tag-btn" data-tag="cascade">cascade</button>
+        
+        <button class="tag-btn" data-tag="cd">cd</button>
+        
+        <button class="tag-btn" data-tag="cetus">cetus</button>
+        
+        <button class="tag-btn" data-tag="checksums">checksums</button>
+        
+        <button class="tag-btn" data-tag="ci">ci</button>
+        
+        <button class="tag-btn" data-tag="cia">cia</button>
+        
+        <button class="tag-btn" data-tag="client-sidefilters">client-sidefilters</button>
+        
+        <button class="tag-btn" data-tag="cmd">cmd</button>
+        
+        <button class="tag-btn" data-tag="commandinjection">commandinjection</button>
+        
+        <button class="tag-btn" data-tag="contentdiscovery">contentdiscovery</button>
+        
+        <button class="tag-btn" data-tag="cookie">cookie</button>
+        
+        <button class="tag-btn" data-tag="cookies">cookies</button>
+        
+        <button class="tag-btn" data-tag="creeper">creeper</button>
+        
+        <button class="tag-btn" data-tag="cron">cron</button>
+        
+        <button class="tag-btn" data-tag="crypto">crypto</button>
+        
+        <button class="tag-btn" data-tag="ctf">ctf</button>
+        
+        <button class="tag-btn" data-tag="customscan">customscan</button>
+        
+        <button class="tag-btn" data-tag="cve">cve</button>
+        
+        <button class="tag-btn" data-tag="cvss">cvss</button>
+        
+        <button class="tag-btn" data-tag="cyberchef">cyberchef</button>
+        
+        <button class="tag-btn" data-tag="dad">dad</button>
+        
+        <button class="tag-btn" data-tag="dataexfiltration">dataexfiltration</button>
+        
+        <button class="tag-btn" data-tag="debug">debug</button>
+        
+        <button class="tag-btn" data-tag="devops">devops</button>
+        
+        <button class="tag-btn" data-tag="dh">dh</button>
+        
+        <button class="tag-btn" data-tag="dhcp">dhcp</button>
+        
+        <button class="tag-btn" data-tag="die">die</button>
+        
+        <button class="tag-btn" data-tag="dig">dig</button>
+        
+        <button class="tag-btn" data-tag="digitalforensics">digitalforensics</button>
+        
+        <button class="tag-btn" data-tag="digitalsignature">digitalsignature</button>
+        
+        <button class="tag-btn" data-tag="dirb">dirb</button>
+        
+        <button class="tag-btn" data-tag="dirbuster">dirbuster</button>
+        
+        <button class="tag-btn" data-tag="dirsearch">dirsearch</button>
+        
+        <button class="tag-btn" data-tag="dns">dns</button>
+        
+        <button class="tag-btn" data-tag="dnsdumpster">dnsdumpster</button>
+        
+        <button class="tag-btn" data-tag="docker">docker</button>
+        
+        <button class="tag-btn" data-tag="dynamicanalysis">dynamicanalysis</button>
+        
+        <button class="tag-btn" data-tag="ecr">ecr</button>
+        
+        <button class="tag-btn" data-tag="elkcloner">elkcloner</button>
+        
+        <button class="tag-btn" data-tag="emailanalysis">emailanalysis</button>
+        
+        <button class="tag-btn" data-tag="emlanalyzer">emlanalyzer</button>
+        
+        <button class="tag-btn" data-tag="encryption">encryption</button>
+        
+        <button class="tag-btn" data-tag="enum4linux">enum4linux</button>
+        
+        <button class="tag-btn" data-tag="enumerating">enumerating</button>
+        
+        <button class="tag-btn" data-tag="exiftool">exiftool</button>
+        
+        <button class="tag-btn" data-tag="exploit">exploit</button>
+        
+        <button class="tag-btn" data-tag="exploitdb">exploitdb</button>
+        
+        <button class="tag-btn" data-tag="favicon">favicon</button>
+        
+        <button class="tag-btn" data-tag="fcrackzip">fcrackzip</button>
+        
+        <button class="tag-btn" data-tag="fenrir">fenrir</button>
+        
+        <button class="tag-btn" data-tag="ffuf">ffuf</button>
+        
+        <button class="tag-btn" data-tag="find">find</button>
+        
+        <button class="tag-btn" data-tag="finscan">finscan</button>
+        
+        <button class="tag-btn" data-tag="firewall">firewall</button>
+        
+        <button class="tag-btn" data-tag="firmware">firmware</button>
+        
+        <button class="tag-btn" data-tag="fmk">fmk</button>
+        
+        <button class="tag-btn" data-tag="forensics">forensics</button>
+        
+        <button class="tag-btn" data-tag="frameworks">frameworks</button>
+        
+        <button class="tag-btn" data-tag="ftp">ftp</button>
+        
+        <button class="tag-btn" data-tag="ftps">ftps</button>
+        
+        <button class="tag-btn" data-tag="fuzz">fuzz</button>
+        
+        <button class="tag-btn" data-tag="fuzzing">fuzzing</button>
+        
+        <button class="tag-btn" data-tag="fw">fw</button>
+        
+        <button class="tag-btn" data-tag="gateway">gateway</button>
+        
+        <button class="tag-btn" data-tag="getcap">getcap</button>
+        
+        <button class="tag-btn" data-tag="github">github</button>
+        
+        <button class="tag-btn" data-tag="gobuster">gobuster</button>
+        
+        <button class="tag-btn" data-tag="googledorking">googledorking</button>
+        
+        <button class="tag-btn" data-tag="gpg">gpg</button>
+        
+        <button class="tag-btn" data-tag="grep">grep</button>
+        
+        <button class="tag-btn" data-tag="hardware">hardware</button>
+        
+        <button class="tag-btn" data-tag="hash">hash</button>
+        
+        <button class="tag-btn" data-tag="hashcat">hashcat</button>
+        
+        <button class="tag-btn" data-tag="hashing">hashing</button>
+        
+        <button class="tag-btn" data-tag="html5">html5</button>
+        
+        <button class="tag-btn" data-tag="http">http</button>
+        
+        <button class="tag-btn" data-tag="https">https</button>
+        
+        <button class="tag-btn" data-tag="hydra">hydra</button>
+        
+        <button class="tag-btn" data-tag="i2c">i2c</button>
+        
+        <button class="tag-btn" data-tag="iaaa">iaaa</button>
+        
+        <button class="tag-btn" data-tag="iam">iam</button>
+        
+        <button class="tag-btn" data-tag="icmp">icmp</button>
+        
+        <button class="tag-btn" data-tag="idor">idor</button>
+        
+        <button class="tag-btn" data-tag="ids">ids</button>
+        
+        <button class="tag-btn" data-tag="imap">imap</button>
+        
+        <button class="tag-btn" data-tag="imaps">imaps</button>
+        
+        <button class="tag-btn" data-tag="important">important</button>
+        
+        <button class="tag-btn" data-tag="incidentresponse">incidentresponse</button>
+        
+        <button class="tag-btn" data-tag="interesting">interesting</button>
+        
+        <button class="tag-btn" data-tag="intruder">intruder</button>
+        
+        <button class="tag-btn" data-tag="iot">iot</button>
+        
+        <button class="tag-btn" data-tag="ip">ip</button>
+        
+        <button class="tag-btn" data-tag="iso">iso</button>
+        
+        <button class="tag-btn" data-tag="javascript">javascript</button>
+        
+        <button class="tag-btn" data-tag="john">john</button>
+        
+        <button class="tag-btn" data-tag="johntheripper">johntheripper</button>
+        
+        <button class="tag-btn" data-tag="keepass">keepass</button>
+        
+        <button class="tag-btn" data-tag="killchain">killchain</button>
+        
+        <button class="tag-btn" data-tag="lfi">lfi</button>
+        
+        <button class="tag-btn" data-tag="linux">linux</button>
+        
+        <button class="tag-btn" data-tag="logfiles">logfiles</button>
+        
+        <button class="tag-btn" data-tag="logs">logs</button>
+        
+        <button class="tag-btn" data-tag="loki">loki</button>
+        
+        <button class="tag-btn" data-tag="loopback">loopback</button>
+        
+        <button class="tag-btn" data-tag="maimon">maimon</button>
+        
+        <button class="tag-btn" data-tag="malware">malware</button>
+        
+        <button class="tag-btn" data-tag="malwareanalysis">malwareanalysis</button>
+        
+        <button class="tag-btn" data-tag="man">man</button>
+        
+        <button class="tag-btn" data-tag="md5">md5</button>
+        
+        <button class="tag-btn" data-tag="memory">memory</button>
+        
+        <button class="tag-btn" data-tag="memoryforensics">memoryforensics</button>
+        
+        <button class="tag-btn" data-tag="metasploit">metasploit</button>
+        
+        <button class="tag-btn" data-tag="meterpreter">meterpreter</button>
+        
+        <button class="tag-btn" data-tag="mimikatz">mimikatz</button>
+        
+        <button class="tag-btn" data-tag="mitm">mitm</button>
+        
+        <button class="tag-btn" data-tag="mitre">mitre</button>
+        
+        <button class="tag-btn" data-tag="mongodb">mongodb</button>
+        
+        <button class="tag-btn" data-tag="morris">morris</button>
+        
+        <button class="tag-btn" data-tag="mosquitto">mosquitto</button>
+        
+        <button class="tag-btn" data-tag="msfconsole">msfconsole</button>
+        
+        <button class="tag-btn" data-tag="msfvenom">msfvenom</button>
+        
+        <button class="tag-btn" data-tag="mssqlserver">mssqlserver</button>
+        
+        <button class="tag-btn" data-tag="mysql">mysql</button>
+        
+        <button class="tag-btn" data-tag="nat">nat</button>
+        
+        <button class="tag-btn" data-tag="nc">nc</button>
+        
+        <button class="tag-btn" data-tag="nessus">nessus</button>
+        
+        <button class="tag-btn" data-tag="netcat">netcat</button>
+        
+        <button class="tag-btn" data-tag="netstat">netstat</button>
+        
+        <button class="tag-btn" data-tag="network">network</button>
+        
+        <button class="tag-btn" data-tag="networkaddressing">networkaddressing</button>
+        
+        <button class="tag-btn" data-tag="networking">networking</button>
+        
+        <button class="tag-btn" data-tag="nfs">nfs</button>
+        
+        <button class="tag-btn" data-tag="nikto">nikto</button>
+        
+        <button class="tag-btn" data-tag="nist">nist</button>
+        
+        <button class="tag-btn" data-tag="nmap">nmap</button>
+        
+        <button class="tag-btn" data-tag="nosql">nosql</button>
+        
+        <button class="tag-btn" data-tag="nosqlinjection">nosqlinjection</button>
+        
+        <button class="tag-btn" data-tag="nse">nse</button>
+        
+        <button class="tag-btn" data-tag="nslookup">nslookup</button>
+        
+        <button class="tag-btn" data-tag="ntfs">ntfs</button>
+        
+        <button class="tag-btn" data-tag="ntlm">ntlm</button>
+        
+        <button class="tag-btn" data-tag="nullscan">nullscan</button>
+        
+        <button class="tag-btn" data-tag="nvd">nvd</button>
+        
+        <button class="tag-btn" data-tag="obfuscation">obfuscation</button>
+        
+        <button class="tag-btn" data-tag="ole">ole</button>
+        
+        <button class="tag-btn" data-tag="openssl">openssl</button>
+        
+        <button class="tag-btn" data-tag="openvas">openvas</button>
+        
+        <button class="tag-btn" data-tag="os">os</button>
+        
+        <button class="tag-btn" data-tag="osi">osi</button>
+        
+        <button class="tag-btn" data-tag="osint">osint</button>
+        
+        <button class="tag-btn" data-tag="owasp">owasp</button>
+        
+        <button class="tag-btn" data-tag="packets">packets</button>
+        
+        <button class="tag-btn" data-tag="paho">paho</button>
+        
+        <button class="tag-btn" data-tag="passwordmanagers">passwordmanagers</button>
+        
+        <button class="tag-btn" data-tag="passwords">passwords</button>
+        
+        <button class="tag-btn" data-tag="pcap">pcap</button>
+        
+        <button class="tag-btn" data-tag="pdfinfo">pdfinfo</button>
+        
+        <button class="tag-btn" data-tag="peid">peid</button>
+        
+        <button class="tag-btn" data-tag="pentesting">pentesting</button>
+        
+        <button class="tag-btn" data-tag="pgp">pgp</button>
+        
+        <button class="tag-btn" data-tag="phishing">phishing</button>
+        
+        <button class="tag-btn" data-tag="php">php</button>
+        
+        <button class="tag-btn" data-tag="phpwrapper">phpwrapper</button>
+        
+        <button class="tag-btn" data-tag="ping">ping</button>
+        
+        <button class="tag-btn" data-tag="pivoting">pivoting</button>
+        
+        <button class="tag-btn" data-tag="pop3">pop3</button>
+        
+        <button class="tag-btn" data-tag="pop3s">pop3s</button>
+        
+        <button class="tag-btn" data-tag="port">port</button>
+        
+        <button class="tag-btn" data-tag="ports">ports</button>
+        
+        <button class="tag-btn" data-tag="postexploitation">postexploitation</button>
+        
+        <button class="tag-btn" data-tag="powershell">powershell</button>
+        
+        <button class="tag-btn" data-tag="privesc">privesc</button>
+        
+        <button class="tag-btn" data-tag="privilegeescalation">privilegeescalation</button>
+        
+        <button class="tag-btn" data-tag="priviliges">priviliges</button>
+        
+        <button class="tag-btn" data-tag="process">process</button>
+        
+        <button class="tag-btn" data-tag="programming">programming</button>
+        
+        <button class="tag-btn" data-tag="proxy">proxy</button>
+        
+        <button class="tag-btn" data-tag="ps">ps</button>
+        
+        <button class="tag-btn" data-tag="python">python</button>
+        
+        <button class="tag-btn" data-tag="racecondition">racecondition</button>
+        
+        <button class="tag-btn" data-tag="radare2">radare2</button>
+        
+        <button class="tag-btn" data-tag="ransomeware">ransomeware</button>
+        
+        <button class="tag-btn" data-tag="ransomware">ransomware</button>
+        
+        <button class="tag-btn" data-tag="rapid7">rapid7</button>
+        
+        <button class="tag-btn" data-tag="rce">rce</button>
+        
+        <button class="tag-btn" data-tag="rdp">rdp</button>
+        
+        <button class="tag-btn" data-tag="reaper">reaper</button>
+        
+        <button class="tag-btn" data-tag="reentrancy">reentrancy</button>
+        
+        <button class="tag-btn" data-tag="regex">regex</button>
+        
+        <button class="tag-btn" data-tag="remmina">remmina</button>
+        
+        <button class="tag-btn" data-tag="repeater">repeater</button>
+        
+        <button class="tag-btn" data-tag="reverse">reverse</button>
+        
+        <button class="tag-btn" data-tag="reverseengineering">reverseengineering</button>
+        
+        <button class="tag-btn" data-tag="reverseshell">reverseshell</button>
+        
+        <button class="tag-btn" data-tag="revshell">revshell</button>
+        
+        <button class="tag-btn" data-tag="robots">robots</button>
+        
+        <button class="tag-btn" data-tag="s3">s3</button>
+        
+        <button class="tag-btn" data-tag="s3buckets">s3buckets</button>
+        
+        <button class="tag-btn" data-tag="saleae">saleae</button>
+        
+        <button class="tag-btn" data-tag="sam">sam</button>
+        
+        <button class="tag-btn" data-tag="samba">samba</button>
+        
+        <button class="tag-btn" data-tag="scanning">scanning</button>
+        
+        <button class="tag-btn" data-tag="scp">scp</button>
+        
+        <button class="tag-btn" data-tag="searchsploit">searchsploit</button>
+        
+        <button class="tag-btn" data-tag="seo">seo</button>
+        
+        <button class="tag-btn" data-tag="sftp">sftp</button>
+        
+        <button class="tag-btn" data-tag="shell">shell</button>
+        
+        <button class="tag-btn" data-tag="shodan">shodan</button>
+        
+        <button class="tag-btn" data-tag="siem">siem</button>
+        
+        <button class="tag-btn" data-tag="sigma">sigma</button>
+        
+        <button class="tag-btn" data-tag="sitemap">sitemap</button>
+        
+        <button class="tag-btn" data-tag="smartcontracts">smartcontracts</button>
+        
+        <button class="tag-btn" data-tag="smtp">smtp</button>
+        
+        <button class="tag-btn" data-tag="smtps">smtps</button>
+        
+        <button class="tag-btn" data-tag="soc">soc</button>
+        
+        <button class="tag-btn" data-tag="socat">socat</button>
+        
+        <button class="tag-btn" data-tag="socialengineering">socialengineering</button>
+        
+        <button class="tag-btn" data-tag="socksproxy">socksproxy</button>
+        
+        <button class="tag-btn" data-tag="spi">spi</button>
+        
+        <button class="tag-btn" data-tag="spoof">spoof</button>
+        
+        <button class="tag-btn" data-tag="sql">sql</button>
+        
+        <button class="tag-btn" data-tag="sqli">sqli</button>
+        
+        <button class="tag-btn" data-tag="sqlinjection">sqlinjection</button>
+        
+        <button class="tag-btn" data-tag="sqlmap">sqlmap</button>
+        
+        <button class="tag-btn" data-tag="ssh">ssh</button>
+        
+        <button class="tag-btn" data-tag="ssrf">ssrf</button>
+        
+        <button class="tag-btn" data-tag="staticanalysis">staticanalysis</button>
+        
+        <button class="tag-btn" data-tag="steghide">steghide</button>
+        
+        <button class="tag-btn" data-tag="strings">strings</button>
+        
+        <button class="tag-btn" data-tag="sublist3r">sublist3r</button>
+        
+        <button class="tag-btn" data-tag="subnet">subnet</button>
+        
+        <button class="tag-btn" data-tag="subnetting">subnetting</button>
+        
+        <button class="tag-btn" data-tag="suid">suid</button>
+        
+        <button class="tag-btn" data-tag="systemctl">systemctl</button>
+        
+        <button class="tag-btn" data-tag="tcp">tcp</button>
+        
+        <button class="tag-btn" data-tag="tcp-ip">tcp-ip</button>
+        
+        <button class="tag-btn" data-tag="tcpdump">tcpdump</button>
+        
+        <button class="tag-btn" data-tag="telnet">telnet</button>
+        
+        <button class="tag-btn" data-tag="thor">thor</button>
+        
+        <button class="tag-btn" data-tag="threatdetection">threatdetection</button>
+        
+        <button class="tag-btn" data-tag="threewayhandshake">threewayhandshake</button>
+        
+        <button class="tag-btn" data-tag="tls">tls</button>
+        
+        <button class="tag-btn" data-tag="tmux">tmux</button>
+        
+        <button class="tag-btn" data-tag="tools">tools</button>
+        
+        <button class="tag-btn" data-tag="top">top</button>
+        
+        <button class="tag-btn" data-tag="traceroute">traceroute</button>
+        
+        <button class="tag-btn" data-tag="udp">udp</button>
+        
+        <button class="tag-btn" data-tag="url">url</button>
+        
+        <button class="tag-btn" data-tag="urlencoding">urlencoding</button>
+        
+        <button class="tag-btn" data-tag="usart">usart</button>
+        
+        <button class="tag-btn" data-tag="valhalla">valhalla</button>
+        
+        <button class="tag-btn" data-tag="vba">vba</button>
+        
+        <button class="tag-btn" data-tag="virustotal">virustotal</button>
+        
+        <button class="tag-btn" data-tag="vnc">vnc</button>
+        
+        <button class="tag-btn" data-tag="volatility">volatility</button>
+        
+        <button class="tag-btn" data-tag="vpn">vpn</button>
+        
+        <button class="tag-btn" data-tag="vpr">vpr</button>
+        
+        <button class="tag-btn" data-tag="vss">vss</button>
+        
+        <button class="tag-btn" data-tag="vulnerability">vulnerability</button>
+        
+        <button class="tag-btn" data-tag="wabbit">wabbit</button>
+        
+        <button class="tag-btn" data-tag="wappalyzer">wappalyzer</button>
+        
+        <button class="tag-btn" data-tag="waybackmachine">waybackmachine</button>
+        
+        <button class="tag-btn" data-tag="web">web</button>
+        
+        <button class="tag-btn" data-tag="wfuzz">wfuzz</button>
+        
+        <button class="tag-btn" data-tag="whois">whois</button>
+        
+        <button class="tag-btn" data-tag="windows">windows</button>
+        
+        <button class="tag-btn" data-tag="windowscan">windowscan</button>
+        
+        <button class="tag-btn" data-tag="wireshark">wireshark</button>
+        
+        <button class="tag-btn" data-tag="wmic">wmic</button>
+        
+        <button class="tag-btn" data-tag="xmas">xmas</button>
+        
+        <button class="tag-btn" data-tag="xss">xss</button>
+        
+        <button class="tag-btn" data-tag="yaml">yaml</button>
+        
+        <button class="tag-btn" data-tag="yara">yara</button>
+        
+        <button class="tag-btn" data-tag="yargen">yargen</button>
+        
+        <button class="tag-btn" data-tag="yaya">yaya</button>
+        
+        <button class="tag-btn" data-tag="zerotrust">zerotrust</button>
+        
+        <button class="tag-btn" data-tag="zombiescan">zombiescan</button>
+        
+    </div>
+
+    <button class="tag-expand-btn" id="tagExpandBtn">
+      <span id="tagExpandLabel">show more ↓</span>
+    </button>
+    </div>
+
+    <!-- Writeup list -->
+    <div class="writeup-list" id="writeupList">
+      
+      
+        
+      
+        
+        <a href="/tryhackme/ActiveDirectoryBasics/README.html"
+           class="writeup-item"
+           data-name="active directory basics"
+           data-desc="this room will introduce the basic concepts and functionality provided by active directory."
+           data-tags="windows,activedirectory">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Active Directory Basics</span>
+              
+              <span class="writeup-desc">This room will introduce the basic concepts and functionality provided by Active Directory.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">windows</span>
+              
+              <span class="tag-pill">activedirectory</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/ActiveRecon/README.html"
+           class="writeup-item"
+           data-name="active recon"
+           data-desc="learn how to use simple tools such as traceroute, ping, telnet, and a web browser to gather information."
+           data-tags="ping,traceroute,telnet,nc">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Active Recon</span>
+              
+              <span class="writeup-desc">Learn how to use simple tools such as traceroute, ping, telnet, and a web browser to gather information.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">ping</span>
+              
+              <span class="tag-pill">traceroute</span>
+              
+              <span class="tag-pill">telnet</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/AdventCalendar2019/README.html"
+           class="writeup-item"
+           data-name="advent calendar 2019"
+           data-desc="get started with cyber security in 25 days - learn the basics by doing a new, beginner friendly security challenge every day leading up to christmas."
+           data-tags="cookie,base64,dirsearch,telnet,wireshark,hashcat,grep,find,regex,dataexfiltration,dns,steghide,fcrackzip,nmap,suid,privilegeescalation,metasploit,ftp,nfs,mysql,crypto,gpg,encryption,openssl,aws,buckets,lfi,urlencoding,hydra,xss,commandinjection,assembly,radare2,reverseengineering,sqlinjection,sqli,sqlmap,reverseshell,python">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Advent Calendar 2019</span>
+              
+              <span class="writeup-desc">Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">cookie</span>
+              
+              <span class="tag-pill">base64</span>
+              
+              <span class="tag-pill">dirsearch</span>
+              
+              
+              <span class="tag-more">+36</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/AdventCalendar2020/README.html"
+           class="writeup-item"
+           data-name="advent calendar 2020"
+           data-desc="get started with cyber security in 25 days - learn the basics by doing a new, beginner friendly security challenge every day leading up to christmas."
+           data-tags="cookie,http,url,revshell,burpsuite,gobuster,fuzz,wfuzz,xss,wireshark,nmap,ftp,samba,privesc,suid,osint,python,radare2,reverseengineering,reverse,remmina,ssrf,powershell,hash,ads,ntfs,cyberchef,keepass,passwordmanagers,ransomware,vss,client-sidefilters">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Advent Calendar 2020</span>
+              
+              <span class="writeup-desc">Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">cookie</span>
+              
+              <span class="tag-pill">http</span>
+              
+              <span class="tag-pill">url</span>
+              
+              
+              <span class="tag-more">+29</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/AdventCalendar2021/README.html"
+           class="writeup-item"
+           data-name="advent calendar 2021"
+           data-desc="get started with cyber security in 25 days - learn the basics by doing a new, beginner friendly security challenge every day leading up to christmas."
+           data-tags="authentication,authorisation,contentdiscovery,dirbuster,fuzzing,burp,xss,lfi,important,php,phpwrapper,nosql,mongodb,nosqlinjection,powershell,wireshark,dns,ip,port,nmap,mssqlserver,interesting,nfs,windows,privilegeescalation,wmic,devops,ci,cd,osint,googledorking,blockcahin,aws,s3,iam,awsarn,docker,ecr,phishing,virustotal,md5,strings,yara,ole,vba,logs,postexploitation,hash,sam,ntlm,mimikatz,johntheripper">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Advent Calendar 2021</span>
+              
+              <span class="writeup-desc">Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">authentication</span>
+              
+              <span class="tag-pill">authorisation</span>
+              
+              <span class="tag-pill">contentdiscovery</span>
+              
+              
+              <span class="tag-more">+49</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/AdventCalendar2022/README.html"
+           class="writeup-item"
+           data-name="advent calendar 2022"
+           data-desc="get started with cyber security in 24 days - learn the basics by doing a new, beginner-friendly security challenge every day leading up to christmas."
+           data-tags="frameworks,mitre,iso,killchain,nist,logfiles,grep,osint,googledorking,whois,robots,github,scanning,ports,port,nmap,nikto,ssh,rdp,vnc,hydra,phishing,emailanalysis,emlanalyzer,cyberchef,blockchain,smartcontracts,reentrancy,docker,metasploit,important,meterpreter,pivoting,msfconsole,socksproxy,proxy,memory,cetus,volatility,memoryforensics,process,malware,malwareanalysis,die,capa,pcap,packets,wireshark,web,owasp,idor,sqli,sql,regex,html5,threatdetection,sigma,yaml,hardware,usart,spi,i2c,saleae,firmware,reverseengineering,binwalk,fmk,iot,paho,mosquitto,attackvectors">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Advent Calendar 2022</span>
+              
+              <span class="writeup-desc">Get started with Cyber Security in 24 Days - learn the basics by doing a new, beginner-friendly security challenge every day leading up to Christmas.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">frameworks</span>
+              
+              <span class="tag-pill">mitre</span>
+              
+              <span class="tag-pill">iso</span>
+              
+              
+              <span class="tag-more">+68</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/Authentication%20Bypass/README.html"
+           class="writeup-item"
+           data-name="authentication bypass"
+           data-desc="learn how to defeat logins and other authentication mechanisms to allow you access to unpermitted areas."
+           data-tags="cookie">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Authentication Bypass</span>
+              
+              <span class="writeup-desc">Learn how to defeat logins and other authentication mechanisms to allow you access to unpermitted areas.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">cookie</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Bashscripting/README.html"
+           class="writeup-item"
+           data-name="bash scripting"
+           data-desc="a walkthrough room to teach you the basics of bash scripting"
+           data-tags="linux,bashscripting">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Bash Scripting</span>
+              
+              <span class="writeup-desc">A Walkthrough room to teach you the basics of bash scripting</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">linux</span>
+              
+              <span class="tag-pill">bashscripting</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Exploitation%20Basics/Blue/README.html"
+           class="writeup-item"
+           data-name="blue"
+           data-desc="deploy &amp; hack into a windows machine, leveraging common misconfigurations issues."
+           data-tags="windows">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Blue</span>
+              
+              <span class="writeup-desc">Deploy & hack into a Windows machine, leveraging common misconfigurations issues.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">windows</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/BurpSuite/BurpSuiteBasics/README.html"
+           class="writeup-item"
+           data-name="burp suite basics"
+           data-desc="an introduction to using burp suite for web application pentesting"
+           data-tags="burpsuite">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Burp Suite Basics</span>
+              
+              <span class="writeup-desc">An introduction to using Burp Suite for Web Application pentesting</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">burpsuite</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/BurpSuite/Burp%20Suite%20Extensions/README.html"
+           class="writeup-item"
+           data-name="burp suite extensions"
+           data-desc="learn how to use extensions to broaden the functionality of burp suite."
+           data-tags="burp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Burp Suite Extensions</span>
+              
+              <span class="writeup-desc">Learn how to use Extensions to broaden the functionality of Burp Suite.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">burp</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/README.html"
+           class="writeup-item"
+           data-name="burp suite intruder"
+           data-desc="learn how to use intruder to automate requests in burp suite."
+           data-tags="burpsuite,burp,intruder">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Burp Suite Intruder</span>
+              
+              <span class="writeup-desc">Learn how to use Intruder to automate requests in Burp Suite.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">burpsuite</span>
+              
+              <span class="tag-pill">burp</span>
+              
+              <span class="tag-pill">intruder</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/BurpSuite/BurpSuite%20Other%20Modules/README.html"
+           class="writeup-item"
+           data-name="burp suite other modules"
+           data-desc="take a dive into some of burp suite&#39;s lesser-known modules."
+           data-tags="burp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Burp Suite Other Modules</span>
+              
+              <span class="writeup-desc">Take a dive into some of Burp Suite's lesser-known modules.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">burp</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/README.html"
+           class="writeup-item"
+           data-name="burp suite repeater"
+           data-desc="learn how to use repeater to duplicate requests in burp suite."
+           data-tags="burpsuite,repeater">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Burp Suite Repeater</span>
+              
+              <span class="writeup-desc">Learn how to use Repeater to duplicate requests in Burp Suite.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">burpsuite</span>
+              
+              <span class="tag-pill">repeater</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/BurpSuite/Burp%20Suite%20-%20the%20basics/README.html"
+           class="writeup-item"
+           data-name="burp suite: the basics"
+           data-desc=""
+           data-tags="burp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Burp Suite: the basics</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">burp</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/CAPA%20-%20The%20Basics/README.html"
+           class="writeup-item"
+           data-name="capa: the basics"
+           data-desc="learn to use capa to identify malicious capabilities."
+           data-tags="blueteam,malware,incidentresponse,reverseengineering">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">CAPA: The Basics</span>
+              
+              <span class="writeup-desc">Learn to use CAPA to identify malicious capabilities.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">blueteam</span>
+              
+              <span class="tag-pill">malware</span>
+              
+              <span class="tag-pill">incidentresponse</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/CarrersInCyber/README.html"
+           class="writeup-item"
+           data-name="carrers in cyber"
+           data-desc=""
+           data-tags="career">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Carrers In Cyber</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">career</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/Command%20Injection/README.html"
+           class="writeup-item"
+           data-name="command injection"
+           data-desc="learn about a vulnerability allowing you to execute commands through a vulnerable app, and its remediations."
+           data-tags="rce">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Command Injection</span>
+              
+              <span class="writeup-desc">Learn about a vulnerability allowing you to execute commands through a vulnerable app, and its remediations.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">rce</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/CommonAttacks/README.html"
+           class="writeup-item"
+           data-name="common attacks"
+           data-desc="an introduction to common attacks on internet users, and recommendations for staying safe online."
+           data-tags="phishing,socialengineering,malware,ransomeware,passwords,authentication,vpn">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Common Attacks</span>
+              
+              <span class="writeup-desc">An introduction to common attacks on internet users, and recommendations for staying safe online.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">phishing</span>
+              
+              <span class="tag-pill">socialengineering</span>
+              
+              <span class="tag-pill">malware</span>
+              
+              
+              <span class="tag-more">+4</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/ContentDiscovery/README.html"
+           class="writeup-item"
+           data-name="content discovery"
+           data-desc="learn the various ways of discovering hidden or private content on a webserver that could lead to new vulnerabilities."
+           data-tags="osint,dirb,ffuf,gobuster,robots,favicon,sitemap,wappalyzer,waybackmachine,s3buckets">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Content Discovery</span>
+              
+              <span class="writeup-desc">Learn the various ways of discovering hidden or private content on a webserver that could lead to new vulnerabilities.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">osint</span>
+              
+              <span class="tag-pill">dirb</span>
+              
+              <span class="tag-pill">ffuf</span>
+              
+              
+              <span class="tag-more">+7</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Cryptography/Cryptography%20Basics/README.html"
+           class="writeup-item"
+           data-name="cryptography basics"
+           data-desc="learn the basics of cryptography and symmetric encryption."
+           data-tags="crypto">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Cryptography Basics</span>
+              
+              <span class="writeup-desc">Learn the basics of cryptography and symmetric encryption.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">crypto</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/CyberChef_TheBasics/README.html"
+           class="writeup-item"
+           data-name="cyber chef the basics"
+           data-desc="this room is an introduction to cyberchef, the swiss army knife for cyber security professionals."
+           data-tags="tools,incidentresponse,blueteam">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Cyber Chef The Basics</span>
+              
+              <span class="writeup-desc">This room is an introduction to CyberChef, the Swiss Army knife for cyber security professionals.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">tools</span>
+              
+              <span class="tag-pill">incidentresponse</span>
+              
+              <span class="tag-pill">blueteam</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/DNSInDetail/README.html"
+           class="writeup-item"
+           data-name="dns in detail"
+           data-desc="learn how dns works and how it helps you access internet services."
+           data-tags="dns,networking">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">DNS In Detail</span>
+              
+              <span class="writeup-desc">Learn how DNS works and how it helps you access internet services.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">dns</span>
+              
+              <span class="tag-pill">networking</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Digital%20Forensics%20Fundamentals/README.html"
+           class="writeup-item"
+           data-name="digital forensics fundamentals"
+           data-desc="learn about digital forensics and related processes and experiment with a practical example."
+           data-tags="digitalforensics">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Digital Forensics Fundamentals</span>
+              
+              <span class="writeup-desc">Learn about digital forensics and related processes and experiment with a practical example.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">digitalforensics</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/VulnerabilityResearch/ExploitVulnerabilities/README.html"
+           class="writeup-item"
+           data-name="exploit vulnerabilities"
+           data-desc="learn about some of the tools, techniques and resources to exploit vulnerabilities"
+           data-tags="rapid7,nessus,vulnerability,exploit">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Exploit Vulnerabilities</span>
+              
+              <span class="writeup-desc">Learn about some of the tools, techniques and resources to exploit vulnerabilities</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">rapid7</span>
+              
+              <span class="tag-pill">nessus</span>
+              
+              <span class="tag-pill">vulnerability</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Extending%20Your%20Network/README.html"
+           class="writeup-item"
+           data-name="extending your network"
+           data-desc=""
+           data-tags="network">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Extending Your Network</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">network</span>
+              
+              
+              <span class="tag-more">+4</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/README.html"
+           class="writeup-item"
+           data-name="file inclusion"
+           data-desc="this room introduces file inclusion vulnerabilities, including local file inclusion (lfi), remote file inclusion (rfi), and directory traversal."
+           data-tags="lfi">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">File Inclusion</span>
+              
+              <span class="writeup-desc">This room introduces file inclusion vulnerabilities, including Local File Inclusion (LFI), Remote File Inclusion (RFI), and directory traversal.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">lfi</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/README.html"
+           class="writeup-item"
+           data-name="firewall fundamentals"
+           data-desc="learn about firewalls and get hands-on with windows and linux built-in firewalls."
+           data-tags="firewall">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Firewall Fundamentals</span>
+              
+              <span class="writeup-desc">Learn about firewalls and get hands-on with Windows and Linux built-in firewalls.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">firewall</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/README.html"
+           class="writeup-item"
+           data-name="flarevm: arsenal of tools"
+           data-desc="learn the arsenal of investigative tools in flarevm."
+           data-tags="reverseengineering,blueteam,debug,staticanalysis,dynamicanalysis,forensics">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">FlareVM: Arsenal of Tools</span>
+              
+              <span class="writeup-desc">Learn the arsenal of investigative tools in FlareVM.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">reverseengineering</span>
+              
+              <span class="tag-pill">blueteam</span>
+              
+              <span class="tag-pill">debug</span>
+              
+              
+              <span class="tag-more">+3</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Offensive%20Security%20Tooling/Gobuster%20-The%20Basics/README.html"
+           class="writeup-item"
+           data-name="gobuster: the basics"
+           data-desc="this room focuses on an introduction to gobuster, an offensive security tool used for enumeration."
+           data-tags="gobuster">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Gobuster: The Basics</span>
+              
+              <span class="writeup-desc">This room focuses on an introduction to Gobuster, an offensive security tool used for enumeration.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">gobuster</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/GoogleDorking/README.html"
+           class="writeup-item"
+           data-name="google dorking"
+           data-desc="explaining how search engines work and leveraging them into finding hidden content!"
+           data-tags="googledorking,seo,robots,sitemap">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Google Dorking</span>
+              
+              <span class="writeup-desc">Explaining how Search Engines work and leveraging them into finding hidden content!</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">googledorking</span>
+              
+              <span class="tag-pill">seo</span>
+              
+              <span class="tag-pill">robots</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/HTTPInDetail/README.html"
+           class="writeup-item"
+           data-name="http in detail"
+           data-desc=""
+           data-tags="networking,http,https,cookies">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">HTTP In Detail</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">networking</span>
+              
+              <span class="tag-pill">http</span>
+              
+              <span class="tag-pill">https</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/HackerMethodology/README.html"
+           class="writeup-item"
+           data-name="hacker methodology"
+           data-desc=""
+           data-tags="nmap,dirb,dirbuster,enum4linux,metasploit,burpsuite,sublist3r,sqlmap,msfvenom,beef">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Hacker Methodology</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nmap</span>
+              
+              <span class="tag-pill">dirb</span>
+              
+              <span class="tag-pill">dirbuster</span>
+              
+              
+              <span class="tag-more">+7</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Cryptography/Hashing%20Basics/README.html"
+           class="writeup-item"
+           data-name="hashing basics"
+           data-desc="learn about hashing functions and their uses in password verification and file integrity checking."
+           data-tags="hash,hashcat,johntheripper">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Hashing Basics</span>
+              
+              <span class="writeup-desc">Learn about hashing functions and their uses in password verification and file integrity checking.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">hash</span>
+              
+              <span class="tag-pill">hashcat</span>
+              
+              <span class="tag-pill">johntheripper</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/HistoryOfMalware/README.html"
+           class="writeup-item"
+           data-name="history of malware"
+           data-desc="join this room to learn about the first forms of malware and how they turned into the malicious code we see today."
+           data-tags="malware,creeper,arpanet,reaper,wabbit,animal,elkcloner,morris,cascade">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">History Of Malware</span>
+              
+              <span class="writeup-desc">Join this room to learn about the first forms of malware and how they turned into the malicious code we see today.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">malware</span>
+              
+              <span class="tag-pill">creeper</span>
+              
+              <span class="tag-pill">arpanet</span>
+              
+              
+              <span class="tag-more">+6</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/How%20Websites%20Work/README.html"
+           class="writeup-item"
+           data-name="how websites work"
+           data-desc=""
+           data-tags="web">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">How Websites Work</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">web</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Offensive%20Security%20Tooling/Hydra/README.html"
+           class="writeup-item"
+           data-name="hydra"
+           data-desc="learn about and use hydra, a fast network logon cracker, to bruteforce and obtain a website&#39;s credentials."
+           data-tags="hydra">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Hydra</span>
+              
+              <span class="writeup-desc">Learn about and use Hydra, a fast network logon cracker, to bruteforce and obtain a website's credentials.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">hydra</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/IDOR/README.html"
+           class="writeup-item"
+           data-name="idor"
+           data-desc="learn how to find and exploit idor vulnerabilities in a web application giving you access to data that you shouldn&#39;t have."
+           data-tags="idor">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">IDOR</span>
+              
+              <span class="writeup-desc">Learn how to find and exploit IDOR vulnerabilities in a web application giving you access to data that you shouldn't have.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">idor</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Security%20Solutions/IDS%20Fundamentals/README.html"
+           class="writeup-item"
+           data-name="ids fundamentals"
+           data-desc="learn the fundamentals of ids, along with the experience of working with snort."
+           data-tags="ids">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">IDS Fundamentals</span>
+              
+              <span class="writeup-desc">Learn the fundamentals of IDS, along with the experience of working with Snort.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">ids</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Incident%20Response%20Fundamentals/README.html"
+           class="writeup-item"
+           data-name="incident response fundamentals"
+           data-desc="learn how to perform incident response in cyber security."
+           data-tags="incidentresponse">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Incident Response Fundamentals</span>
+              
+              <span class="writeup-desc">Learn how to perform Incident Response in cyber security.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">incidentresponse</span>
+              
+              
+              <span class="tag-more">+13</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToDefensiveSecurity/IntroToDefensiveSecurity/README.html"
+           class="writeup-item"
+           data-name="intro to defensive security"
+           data-desc="defense security"
+           data-tags="blueteam">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro To Defensive Security</span>
+              
+              <span class="writeup-desc">Defense Security</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">blueteam</span>
+              
+              
+              <span class="tag-more">+5</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToDefensiveSecurity/IntroToDigitalForensics/README.html"
+           class="writeup-item"
+           data-name="intro to digital forensics"
+           data-desc="intro to digital forensics"
+           data-tags="forensics,exiftool,pdfinfo">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro To Digital Forensics</span>
+              
+              <span class="writeup-desc">Intro to digital forensics</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">forensics</span>
+              
+              <span class="tag-pill">exiftool</span>
+              
+              <span class="tag-pill">pdfinfo</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToLAN/README.html"
+           class="writeup-item"
+           data-name="intro to lan"
+           data-desc="intro to lan"
+           data-tags="networking,subnetting,arp,dhcp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro To LAN</span>
+              
+              <span class="writeup-desc">Intro to LAN</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">networking</span>
+              
+              <span class="tag-pill">subnetting</span>
+              
+              <span class="tag-pill">arp</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToOffensiveSecurity/IntroToOffensiveSecurity/README.html"
+           class="writeup-item"
+           data-name="intro to offensive security"
+           data-desc="intro to offensive security"
+           data-tags="">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro To Offensive Security</span>
+              
+              <span class="writeup-desc">Intro To Offensive Security</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToResearch/README.html"
+           class="writeup-item"
+           data-name="intro to research"
+           data-desc="a brief introduction to research skills for pentesting."
+           data-tags="cve,man">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro To Research</span>
+              
+              <span class="writeup-desc">A brief introduction to research skills for pentesting.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">cve</span>
+              
+              <span class="tag-pill">man</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToDefensiveSecurity/IntroToSecurityOperations/README.html"
+           class="writeup-item"
+           data-name="intro to security operations"
+           data-desc="security operations"
+           data-tags="soc">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro To Security Operations</span>
+              
+              <span class="writeup-desc">Security operations</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">soc</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroTox86-64/README.html"
+           class="writeup-item"
+           data-name="intro to x86-64"
+           data-desc="this room teaches the basics of x86-64 assembly language."
+           data-tags="assembly,radare2">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro To x86 64</span>
+              
+              <span class="writeup-desc">This room teaches the basics of x86-64 assembly language.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">assembly</span>
+              
+              <span class="tag-pill">radare2</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20Cross-site%20Scripting/README.html"
+           class="writeup-item"
+           data-name="intro to cross-site scripting"
+           data-desc="learn how to detect and exploit xss vulnerabilities, giving you control of other visitor&#39;s browsers."
+           data-tags="xss">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro to Cross site Scripting</span>
+              
+              <span class="writeup-desc">Learn how to detect and exploit XSS vulnerabilities, giving you control of other visitor's browsers.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">xss</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Security%20Solutions/Intro%20to%20SIEM/README.html"
+           class="writeup-item"
+           data-name="intro to siem"
+           data-desc="learn the fundamentals of siem and explore its features and functionality."
+           data-tags="siem,logs">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro to SIEM</span>
+              
+              <span class="writeup-desc">Learn the fundamentals of SIEM and explore its features and functionality.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">siem</span>
+              
+              <span class="tag-pill">logs</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/README.html"
+           class="writeup-item"
+           data-name="intro to ssrf"
+           data-desc="learn how to exploit server-side request forgery (ssrf) vulnerabilities, allowing you to access internal server resources."
+           data-tags="ssrf">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Intro to SSRF</span>
+              
+              <span class="writeup-desc">Learn how to exploit Server-Side Request Forgery (SSRF) vulnerabilities, allowing you to access internal server resources.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">ssrf</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Introduction%20To%20Cryptography/README.html"
+           class="writeup-item"
+           data-name="introduction to cryptography"
+           data-desc=""
+           data-tags="crypto">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Introduction To Cryptography</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">crypto</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroductoryNetworking/README.html"
+           class="writeup-item"
+           data-name="introductory networking"
+           data-desc="an introduction to networking theory and basic networking tools"
+           data-tags="networking,osi,tcp-ip,dns">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Introductory Networking</span>
+              
+              <span class="writeup-desc">An introduction to networking theory and basic networking tools</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">networking</span>
+              
+              <span class="tag-pill">osi</span>
+              
+              <span class="tag-pill">tcp-ip</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Web%20Hacking/JavaScript%20Essentials/README.html"
+           class="writeup-item"
+           data-name="java script essentials"
+           data-desc="learn how to use javascript to add interactivity to a website and understand associated vulnerabilities."
+           data-tags="javascript">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Java Script Essentials</span>
+              
+              <span class="writeup-desc">Learn how to use JavaScript to add interactivity to a website and understand associated vulnerabilities.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">javascript</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Cryptography/John%20the%20Ripper%20-%20The%20Basics/README.html"
+           class="writeup-item"
+           data-name="john the ripper: the basics"
+           data-desc="learn how to use john the ripper, a powerful and adaptable hash-cracking tool."
+           data-tags="johntheripper">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">John the Ripper: The Basics</span>
+              
+              <span class="writeup-desc">Learn how to use John the Ripper, a powerful and adaptable hash-cracking tool.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">johntheripper</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/LinuxFundamentalsPart1/README.html"
+           class="writeup-item"
+           data-name="linux fundamentals 1"
+           data-desc="embark on the journey of learning the fundamentals of linux. learn to run some of the first essential commands on an interactive terminal."
+           data-tags="linux,find">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Linux Fundamentals 1</span>
+              
+              <span class="writeup-desc">Embark on the journey of learning the fundamentals of Linux. Learn to run some of the first essential commands on an interactive terminal.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">linux</span>
+              
+              <span class="tag-pill">find</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/LinuxFundamentalsPart2/README.html"
+           class="writeup-item"
+           data-name="linux fundamentals 2"
+           data-desc="continue your learning linux journey with part two. you will be learning how to log in to a linux machine using ssh, how to advance your commands, file system interaction."
+           data-tags="linux">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Linux Fundamentals 2</span>
+              
+              <span class="writeup-desc">Continue your learning Linux journey with part two. You will be learning how to log in to a Linux machine using SSH, how to advance your commands, file system interaction.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">linux</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/LinuxFundamentalsPart3/README.html"
+           class="writeup-item"
+           data-name="linux fundamentals 3"
+           data-desc="power-up your linux skills and get hands-on with some common utilities that you are likely to use day-to-day!"
+           data-tags="linux,scp,systemctl,top,ps,cron">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Linux Fundamentals 3</span>
+              
+              <span class="writeup-desc">Power-up your Linux skills and get hands-on with some common utilities that you are likely to use day-to-day!</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">linux</span>
+              
+              <span class="tag-pill">scp</span>
+              
+              <span class="tag-pill">systemctl</span>
+              
+              
+              <span class="tag-more">+3</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/README.html"
+           class="writeup-item"
+           data-name="linux privilege escalation"
+           data-desc="learn the fundamentals of linux privilege escalation. from enumeration to exploitation, get hands-on with over 8 different privilege escalation techniques."
+           data-tags="privesc,suid,nfs,path,cron,linux,find,netstat,getcap">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Linux Privilege Escalation</span>
+              
+              <span class="writeup-desc">Learn the fundamentals of Linux privilege escalation. From enumeration to exploitation, get hands-on with over 8 different privilege escalation techniques.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">privesc</span>
+              
+              <span class="tag-pill">suid</span>
+              
+              <span class="tag-pill">nfs</span>
+              
+              
+              <span class="tag-more">+6</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/LinuxShell/README.html"
+           class="writeup-item"
+           data-name="linux shell"
+           data-desc="learn about scripting and the different types of linux shells."
+           data-tags="linux,shell">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Linux Shell</span>
+              
+              <span class="writeup-desc">Learn about scripting and the different types of Linux shells.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">linux</span>
+              
+              <span class="tag-pill">shell</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/LinuxStrengthTraining/README.html"
+           class="writeup-item"
+           data-name="linux strength training"
+           data-desc="guided room for beginners to learn/reinforce linux command line skills"
+           data-tags="linux,find,hashing,john,gpg,mysql,scp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Linux Strength Training</span>
+              
+              <span class="writeup-desc">Guided room for beginners to learn/reinforce linux command line skills</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">linux</span>
+              
+              <span class="tag-pill">find</span>
+              
+              <span class="tag-pill">hashing</span>
+              
+              
+              <span class="tag-more">+4</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Logs%20Fundamentals/README.html"
+           class="writeup-item"
+           data-name="logs fundamentals"
+           data-desc="learn what logs are and how to analyze them for effective investigation."
+           data-tags="logs,incidentresponse,blueteam">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Logs Fundamentals</span>
+              
+              <span class="writeup-desc">Learn what logs are and how to analyze them for effective investigation.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">logs</span>
+              
+              <span class="tag-pill">incidentresponse</span>
+              
+              <span class="tag-pill">blueteam</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/MalwareIntroductory/README.html"
+           class="writeup-item"
+           data-name="malware introductory"
+           data-desc="the start of a series of rooms covering malware analysis..."
+           data-tags="malware,remmina,rdp,md5,checksums,obfuscation,peid">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Malware Introductory</span>
+              
+              <span class="writeup-desc">The start of a series of rooms covering Malware Analysis...</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">malware</span>
+              
+              <span class="tag-pill">remmina</span>
+              
+              <span class="tag-pill">rdp</span>
+              
+              
+              <span class="tag-more">+4</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Exploitation%20Basics/Metasploit%20-%20Exploitation/README.html"
+           class="writeup-item"
+           data-name="metasploit: exploitation"
+           data-desc="using metasploit for scanning, vulnerability assessment and exploitation."
+           data-tags="metasploit">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Metasploit: Exploitation</span>
+              
+              <span class="writeup-desc">Using Metasploit for scanning, vulnerability assessment and exploitation.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">metasploit</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Exploitation%20Basics/Metasploit%20-%20Introduction/README.html"
+           class="writeup-item"
+           data-name="metasploit: introduction"
+           data-desc="an introduction to the main components of the metasploit framework."
+           data-tags="metasploit">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Metasploit: Introduction</span>
+              
+              <span class="writeup-desc">An introduction to the main components of the Metasploit Framework.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">metasploit</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Exploitation%20Basics/Metasploit%20-%20Meterpreter/README.html"
+           class="writeup-item"
+           data-name="metasploit: meterpreter"
+           data-desc="take a deep dive into meterpreter, and see how in-memory payloads can be used for post-exploitation."
+           data-tags="metasploit,meterpreter">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Metasploit: Meterpreter</span>
+              
+              <span class="writeup-desc">Take a deep dive into Meterpreter, and see how in-memory payloads can be used for post-exploitation.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">metasploit</span>
+              
+              <span class="tag-pill">meterpreter</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Exploitation%20Basics/Moniker%20Link%20(CVE-2024-21413)/README.html"
+           class="writeup-item"
+           data-name="moniker link (cve 2024 21413)"
+           data-desc="leak user&#39;s credentials using cve-2024-21413 to bypass outlook&#39;s protected view."
+           data-tags="">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Moniker Link (CVE 2024 21413)</span>
+              
+              <span class="writeup-desc">Leak user's credentials using CVE-2024-21413 to bypass Outlook's Protected View.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/NetworkSecurity/net_sec_challenge/README.html"
+           class="writeup-item"
+           data-name="net sec challenge"
+           data-desc="practice the skills you have learned in the network security module."
+           data-tags="ctf,http,ssh,hydra,ftp,nmap,telnet">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Net Sec Challenge</span>
+              
+              <span class="writeup-desc">Practice the skills you have learned in the Network Security module.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">ctf</span>
+              
+              <span class="tag-pill">http</span>
+              
+              <span class="tag-pill">ssh</span>
+              
+              
+              <span class="tag-more">+4</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToOffensiveSecurity/NetworkSecurity/README.html"
+           class="writeup-item"
+           data-name="network security"
+           data-desc=""
+           data-tags="network">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Network Security</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">network</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Network%20Services/NetworkServices/README.html"
+           class="writeup-item"
+           data-name="network services"
+           data-desc=""
+           data-tags="network">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Network Services</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">network</span>
+              
+              
+              <span class="tag-more">+4</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Network%20Services/NetworkServices_2/README.html"
+           class="writeup-item"
+           data-name="network services 2"
+           data-desc=""
+           data-tags="nfs,smtp,mysql">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Network Services 2</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nfs</span>
+              
+              <span class="tag-pill">smtp</span>
+              
+              <span class="tag-pill">mysql</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Networking/README.html"
+           class="writeup-item"
+           data-name="networking"
+           data-desc="learn the basics of networking and network addressing"
+           data-tags="networking,networkaddressing,gateway,broadcast,network,loopback">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Networking</span>
+              
+              <span class="writeup-desc">Learn the basics of networking and network addressing</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">networking</span>
+              
+              <span class="tag-pill">networkaddressing</span>
+              
+              <span class="tag-pill">gateway</span>
+              
+              
+              <span class="tag-more">+3</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Networking%20Concepts/README.html"
+           class="writeup-item"
+           data-name="networking concepts"
+           data-desc="learn about the iso osi model and the tcp/ip protocol suite."
+           data-tags="networking,tcp,udp,osi,telnet">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Networking Concepts</span>
+              
+              <span class="writeup-desc">Learn about the ISO OSI model and the TCP/IP protocol suite.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">networking</span>
+              
+              <span class="tag-pill">tcp</span>
+              
+              <span class="tag-pill">udp</span>
+              
+              
+              <span class="tag-more">+2</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Networking%20Core%20Protocols/README.html"
+           class="writeup-item"
+           data-name="networking core protocols"
+           data-desc="learn about the core tcp/ip protocols."
+           data-tags="dns,whois,https,ftp,http,smtp,pop3,imap">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Networking Core Protocols</span>
+              
+              <span class="writeup-desc">Learn about the core TCP/IP protocols.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">dns</span>
+              
+              <span class="tag-pill">whois</span>
+              
+              <span class="tag-pill">https</span>
+              
+              
+              <span class="tag-more">+5</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Networking%20Essentials/README.html"
+           class="writeup-item"
+           data-name="networking essentials"
+           data-desc="explore networking protocols from automatic configuration to routing packets to the destination."
+           data-tags="networking,dhcp,arp,icmp,nat">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Networking Essentials</span>
+              
+              <span class="writeup-desc">Explore networking protocols from automatic configuration to routing packets to the destination.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">networking</span>
+              
+              <span class="tag-pill">dhcp</span>
+              
+              <span class="tag-pill">arp</span>
+              
+              
+              <span class="tag-more">+2</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Networking%20Secure%20Protocols/README.html"
+           class="writeup-item"
+           data-name="networking secure protocols"
+           data-desc="learn how tls, ssh, and vpn can secure your network traffic."
+           data-tags="tls,https,smtps,pop3s,imaps,ssh,sftp,ftps,vpn">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Networking Secure Protocols</span>
+              
+              <span class="writeup-desc">Learn how TLS, SSH, and VPN can secure your network traffic.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">tls</span>
+              
+              <span class="tag-pill">https</span>
+              
+              <span class="tag-pill">smtps</span>
+              
+              
+              <span class="tag-more">+6</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Nmap/README.html"
+           class="writeup-item"
+           data-name="nmap"
+           data-desc="an in depth look at scanning with nmap, a powerful network scanning tool."
+           data-tags="nmap,ports,networking,udp,tcp,threewayhandshake,ids,icmp,scanning,enumerating">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Nmap</span>
+              
+              <span class="writeup-desc">An in depth look at scanning with Nmap, a powerful network scanning tool.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nmap</span>
+              
+              <span class="tag-pill">ports</span>
+              
+              <span class="tag-pill">networking</span>
+              
+              
+              <span class="tag-more">+7</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/NetworkSecurity/Nmap_Advanced_Port_Scans/README.html"
+           class="writeup-item"
+           data-name="nmap advanced port scans"
+           data-desc="learn advanced techniques such as null, fin, xmas, and idle (zombie) scans, spoofing, in addition to fw and ids evasion."
+           data-tags="nmap,nullscan,xmas,zombiescan,spoof,ids,fw,maimon,ackscan,windowscan,customscan,finscan">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Nmap Advanced Port Scans</span>
+              
+              <span class="writeup-desc">Learn advanced techniques such as null, FIN, Xmas, and idle (zombie) scans, spoofing, in addition to FW and IDS evasion.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nmap</span>
+              
+              <span class="tag-pill">nullscan</span>
+              
+              <span class="tag-pill">xmas</span>
+              
+              
+              <span class="tag-more">+9</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/NetworkSecurity/Nmap_Post_Port_Scans/README.html"
+           class="writeup-item"
+           data-name="nmap post port scans"
+           data-desc="learn how to leverage nmap for service and os detection, use nmap scripting engine (nse), and save the results."
+           data-tags="nse">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Nmap Post Port Scans</span>
+              
+              <span class="writeup-desc">Learn how to leverage Nmap for service and OS detection, use Nmap Scripting Engine (NSE), and save the results.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nse</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/NetworkSecurity/NmapBasicPortScans/README.html"
+           class="writeup-item"
+           data-name="nmap: basic port scans"
+           data-desc="learn in-depth how nmap tcp connect scan, tcp syn port scan, and udp port scan work."
+           data-tags="nmap">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Nmap: Basic Port Scans</span>
+              
+              <span class="writeup-desc">Learn in-depth how nmap TCP connect scan, TCP SYN port scan, and UDP port scan work.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nmap</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/README.html"
+           class="writeup-item"
+           data-name="nmap: live host discovery"
+           data-desc="learn how to use nmap to discover live hosts using arp scan, icmp scan, and tcp/udp ping scan."
+           data-tags="nmap,arp,networking,subnet,icmp,tcp,udp,dns">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Nmap: Live Host Discovery</span>
+              
+              <span class="writeup-desc">Learn how to use Nmap to discover live hosts using ARP scan, ICMP scan, and TCP/UDP ping scan.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nmap</span>
+              
+              <span class="tag-pill">arp</span>
+              
+              <span class="tag-pill">networking</span>
+              
+              
+              <span class="tag-more">+5</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Nmap%20-%20The%20Basics/README.html"
+           class="writeup-item"
+           data-name="nmap: the basics"
+           data-desc="learn how to use nmap to discover live hosts, find open ports, and detect service versions."
+           data-tags="nmap">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Nmap: The Basics</span>
+              
+              <span class="writeup-desc">Learn how to use Nmap to discover live hosts, find open ports, and detect service versions.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nmap</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/OSIModel/README.html"
+           class="writeup-item"
+           data-name="osi model"
+           data-desc=""
+           data-tags="osi">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">OSI Model</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">osi</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/OWASPJuiceShop/README.html"
+           class="writeup-item"
+           data-name="owasp juice shop"
+           data-desc=""
+           data-tags="owasp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">OWASP Juice Shop</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">owasp</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/OWASPTop10/README.html"
+           class="writeup-item"
+           data-name="owasp top 10"
+           data-desc="learn about and exploit each of the owasp top 10 vulnerabilities; the 10 most critical web security risks."
+           data-tags="owasp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">OWASP Top 10</span>
+              
+              <span class="writeup-desc">Learn about and exploit each of the OWASP Top 10 vulnerabilities; the 10 most critical web security risks.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">owasp</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/OWASP%20Top%2010%20-%202021/README.html"
+           class="writeup-item"
+           data-name="owasp top 10 2021"
+           data-desc=""
+           data-tags="owasp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">OWASP Top 10 2021</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">owasp</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/OWASP%20Top%2010%20(2025)/OWASP%20Top%2010%202025%20-%20Application%20Design%20Flaws/README.html"
+           class="writeup-item"
+           data-name="owasp top 10 2025 - application design flaws"
+           data-desc="learn about a02, a03, a06, and a10 and how they related to design flaws in the application."
+           data-tags="owasp">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">OWASP Top 10 2025   Application Design Flaws</span>
+              
+              <span class="writeup-desc">Learn about A02, A03, A06, and A10 and how they related to design flaws in the application.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">owasp</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/OWASP%20Top%2010%20(2025)/OWASP%20Top%2010%202025%20-%20IAAA%20Failures/README.html"
+           class="writeup-item"
+           data-name="owasp top 10 2025 - iaaa failures"
+           data-desc="learn about a01, a07, and a09 in how they related to failures in the applied iaaa model."
+           data-tags="iaaa">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">OWASP Top 10 2025   IAAA Failures</span>
+              
+              <span class="writeup-desc">Learn about A01, A07, and A09 in how they related to failures in the applied IAAA model.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">iaaa</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/OWASP%20Top%2010%20(2025)/OWASP%20Top%2010%202025%20-%20Insecure%20Data%20Handling/README.html"
+           class="writeup-item"
+           data-name="owasp top 10 2025 - insecure data handling"
+           data-desc="learn about a04, a05, and a08 as they related to insecure data handling."
+           data-tags="">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">OWASP Top 10 2025   Insecure Data Handling</span>
+              
+              <span class="writeup-desc">Learn about A04, A05, and A08 as they related to insecure data handling.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill"></span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToOffensiveSecurity/OperatingSystemSecurity/README.html"
+           class="writeup-item"
+           data-name="operating system security"
+           data-desc=""
+           data-tags="os">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Operating System Security</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">os</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Packets%20And%20Frames/README.html"
+           class="writeup-item"
+           data-name="packets and frames"
+           data-desc=""
+           data-tags="network">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Packets And Frames</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">network</span>
+              
+              
+              <span class="tag-more">+4</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/PassiveRecon/README.html"
+           class="writeup-item"
+           data-name="passive recon"
+           data-desc="learn about the essential tools for passive reconnaissance, such as whois, nslookup, and dig."
+           data-tags="whois,nslookup,dig,dns,dnsdumpster,shodan">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Passive Recon</span>
+              
+              <span class="writeup-desc">Learn about the essential tools for passive reconnaissance, such as whois, nslookup, and dig.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">whois</span>
+              
+              <span class="tag-pill">nslookup</span>
+              
+              <span class="tag-pill">dig</span>
+              
+              
+              <span class="tag-more">+3</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/PentestingFundamentals/README.html"
+           class="writeup-item"
+           data-name="pentesting fundamentals"
+           data-desc="learn the important ethics and methodologies behind every pentest"
+           data-tags="pentesting">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Pentesting Fundamentals</span>
+              
+              <span class="writeup-desc">Learn the important ethics and methodologies behind every pentest</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">pentesting</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/PrinciplesOfSecurity/README.html"
+           class="writeup-item"
+           data-name="principles of security"
+           data-desc="learn the principles of information security that secures data and protects systems from abuse"
+           data-tags="cia,priviliges">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Principles Of Security</span>
+              
+              <span class="writeup-desc">Learn the principles of information security that secures data and protects systems from abuse</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">cia</span>
+              
+              <span class="tag-pill">priviliges</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/NetworkSecurity/Protocols_and_Servers/README.html"
+           class="writeup-item"
+           data-name="protocols and servers"
+           data-desc="learn about common protocols such as http, ftp, pop3, smtp and imap, along with related insecurities."
+           data-tags="ftp,http,imap,pop3,smtp,telnet">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Protocols and Servers</span>
+              
+              <span class="writeup-desc">Learn about common protocols such as HTTP, FTP, POP3, SMTP and IMAP, along with related insecurities.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">ftp</span>
+              
+              <span class="tag-pill">http</span>
+              
+              <span class="tag-pill">imap</span>
+              
+              
+              <span class="tag-more">+3</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/NetworkSecurity/Protocols_and_Servers_2/README.html"
+           class="writeup-item"
+           data-name="protocols and servers 2"
+           data-desc="learn about attacks against passwords and cleartext traffic; explore options for mitigation via ssh and ssl/tls."
+           data-tags="hydra,mitm,ssh,tls,tcpdump">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Protocols and Servers 2</span>
+              
+              <span class="writeup-desc">Learn about attacks against passwords and cleartext traffic; explore options for mitigation via SSH and SSL/TLS.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">hydra</span>
+              
+              <span class="tag-pill">mitm</span>
+              
+              <span class="tag-pill">ssh</span>
+              
+              
+              <span class="tag-more">+2</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Cryptography/Public%20Key%20Cryptography%20Basics/README.html"
+           class="writeup-item"
+           data-name="public key cryptography basics"
+           data-desc="discover how public key ciphers such as rsa work and explore their role in applications such as ssh."
+           data-tags="rsa,dh,ssh,digitalsignature,pgp,gpg">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Public Key Cryptography Basics</span>
+              
+              <span class="writeup-desc">Discover how public key ciphers such as RSA work and explore their role in applications such as SSH.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">RSA</span>
+              
+              <span class="tag-pill">dh</span>
+              
+              <span class="tag-pill">ssh</span>
+              
+              
+              <span class="tag-more">+3</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Putting%20It%20All%20Together/README.html"
+           class="writeup-item"
+           data-name="putting it all together"
+           data-desc=""
+           data-tags="web">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Putting It All Together</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">web</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/PythonBasics/README.html"
+           class="writeup-item"
+           data-name="python basics"
+           data-desc="using a web-based code editor, learn the basics of python and put your knowledge into practice by eventually coding a short bitcoin investment project."
+           data-tags="python,programming">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Python Basics</span>
+              
+              <span class="writeup-desc">Using a web-based code editor, learn the basics of Python and put your knowledge into practice by eventually coding a short Bitcoin investment project.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">python</span>
+              
+              <span class="tag-pill">programming</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/REMnux%20-%20Getting%20Started/README.html"
+           class="writeup-item"
+           data-name="remnux getting started"
+           data-desc="learn how you can use the tools inside the remnux vm."
+           data-tags="staticanalysis,malware,reverseengineering,blueteam">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">REMnux Getting Started</span>
+              
+              <span class="writeup-desc">Learn how you can use the tools inside the REMnux VM.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">staticanalysis</span>
+              
+              <span class="tag-pill">malware</span>
+              
+              <span class="tag-pill">reverseengineering</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/REmux%20The%20Tmux/README.html"
+           class="writeup-item"
+           data-name="remux the tmux"
+           data-desc=""
+           data-tags="tmux">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">REmux The Tmux</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">tmux</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/RaceConditions/README.html"
+           class="writeup-item"
+           data-name="race conditions"
+           data-desc="learn about race conditions and how they affect web application security."
+           data-tags="racecondition">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Race Conditions</span>
+              
+              <span class="writeup-desc">Learn about race conditions and how they affect web application security.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">racecondition</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/SOC%20Fundamentals/README.html"
+           class="writeup-item"
+           data-name="soc fundamentals"
+           data-desc="learn about the soc team and their processes."
+           data-tags="blueteam,soc">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">SOC Fundamentals</span>
+              
+              <span class="writeup-desc">Learn about the SOC team and their processes.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">blueteam</span>
+              
+              <span class="tag-pill">soc</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Web%20Hacking/SQL%20Fundamentals/README.html"
+           class="writeup-item"
+           data-name="sql fundamentals"
+           data-desc="learn how to perform basic sql queries to retrieve and manage data in a database."
+           data-tags="sql,sqlinjection">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">SQL Fundamentals</span>
+              
+              <span class="writeup-desc">Learn how to perform basic SQL queries to retrieve and manage data in a database.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">sql</span>
+              
+              <span class="tag-pill">sqlinjection</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/SQL%20Injection/README.html"
+           class="writeup-item"
+           data-name="sql injection"
+           data-desc="learn how to detect and exploit sql injection vulnerabilities"
+           data-tags="sql,sqlinjection">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">SQL Injection</span>
+              
+              <span class="writeup-desc">Learn how to detect and exploit SQL Injection vulnerabilities</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">sql</span>
+              
+              <span class="tag-pill">sqlinjection</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Offensive%20Security%20Tooling/SQLMap%20-%20The%20Basics/README.html"
+           class="writeup-item"
+           data-name="sqlmap: the basics"
+           data-desc="learn about sql injection and exploit this vulnerability through the sqlmap tool."
+           data-tags="sqlmap">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">SQLMap: The Basics</span>
+              
+              <span class="writeup-desc">Learn about SQL injection and exploit this vulnerability through the SQLMap tool.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">sqlmap</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/SearchSkills/README.html"
+           class="writeup-item"
+           data-name="search skills"
+           data-desc="learn to efficiently search the internet and use specialized search engines and technical docs."
+           data-tags="web">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Search Skills</span>
+              
+              <span class="writeup-desc">Learn to efficiently search the Internet and use specialized search engines and technical docs.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">web</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Security%20Principles/README.html"
+           class="writeup-item"
+           data-name="security principles"
+           data-desc="learn about the security triad and common security models and principles."
+           data-tags="cia,dad,iso,zerotrust">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Security Principles</span>
+              
+              <span class="writeup-desc">Learn about the security triad and common security models and principles.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">cia</span>
+              
+              <span class="tag-pill">dad</span>
+              
+              <span class="tag-pill">iso</span>
+              
+              
+              <span class="tag-more">+1</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Offensive%20Security%20Tooling/Shells%20Overview/README.html"
+           class="writeup-item"
+           data-name="shells overview"
+           data-desc="learn about the different types of shells."
+           data-tags="">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Shells Overview</span>
+              
+              <span class="writeup-desc">Learn about the different types of shells.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill"></span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Intro%20to%20Web%20Hacking/Subdomain%20Enumeration/README.html"
+           class="writeup-item"
+           data-name="subdomain enumeration"
+           data-desc="learn the various ways of discovering subdomains to expand your attack surface of a target."
+           data-tags="osint,sublist3r">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Subdomain Enumeration</span>
+              
+              <span class="writeup-desc">Learn the various ways of discovering subdomains to expand your attack surface of a target.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">osint</span>
+              
+              <span class="tag-pill">sublist3r</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Tcpdump%20-%20The%20Basics/README.html"
+           class="writeup-item"
+           data-name="tcpdump the basics"
+           data-desc="learn how to use tcpdump to save, filter, and display packets."
+           data-tags="web,tcpdump">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Tcpdump The Basics</span>
+              
+              <span class="writeup-desc">Learn how to use Tcpdump to save, filter, and display packets.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">web</span>
+              
+              <span class="tag-pill">tcpdump</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/TheFindCommand/README.html"
+           class="writeup-item"
+           data-name="the find command"
+           data-desc="a learn-by-doing approach to the find command"
+           data-tags="linux,find">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">The Find Command</span>
+              
+              <span class="writeup-desc">A learn-by-doing approach to the find command</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">linux</span>
+              
+              <span class="tag-pill">find</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Training%20Impact%20on%20Teams/README.html"
+           class="writeup-item"
+           data-name="training impact on teams"
+           data-desc="discover the impact of training on teams and organisations."
+           data-tags="">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Training Impact on Teams</span>
+              
+              <span class="writeup-desc">Discover the impact of training on teams and organisations.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill"></span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+      
+        
+        <a href="/tryhackme/VulnerabilityResearch/Vulnerabilities_101/README.html"
+           class="writeup-item"
+           data-name="vulnerabilities 101"
+           data-desc="understand the flaws of an application and  apply your researching skills on some vulnerability databases."
+           data-tags="vulnerability,cvss,vpr,nvd,exploitdb">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Vulnerabilities 101</span>
+              
+              <span class="writeup-desc">Understand the flaws of an application and  apply your researching skills on some vulnerability databases.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">vulnerability</span>
+              
+              <span class="tag-pill">cvss</span>
+              
+              <span class="tag-pill">vpr</span>
+              
+              
+              <span class="tag-more">+2</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/VulnerabilityResearch/VulnerabilityCapstone/README.html"
+           class="writeup-item"
+           data-name="vulnerability capstone"
+           data-desc="apply the knowledge gained throughout the vulnerability module in this challenge room."
+           data-tags="ctf,searchsploit">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Vulnerability Capstone</span>
+              
+              <span class="writeup-desc">Apply the knowledge gained throughout the Vulnerability Module in this challenge room.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">ctf</span>
+              
+              <span class="tag-pill">searchsploit</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Security%20Solutions/Vulnerability%20Scanner%20Overview/README.html"
+           class="writeup-item"
+           data-name="vulnerability scanner overview"
+           data-desc="learn about vulnerability scanners and how they work in a practical scenario."
+           data-tags="cve,cvss,openvas">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Vulnerability Scanner Overview</span>
+              
+              <span class="writeup-desc">Learn about vulnerability scanners and how they work in a practical scenario.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">cve</span>
+              
+              <span class="tag-pill">cvss</span>
+              
+              <span class="tag-pill">openvas</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Vulnversity/README.html"
+           class="writeup-item"
+           data-name="vulnversity"
+           data-desc="learn about active recon, web app attacks and privilege escalation."
+           data-tags="nmap,gobuster,privilegeescalation,systemctl,exploit">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Vulnversity</span>
+              
+              <span class="writeup-desc">Learn about active recon, web app attacks and privilege escalation.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">nmap</span>
+              
+              <span class="tag-pill">gobuster</span>
+              
+              <span class="tag-pill">privilegeescalation</span>
+              
+              
+              <span class="tag-more">+2</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/WalkingAnApplication/README.html"
+           class="writeup-item"
+           data-name="walking an application"
+           data-desc="manually review a web application for security issues using only your browsers developer tools. hacking with just your browser, no tools or scripts."
+           data-tags="web">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Walking An Application</span>
+              
+              <span class="writeup-desc">Manually review a web application for security issues using only your browsers developer tools. Hacking with just your browser, no tools or scripts.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">web</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Web%20Hacking/Web%20Application%20Basics/README.html"
+           class="writeup-item"
+           data-name="web application basics"
+           data-desc="learn the basics of web applications: http, urls, request methods, response codes, and headers."
+           data-tags="web">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Web Application Basics</span>
+              
+              <span class="writeup-desc">Learn the basics of web applications: HTTP, URLs, request methods, response codes, and headers.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">web</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/IntroToOffensiveSecurity/WebApplicationSecurity/README.html"
+           class="writeup-item"
+           data-name="web application security"
+           data-desc=""
+           data-tags="#webserver,idor">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Web Application Security</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">#webserver</span>
+              
+              <span class="tag-pill">idor</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/WebFundamentals/README.html"
+           class="writeup-item"
+           data-name="web fundamentals"
+           data-desc="learn how the web works!"
+           data-tags="web">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Web Fundamentals</span>
+              
+              <span class="writeup-desc">Learn how the web works!</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">web</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/WhatIsNetworking/README.html"
+           class="writeup-item"
+           data-name="what is networking"
+           data-desc="what is networking?"
+           data-tags="networking,web,ping">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">What Is Networking</span>
+              
+              <span class="writeup-desc">What is networking?</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">networking</span>
+              
+              <span class="tag-pill">web</span>
+              
+              <span class="tag-pill">ping</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/PrivilegeEscalation/WhattheShell?/README.html"
+           class="writeup-item"
+           data-name="what the shell?"
+           data-desc="an introduction to sending and receiving (reverse/bind) shells when exploiting target machines."
+           data-tags="netcat,metasploit,msfvenom,socat,privesc,windows">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">What the Shell?</span>
+              
+              <span class="writeup-desc">An introduction to sending and receiving (reverse/bind) shells when exploiting target machines.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">netcat</span>
+              
+              <span class="tag-pill">metasploit</span>
+              
+              <span class="tag-pill">msfvenom</span>
+              
+              
+              <span class="tag-more">+3</span>
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/WindowsCommandLine/README.html"
+           class="writeup-item"
+           data-name="windows command line"
+           data-desc="learn the essential windows commands"
+           data-tags="windows,cmd">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Windows Command Line</span>
+              
+              <span class="writeup-desc">Learn the essential Windows commands</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">windows</span>
+              
+              <span class="tag-pill">cmd</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/WindowsFundamentals1/README.html"
+           class="writeup-item"
+           data-name="windows fundamentals 1"
+           data-desc="in part 1 of the windows fundamentals module, we&#39;ll start our journey learning about the windows desktop, the ntfs file system, uac, the control panel, and more."
+           data-tags="windows">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Windows Fundamentals 1</span>
+              
+              <span class="writeup-desc">In part 1 of the Windows Fundamentals module, we'll start our journey learning about the Windows desktop, the NTFS file system, UAC, the Control Panel, and more.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">windows</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/WindowsFundamentals2/README.html"
+           class="writeup-item"
+           data-name="windows fundamentals 2"
+           data-desc="in part 2 of the windows fundamentals module, discover more about system configuration, uac settings, resource monitoring, the windows registry and more."
+           data-tags="windows">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Windows Fundamentals 2</span>
+              
+              <span class="writeup-desc">In part 2 of the Windows Fundamentals module, discover more about System Configuration, UAC Settings, Resource Monitoring, the Windows Registry and more.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">windows</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/WindowsFundamentals3/README.html"
+           class="writeup-item"
+           data-name="windows fundamentals 3"
+           data-desc="in part 3 of the windows fundamentals module, learn about the built-in microsoft tools that help keep the device secure, such as windows updates, windows security, bitlocker, and more..."
+           data-tags="windows">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Windows Fundamentals 3</span>
+              
+              <span class="writeup-desc">In part 3 of the Windows Fundamentals module, learn about the built-in Microsoft tools that help keep the device secure, such as Windows Updates, Windows Security, BitLocker, and more...</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">windows</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/WindowsPowershell/README.html"
+           class="writeup-item"
+           data-name="windows powershell"
+           data-desc="discover the &quot;power&quot; in powershell and learn the basics."
+           data-tags="windows,powershell">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Windows Powershell</span>
+              
+              <span class="writeup-desc">Discover the "Power" in PowerShell and learn the basics.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">windows</span>
+              
+              <span class="tag-pill">powershell</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/PrivilegeEscalation/WindowsPrivilegeEscalation/README.html"
+           class="writeup-item"
+           data-name="windows privilege escalation"
+           data-desc="learn the fundamentals of windows privilege escalation techniques."
+           data-tags="windows,privesc">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Windows Privilege Escalation</span>
+              
+              <span class="writeup-desc">Learn the fundamentals of Windows privilege escalation techniques.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">windows</span>
+              
+              <span class="tag-pill">privesc</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Wireshark%20-%20The%20Basics/README.html"
+           class="writeup-item"
+           data-name="wireshark the basics"
+           data-desc="learn the basics of wireshark and how to analyse protocols and pcaps."
+           data-tags="wireshark,networking">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Wireshark The Basics</span>
+              
+              <span class="writeup-desc">Learn the basics of Wireshark and how to analyse protocols and PCAPs.</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">wireshark</span>
+              
+              <span class="tag-pill">networking</span>
+              
+              
+            
+          </div>
+        </a>
+        
+      
+        
+        <a href="/tryhackme/Yara/README.html"
+           class="writeup-item"
+           data-name="yara"
+           data-desc="learn the applications and language that is yara for everything threat intelligence, forensics, and threat hunting!"
+           data-tags="yara,loki,thor,fenrir,yaya,yargen,valhalla">
+          <div class="writeup-item-left">
+            <span class="writeup-arrow">▸</span>
+            <div class="writeup-info">
+              <span class="writeup-name">Yara</span>
+              
+              <span class="writeup-desc">Learn the applications and language that is Yara for everything threat intelligence, forensics, and threat hunting!</span>
+              
+            </div>
+          </div>
+          <div class="writeup-item-right">
+            
+              
+              
+              
+              <span class="tag-pill">yara</span>
+              
+              <span class="tag-pill">loki</span>
+              
+              <span class="tag-pill">thor</span>
+              
+              
+              <span class="tag-more">+4</span>
+              
+            
+          </div>
+        </a>
+        
+      
+    </div>
+
+    <!-- No results -->
+    <div class="no-results" id="noResults" style="display:none;">
+      <span class="prompt">george@kali:~$</span> grep: no matches found
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://linkedin.com/in/george-nadejde" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const items = Array.from(document.querySelectorAll('.writeup-item'));
+  const searchInput = document.getElementById('searchInput');
+  const noResults = document.getElementById('noResults');
+  const shownCount = document.getElementById('shownCount');
+  const totalCount = document.getElementById('totalCount');
+  const tagBtns = document.querySelectorAll('.tag-btn');
+
+  let activeTag = 'all';
+  let searchQuery = '';
+
+  // Full-text search index (loaded async)
+  let searchIndex = null; // array of { title, url, description, tags, content }
+  // Map from url -> content string for fast lookup
+  let contentMap = {};
+
+  totalCount.textContent = items.length;
+  shownCount.textContent = items.length;
+
+  // Load the full-text search index
+  fetch('/tryhackme/search-index.json')
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data) return;
+      searchIndex = data;
+      data.forEach(entry => {
+        // Normalise the URL to match how items store their href
+        const key = entry.url.replace(/\/$/, '');
+        contentMap[key] = (entry.content || '').toLowerCase();
+      });
+    })
+    .catch(() => { /* graceful degradation — title-only search still works */ });
+
+  function itemMatchesSearch(item) {
+    if (!searchQuery) return true;
+    const name = item.dataset.name || '';
+    const desc = item.dataset.desc || '';
+    // Title / description match (fast, no fetch needed)
+    if (name.includes(searchQuery) || desc.includes(searchQuery)) return true;
+    // Full-text match via index
+    if (searchIndex) {
+      const href = (item.getAttribute('href') || '').replace(/\/$/, '');
+      const body = contentMap[href] || '';
+      if (body.includes(searchQuery)) return true;
+    }
+    return false;
+  }
+
+  function filterItems() {
+    let visible = 0;
+    items.forEach(item => {
+      const tags = item.dataset.tags || '';
+      const matchesSearch = itemMatchesSearch(item);
+      const matchesTag = activeTag === 'all' || tags.split(',').includes(activeTag);
+      const show = matchesSearch && matchesTag;
+      item.style.display = show ? 'flex' : 'none';
+      if (show) visible++;
+    });
+    shownCount.textContent = visible;
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value.toLowerCase().trim();
+    filterItems();
+  });
+
+  tagBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tagBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTag = btn.dataset.tag;
+      filterItems();
+    });
+  });
+
+  const tagList = document.getElementById('tagList');
+  const tagExpandBtn = document.getElementById('tagExpandBtn');
+  const tagExpandLabel = document.getElementById('tagExpandLabel');
+
+  tagExpandBtn.addEventListener('click', () => {
+    const isExpanded = tagList.classList.toggle('expanded');
+    tagExpandLabel.textContent = isExpanded ? 'show less ↑' : 'show more ↓';
+  });
+</script>
+
+</body>
+</html>

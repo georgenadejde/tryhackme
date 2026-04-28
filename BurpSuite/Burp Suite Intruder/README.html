@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burp Suite Intruder · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to use Intruder to automate requests in Burp Suite." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Burp Suite Intruder</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">BurpSuite/Burp Suite Intruder/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">burpsuite</span>
+          
+          <span class="tag-pill">burp</span>
+          
+          <span class="tag-pill">intruder</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to use Intruder to automate requests in Burp Suite.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="burp-suite-intruder"><a href="https://tryhackme.com/room/burpsuiteintruder">Burp Suite: Intruder</a></h1>
+
+<h2 id="what-is-intruder">What is Intruder</h2>
+
+<p>Intruder is Burp Suit’s built-in fuzzing tool that allows for automated request modification and repetitive testing with variations in input values. By using a captured request (often from the Proxy module), Intruder can send multiple requests with slightly altered values based on user-defined configurations. It serves various purposes, such as brute-forcing login forms by substituting username and password fields with values from a wordlist or performing fuzzing attacks using wordlists to test subdirectories, endpoints, or virtual hosts. Intruder’s functionality is comparable to command-line tools like <strong>Wfuzz</strong> or <strong>ffuf</strong>.</p>
+
+<p>However, it’s important to note that while Intruder can be used with Burp Community Edition, it is rate-limited, significantly reducing its speed compared to Burp Professional. This limitation often leads security practitioners to rely on other tools for fuzzing and brute-forcing. Nonetheless, Intruder remains a valuable tool and is worth learning how to use it effectively.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2b2a10c651bee6531f8dbeb5e32733e8.png" alt="Showing the intruder interface" /></p>
+
+<p>The initial view of Intruder presents a simple interface where we can select our target. This field will already be populated if a request has been sent from the Proxy (using <code class="language-plaintext highlighter-rouge">Ctrl + I</code> or right-clicking and selecting “Send to Intruder”).</p>
+
+<p>There are four sub-tabs within Intruder:</p>
+
+<ul>
+  <li>
+    <p><strong>Positions</strong>: This tab allows us to select an attack type (which we will cover in a future task) and configure where we want to insert our payloads in the request template.</p>
+  </li>
+  <li>
+    <p><strong>Payloads</strong>: Here we can select values to insert into the positions defined in the <strong>Positions</strong> tab. We have various payload options, such as loading items from a wordlist. The way these payloads are inserted into the template depends on the attack type chosen in the <strong>Positions</strong> tab. The <strong>Payloads</strong> tab also enables us to modify Intruder’s behavior regarding payloads, such as defining pre-processing rules for each payload (e.g., adding a prefix or suffix, performing match and replace, or skipping payloads based on a defined regex).</p>
+  </li>
+  <li>
+    <p><strong>Resource Pool</strong>: This tab is not particularly useful in the Burp Community Edition. It allows for resource allocation among various automated tasks in Burp Professional. Without access to these automated tasks, this tab is of limited importance.</p>
+  </li>
+  <li>
+    <p><strong>Settings</strong>: This tab allows us to configure attack behavior. It primarily deals with how Burp handles results and the attack itself. For instance, we can flag requests containing specific text or define Burp’s response to redirect (3xx) responses.</p>
+  </li>
+</ul>
+
+<p><strong>Note:</strong> The term “fuzzing” refers to the process of testing functionality or existence by applying a set of data to a parameter. For example, fuzzing for endpoints in a web application involves taking each word in a wordlist and appending it to a request URL (e.g., <code class="language-plaintext highlighter-rouge">http://MACHINE_IP/WORD_GOES_HERE</code>) to observe the server’s response.</p>
+<h3 id="questions">Questions</h3>
+
+<p>Q: In which Intruder tab can we define the “Attack type” for our planned attack?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Positions</code></p>
+
+<h2 id="positions">Positions</h2>
+
+<p>When using Intruder to perform an attack, the first step is to examine the positions within the request where we want to insert our payloads. These positions inform Intruder about the locations where our payloads will be introduced (as we will explore in upcoming tasks).</p>
+
+<p>Let’s navigate to the Positions tab:</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/1372bbafab835e10806ee6beb6681f36.png" alt="Showing the positions tab" /></p>
+
+<p>Notice that Burp Suite automatically attempts to identify the most probable positions where payloads can be inserted. These positions are highlighted in green and enclosed by section marks (<code class="language-plaintext highlighter-rouge">§</code>).</p>
+
+<p>On the right-hand side of the interface, we find the following buttons: <code class="language-plaintext highlighter-rouge">Add §</code>, <code class="language-plaintext highlighter-rouge">Clear §</code>, and <code class="language-plaintext highlighter-rouge">Auto §</code>:</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">Add §</code> button allows us to define new positions manually by highlighting them within the request editor and then clicking the button.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">Clear §</code> button removes all defined positions, providing a blank canvas where we can define our own positions.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">Auto §</code> button automatically attempts to identify the most likely positions based on the request. This feature is helpful if we previously cleared the default positions and want them back.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: What symbol defines the start and the end of a payload position?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">§</code></p>
+
+<h2 id="payloads">Payloads</h2>
+
+<p>Here, we can create, assign, and configure payloads for our attack. This sub-tab is divided into four sections:</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/f049dff9e1172b76c0f81ad4771b012d.png" alt="Payloads sub-tab divided into four sections" /></p>
+
+<ol>
+  <li><strong>Payload Sets</strong>:
+    <ul>
+      <li>This section allows us to choose the position for which we want to configure a payload set and select the type of payload we want to use.</li>
+      <li>When using attack types that allow only a single payload set (Sniper or Battering Ram ), the “Payload Set” dropdown will have only one option, regardless of the number of defined positions.</li>
+      <li>If we use attack types that require multiple payload sets (Pitchfork or Cluster Bomb), there will be one item in the dropdown for each position.</li>
+      <li><strong>Note:</strong> When assigning numbers in the “Payload Set” dropdown for multiple positions, follow a top-to-bottom, left-to-right order. For example, with two positions (<code class="language-plaintext highlighter-rouge">username=§pentester§&amp;password=§Expl01ted§</code>), the first item in the payload set dropdown would refer to the username field, and the second item would refer to the password field.</li>
+    </ul>
+  </li>
+  <li><strong>Payload settings</strong>:
+    <ul>
+      <li>This section provides options specific to the selected payload type for the current payload set.</li>
+      <li>For example, when using the “Simple list” payload type, we can manually add or remove payloads to/from the set using the <strong>Add</strong> text box, <strong>Paste</strong> lines, or <strong>Load</strong> payloads from a file. The <strong>Remove</strong> button removes the currently selected line, and the <strong>Clear</strong> button clears the entire list. Be cautious with loading huge lists, as it may cause Burp to crash.</li>
+      <li>
+        <p>Each payload type will have its own set of options and functionality. Explore the options available to understand the range of possibilities.</p>
+
+        <p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/722a734ac5dd6437211504d3bc7bb6c2.png" alt="Available options" /></p>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Payload Processing</strong>:
+    <ul>
+      <li>In this section, we can define rules to be applied to each payload in the set before it is sent to the target.</li>
+      <li>For example, we can capitalize every word, skip payloads that match a regex pattern, or apply other transformations or filtering.</li>
+      <li>While you may not use this section frequently, it can be highly valuable when specific payload processing is required for your attack.</li>
+    </ul>
+  </li>
+  <li><strong>Payload Encoding</strong>:
+    <ul>
+      <li>The section allows us to customize the encoding options for our payloads.</li>
+      <li>By default, Burp applies URL encoding to ensure the safe transmission of payloads. However, there may be cases where we want to adjust the encoding behavior.</li>
+      <li>We can override the default URL encoding options by modifying the list of characters to be encoded or unchecking the “URL-encode these characters” checkbox.</li>
+    </ul>
+  </li>
+</ol>
+
+<p>By leveraging these sections, we can create and customise payload sets to suit the specific requirements of our attacks. This level of control allows us to finely tune our payloads for effective testing and exploitation.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Which Payload processing rule could we use to add characters at the end of each payload in the set?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Add suffix</code></p>
+
+<h2 id="introduction-to-attack-types">Introduction to Attack Types</h2>
+
+<p>Intruder offers four attack types, each serving a specific purpose. Let’s explore each of them:</p>
+
+<ol>
+  <li>
+    <p><strong>Sniper</strong>: The Sniper attack type is the default and most commonly used option. It cycles through the payloads, inserting one payload at a time into each position defined in the request. Sniper attacks iterate through all the payloads in a linear fashion, allowing for precise and focused testing.</p>
+  </li>
+  <li>
+    <p><strong>Battering</strong> <strong>Ram</strong>: The Battering-Ram attack type differs from Sniper in that it sends all payloads simultaneously, each payload inserted into its respective position. This attack type is useful when testing for race conditions or when payloads need to be sent concurrently.</p>
+  </li>
+  <li>
+    <p><strong>Pitchfork</strong>: The Pitchfork attack type enables the simultaneous testing of multiple positions with different payloads. It allows the tester to define multiple payload sets, each associated with a specific position in the request. Pitchfork attacks are effective when there are distinct parameters that need separate testing.</p>
+  </li>
+  <li>
+    <p><strong>Cluster bomb</strong>: The Cluster bomb attack type combines the Sniper and Pitchfork approaches. It performs a Sniper-like attack on each position but simultaneously tests all payloads from each set. This attack type is useful when multiple positions have different payloads, and we want to test them all together.</p>
+  </li>
+</ol>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: What attack type cycles through the payloads inserting one payload at a time into each position defined in the request?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Sniper</code></p>
+
+<h2 id="sniper">Sniper</h2>
+
+<p>It is particularly effective for single-position attacks, such as password brute-force or fuzzing for API endpoints. In a Sniper attack, we provide a set of payloads, which can be a wordlist or a range of numbers, and Intruder inserts each payload into each defined position in the request.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-13.jpg" alt="" /></p>
+
+<p>Observe how Intruder starts with the first position (<code class="language-plaintext highlighter-rouge">username</code>) and substitutes each payload into it, then moves to the second position (<code class="language-plaintext highlighter-rouge">password</code>) and performs the same substitution with the payloads. The total number of requests made by Intruder Sniper can be calculated as <code class="language-plaintext highlighter-rouge">requests = numberOfWords * numberOfPositions</code>.</p>
+
+<p>The Sniper attack type is beneficial when we want to perform tests with single-position attacks, utilizing different payloads for each position. It allows for precise testing and analysis of different payload variations.</p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: If you were using Sniper to fuzz three parameters in a request with a wordlist containing 100 words, how many requests would Burp Suite need to send to complete the attack?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">300</code></p>
+
+<p>Q: How many sets of payloads will Sniper accept for conducting an attack?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">1</code></p>
+
+<h2 id="battering-ram">Battering Ram</h2>
+
+<p>The <strong>Battering</strong> Ram attack type in Intruder differs from Sniper in that it places the same payload in every position simultaneously, rather than substituting each payload into each position in turn.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-15.jpg" alt="" /></p>
+
+<p>The Battering Ram attack type is useful when we want to test the same payload against multiple positions at once without the need for sequential substitution.</p>
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: As a hypothetical question: You need to perform a Battering ram Intruder attack on the example request above.If you have a wordlist with two words in it (admin and Guest) and the positions in the request template look like this:username=§pentester§&amp;password=§Expl01ted§What would the body parameters of the first request that Burp Suite sends be?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">username=admin&amp;password=admin</code></p>
+
+<h2 id="pitchfork">Pitchfork</h2>
+
+<p>The <strong>Pitchfork</strong> attack type in Intruder is similar to having multiple Sniper attacks running simultaneously. While Sniper uses one payload set to test all positions simultaneously, Pitchfork utilises one payload set per position (up to a maximum of 20) and iterates through them all simultaneously.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-18.jpg" alt="" /></p>
+
+<p>Pitchfork takes the first item from each list and substitutes them into the request, one per position. It then repeats this process for the next request by taking the second item from each list and substituting it into the template. Intruder continues this iteration until one or all of the lists run out of items. It’s important to note that Intruder stops testing as soon as one of the lists is complete. Therefore, in Pitchfork attacks, it is ideal for the payload sets to have the same length. If the lengths of the payload sets differ, Intruder will only make requests until the shorter list is exhausted, and the remaining items in the longer list will not be tested.</p>
+
+<p>The Pitchfork attack type is especially useful when conducting credential-stuffing attacks or when multiple positions require separate payload sets. It allows for simultaneous testing of multiple positions with different payloads.</p>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>Q: What is the maximum number of payload sets we can load into Intruder in Pitchfork mode?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">20</code></p>
+
+<h2 id="cluster-bomb">Cluster Bomb</h2>
+
+<p>The <strong>Cluster bomb</strong> attack type in Intruder allows us to choose multiple payload sets, one per position (up to a maximum of 20). Unlike Pitchfork, where all payload sets are tested simultaneously, Cluster bomb iterates through each payload set individually, ensuring that every possible combination of payloads is tested.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-22.jpg" alt="" /></p>
+
+<p>the Cluster bomb attack type iterates through every combination of the provided payload sets. It tests every possibility by substituting each value from each payload set into the corresponding position in the request.</p>
+
+<p>Cluster bomb attacks can generate a significant amount of traffic as it tests every combination. The number of requests made by a Cluster bomb attack can be calculated by multiplying the number of lines in each payload set together. It’s important to be cautious when using this attack type, especially when dealing with large payload sets. Additionally, when using Burp Community and its Intruder rate-limiting, the execution of a Cluster bomb attack with a moderately sized payload set can take a significantly longer time.</p>
+
+<p>The Cluster bomb attack type is particularly useful for credential brute-forcing scenarios where the mapping between usernames and passwords is unknown.</p>
+<h3 id="questions-7">Questions</h3>
+
+<p>Q: We have three payload sets. The first set contains 100 lines, the second contains 2 lines, and the third contains 30 lines.How many requests will Intruder make using these payload sets in a Cluster bomb attack?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">6000</code></p>
+
+<h2 id="practical-example">Practical Example</h2>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-30.jpg" alt="" /></p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-34.jpg" alt="" /></p>
+<h3 id="questions-8">Questions</h3>
+
+<p>Q: What username and password combination indicates a successful login attempt? The answer format is “username:password”.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">m.rivera:letmein1</code></p>
+
+<h2 id="practical-challenge">Practical Challenge</h2>
+
+<p>Upon accessing the home interface, we are presented with a table displaying various tickets. Clicking on any row redirects us to a page where we can view the complete ticket. By examining the URL structure, we observe that these pages are numbered in the following format:</p>
+
+<p><code class="language-plaintext highlighter-rouge">http://10.128.138.111/support/ticket/NUMBER</code></p>
+
+<p>The numbering system indicates that the tickets are assigned integer identifiers rather than complex and hard-to-guess IDs. This information is significant because it suggests two possible scenarios:</p>
+
+<ol>
+  <li>
+    <p><strong>Access Control</strong>: The endpoint may be properly configured to restrict access only to tickets assigned to our current user. In this case, we can only view tickets associated with our account.</p>
+  </li>
+  <li>
+    <p><strong>IDOR Vulnerability</strong>: Alternatively, the endpoint may lack appropriate access controls, leading to a vulnerability known as <strong>Insecure Direct Object References</strong> (IDOR). If this is the case, we could potentially exploit the system and read all existing tickets, regardless of the assigned user.</p>
+  </li>
+</ol>
+
+<p>To investigate further, we will utilize the Intruder tool to fuzz the <code class="language-plaintext highlighter-rouge">/support/ticket/NUMBER</code> endpoint. This approach will help us determine whether the endpoint has been correctly configured or if an IDOR vulnerability is present.</p>
+
+<h3 id="questions-9">Questions</h3>
+
+<p>We log in using the credentials found in the previous task.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-38.jpg" alt="" /></p>
+
+<p>Q: Which attack type is best suited for this task?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Sniper</code></p>
+
+<p>Q: Configure an appropriate position and payload (the tickets are stored at values between 1 and 100), then start the attack.You should find that at least five tickets will be returned with a status code 200, indicating that they exist.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-40.jpg" alt="" /></p>
+
+<p>Q: Either using the Response tab in the Attack Results window or by looking at each successful (i.e. 200 code) request manually in your browser, find the ticket that contains the flag.What is the flag?</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-44.jpg" alt="" /></p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-45.jpg" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{MTMxNTg5NTUzMWM0OWRlYzUzMDVjMzJl}</code></p>
+
+<h2 id="extra-mile-challenge">Extra Mile Challenge</h2>
+
+<p>Begin by capturing a request to <code class="language-plaintext highlighter-rouge">http://&lt;IP&gt;/admin/login/</code> and reviewing the response. Here is an example of the response:.</p>
+
+<p>In this response, we notice that alongside the username and password fields, there is now a session cookie set, as well as a CSRF (<strong>Cross-Site Request Forgery</strong>) token in the form as a hidden field. Refreshing the page reveals that both the <strong>session</strong> cookie and the <strong>loginToken</strong> change with each request. This means that for every login attempt, we need to extract valid values for both the session cookie and the loginToken.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-48-1.jpg" alt="" /></p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-48.jpg" alt="" /></p>
+
+<p>To accomplish this, we will use <strong>Burp Macros</strong> to define a repeated set of actions (macro) to be executed before each request. This macro will extract unique values for the session cookie and loginToken, replacing them in every subsequent request of our attack.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_10-50.jpg" alt="" /></p>
+
+<p>With the username and password parameters handled, we now need to find a way to grab the ever-changing loginToken and session cookie. Unfortunately, “recursive grep” won’t work here due to the redirect response, so we can’t do this entirely within Intruder – we will need to build a macro.</p>
+
+<p>Macros allow us to perform the same set of actions repeatedly. In this case, we simply want to send a GET request to <code class="language-plaintext highlighter-rouge">/admin/login/</code>.</p>
+
+<p>Fortunately, setting this up is a straightforward process.</p>
+
+<ul>
+  <li>Switch over to the main “Settings” tab at the top-right of Burp.</li>
+  <li>Click on the “Sessions” category.</li>
+  <li>Scroll down to the bottom of the category to the “Macros” section and click the <strong>Add</strong> button.</li>
+  <li>The menu that appears will show us our request history. If there isn’t a GET request to <code class="language-plaintext highlighter-rouge">http://10.128.138.111/admin/login/</code> in the list already, navigate to this location in your browser, and you should see a suitable request appear in the list.</li>
+  <li>With the request selected, click <strong>OK</strong>.</li>
+  <li>Finally, give the macro a suitable name, then click <strong>OK</strong> again to finish the process.</li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_11-00.jpg" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Now that we have a macro defined, we need to set Session Handling rules that define how the macro should be used.</p>
+
+    <ul>
+      <li>Still in the “Sessions” category of the main settings, scroll up to the “Session Handling Rules” section and choose to <strong>Add</strong> a new rule.</li>
+      <li>A new window will pop up with two tabs in it: “Details” and “Scope”. We are in the Details tab by default.</li>
+    </ul>
+
+    <p><img src="https://assets.muirlandoracle.co.uk/thm/modules/burp/38ceffeebf99.png" alt="Window showing the details and scope" /></p>
+
+    <ul>
+      <li>Fill in an appropriate description, then switch to the Scope tab.</li>
+      <li>In the “Tools Scope” section, deselect every checkbox other than Intruder – we do not need this rule to apply anywhere else.</li>
+      <li>
+        <p>In the “URL Scope” section, choose “Use suite scope”; this will set the macro to only operate on sites that have been added to the global scope (as was discussed in <a href="https://tryhackme.com/room/burpsuitebasics">Burp Basics</a>). If you have not set a global scope, keep the “Use custom scope” option as default and add <code class="language-plaintext highlighter-rouge">http://&lt;IP&gt;/</code> to the scope in this section.</p>
+
+        <p><img src="https://assets.muirlandoracle.co.uk/thm/modules/burp/4d3fc6d19a12.png" alt="Change the URL scope" /></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Now we need to switch back over to the Details tab and look at the “Rule Actions” section.</p>
+
+    <ul>
+      <li>Click the <strong>Add</strong> button – this will cause a dropdown menu to appear with a list of actions we can add.</li>
+      <li>Select “Run a Macro” from this list.</li>
+      <li>In the new window that appears, select the macro we created earlier.</li>
+    </ul>
+
+    <p>As it stands, this macro will now overwrite all of the parameters in our Intruder requests before we send them; this is great, as it means that we will get the loginTokens and session cookies added straight into our requests. That said, we should restrict which parameters and cookies are being updated before we start our attack:</p>
+
+    <ul>
+      <li>Select “Update only the following parameters and headers”, then click the <strong>Edit</strong> button next to the input box below the radio button.</li>
+      <li>In the “Enter a new item” text field, type “loginToken”. Press <strong>Add</strong>, then <strong>Close</strong>.</li>
+      <li>Select “Update only the following cookies”, then click the relevant <strong>Edit</strong> button.</li>
+      <li>Enter “session” in the “Enter a new item” text field. Press <strong>Add</strong>, then <strong>Close</strong>.</li>
+      <li>Finally, press <strong>OK</strong> to confirm our action.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_11-04.jpg" alt="" /></p>
+
+<h3 id="questions-10">Questions</h3>
+
+<p>Q: What username and password combination indicates a successful login attempt? The answer format is “username:password”.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Intruder/2026-03-23_11-08.jpg" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">o.bennett:bella1</code></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<h3 id="questions-11">Questions</h3>
+
+<p>Q: I can use Intruder!</p>
+
+<p>A: ``</p>
+
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

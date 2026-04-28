@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intro to SIEM · THM Writeups</title>
+  
+  <meta name="description" content="Learn the fundamentals of SIEM and explore its features and functionality." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Intro to SIEM</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Security Solutions/Intro to SIEM/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">siem</span>
+          
+          <span class="tag-pill">logs</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn the fundamentals of SIEM and explore its features and functionality.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="intro-to-siem"><a href="https://tryhackme.com/room/introtosiem">Intro to SIEM</a></h1>
+
+<h2 id="logs-everywhere-answers-nowhere">Logs Everywhere, Answers Nowhere</h2>
+
+<p>Security Information and Event Management system (SIEM) is the core security solution that a SOC analyst uses in the security operations center.</p>
+
+<h3 id="logs-everywhere">Logs Everywhere</h3>
+
+<p>Multiple devices in a network communicate with each other and, most of the time, with the Internet through a router. The image below shows an example of a simple network that comprises multiple Linux/Windows-based Endpoints, one data server, and one website.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Intro%20to%20SIEM/41df28fd5cb0b3f4f8ee8616ed315d94.png" alt="A network diagram showing multiple servers and workstations." /></p>
+
+<p>These devices continuously generate logs of the activities that occur within them. We can also call these devices log sources. The logs they generate serve as a trail of all the activities and are extremely helpful for identifying malicious activities or general troubleshooting. These log sources are mainly divided into two categories</p>
+
+<h3 id="1-host-centric-log-sources">1) Host-Centric Log Sources</h3>
+
+<p>These log sources capture events that occurred within or related to the host. Devices that generate host-centric logs include Windows, Linux, servers, etc. Some examples of host-centric logs are:</p>
+
+<ul>
+  <li>A user accessing a file</li>
+  <li>A user attempting to authenticate.</li>
+  <li>A process execution activity</li>
+  <li>A process adding/editing/deleting a registry key or value.</li>
+  <li>PowerShell execution</li>
+</ul>
+
+<h3 id="2-network-centric-log-sources">2) Network-Centric Log Sources</h3>
+
+<p>Network-related logs are generated when the hosts communicate with each other or access the internet to visit a website. Devices that generate network-centric logs are firewalls, IDS/IPS, routers, etc. Some examples of network-centric logs are:</p>
+
+<ul>
+  <li>SSH connection</li>
+  <li>A file being accessed via FTP</li>
+  <li>Web traffic</li>
+  <li>A user accessing the company’s resources through VPN.</li>
+  <li>Network file sharing Activity</li>
+</ul>
+
+<p>Together, these host-centric and network-centric log sources constantly create numerous logs in a network.</p>
+
+<h3 id="answers-nowhere">Answers Nowhere</h3>
+
+<p>Until now, it seems pretty straightforward that these log sources generate logs, we analyze them, and identify malicious activities. However, it’s not that simple. It has some challenges. Some of them are discussed below:</p>
+
+<ul>
+  <li>
+    <p><strong>Numerous Log Sources</strong> A network has many log sources, which generate hundreds of events per second. These logs are scattered across different devices, and examining the logs on each device one by one in case of an incident can be tedious.</p>
+  </li>
+  <li>
+    <p><strong>No Centralization</strong> As logs reside on the machines on which they are generated,  you may need to connect with each log source via SSH, RDP, etc., to analyze logs from multiple log sources. This is very inefficient and can waste a lot of your valuable time during the investigations.</p>
+  </li>
+  <li>
+    <p><strong>Limited Context</strong> Individual logs cannot tell the whole story of an activity. During any incident, the individual activities on different log sources may seem harmless. But if these logs are correlated, they can indicate a whole different story. For instance, you observed a file access event in a system, which is generally normal activity. However, if you correlate different log sources, you might come to know that this file was accessed by a user who accessed this machine through lateral movement after compromising another machine in the network.</p>
+  </li>
+  <li>
+    <p><strong>Limited Analysis</strong> The log sources generate numerous logs per second, and analyzing all the logs from all the devices manually to identify any abnormal activity is nearly impossible for humans. Realistically, the analysts will miss a lot of important logs in between the analyses due to their huge number.</p>
+  </li>
+  <li>
+    <p><strong>Format Issues</strong> Different log sources generate logs in various formats. Analysts need to know all these formats to analyze them, which can be extremely difficult, especially when dealing with numerous log sources in a network.</p>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Is Registry-related activity host-centric or network-centric?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">host-centric</code></p>
+
+<p>Q: Is VPN-related activity host-centric or network-centric?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">network-centric</code></p>
+
+<h2 id="why-siem">Why SIEM?</h2>
+
+<p>Security Information and Event Management (SIEM) is a security solution that collects logs from various types of log sources, standardizes their format into a consistent one, correlates them, and detects malicious activities using detection rules.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Intro%20to%20SIEM/63724f4da84dd3cfbaf2937790910e20.png" alt="Features of SIEM solution." /></p>
+
+<h3 id="features-of-siem">Features of SIEM</h3>
+
+<p>The SIEM solution not only solves the issues we discussed in the previous task but also provides capabilities to enhance security operations. Let’s discuss some of the core features that a SIEM provides.</p>
+
+<ul>
+  <li>
+    <p><strong>Centralized Log Collection</strong><br />
+  SIEM collects logs from all sources (endpoints, servers, firewalls, etc.) and centralizes them in one place. These logs are pulled through lightweight agents or APIs and populated into the SIEM solution. This solves the problem of jumping on every machine individually to analyze its logs. </p>
+  </li>
+  <li>
+    <p><strong>Normalization of Logs</strong><br />
+  Raw logs are of different formats and sizes. A Windows log does not look the same as a Linux log. Since a SIEM solution centralizes these logs in one place, it also ensures that all the logs are broken down into different fields and presented in one consistent format. Breaking down a log into several fields for ease of understanding is known as Parsing, and converting all the logs of various log sources into one consistent format is known as Normalization. </p>
+  </li>
+  <li>
+    <p><strong>Correlation of Logs</strong><br />
+  Individual logs are not very useful. SIEM correlates the logs of different sources and finds any relationship between them. This helps to identify malicious activity by analyzing its pattern. For instance, let’s take a look at the following activities happening in a system during a 5-minute timeframe. </p>
+    <ul>
+      <li>Haris logs in via VPN from an IP that he never has previously used</li>
+      <li>Haris accesses some documents on a shared drive</li>
+      <li>Haris executed a PowerShell script</li>
+      <li>The system makes an outbound network connection</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Individually assessed, these activities look fine, but the SIEM solution would correlate these activities, which could point to a potential data exfiltration activity resulting from Haris’s compromised VPN credentials.</p>
+
+<ul>
+  <li>
+    <p>**Real-time Alerting<br />
+  **SIEM detects malicious activities based on the rules it contains. Many rules come with a SIEM by default. However, analysts make new detection rules based on their requirements to mature future detections. When the conditions for these detection rules are satisfied, alerts are triggered, and the analysts are notified. Analysts can then investigate these alerts within the SIEM platform.  </p>
+  </li>
+  <li>
+    <p>**Dashboards and Reporting<br />
+  **Dashboards are the most important components of any SIEM. SIEM presents the data for analysis after being normalized and ingested. The summary of this analysis is presented in the form of actionable insights with the help of multiple dashboards. Each SIEM solution comes with some default dashboards and provides an option for custom Dashboard creation. Below is some of the information that can be found in a dashboard:</p>
+  </li>
+  <li>Alert Highlights</li>
+  <li>System Notification</li>
+  <li>Health Alert</li>
+  <li>List of Failed Login Attempts</li>
+  <li>Events Ingested Count</li>
+  <li>Rules triggered</li>
+  <li>Top Domains Visited</li>
+</ul>
+
+<h2 id="log-sources-and-ingestion">Log Sources and Ingestion</h2>
+
+<h3 id="log-sources">Log Sources</h3>
+
+<p>Every device in the network generates some kind of log whenever an activity is performed on it, such as a user visiting a website, connecting to SSH, logging into their workstation, etc. Let’s see what the logs of some common devices that are found in a network environment look like.</p>
+
+<h4 id="windows-machine">Windows Machine</h4>
+
+<p>Windows records every event that can be viewed through the Event Viewer. It assigns a unique ID to each type of log activity, making it easy for the analyst to examine and keep track of. To view events in a Windows environment, type <code class="language-plaintext highlighter-rouge">Event Viewer</code> in the search bar. This takes you to the tool where different logs are stored and can be viewed, as shown below. These logs from all Windows endpoints are forwarded to the SIEM solution for monitoring and better visibility.</p>
+
+<h4 id="linux-machine">Linux Machine</h4>
+
+<p>Linux OS stores all the related logs, such as events, errors, warnings, etc. These are then ingested into SIEM for continuous monitoring. Some of the common locations where Linux stores logs are:</p>
+
+<ul>
+  <li>/var/log/httpd: Contains HTTP Request  / Response and error logs.</li>
+  <li>/var/log/cron: Events related to cron jobs are stored in this location.</li>
+  <li>/var/log/auth.log and /var/log/secure: Stores authentication-related logs.</li>
+  <li>/var/log/kern: This file stores kernel-related events.</li>
+</ul>
+
+<h4 id="web-server">Web Server</h4>
+
+<p>It is important to monitor all requests/responses coming in and out of the web server for any potential web attack attempt. In Linux, common locations to write all apache-related logs are /var/log/apache or /var/log/httpd.</p>
+
+<h3 id="log-ingestion">Log Ingestion</h3>
+
+<p>All these logs provide a wealth of information and can help identify security issues. Each SIEM solution has its own way of ingesting the logs. Some common methods used by these SIEM solutions are explained below:</p>
+
+<ol>
+  <li>Agent / Forwarder<br />
+ These SIEM solutions provide a lightweight tool called an agent (forwarder by Splunk) that gets installed on the Endpoint. It is configured to capture and send all the important logs to the SIEM server.</li>
+  <li><strong>Syslog</strong><br />
+ Syslog is a widely used protocol to collect data from various systems like web servers, databases, etc., and send real-time data to the centralized destination.</li>
+  <li><strong>Manual Upload</strong><br />
+ Some SIEM solutions, like Splunk, ELK, etc., allow users to ingest offline data for quick analysis. Once the data is ingested, it is normalized and made available for analysis.</li>
+  <li><strong>Port-Forwarding</strong><br />
+ SIEM solutions can also be configured to listen on a certain port, and then the endpoints forward the data to the SIEM instance on the listening port.</li>
+</ol>
+
+<p>An example of how Splunk provides various methods for log Ingestion is shown below:</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Intro%20to%20SIEM/82d3a3a56537be4635c58cc10caee050.png" alt="Shows data Ingestion Options in Splunk SIEM" /></p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: In which location within a Linux environment are HTTP logs stored?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">/var/log/httpd</code></p>
+
+<h2 id="alerting-process-and-analysis">Alerting Process and Analysis</h2>
+
+<h3 id="behind-the-triggered-alerts">Behind the Triggered Alerts</h3>
+
+<p>We learned that a SIEM solution detects threats by correlating logs from the log sources and triggers alerts, but do we know the magic behind these detections?</p>
+
+<p>SIEM solution has detection rules that catch threats. These rules play an important role in the timely detection of threats, allowing analysts to take action on time. Detection rules are pretty much logical expressions set to be triggered. A few examples of detection rules are:</p>
+
+<ul>
+  <li>If a user gets five failed Login Attempts in 10 seconds, raise an alert for <code class="language-plaintext highlighter-rouge">Multiple Failed Login Attempts</code></li>
+  <li>If login is successful after multiple failed login attempts, raise an alert for <code class="language-plaintext highlighter-rouge">Successful Login After multiple Login Attempts</code></li>
+  <li>A rule is set to alert every time a user plugs in a USB (Useful if USB is restricted as per the company policy)</li>
+  <li>If outbound traffic is &gt; 25 MB, raise an alert to potential data exfiltration Attempt (Usually, it depends on the company policy)</li>
+</ul>
+
+<h3 id="use-case-1">Use-Case 1:</h3>
+
+<p>Adversaries tend to remove the logs during the post-exploitation phase to remove their tracks. A unique Event ID <strong>104</strong> is logged every time a user tries to remove or clear event logs. To create a rule based on this activity, we can set the condition as follows:</p>
+
+<p><strong>Rule:</strong> If the Log source is WinEventLog <strong>AND</strong> EventID is <strong>104</strong> - Trigger an alert <code class="language-plaintext highlighter-rouge">Event Log Cleared</code></p>
+
+<h3 id="use-case-2">Use-Case 2:</h3>
+
+<p>Adversaries use commands like <code class="language-plaintext highlighter-rouge">whoami</code> after the exploitation/privilege escalation phase. The following Fields will be helpful to include in the rule.</p>
+
+<ul>
+  <li>Log source: Identify the log source capturing the event logs</li>
+  <li>Event ID: Which Event ID is associated with Process Execution activity? In this case, Event ID 4688 will be helpful.</li>
+  <li>NewProcessName: Which process name will be helpful to include in the rule?</li>
+</ul>
+
+<p><strong>Rule:</strong> If Log Source is WinEventLog <strong>AND</strong> EventCode is <strong>4688,</strong> and NewProcessName contains <strong>whoami,</strong> then Trigger an ALERT <code class="language-plaintext highlighter-rouge">WHOAMI command Execution DETECTED</code></p>
+
+<p>In the previous task, the importance of field-value pairs was discussed. Detection rules keep an eye on the values of certain fields to get triggered. That is the reason why it is important to have normalized logs ingested.</p>
+
+<h3 id="alert-investigation">Alert Investigation</h3>
+
+<p>When monitoring SIEM, analysts spend most of their time on dashboards, as they display various key details about the network in a very summarized way. Once an alert is triggered, the events/flows associated with the alert are examined, and the rule is checked to see which conditions are met. Based on the investigation, the analyst determines if it’s a True or False positive. Some of the actions that are performed after the analysis are:</p>
+
+<ul>
+  <li>Alert is a False Positive. It may require tuning the rule to avoid similar False positives from occurring again.</li>
+  <li>Alert is a True Positive. Perform further investigation.</li>
+  <li>Contact the asset owner to inquire about the activity.</li>
+  <li>Suspicious activity is confirmed. Isolate the infected host.</li>
+  <li>Block the suspicious IP.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Which Event ID is generated when event logs are removed?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">104</code></p>
+
+<p>Q: What type of alert may require tuning?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">false positive</code></p>
+
+<h2 id="lab">Lab</h2>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: After clicking on the <em>Start Suspicious Activity button,</em> which process caused the alert?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">cudominer.exe</code></p>
+
+<p>Q: Find the event that caused the alert and identify the user responsible for the process execution.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Intro%20to%20SIEM/2025-12-18_12-58.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">chris</code></p>
+
+<p>Q: What is the hostname of the suspect user?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">HR_02</code></p>
+
+<p>Q: Examine the rule and the suspicious process; which term matched the rule that caused the alert?</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Intro%20to%20SIEM/2025-12-18_12-59.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">miner</code></p>
+
+<p>Q: Which option best represents the event? Choose from the following:</p>
+
+<ul>
+  <li>
+    <p>False Positive</p>
+  </li>
+  <li>
+    <p>True Positive</p>
+  </li>
+</ul>
+
+<p>A: <code class="language-plaintext highlighter-rouge">True Positive</code></p>
+
+<p>Q: Selecting the right ACTION will display the FLAG. What is the FLAG?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{000_SIEM_INTRO}</code></p>
+
+<p>Explore the following rooms and challenges to learn in-depth about how Incidents are investigated.</p>
+
+<ul>
+  <li><a href="https://tryhackme.com/room/jrsecanalystintrouxo">Junior Security Analyst Intro</a></li>
+  <li><a href="https://tryhackme.com/room/splunk101">Splunk: The Basics</a></li>
+  <li><a href="https://tryhackme.com/room/splunk201">Incident Handling with Splunk</a></li>
+  <li><a href="https://tryhackme.com/room/benign">Benign</a></li>
+  <li><a href="https://tryhackme.com/room/investigatingwithsplunk">Investigating with Splunk</a></li>
+  <li><a href="https://tryhackme.com/room/investigatingwithelk101">Investgating with ELK</a></li>
+  <li><a href="https://tryhackme.com/room/itsybitsy">ItsyBitsy</a></li>
+</ul>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

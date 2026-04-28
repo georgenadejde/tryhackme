@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nmap: The Basics · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to use Nmap to discover live hosts, find open ports, and detect service versions." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Nmap: The Basics</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Nmap - The Basics/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">nmap</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to use Nmap to discover live hosts, find open ports, and detect service versions.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="nmap---the-basics"><a href="https://tryhackme.com/room/nmap">Nmap - The Basics</a></h1>
+
+<h2 id="host-discovery-who-is-online">Host Discovery: Who Is Online</h2>
+
+<p>Imagine the scenario where you are connected to a network and using various network resources, such as email and web browsing. Two questions arise. The first is how we can discover other live devices on this network or on other networks. The second is how we can find out the network services running on these live devices; examples include SSH and web servers.</p>
+
+<p>One approach is to do it manually. If asked to uncover which devices are live on the <code class="language-plaintext highlighter-rouge">192.168.0.1/24</code> network, one can use basic tools such as <code class="language-plaintext highlighter-rouge">ping</code>, <code class="language-plaintext highlighter-rouge">arp-scan</code>, or some other tool to check the 254 IP addresses. Although this network has 256 IP addresses, we counted 254 IP addresses because two are reserved. Each tool has its limitations. For example, <code class="language-plaintext highlighter-rouge">ping</code> won’t give any information if the target system’s firewall blocks ICMP traffic. Moreover, <code class="language-plaintext highlighter-rouge">arp-scan</code> only works if your device is connected to the same network, i.e., over Ethernet or WiFi. In brief, this will be a significant waste of time without an advanced and reliable tool. With the right tools and enough time, one would have a list of the live hosts on a target network. We need a flexible tool that can handle the various scenarios.</p>
+
+<p>Discovering the running services on a specific host is equally time-consuming if one relies on manual solutions or inefficient scripts. For instance, one can use <code class="language-plaintext highlighter-rouge">telnet</code> to try one port after the other; however, with thousands of ports to scan, this can be a very time-consuming task, even if a script was created to automate the <code class="language-plaintext highlighter-rouge">telnet</code> connection attempts.</p>
+
+<p>A very efficient solution that can solve the above two requirements and many more is the <a href="https://nmap.org/">Nmap</a> network scanner. Nmap is an open-source network scanner that was first published in 1997. Since then, plenty of features and options have been added. It is a powerful and flexible network scanner that can be adapted to various scenarios and setups.</p>
+
+<p>Before we start, we should mention that Nmap uses multiple ways to specify its targets:</p>
+
+<ul>
+  <li>IP range using <code class="language-plaintext highlighter-rouge">-</code>: If you want to scan all the IP addresses from 192.168.0.1 to 192.168.0.10, you can write <code class="language-plaintext highlighter-rouge">192.168.0.1-10</code></li>
+  <li>IP subnet using <code class="language-plaintext highlighter-rouge">/</code>: If you want to scan a subnet, you can express it as <code class="language-plaintext highlighter-rouge">192.168.0.1/24</code>, and this would be equivalent to <code class="language-plaintext highlighter-rouge">192.168.0.0-255</code></li>
+  <li>Hostname: You can also specify your target by hostname, for example, <code class="language-plaintext highlighter-rouge">example.thm</code></li>
+</ul>
+
+<p>Let’s say you want to discover the online hosts on a network. Nmap offers the <code class="language-plaintext highlighter-rouge">-sn</code> option, i.e., ping scan. However, don’t expect this to be limited like <code class="language-plaintext highlighter-rouge">ping</code>.</p>
+
+<h3 id="scanning-a-local-network">Scanning a “Local” Network</h3>
+
+<p>In this context, we use the term “local” to refer to the network we are directly connected to, such as an Ethernet or WiFi network. In the first demonstration, we will scan the WiFi network to which we are connected. Our IP address is <code class="language-plaintext highlighter-rouge">192.168.66.89</code>, and we are scanning the <code class="language-plaintext highlighter-rouge">192.168.66.0/24</code> network. The <code class="language-plaintext highlighter-rouge">nmap -sn 192.168.66.0/24</code> command</p>
+
+<p>Because we are scanning the local network, where we are connected via Ethernet or WiFi, we can look up the MAC addresses of the devices. Consequently, we can figure out the network card vendors, which is beneficial information as it can help us guess the type of target device(s).</p>
+
+<p>When scanning a directly connected network, Nmap starts by sending <a href="arp.md">ARP</a> requests. When a device responds to the ARP request, Nmap labels it with “Host is up”.</p>
+
+<h3 id="scanning-a-remote-network">Scanning a “Remote” Network</h3>
+
+<p>Consider the case of a “remote” network. In this context, “remote” means that at least one router separates our system from this network. As a result, all our traffic to the target systems must go through one or more routers. Unlike scanning a local network, we cannot send an ARP request to the target.</p>
+
+<p>Our system has the IP address <code class="language-plaintext highlighter-rouge">192.168.66.89</code> and belongs to the <code class="language-plaintext highlighter-rouge">192.168.66.0/24</code> network. In the terminal below we scan the target network <code class="language-plaintext highlighter-rouge">192.168.11.0/24</code> where there are two or more routers (hops) separate our local system from the target hosts.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/2025-12-16_15-25.png" alt="" /></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">192.168.11.1</code> is live and responded to the ICMP echo (ping) request.</li>
+  <li><code class="language-plaintext highlighter-rouge">192.168.11.2</code> seems down. Nmap sent two ICMP echo (ping) requests, two ICMP timestamp requests, two TCP packets to port 443 with the SYN flag set, and two TCP packets to port 80 with the ACK flag set. The target didn’t respond to any. We observe several ICMP destination unreachable packets from the <code class="language-plaintext highlighter-rouge">192.168.11.151</code> router.</li>
+</ul>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/5f04259cf9bf5b57aed2c476-1723639638611.png" alt="Wireshark showing the packets generated by Nmap when scanning a remote network." /></p>
+
+<p>It is worth noting that we can have more control over how Nmap discovers live hosts such as <code class="language-plaintext highlighter-rouge">-PS[portlist]</code>, <code class="language-plaintext highlighter-rouge">-PA[portlist]</code>, <code class="language-plaintext highlighter-rouge">-PU[portlist]</code> for TCP SYN, TCP ACK, and UDP discovery via the given ports.</p>
+
+<p>As a final point, Nmap offers a list scan with the option <code class="language-plaintext highlighter-rouge">-sL</code>. This scan only lists the targets to scan without actually scanning them. For example, <code class="language-plaintext highlighter-rouge">nmap -sL 192.168.0.1/24</code> will list the 256 targets that will be scanned. This option helps confirm the targets before running the actual scan.</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What is the last IP address that will be scanned when your scan target is <code class="language-plaintext highlighter-rouge">192.168.0.1/27</code>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">192.168.0.31</code></p>
+
+<h2 id="port-scanning-who-is-listening">Port Scanning: Who Is Listening</h2>
+
+<p>we want to discover the network services listening on these live hosts. By network service, we mean any process that is listening for incoming connections on a TCP or UDP port. Common network services include web servers, which usually listen on TCP ports 80 and 443, and DNS servers, which typically listen on UDP (and TCP) port 53.</p>
+
+<p>By design, TCP has 65,535 ports, and the same applies to UDP. How can we determine which ports have a service bound to it?</p>
+
+<h3 id="scanning-tcp-ports">Scanning TCP Ports</h3>
+
+<p>The easiest and most basic way to know whether a TCP port is open would be to attempt to <code class="language-plaintext highlighter-rouge">telnet</code> to the port. If you are inclined to scan with a Telnet client, try to establish a TCP connection with every target port. In other words, you attempt to complete the TCP three-way handshake with every target port; however, only open TCP ports would respond appropriately and allow a TCP connection to be established. This procedure is not very different from Nmap’s connect scan.</p>
+
+<h4 id="connect-scan">Connect Scan</h4>
+
+<p>The connect scan can be triggered using <code class="language-plaintext highlighter-rouge">-sT</code>. It tries to complete the TCP three-way handshake with every target TCP port. If the TCP port turns out to be open and Nmap connects successfully, Nmap will tear down the established connection.</p>
+
+<p>In the screenshot below, our scanning machine has the IP address <code class="language-plaintext highlighter-rouge">192.168.124.148</code> and the target system has TCP port 22 open and port 23 closed. In the part marked with 1, you can see how the TCP three-way handshake was completed and later torn down with a TCP RST-ACK packet by Nmap. The part marked with 2 shows a connection attempt to a closed port, and the target system responded with a TCP RST-ACK packet.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/5f04259cf9bf5b57aed2c476-1726206143298.png" alt="Wireshark showing the packets generated by Nmap during a TCP connect scan." /></p>
+
+<h4 id="syn-scan-stealth">SYN Scan (Stealth)</h4>
+
+<p>Unlike the connect scan, which tries to <strong>connect</strong> to the target TCP port, i.e., complete a three-way handshake, the SYN scan only executes the first step: it sends a TCP SYN packet. Consequently, the TCP three-way handshake is never completed. The advantage is that this is expected to lead to fewer logs as the connection is never established, and hence, it is considered a relatively stealthy scan. You can select the SYN scan using the <code class="language-plaintext highlighter-rouge">-sS</code> flag.</p>
+
+<p>In the screenshot below, we scan the same system with port 22 open. The part marked with 1 shows the listening service replying with a TCP SYN-ACK packet. However, Nmap responded with a TCP RST packet instead of completing the TCP three-way handshake. The part marked with 2 shows a TCP connection attempt to a closed port. In this case, the packet exchange is the same as in the connect scan.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/5f04259cf9bf5b57aed2c476-1726206544185.png" alt="Wireshark showing the packets generated by Nmap when during a TCP Stealth SYN Scan." /></p>
+
+<h3 id="scanning-udp-ports">Scanning UDP Ports</h3>
+
+<p>Although most services use TCP for communication, many use UDP. Examples include DNS, DHCP, NTP (Network Time Protocol), SNMP (Simple Network Management Protocol), and VoIP (Voice over IP). UDP does not require establishing a connection and tearing it down afterwards. Furthermore, it is very suitable for real-time communication, such as live broadcasts. All these are reasons to consider scanning for and discovering services listening on UDP ports.</p>
+
+<p>Nmap offers the option <code class="language-plaintext highlighter-rouge">-sU</code> to scan for UDP services. Because UDP is simpler than TCP, we expect the traffic to differ. The screenshot below shows several ICMP destination unreachable (port unreachable) responses as Nmap sends UDP packets to closed UDP ports.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/5f04259cf9bf5b57aed2c476-1723639719877.png" alt="Wireshark showing the packets generated by Nmap when during a UDP Scan." /></p>
+
+<h3 id="limiting-the-target-ports">Limiting the Target Ports</h3>
+
+<p>Nmap scans the most common 1,000 ports by default. However, this might not be what you are looking for. Therefore, Nmap offers you a few more options.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-F</code> is for Fast mode, which scans the 100 most common ports (instead of the default 1000).</li>
+  <li><code class="language-plaintext highlighter-rouge">-p[range]</code> allows you to specify a range of ports to scan. For example, <code class="language-plaintext highlighter-rouge">-p10-1024</code> scans from port 10 to port 1024, while <code class="language-plaintext highlighter-rouge">-p-25</code> will scan all the ports between 1 and 25. Note that <code class="language-plaintext highlighter-rouge">-p-</code> scans all the ports and is equivalent to <code class="language-plaintext highlighter-rouge">-p1-65535</code> and is the best option if you want to be as thorough as possible.</li>
+</ul>
+
+<h3 id="summary">Summary</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sT</code></td>
+      <td>TCP connect scan – complete three-way handshake</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sS</code></td>
+      <td>TCP SYN – only first step of the three-way handshake</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sU</code></td>
+      <td>UDP scan</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-F</code></td>
+      <td>Fast mode – scans the 100 most common ports</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-p[range]</code></td>
+      <td>Specifies a range of port numbers – <code class="language-plaintext highlighter-rouge">-p-</code> scans all the ports</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: How many TCP ports are open on the target system at <code class="language-plaintext highlighter-rouge">MACHINE_IP</code>?</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/2025-12-16_15-34.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">6</code></p>
+
+<p>Q: Find the listening web server on <code class="language-plaintext highlighter-rouge">MACHINE_IP</code> and access it with your browser. What is the flag that appears on its main page?</p>
+
+<p>Access the http server on port 8008.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/2025-12-16_15-36.png" alt="" /></p>
+
+<p>A: ` THM{SECRET_PAGE_38B9P6} `</p>
+
+<h2 id="version-detection-extract-more-information">Version Detection: Extract More Information</h2>
+
+<h3 id="os-detection">OS Detection</h3>
+
+<p>You can enable OS detection by adding the <code class="language-plaintext highlighter-rouge">-O</code> option. As the name implies, the OS detection option triggers Nmap to rely on various indicators to make an educated guess about the target OS. In this case, it is detecting the target has Linux 4.x or 5.x running. That’s actually true. However, there is no perfectly accurate OS detector. The statement that it is between 4.15 and 5.8 is very close as the target host’s OS is 5.15.</p>
+
+<h3 id="service-and-version-detection">Service and Version Detection</h3>
+
+<p>You discovered several open ports and want to know what services are listening on them. <code class="language-plaintext highlighter-rouge">-sV</code> enables version detection. This is very convenient for gathering more information about your target with fewer keystrokes.</p>
+
+<p>What if you can have both <code class="language-plaintext highlighter-rouge">-O</code>, <code class="language-plaintext highlighter-rouge">-sV</code> and some more in one option? That would be <code class="language-plaintext highlighter-rouge">-A</code>. This option enables OS detection, version scanning, and traceroute, among other things.</p>
+
+<h3 id="forcing-the-scan">Forcing the Scan</h3>
+
+<p>When we run our port scan, such as using <code class="language-plaintext highlighter-rouge">-sS</code>, there is a possibility that the target host does not reply during the host discovery phase (e.g. a host doesn’t reply to ICMP requests). Consequently, Nmap will mark this host as down and won’t launch a port scan against it. We can ask Nmap to treat all hosts as online and port scan every host, including those that didn’t respond during the host discovery phase. This choice can be triggered by adding the <code class="language-plaintext highlighter-rouge">-Pn</code> option.</p>
+
+<h3 id="summary-1">Summary</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-O</code></td>
+      <td>OS detection</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sV</code></td>
+      <td>Service and version detection</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-A</code></td>
+      <td>OS detection, version detection, and other additions</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-Pn</code></td>
+      <td>Scan hosts that appear to be down</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: What is the name and detected version of the web server running on <code class="language-plaintext highlighter-rouge">MACHINE_IP</code>?</p>
+
+<p>Add the flag <code class="language-plaintext highlighter-rouge">-sV</code> for service detection.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/2025-12-16_15-40.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">lighttpd 1.4.74</code></p>
+
+<h2 id="timing-how-fast-is-fast">Timing: How Fast is Fast</h2>
+
+<p>Nmap provides various options to control the scan speed and timing.</p>
+
+<p>Running your scan at its normal speed might trigger an IDS or other security solutions. It is reasonable to control how fast a scan should go. Nmap gives you six timing templates, and the names say it all: paranoid (0), sneaky (1), polite (2), normal (3), aggressive (4), and insane (5). You can pick the timing template by its name or number. For example, you can add <code class="language-plaintext highlighter-rouge">-T0</code> (or <code class="language-plaintext highlighter-rouge">-T 0</code>) or <code class="language-plaintext highlighter-rouge">-T paranoid</code> to opt for the slowest timing.</p>
+
+<p>In the Nmap scans below, we launch a SYN scan targeting the 100 most common TCP ports, <code class="language-plaintext highlighter-rouge">nmap -sS 10.81.172.14 -F</code>. We repeated the scan with different timings: T0, T1, T2, T3, and T4. In our lab setup, Nmap took different amounts of time to scan the 100 ports. The table below should give you an idea, but you will get different results depending on the network setup and target system.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Timing</th>
+      <th>Total Duration</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T0 (paranoid)</td>
+      <td>9.8 hours</td>
+    </tr>
+    <tr>
+      <td>T1 (sneaky)</td>
+      <td>27.53 minutes</td>
+    </tr>
+    <tr>
+      <td>T2 (polite)</td>
+      <td>40.56 seconds</td>
+    </tr>
+    <tr>
+      <td>T3 (normal)</td>
+      <td>0.15 seconds</td>
+    </tr>
+    <tr>
+      <td>T4 (aggressive)</td>
+      <td>0.13 seconds</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In the following screenshots, we can see the time when Nmap sent the different packets. In this screenshot below, with the scan timing being <code class="language-plaintext highlighter-rouge">T0</code>, we can see that Nmap waited 5 minutes before moving to the next port.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/5f04259cf9bf5b57aed2c476-1723639768199.png" alt="Wireshark showing the time of the packets generated by Nmap when using T0 for timing." /></p>
+
+<p>In the screenshot below, Nmap waited 15 seconds between every two ports when we set the timing to <code class="language-plaintext highlighter-rouge">T1</code>.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/5f04259cf9bf5b57aed2c476-1723639781233.png" alt="Wireshark showing the time of the packets generated by Nmap when using T1 for timing." /></p>
+
+<p>Then, the waiting dropped to 0.4 seconds for <code class="language-plaintext highlighter-rouge">T2</code> as shown below.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/5f04259cf9bf5b57aed2c476-1723639792352.png" alt="Wireshark showing the time of the packets generated by Nmap when using T2 for timing." /></p>
+
+<p>Finally, in the default case, <code class="language-plaintext highlighter-rouge">T3</code>, Nmap appeared to be running as fast as it could, as shown below. It is worth repeating that this would look different on a different lab setup. However, in this particular case, Nmap considered the connection to the target to be fast and reliable, as no packet loss was incurred.</p>
+
+<p><img src="/tryhackme/Nmap%20-%20The%20Basics/5f04259cf9bf5b57aed2c476-1723639806781.png" alt="Wireshark showing the time of the packets generated by Nmap when using T3 for timing." /></p>
+
+<p>A second helpful option is the number of parallel service probes. The number of parallel probes can be controlled with <code class="language-plaintext highlighter-rouge">--min-parallelism &lt;numprobes&gt;</code> and <code class="language-plaintext highlighter-rouge">--max-parallelism &lt;numprobes&gt;</code>. These options can be used to set a minimum and maximum on the number of TCP and UDP port probes active simultaneously for a host group. By default, <code class="language-plaintext highlighter-rouge">nmap</code> will automatically control the number of parallel probes. If the network is performing poorly, i.e., dropping packets, the number of parallel probes might fall to one; furthermore, if the network performs flawlessly, the number of parallel probes can reach several hundred.</p>
+
+<p>A similar helpful option is the <code class="language-plaintext highlighter-rouge">--min-rate &lt;number&gt;</code> and <code class="language-plaintext highlighter-rouge">--max-rate &lt;number&gt;</code>. As the names indicate, they can control the minimum and maximum rates at which <code class="language-plaintext highlighter-rouge">nmap</code> sends packets. The rate is provided as the <em>number of packets per second</em>. It is worth mentioning that the specified rate applies to the whole scan and not to a single host.</p>
+
+<p>The last option we will cover in this task is <code class="language-plaintext highlighter-rouge">--host-timeout &lt;time&gt;</code>. This option specifies the maximum time you are willing to wait, and it is suitable for slow hosts or hosts with slow network connections.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-T&lt;0-5&gt;</code></td>
+      <td>Timing template – paranoid (0), sneaky (1), polite (2), normal (3), aggressive (4), and insane (5)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--min-parallelism &lt;numprobes&gt;</code> and <code class="language-plaintext highlighter-rouge">--max-parallelism &lt;numprobes&gt;</code></td>
+      <td>Minimum and maximum number of parallel probes</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--min-rate &lt;number&gt;</code> and <code class="language-plaintext highlighter-rouge">--max-rate &lt;number&gt;</code></td>
+      <td>Minimum and maximum rate (packets/second)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--host-timeout</code></td>
+      <td>Maximum amount of time to wait for a target host</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: What is the non-numeric equivalent of <code class="language-plaintext highlighter-rouge">-T4</code>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">-T aggressive</code></p>
+
+<h2 id="output-controlling-what-you-see">Output: Controlling What You See</h2>
+
+<p>In some cases, the scan takes a very long time to finish or to produce any output that will be displayed on the screen. Furthermore, sometimes you might be interested in more real-time information about the scan progress. The best way to get more updates about what’s happening is to enable verbose output by adding <code class="language-plaintext highlighter-rouge">-v</code>.</p>
+
+<p>Most likely, the <code class="language-plaintext highlighter-rouge">-v</code> option is more than enough for verbose output; however, if you are still unsatisfied, you can increase the verbosity level by adding another “v” such as <code class="language-plaintext highlighter-rouge">-vv</code> or even <code class="language-plaintext highlighter-rouge">-vvvv</code>. You can also specify the verbosity level directly, for example, <code class="language-plaintext highlighter-rouge">-v2</code> and <code class="language-plaintext highlighter-rouge">-v4</code>. You can even increase the verbosity level by pressing “v” after the scan already started.</p>
+
+<p>If all this verbosity does not satisfy your needs, you must consider the <code class="language-plaintext highlighter-rouge">-d</code> for debugging-level output. Similarly, you can increase the debugging level by adding one or more “d” or by specifying the debugging level directly. The maximum level is <code class="language-plaintext highlighter-rouge">-d9</code>; before choosing that, make sure you are ready for thousands of information and debugging lines.</p>
+
+<h3 id="saving-scan-report">Saving Scan Report</h3>
+
+<p>In many cases, we would need to save the scan results. Nmap gives us various formats. The three most useful are normal (human-friendly) output, XML output, and grepable output, in reference to the <code class="language-plaintext highlighter-rouge">grep</code> command. You can select the scan report format as follows:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-oN &lt;filename&gt;</code> - Normal output</li>
+  <li><code class="language-plaintext highlighter-rouge">-oX &lt;filename&gt;</code> - XML output</li>
+  <li><code class="language-plaintext highlighter-rouge">-oG &lt;filename&gt;</code> - <code class="language-plaintext highlighter-rouge">grep</code>-able output (useful for <code class="language-plaintext highlighter-rouge">grep</code> and <code class="language-plaintext highlighter-rouge">awk</code>)</li>
+  <li><code class="language-plaintext highlighter-rouge">-oA &lt;basename&gt;</code> - Output in all major formats</li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: What option must you add to your <code class="language-plaintext highlighter-rouge">nmap</code> command to enable debugging?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">-d</code></p>
+
+<h2 id="summary-2">Summary</h2>
+
+<p>It is worth noting that it is best to run Nmap with <code class="language-plaintext highlighter-rouge">sudo</code> privileges so that we can make use of all its features. Running Nmap with local user privileges will still work; however, you should expect many features to be unavailable. You get a minimal portion of Nmap’s power when running it as a local user. For instance, Nmap would automatically use SYN scan (<code class="language-plaintext highlighter-rouge">-sS</code>) if you are running it with <code class="language-plaintext highlighter-rouge">sudo</code> privileges and will default to connect scan (<code class="language-plaintext highlighter-rouge">-sT</code>) if run as a local user. The reason is that crafting certain packets, such as sending a TCP SYN packet, requires root privileges.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sL</code></td>
+      <td>List scan – list targets without scanning</td>
+    </tr>
+    <tr>
+      <td><strong><em>Host Discovery</em></strong></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sn</code></td>
+      <td>Ping scan – host discovery only</td>
+    </tr>
+    <tr>
+      <td><strong><em>Port Scanning</em></strong></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sT</code></td>
+      <td>TCP connect scan – complete three-way handshake</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sS</code></td>
+      <td>TCP SYN – only first step of the three-way handshake</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sU</code></td>
+      <td>UDP Scan</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-F</code></td>
+      <td>Fast mode – scans the 100 most common ports</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-p[range]</code></td>
+      <td>Specifies a range of port numbers – <code class="language-plaintext highlighter-rouge">-p-</code> scans all the ports</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-Pn</code></td>
+      <td>Treat all hosts as online – scan hosts that appear to be down</td>
+    </tr>
+    <tr>
+      <td><strong><em>Service Detection</em></strong></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-O</code></td>
+      <td>OS detection</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-sV</code></td>
+      <td>Service version detection</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-A</code></td>
+      <td>OS detection, version detection, and other additions</td>
+    </tr>
+    <tr>
+      <td><strong><em>Timing</em></strong></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-T&lt;0-5&gt;</code></td>
+      <td>Timing template – paranoid (0), sneaky (1), polite (2), normal (3), aggressive (4), and insane (5)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--min-parallelism &lt;numprobes&gt;</code> and <code class="language-plaintext highlighter-rouge">--max-parallelism &lt;numprobes&gt;</code></td>
+      <td>Minimum and maximum number of parallel probes</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--min-rate &lt;number&gt;</code> and <code class="language-plaintext highlighter-rouge">--max-rate &lt;number&gt;</code></td>
+      <td>Minimum and maximum rate (packets/second)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">--host-timeout</code></td>
+      <td>Maximum amount of time to wait for a target host</td>
+    </tr>
+    <tr>
+      <td><strong><em>Real-time output</em></strong></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-v</code></td>
+      <td>Verbosity level – for example, <code class="language-plaintext highlighter-rouge">-vv</code> and <code class="language-plaintext highlighter-rouge">-v4</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-d</code></td>
+      <td>Debugging level – for example <code class="language-plaintext highlighter-rouge">-d</code> and <code class="language-plaintext highlighter-rouge">-d9</code></td>
+    </tr>
+    <tr>
+      <td><strong><em>Report</em></strong></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-oN &lt;filename&gt;</code></td>
+      <td>Normal output</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-oX &lt;filename&gt;</code></td>
+      <td>XML output</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-oG &lt;filename&gt;</code></td>
+      <td><code class="language-plaintext highlighter-rouge">grep</code>-able output</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-oA &lt;basename&gt;</code></td>
+      <td>Output in all major formats</td>
+    </tr>
+  </tbody>
+</table>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

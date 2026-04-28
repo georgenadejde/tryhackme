@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlareVM: Arsenal of Tools · THM Writeups</title>
+  
+  <meta name="description" content="Learn the arsenal of investigative tools in FlareVM." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>FlareVM: Arsenal of Tools</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">FlareVM -Arsenal of Tools/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">reverseengineering</span>
+          
+          <span class="tag-pill">blueteam</span>
+          
+          <span class="tag-pill">debug</span>
+          
+          <span class="tag-pill">staticanalysis</span>
+          
+          <span class="tag-pill">dynamicanalysis</span>
+          
+          <span class="tag-pill">forensics</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn the arsenal of investigative tools in FlareVM.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="flarevm--arsenal-of-tools"><a href="">FlareVM -Arsenal of Tools</a></h1>
+
+<h2 id="arsenal-of-tools">Arsenal of Tools</h2>
+
+<p><strong>FlareVM</strong>, or “<strong>Forensics, Logic Analysis, and Reverse Engineering</strong>,” stands out as a comprehensive and carefully curated collection of specialized tools uniquely designed to meet the specific needs of reverse engineers, malware analysts, incident responders, forensic investigators, and penetration testers. This toolkit, expertly crafted by the FLARE Team at FireEye, is a powerful aid in unravelling digital mysteries, gaining insight into malware behaviour, and delving into the complex details within executables.</p>
+
+<p>Getting your hands on this tool can be pretty daunting at first, as building it starting from scratch takes a lot of time, and the installation will take several hours!</p>
+
+<p>Below are the tools grouped by their category. </p>
+
+<h3 id="reverse-engineering--debugging">Reverse Engineering &amp; Debugging</h3>
+
+<p>Reverse engineering is like solving a puzzle backward: you take a finished product apart to understand how it works. Debugging is identifying errors, understanding why they happen, and correcting the code to prevent them.</p>
+
+<ul>
+  <li>
+    <p><strong>Ghidra</strong> - NSA-developed open-source reverse engineering suite.</p>
+  </li>
+  <li>
+    <p><strong>x64dbg</strong> - Open-source debugger for binaries in x64 and x32 formats.</p>
+  </li>
+  <li>
+    <p><strong>OllyDbg</strong> - Debugger for reverse engineering at the assembly level.</p>
+  </li>
+  <li><strong>Radare2</strong> - A sophisticated open-source platform for reverse engineering.</li>
+  <li>
+    <p><strong>Binary Ninja</strong> - A tool for disassembling and decompiling binaries.</p>
+  </li>
+  <li><strong>PEiD</strong> - Packer, cryptor, and compiler detection tool.</li>
+</ul>
+
+<h3 id="disassemblers--decompilers">Disassemblers &amp; Decompilers</h3>
+
+<p>Disassemblers and Decompilers are crucial tools in malware analysis. They help analysts understand malicious software’s behaviour, logic, and control flow by breaking it into a more understandable format. The tools mentioned below are commonly used in this category.</p>
+
+<ul>
+  <li><strong>CFF Explorer</strong> - A PE editor designed to analyze and edit Portable Executable (PE) files.</li>
+  <li><strong>Hopper Disassembler</strong> - A Debugger, disassembler, and decompiler.</li>
+  <li><strong>RetDec</strong> - Open-source decompiler for machine code.</li>
+</ul>
+
+<h3 id="static--dynamic-analysis">Static &amp; Dynamic Analysis</h3>
+
+<p>Static and dynamic analysis are two crucial methods in cyber security for examining malware. Static analysis involves inspecting the code without executing it, while dynamic analysis involves observing its behaviour as it runs. The tools mentioned below are commonly used in this category.</p>
+
+<ul>
+  <li><strong>Process Hacker</strong> - Sophisticated memory editor and process watcher.</li>
+  <li><strong>PEview</strong> - A portable executable (PE) file viewer for analysis.</li>
+  <li><strong>Dependency Walker</strong> - A tool for displaying an executable’s DLL dependencies.</li>
+  <li><strong>DIE (Detect It Easy)</strong> - A packer, compiler, and cryptor detection tool.</li>
+</ul>
+
+<h3 id="forensics--incident-response">Forensics &amp; Incident Response</h3>
+
+<p>Digital Forensics involves the collection, analysis, and preservation of digital evidence from various sources like computers, networks, and storage devices. At the same time, Incident Response focuses on the detection, containment, eradication, and recovery from cyberattacks. The tools mentioned below are commonly used in this category.</p>
+
+<ul>
+  <li><strong>Volatility</strong> - RAM dump analysis framework for memory forensics.</li>
+  <li><strong>Rekall</strong> - Framework for memory forensics in incident response.</li>
+  <li><strong>FTK Imager</strong> - Disc image acquisition and analysis tools for forensic use.</li>
+</ul>
+
+<h3 id="network-analysis">Network Analysis</h3>
+
+<p>Network Analysis includes different methods and techniques for studying and analysing networks to uncover patterns, optimize performance, and understand the underlying structure and behaviour of the network.</p>
+
+<ul>
+  <li>
+    <p><strong>Wireshark</strong> - Network protocol analyzer for traffic recording and examination.</p>
+  </li>
+  <li>
+    <p><strong>Nmap</strong> - A vulnerability detection and network mapping tool.</p>
+  </li>
+  <li>
+    <p><strong>Netcat</strong> - Read and write data across network connections with this helpful tool.</p>
+  </li>
+</ul>
+
+<h3 id="file-analysis">File Analysis</h3>
+
+<p>File Analysis is a technique used to examine files for potential security threats and ensure proper file permissions.</p>
+
+<ul>
+  <li><strong>FileInsight</strong> - A program for looking through and editing binary files.</li>
+  <li><strong>Hex Fiend</strong> - Hex editor that is light and quick.</li>
+  <li><strong>HxD</strong> - Binary file viewing and editing with a hex editor.</li>
+</ul>
+
+<h3 id="scripting--automation">Scripting &amp; Automation</h3>
+
+<p>Scripting and Automation involve using scripts such as PowerShell and Python to automate repetitive tasks and processes, making them more efficient and less prone to human error.</p>
+
+<ul>
+  <li><strong>Python</strong> - Mainly automation-focused on Python modules and tools.</li>
+  <li><strong>PowerShell Empire</strong> - Framework for PowerShell post-exploitation.</li>
+</ul>
+
+<h3 id="sysinternals-suite">Sysinternals Suite</h3>
+
+<p>The Sysinternals Suite is a collection of advanced system utilities designed to help IT professionals and developers manage, troubleshoot, and diagnose Windows systems.</p>
+
+<ul>
+  <li><strong>Autoruns</strong> - Shows what executables are configured to run during system boot-up.</li>
+  <li><strong>Process Explorer</strong> - Provides information about running processes.</li>
+  <li><strong>Process Monitor</strong> -Monitors and logs real-time process/thread activity.</li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Which tool is an Open-source debugger for binaries in x64 and x32 formats?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">x64dbg</code></p>
+
+<p>Q: What tool is designed to analyze and edit Portable Executable (PE) files?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">CFF Explorer</code></p>
+
+<p>Q: Which tool is considered a sophisticated memory editor and process watcher?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Process Hacker</code></p>
+
+<p>Q: Which tool is used for Disc image acquisition and analysis for forensic use?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">FTK Imager</code></p>
+
+<p>Q: What tool can be used to view and edit a binary file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">HxD</code></p>
+
+<h2 id="commonly-used-tools-for-investigation-overview">Commonly Used Tools for Investigation: Overview</h2>
+
+<p>These tools are the basic ones used for initial investigations. See the list below.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Tool</strong></th>
+      <th><strong>Investigative Value</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Procmon</td>
+      <td>A helpful tool for tracking system activity, especially regarding malware research, troubleshooting, and forensic investigations.</td>
+    </tr>
+    <tr>
+      <td>Process Explorer</td>
+      <td>Allows you to see the Process of the Parent-child relationship, DLLs loaded, and its path.</td>
+    </tr>
+    <tr>
+      <td>HxD</td>
+      <td>Malicious files can be examined or altered via hex editing.</td>
+    </tr>
+    <tr>
+      <td>Wireshark</td>
+      <td>Observing and investigating network traffic to look for unusual activity.</td>
+    </tr>
+    <tr>
+      <td>CFF Explorer</td>
+      <td>Can generate file hashes for integrity verification, authenticate the source of system files, and validate their validity.</td>
+    </tr>
+    <tr>
+      <td>PEStudio</td>
+      <td>Static analysis or studying executable file properties without running the files.</td>
+    </tr>
+    <tr>
+      <td>FLOSS</td>
+      <td>Extracts and de-obfuscates all strings from malware programs using advanced static analysis techniques.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="process-monitor-procmon">Process Monitor (Procmon)</h3>
+
+<p>A powerful Windows tool designed to help you record issues with your system’s apps. It lets you <strong>see, record, and keep track of system and Windows file activity in real-time</strong>. Process Monitor is helpful for <strong>tracking system activity, especially regarding malware research, troubleshooting, and forensic investigations</strong>. It keeps real-time tabs on the file system, registry, and thread/process activity.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727302306550.png" alt="" /></p>
+
+<p>According to this log entry, the Local Security Authority Subsystem Service (LSASS)- related process lsass.exe has successfully read a file. LSASS handles authentication and frequently communicates with crucial system files such as lsasrv.dll (Local Security Authority Server Service).</p>
+
+<p>Although this is a standard system process, LSASS may be the target of credential dumping attacks if you are examining logs for indications of malicious activity. Mimikatz and other tools frequently try to access LSASS memory. In these situations, you should watch for any additional suspicious activity related to LSASS, such as odd access patterns or processes reading or writing to lsass.exe.</p>
+
+<h3 id="process-explorer-procexp">Process Explorer (Procexp)</h3>
+
+<p>Process Explorer offers in-depth insights into the active processes running on your computer. It allows you to delve into the inner workings of your system, providing a comprehensive list of currently running processes and their linked user accounts. If you’ve ever been curious about which program is accessing a specific file or folder, Process Explorer can provide us with that information.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727171765939.png" alt="The image shows the process and it's parent. We can validate the process ID and other information of the process here" /></p>
+
+<p>As you can see from the image above, the CFF Explorer app is open. Using <strong>Process Explorer(procexp),</strong> located on the desktop, we identified the process and its parent process. This is usually pretty useful when we want to monitor what other processes are being spawned, such as from a Word document, an LNK file, or even an ISO file, as threat actors typically abuse these.</p>
+
+<h3 id="hxd">HxD</h3>
+
+<p>HxD is a quick and flexible hex editor for editing files, memory, and drives of any capacity. It can be applied to forensic investigation, data recovery, debugging, and exact manipulation of binary data. Important features include viewing file and memory contents, editing, searching, and comparing hex data</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727170785692.png" alt="The image shows the hex value of a file" /></p>
+
+<p>This HxD hex editor snapshot shows the binary file <strong>possible_medusa.txt</strong>. The hex data on the left indicates the file’s contents in hexadecimal, and the ASCII interpretation appears on the right. Interestingly, the file starts with <strong>4D 5A (Little Endian)</strong>, indicating it is executable.</p>
+
+<p>The <strong>Data Inspector</strong> on the right allows you to examine individual bytes by displaying their values in many data types (e.g., integer, float), facilitating a more straightforward data evaluation.</p>
+
+<p>By permitting in-depth examination of a file’s unprocessed hexadecimal data, HxD facilitates inquiry by identifying file kinds, structures, and possible corruption. Its Data Inspector feature helps by offering insights into particular byte values.</p>
+
+<h3 id="cff-explorer">CFF Explorer</h3>
+
+<p>With the help of CFF Explorer’s comprehensive file information, investigators can generate file hashes for integrity verification, authenticate the source of system files, and validate their validity (e.g., by looking for unusual alterations). This is important to know when analyzing malware since dangerous code may be hidden in altered system files.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727170785706.png" alt="the image shows the information of the file when opened using the CFF explorer tool." /></p>
+
+<p>The <strong>cryptominer.bin</strong> file’s details are displayed in the sample. On September 23, 2024, a 64-bit Portable Executable file was generated. The file’s information can be verified by its hashes (SHA-1 and MD5). During investigations, this tool aids in confirming file information lookup and locating possible problems.</p>
+
+<h3 id="wireshark">Wireshark</h3>
+
+<p>Regarding network traffic analysis, Wireshark is a powerful tool that investigators may use to hunt down dubious connections, examine protocols, and spot possible assaults or data exfiltration. In this case, TLSv1.2 suggests a secure, encrypted connection that can mask harmful activity or safeguard legitimate traffic.</p>
+
+<h3 id="pestudio">PEStudio</h3>
+
+<p>Static analysis, or studying executable file properties without running the files, is done with PEstudio. This feature is beneficial in several situations. PEstudio offers a variety of information about a file without putting users in danger of execution, which aids in identifying executables that seem suspect or harmful.</p>
+
+<p>So, how does it work? Let’s look at the image below.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727170785666.png" alt="this image shows information about the certain file that you wish to examine." /></p>
+
+<p>This example shows the examination of an executable file, PSexec.exe ( <strong>not in the VM; this is a pure example only</strong>), using PEstudio 9.22, a static malware analysis tool. The file has a dual purpose—legitimate for system administrators but potentially exploited by hackers for remote access.</p>
+
+<p>The file’s <strong>entropy value of 6.596</strong> indicates a remote chance of packing or encryption, which is typical of dangerous software. <strong>Version 2.34</strong> of this 32-bit console-based application allows it to run programs remotely, a feature frequently used to migrate laterally during attacks. The file is assembled using <strong>Visual C++ 8</strong>.</p>
+
+<p>The dual-use nature of <strong>PsExec</strong>, typically legitimate but suspicious in compromised environments, combined with <strong>low to medium indicators</strong> and moderately high entropy, makes its presence on a system concerning, especially if remote code execution is not expected. Its use in <strong>post-exploitation phases</strong> warrants further investigation to determine if it’s being misused maliciously.<em>**</em></p>
+
+<h3 id="floss">FLOSS</h3>
+
+<p>Using advanced static analysis techniques, the FLARE Obfuscated String Solver (FLOSS, formerly FireEye Labs Obfuscated String Solver) automatically extracts and de-obfuscates all strings from malware programs. Like strings.exe, it can enhance the basic static analysis of unknown binaries. FLOSS also includes more Python scripts in the script’s directory, which can be used to load the script’s output into other programs like IDA Pro or Binary Ninja.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: Which tool was formerly known as FireEye Labs Obfuscated String Solver?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">FLOSS</code></p>
+
+<p>Q: Which tool offers in-depth insights into the active processes running on your computer?</p>
+
+<p>A: ` Process Explorer`</p>
+
+<p>Q: By using the Process Explorer (procexp) tool, under what process can we find smss.exe?</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_16-50.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">System</code></p>
+
+<p>Q: Which powerful Windows tool is designed to help you record issues with your system’s apps?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Procmon</code></p>
+
+<p>Q: Which tool can be used for Static analysis or studying executable file properties without running the files?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">PEStudio</code></p>
+
+<p>Q: Using the tool PEStudio to open the file <strong>cryptominer.bin</strong> in the Desktop\Sample folder, what is the sha256 value of the file?</p>
+
+<p><img src="2025-12-09_16-49.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">E9627EBAAC562067759681DCEBA8DDE8D83B1D813AF8181948C549E342F67C0E</code></p>
+
+<p>Q: Using the tool PEStudio to open the file <strong>cryptominer.bin</strong> in the Desktop\Sample folder, how many functions does it have?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">102</code></p>
+
+<p>Q: What tool can generate file hashes for integrity verification, authenticate the source of system files, and validate their validity?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">CFF Explorer</code></p>
+
+<p>Q: Using the tool CFF Explorer to open the file <strong>possible_medusa.txt</strong> in the Desktop\Sample folder, what is the MD5 of the file?</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_16-43.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">646698572AFBBF24F50EC5681FEB2DB7</code></p>
+
+<p>Q: Use the CFF Explorer tool to open the file <strong>possible_medusa.txt</strong> in the Desktop\Sample folder. Then, go to the <strong>DOS Header Section.</strong> What is the e_magic value of the file?</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_16-45.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">5A4D</code></p>
+
+<h2 id="analyzing-malicious-files">Analyzing Malicious Files!</h2>
+
+<p>A suspicious <strong>windows.exe</strong> file was downloaded by a user on 09/24/2024 at 3:43 AM. This download was flagged as a potential threat. The monitoring team has sent you an email requesting to perform an analysis of it.</p>
+
+<p>Our initial approach for this investigation is to perform static analysis to get initial information from the binary.</p>
+
+<h3 id="analysis-using-pestudio">Analysis using PEStudio</h3>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_17-05.png" alt="" /></p>
+
+<p>For the computed MD5 <code class="language-plaintext highlighter-rouge">9FDD4767DE5AEC8E577C1916ECC3E1D6</code> and SHA-1 <code class="language-plaintext highlighter-rouge">A1BC55A7931BFCD24651357829C460FD3DC4828F</code> hashes, comparisons with established databases like <a href="https://www.virustotal.com/gui/">VirusTotal</a> are recommended. If there are no known detections, there’s a greater chance that it’s a fresh or undiscovered malware campaign.</p>
+
+<p>Although the file claims to be connected to the Windows Registry Editor (REGEDIT), which you can see based on the <strong>description</strong>, this is likely an attempt to trick people and evade discovery.</p>
+
+<p>Legitimate REGEDIT tools are usually found in the <strong>C:\Windows\System32</strong> directory rather than the user’s download location.</p>
+
+<p>What else?</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727175229441.png" alt="" /></p>
+
+<p>Редактор реестра” - “Registry Editor”, “Операционная система Microsoft® Windows®”) in the file’s metadata is suspicious, primarily if the user or the organization does not operate in a Russian-speaking environment. This could potentially have profound implications for our organization.</p>
+
+<p>The absence of a <strong>rich header</strong>  indicates that the file is potentially packed or obfuscated to avoid detection by static analysis tools. This is typical behaviour of sophisticated malware that tries to evade detection by altering critical sections of its PE file.</p>
+
+<p>The <strong>function</strong> tabs list <strong>API calls</strong> that the file has imported. This is also known as the IAT (Import Address Table). By clicking on the blacklist tab, PeStudio will sort the API by moving all the blacklisted functions to the top. This is useful because it enables us to understand how malware may behave once it compromises a host. The image below shows what API has been imported.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727178234246.png" alt="" /></p>
+
+<p>Here are the important functions that we noted.</p>
+
+<p><code class="language-plaintext highlighter-rouge">set_UseShellExecute</code>: This function allows the process to use the operating system’s shell to execute other processes. This is often seen in malware that spawns additional processes to carry out malicious actions.</p>
+
+<p><code class="language-plaintext highlighter-rouge">CryptoStream, RijndaelManaged, CipherMode, CreateDecryptor</code>: These APIs indicate that the executable uses cryptographic functions, specifically Rijndael (AES encryption). Malware may use cryptography to encrypt communication and files or even implement ransomware functionality.</p>
+
+<h3 id="analysis-using-floss">Analysis using FLOSS</h3>
+
+<p>Run the command <code class="language-plaintext highlighter-rouge">FLOSS.exe .\windows.exe &gt; windows.txt</code></p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727179931028.png" alt="" /></p>
+
+<p>Aren’t these familiar? These are the functions that we saw earlier using the PEStudio tool!</p>
+
+<h3 id="analyze-with-process-explorer-and-process-monitor">Analyze with Process Explorer and Process Monitor</h3>
+
+<p>In this example, we will analyze the network connectivity of the file <strong>cobaltstrike.exe</strong></p>
+
+<p>We will try to figure out if the file is making any network connectivity to any possible c2 server.  Let’s get started! Run the file <strong>cobaltstrike.exe</strong> and open <strong>Process Explorer</strong> on the desktop or from the taskbar. You can also search for it in the Windows search bar. If you manually click the binary <strong>Explorer.exe</strong> would be the parent process, and cobaltstrike.exe would be the child process. Let’s see if that is indeed the case.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727191613610.png" alt="" /></p>
+
+<p>Right-click on the process, select <strong>Properties</strong> and go to the <strong>TCP/IP</strong> tab. We should be able to determine the destination it connects to and the state it sends.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_17-24.png" alt="" /></p>
+
+<p>There we have it! On another note, when we are doing analysis, it needs to be verified and precise. Therefore, we won’t be relying on a single tool. We will use another tool to determine if the information is correct. Stop the process and rerun it. This time, we will use <strong>Procmon</strong> or <strong>Proces Monitor</strong></p>
+
+<p>When we open Procmon, looking for the binary is challenging as it will list all active processes. What we are going to do is filter it. The image below points to the filter icon. Or you can press <strong>CRTL + L</strong>.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727192184037.png" alt="this image shows how to use the filter for process monitor tool" /></p>
+
+<ul>
+  <li>Now, using this filter involves several steps. This includes:
+    <ol>
+      <li>Select the <strong>Process Name</strong></li>
+      <li>Select <strong>contains</strong></li>
+      <li>type any value containing any word related to the process. In this case, <strong>cobalt</strong></li>
+      <li>Click <strong>include</strong></li>
+      <li>And then <strong>Add</strong> and Click on Apply</li>
+      <li>You should be able to see the conditions added.</li>
+    </ol>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/5e6bbe59a46ee9407fd65bbe-1727193011175.png" alt="This image shows the steps you will use to filter the results of process monitor tool." /></p>
+
+<p>This should give us a more detailed result.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_17-27.png" alt="" /></p>
+
+<p>This confirms that the binary was indeed making a connection to an unknown IP address which is 47.120.46.210.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Using PEStudio, open the file windows.exe. What is the <strong>entropy value</strong> of the file windows.exe?</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_17-05.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">7.999</code></p>
+
+<p>Q: Using PEStudio, open the file windows.exe, then go to manifest (administrator section)<strong>.</strong> What is the value under <strong>requestedExecutionLevel</strong>?</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_17-07.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">requireAdministrator</code></p>
+
+<p>Q: Which function allows the process to use the operating system’s shell to execute other processes?</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_17-11.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">set_UseShellExecute</code></p>
+
+<p>Q: Which API starts with R and indicates that the executable uses cryptographic functions?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">RijndaelManaged</code></p>
+
+<p>Q: What is the Imphash of cobaltstrike.exe?</p>
+
+<p>One can read it from PEStudio.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_17-36.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">92EEF189FB188C541CBD83AC8BA4ACF5</code></p>
+
+<p>Q: What is the defanged IP address to which the process cobaltstrike.exe is connecting?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">47[.]120[.]46[.]210</code></p>
+
+<p>Q: What is the destination port number used by cobaltstrike.exe when connecting to its C2 IP Address?</p>
+
+<p>Using the hint, we make use of the pcap in the <code class="language-plaintext highlighter-rouge">Sample</code> folder and filter for the address the program is connecting to.</p>
+
+<p><img src="/tryhackme/FlareVM%20-Arsenal%20of%20Tools/2025-12-09_17-31.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">81</code></p>
+
+<p>Q: During our analysis, we found a process called cobaltstrike.exe. What is the <strong>parent process</strong> of cobaltstrike.exe?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">explorer.exe</code></p>
+
+<h2 id="section-4">Section 4</h2>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q:</p>
+
+<p>A: ``</p>
+
+<p>Q:</p>
+
+<p>A: ``</p>
+
+<p>Q:</p>
+
+<p>A: ``</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

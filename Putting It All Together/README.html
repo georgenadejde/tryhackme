@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Putting It All Together · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Putting It All Together</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Putting It All Together/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">web</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="putting-it-all-together">Putting It All Together</h1>
+
+<ul>
+  <li>To summarise, when you request a website, your computer needs to know the server’s IP address it needs to talk to; for this, it uses DNS.</li>
+  <li>Your computer then talks to the web server using a special set of commands called the HTTP protocol; the webserver then returns HTML, JavaScript, CSS, Images, etc., which your browser then uses to correctly format and display the website to you.</li>
+</ul>
+
+<p><img src="/tryhackme/Putting%20It%20All%20Together/puttingitalltogether.png" alt="" /></p>
+
+<ul>
+  <li>There are also a few other components that help the web run more efficiently and provide extra features.</li>
+</ul>
+
+<h2 id="other-components">Other Components</h2>
+
+<h4 id="load-balancers"><strong>Load Balancers</strong></h4>
+<p>#loadbalancers</p>
+<ul>
+  <li>When a website’s traffic starts getting quite large or is running an application that needs to have high availability, one web server might no longer do the job.</li>
+  <li>
+    <p>Load balancers provide two main features, ensuring high traffic websites can handle the load and providing a failover if a server becomes unresponsive.</p>
+  </li>
+  <li>When you request a website with a load balancer, the load balancer will receive your request first and then forward it to one of the multiple servers behind it.</li>
+  <li>The load balancer uses different algorithms to help it decide which server is best to deal with the request.</li>
+  <li>
+    <p>A couple of examples of these algorithms are <strong>round-robin</strong>, which sends it to each server in turn, or <strong>weighted</strong>, which checks how many requests a server is currently dealing with and sends it to the least busy server.</p>
+  </li>
+  <li>Load balancers also perform periodic checks with each server to ensure they are running correctly; this is called a <strong>health check</strong>.</li>
+  <li>If a server doesn’t respond appropriately or doesn’t respond, the load balancer will stop sending traffic until it responds appropriately again.</li>
+</ul>
+
+<p><img src="https://static-labs.tryhackme.cloud/sites/puttingittogether/loadbalancer.png" alt="" /></p>
+
+<h4 id="cdn-content-delivery-networks">CDN (Content Delivery Networks)**</h4>
+
+<p>#cdn</p>
+<ul>
+  <li>A CDN can be an excellent resource for cutting down traffic to a busy website.</li>
+  <li>It allows you to host static files from your website, such a JavaScript, CSS, Images, Videos, and host them across thousands of servers all over the world.</li>
+  <li>When a user requests one of the hosted files, the CDN works out where the nearest server is physically located and sends the request there instead of potentially the other side of the world.</li>
+</ul>
+
+<h4 id="databases">Databases</h4>
+
+<ul>
+  <li>Often websites will need a way of storing information for their users.</li>
+  <li>Webservers can communicate with databases to store and recall data from them.</li>
+  <li>Databases can range from just a simple plain text file up to complex clusters of multiple servers providing speed and resilience.</li>
+  <li>You’ll come across some common databases: MySQL, MSSQL, MongoDB, GraphQL, Postgres, and more; each has its specific features.</li>
+</ul>
+
+<h4 id="waf-web-application-firewall"><strong>WAF (Web Application Firewall)</strong></h4>
+<p>#waf</p>
+<ul>
+  <li>A WAF sits between your web request and the web server; its primary purpose is to protect the webserver from hacking or denial of service attacks.</li>
+  <li>It analyses the web requests for common attack techniques, whether the request is from a real browser rather than a bot.</li>
+  <li>It also checks if an excessive amount of web requests are being sent by utilising something called rate limiting, which will only allow a certain amount of requests from an IP per second.</li>
+  <li>If a request is deemed a potential attack, it will be dropped and never sent to the webserver.</li>
+</ul>
+
+<p><img src="https://static-labs.tryhackme.cloud/sites/puttingittogether/waf.png" alt="" /></p>
+
+<h3 id="questions">Questions</h3>
+
+<p>What can be used to host static files and speed up a clients visit to a website?</p>
+
+<p> A: cdn</p>
+
+<p>What does a load balancer perform to make sure a host is still alive?</p>
+
+<p>A: health check</p>
+
+<p>What can be used to help against the hacking of a website?</p>
+
+<p>A: waf</p>
+
+<h2 id="how-web-servers-work"><strong>How Web servers work.</strong></h2>
+
+<h4 id="what-is-a-web-server"><strong>What is a Web Server?</strong></h4>
+<p>#webserver</p>
+
+<ul>
+  <li>A web server is a software that listens for incoming connections and then utilises the HTTP protocol to deliver web content to its clients.
+    <ul>
+      <li>The most common web server software you’ll come across is Apache, Nginx, IIS and NodeJS.</li>
+    </ul>
+  </li>
+  <li>A Web server delivers files from what’s called its root directory, which is defined in the software settings.
+    <ul>
+      <li>For example, Nginx and Apache share the same default location of <code class="language-plaintext highlighter-rouge">/var/www/html</code> in Linux operating systems, and IIS uses <code class="language-plaintext highlighter-rouge">C:\inetpub\wwwroot</code> for the Windows operating systems.</li>
+      <li>So, for example, if you requested the file <code class="language-plaintext highlighter-rouge">http://www.example.com/picture.jpg</code>, it would send the file <code class="language-plaintext highlighter-rouge">/var/www/html/picture.jpg</code> from its local hard drive.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="virtual-hosts"><strong>Virtual Hosts</strong></h4>
+<p>#virtualhost</p>
+<ul>
+  <li>Web servers can host multiple websites with different domain names; to achieve this, they use virtual hosts.</li>
+  <li>The web server software checks the hostname being requested from the HTTP headers and matches that against its virtual hosts (virtual hosts are just text-based configuration files).
+    <ul>
+      <li>If it finds a match, the correct website will be provided.</li>
+      <li>If no match is found, the default website will be provided instead.</li>
+    </ul>
+  </li>
+  <li>Virtual Hosts can have their root directory mapped to different locations on the hard drive.
+    <ul>
+      <li>For example, <code class="language-plaintext highlighter-rouge">one.com</code> being mapped to <code class="language-plaintext highlighter-rouge">/var/www/website_one</code>, and <code class="language-plaintext highlighter-rouge">two.com</code> being mapped to <code class="language-plaintext highlighter-rouge">/var/www/website_two</code></li>
+    </ul>
+  </li>
+  <li>There’s no limit to the number of different websites you can host on a web server.</li>
+</ul>
+
+<h4 id="static-vs-dynamic-content"><strong>Static Vs Dynamic Content</strong></h4>
+
+<ul>
+  <li>Static content, as the name suggests, is content that never changes.</li>
+  <li>Common examples of this are pictures, javascript, CSS, etc., but can also include HTML that never changes.</li>
+  <li>
+    <p>Furthermore, these are files that are directly served from the webserver with no changes made to them.</p>
+  </li>
+  <li>Dynamic content, on the other hand, is content that could change with different requests.
+    <ul>
+      <li>Take, for example, a blog.</li>
+    </ul>
+  </li>
+  <li>On the homepage of the blog, it will show you the latest entries.
+    <ul>
+      <li>If a new entry is created, the home page is then updated with the latest entry, or a second example might be a search page on a blog.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Depending on what word you search, different results will be displayed.</p>
+  </li>
+  <li>These changes to what you end up seeing are done in what is called the <strong>Backend</strong> with the use of programming and scripting languages.
+    <ul>
+      <li>It’s called the Backend because what is being done is all done behind the scenes.</li>
+    </ul>
+  </li>
+  <li>You can’t view the websites’ HTML source and see what’s happening in the Backend, while the HTML is the result of the processing from the Backend.
+    <ul>
+      <li>Everything you see in your browser is called the <strong>Frontend.</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="scripting-and-backend-languages"><strong>Scripting and Backend Languages</strong></h4>
+
+<ul>
+  <li>There’s not much of a limit to what a backend language can achieve, and these are what make a website interactive to the user.</li>
+  <li>Some examples of these languages (in no particular order :p) are PHP, Python, Ruby, NodeJS, Perl and many more.
+    <ul>
+      <li>These languages can interact with databases, call external services, process data from the user, and so much more.</li>
+    </ul>
+  </li>
+  <li>
+    <p>A very basic PHP example of this would be if you requested the website <code class="language-plaintext highlighter-rouge">http://example.com/index.php?name=adam</code></p>
+  </li>
+  <li>If index.php was built like this:</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">&lt;html&gt;&lt;body&gt;Hello &lt;?php echo $_GET["name"]; ?&gt;&lt;/body&gt;&lt;/html&gt;</code></p>
+
+<ul>
+  <li>It would output the following to the client:</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">&lt;html&gt;&lt;body&gt;Hello adam&lt;/body&gt;&lt;/html&gt;</code></p>
+
+<ul>
+  <li>You’ll notice that the client doesn’t see any PHP code because it’s on the Backend.</li>
+  <li>This interactivity opens up a lot more security issues for web applications that haven’t been created securely, as you learn in further modules.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>What does web server software use to host multiple sites?</p>
+
+<p>A: virtual hosts
+ 
+What is the name for the type of content that can change?</p>
+
+<p>A: dynamic</p>
+
+<p>Does the client see the backend code? Yay/Nay</p>
+
+<p>A: nay</p>
+
+<h2 id="quiz">Quiz</h2>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Flag</p>
+
+<p><img src="/tryhackme/Putting%20It%20All%20Together/cap1.png" alt="" /></p>
+
+<p><img src="/tryhackme/Putting%20It%20All%20Together/cap2.png" alt="" /></p>
+
+<p><img src="/tryhackme/Putting%20It%20All%20Together/cap3.png" alt="" /></p>
+
+<p>A: THM{YOU_GOT_THE_ORDER}</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

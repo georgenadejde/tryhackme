@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Networking Essentials · THM Writeups</title>
+  
+  <meta name="description" content="Explore networking protocols from automatic configuration to routing packets to the destination." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Networking Essentials</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Networking Essentials/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">networking</span>
+          
+          <span class="tag-pill">dhcp</span>
+          
+          <span class="tag-pill">arp</span>
+          
+          <span class="tag-pill">icmp</span>
+          
+          <span class="tag-pill">nat</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Explore networking protocols from automatic configuration to routing packets to the destination.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="networking-essentials"><a href="https://tryhackme.com/room/networkingessentials">Networking Essentials</a></h1>
+
+<h2 id="dhcp-give-me-my-network-settings">DHCP: Give Me My Network Settings</h2>
+
+<p>You went to your favourite coffee shop, grabbed your favourite hot drink, and opened your laptop. Your laptop connected to the shop’s WiFi and automatically configured the network, so you could now work on a new TryHackMe room. You didn’t type a single IP address, yet your device is all set up. Let’s see how this happened.</p>
+
+<p>Whenever we want to access a network, at the very least, we need to configure the following:</p>
+
+<ul>
+  <li>IP address along with subnet mask</li>
+  <li>Router (or gateway)</li>
+  <li>DNS server</li>
+</ul>
+
+<p>Whenever we connect our device to a new network, the above configurations must be set according to the new network. Manually configuring these settings is a good option, especially for servers. Servers are not expected to switch networks; you don’t carry your domain controller and connect it to the coffee shop WiFi. Moreover, other devices need to connect to the servers and expect to find them at specific IP addresses.</p>
+
+<p>Having an automated way to configure connected devices has many advantages. First, it would save us from manually configuring the network; this is extremely important, especially for mobile devices. Secondly, it saves us from address conflicts, i.e., when two devices are configured with the same IP address. An IP address conflict would prevent the involved hosts from using the network resources; this applies to local resources and the Internet. The solution lies in using Dynamic Host Configuration Protocol (DHCP). DHCP is an application-level protocol that relies on UDP; the server listens on UDP port 67, and the client sends from UDP port 68. Your smartphone and laptop are configured to use DHCP by default.</p>
+
+<p>DHCP follows four steps: Discover, Offer, Request, and Acknowledge (DORA):</p>
+
+<ol>
+  <li><strong>DHCP Discover</strong>: The client broadcasts a DHCPDISCOVER message seeking the local DHCP server if one exists.</li>
+  <li><strong>DHCP Offer</strong>: The server responds with a DHCPOFFER message with an IP address available for the client to accept.</li>
+  <li><strong>DHCP Request</strong>: The client responds with a DHCPREQUEST message to indicate that it has accepted the offered IP.</li>
+  <li><strong>DHCP Acknowledge</strong>: The server responds with a DHCPACK message to confirm that the offered IP address is now assigned to this client.</li>
+</ol>
+
+<p>In the DHCP packet exchange, we can notice the following:</p>
+
+<ul>
+  <li>The client starts without any IP network configuration. It only has a MAC address. In the first and third packets, DHCP Discover and DHCP Request, the client searching for a DHCP server still has no IP network configuration and has not yet used the DHCP server’s offered IP address. Therefore, it sends packets from the IP address <code class="language-plaintext highlighter-rouge">0.0.0.0</code> to the broadcast IP address <code class="language-plaintext highlighter-rouge">255.255.255.255</code>.</li>
+  <li>As for the link layer, in the first and third packets, the client sends to the broadcast MAC address, <code class="language-plaintext highlighter-rouge">ff:ff:ff:ff:ff:ff</code> (not shown in the output above). The DHCP server offers an available IP address along with the network configuration in the DHCP offer. It uses the client’s destination MAC address. (It used the proposed IP address in this example system.)</li>
+</ul>
+
+<p>At the end of the DHCP process, our device would have received all the configuration needed to access the network or even the Internet. In particular, we expect that the DHCP server has provided us with the following:</p>
+
+<ul>
+  <li>The leased IP address to access network resources</li>
+  <li>The gateway to route our packets outside the local network</li>
+  <li>A DNS server to resolve domain names (more on this later)</li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: How many steps does DHCP use to provide network configuration?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">4</code></p>
+
+<p>Q: What is the destination IP address that a client uses when it sends a DHCP Discover packet?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">255.255.255.255</code></p>
+
+<p>Q: What is the source IP address a client uses when trying to get IP network configuration over DHCP?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">0.0.0.0</code></p>
+
+<h2 id="arp-bridging-layer-3-addressing-to-layer-2-addressing"><a href="arp.md">ARP</a>: Bridging Layer 3 Addressing to Layer 2 Addressing</h2>
+
+<p>However, the devices on the same Ethernet network do not need to know each other’s MAC addresses all the time; they only need to know each other’s MAC addresses while communicating. Everything revolves around IP addresses. Consider this scenario: You connect your device to a network, and if the network has a DHCP server, your device is automatically configured to use a specific gateway (router) and DNS server. Consequently, your device knows the IP address of the DNS server to resolve any domain name; moreover, it knows the IP address of the router when it needs to send packets over the Internet. In all this scenario, no MAC addresses are revealed. However, two devices on the same Ethernet cannot communicate without knowing each other’s MAC addresses.</p>
+
+<p>Address Resolution Protocol (<a href="arp.md">ARP</a>) makes it possible to find the MAC address of another device on the Ethernet. In the example below, a host with the IP address <code class="language-plaintext highlighter-rouge">192.168.66.89</code> wants to communicate with another system with the IP address <code class="language-plaintext highlighter-rouge">192.168.66.1</code>. It sends an ARP Request asking the host with the IP address <code class="language-plaintext highlighter-rouge">192.168.66.1</code> to respond. The ARP Request is sent from the MAC address of the requester to the broadcast MAC address, <code class="language-plaintext highlighter-rouge">ff:ff:ff:ff:ff:ff</code> as shown in the first packet. The ARP Reply arrived shortly afterwards, and the host with the IP address <code class="language-plaintext highlighter-rouge">192.168.66.1</code> responded with its MAC address. From this point, the two hosts can exchange data link layer frames.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>user@TryHackMe<span class="nv">$ </span>tshark <span class="nt">-r</span> arp.pcapng <span class="nt">-Nn</span>    
+ 1 0.000000000 cc:5e:f8:02:21:a7 → ff:ff:ff:ff:ff:ff ARP 42 Who has 192.168.66.1? Tell 192.168.66.89     
+ 2 0.003566632 44:df:65:d8:fe:6c → cc:5e:f8:02:21:a7 ARP 42 192.168.66.1 is at 44:df:65:d8:fe:6c
+</code></pre></div></div>
+
+<p>If we use <code class="language-plaintext highlighter-rouge">tcpdump</code>, the packets will be displayed differently. It uses the terms ARP <strong>Request</strong> and ARP <strong>Reply</strong>. For your information, the output is shown in the terminal below.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> user@TryHackMe<span class="nv">$ </span>tcpdump <span class="nt">-r</span> arp.pcapng <span class="nt">-n</span> <span class="nt">-v</span> 
+ 17:23:44.506615 ARP, Ethernet <span class="o">(</span>len 6<span class="o">)</span>, IPv4 <span class="o">(</span>len 4<span class="o">)</span>, Request who-has 192.168.66.1 tell 192.168.66.89, length 28 
+ 17:23:44.510182 ARP, Ethernet <span class="o">(</span>len 6<span class="o">)</span>, IPv4 <span class="o">(</span>len 4<span class="o">)</span>, Reply 192.168.66.1 is-at 44:df:65:d8:fe:6c, length 28
+</code></pre></div></div>
+
+<p>An ARP Request or ARP Reply is not encapsulated within a UDP or even IP packet; it is encapsulated directly within an Ethernet frame.</p>
+
+<p>ARP is considered layer 2 because it deals with MAC addresses. Others would argue that it is part of layer 3 because it supports IP operations. What is essential to know is that ARP allows the translation from layer 3 addressing to layer 2 addressing.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: What is the destination MAC address used in an ARP Request?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">ff:ff:ff:ff:ff:ff</code></p>
+
+<p>Q: In the example above, what is the MAC address of <code class="language-plaintext highlighter-rouge">192.168.66.1</code>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">44:df:65:d8:fe:6c</code></p>
+
+<h2 id="icmp-troubleshooting-networks">ICMP: Troubleshooting Networks</h2>
+
+<p>Internet Control Message Protocol (ICMP) is mainly used for network diagnostics and error reporting. Two popular commands rely on ICMP, and they are instrumental in network troubleshooting and network security. The commands are:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ping</code>: This command uses ICMP to test connectivity to a target system and measures the round-trip time (RTT). In other words, it can be used to learn that the target is alive and that its reply can reach our system.</li>
+  <li><code class="language-plaintext highlighter-rouge">traceroute</code>: This command is called <code class="language-plaintext highlighter-rouge">traceroute</code> on Linux and UNIX-like systems and <code class="language-plaintext highlighter-rouge">tracert</code> on MS Windows systems. It uses ICMP to discover the route from your host to the target.</li>
+</ul>
+
+<h3 id="ping">Ping</h3>
+
+<p>You may have never played ping-pong (table tennis) before; however, thanks to ICMP, you can now play it with the computer! The <code class="language-plaintext highlighter-rouge">ping</code> command sends an ICMP Echo Request (ICMP Type <code class="language-plaintext highlighter-rouge">8</code>).</p>
+
+<p>The computer on the receiving end responds with an ICMP Echo Reply (ICMP Type <code class="language-plaintext highlighter-rouge">0</code>).</p>
+
+<p>Many things might prevent us from getting a reply. In addition to the possibility of the target system being offline or shut down, a firewall along the path might block the necessary packets for <code class="language-plaintext highlighter-rouge">ping</code> to work.</p>
+
+<h3 id="traceroute">Traceroute</h3>
+
+<p>How can we make every router between our system and a target system reveal itself?</p>
+
+<p>The Internet protocol has a field called Time-to-Live (TTL) that indicates the maximum number of routers a packet can travel through before it is dropped. The router decrements the packet’s TTL by one before it sends it across. When the TTL reaches zero, the router drops the packet and sends an ICMP Time Exceeded message (ICMP Type <code class="language-plaintext highlighter-rouge">11</code>). (In this context, “time” is measured in the number of routers, not seconds.)</p>
+
+<p>The terminal output below shows the result of running <code class="language-plaintext highlighter-rouge">traceroute</code> to discover the routers between our system and <code class="language-plaintext highlighter-rouge">example.com</code>. Some routers don’t respond; in other words, they drop the packet without sending any ICMP messages. Routers that belong to our ISP might respond, revealing their private IP address. Moreover, some routers respond and show their public IP address, and this would let us look up their domain name and discover their geographic location. Finally, there is always a possibility that an ICMP Time Exceeded message gets blocked and never reaches us.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Using the example images above, how many bytes were sent in the echo (ping) request?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">40</code></p>
+
+<p>Q: Which IP header field does the <code class="language-plaintext highlighter-rouge">traceroute</code> command require to become zero?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">TTL</code></p>
+
+<h2 id="routing">Routing</h2>
+
+<p>how can the Internet figure out how to deliver a packet from Network 1 to Network 2 or Network 3? Although this is an overly simplified diagram, we need some algorithm to figure out how to connect Network 1 to Network 2 and Network 3 and vice versa.</p>
+
+<p><img src="/tryhackme/Networking%20Essentials/5f04259cf9bf5b57aed2c476-1719849271800.svg" alt="Three networks are connected to the Internet through its own router." /></p>
+
+<p>The mobile user can reach the web server; however, for this to happen, each router across the path needs to send the packets via the appropriate link. Obviously, there is more than one path, i.e., route, connecting the mobile user and the web server. We need a routing algorithm for the router to figure out which link to use.</p>
+
+<p><img src="/tryhackme/Networking%20Essentials/5f04259cf9bf5b57aed2c476-1719849333579.svg" alt="A network with six routers provides more than one path for the hosts to communicate." /></p>
+
+<p>Routing algorithms:</p>
+
+<ul>
+  <li><strong>OSPF (Open Shortest Path First)</strong>: OSPF is a routing protocol that allows routers to share information about the network topology and calculate the most efficient paths for data transmission. It does this by having routers exchange updates about the state of their connected links and networks. This way, each router has a complete map of the network and can determine the best routes to reach any destination.</li>
+  <li><strong>EIGRP (Enhanced Interior Gateway Routing Protocol)</strong>: EIGRP is a Cisco proprietary routing protocol that combines aspects of different routing algorithms. It allows routers to share information about the networks they can reach and the cost (like bandwidth or delay) associated with those routes. Routers then use this information to choose the most efficient paths for data transmission.</li>
+  <li><strong>BGP (Border Gateway Protocol)</strong>: BGP is the primary routing protocol used on the Internet. It allows different networks (like those of Internet Service Providers) to exchange routing information and establish paths for data to travel between these networks. BGP helps ensure data can be routed efficiently across the Internet, even when traversing multiple networks.</li>
+  <li><strong>RIP (Routing Information Protocol)</strong>: RIP is a simple routing protocol often used in small networks. Routers running RIP share information about the networks they can reach and the number of hops (routers) required to get there. As a result, each router builds a routing table based on this information, choosing the routes with the fewest hops to reach each destination.</li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Which routing protocol discussed in this task is a Cisco proprietary protocol?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">EIGRP</code></p>
+
+<h2 id="nat">NAT</h2>
+
+<p>it was clear that the IPv4 address space would be depleted quickly. One solution to address depletion is Network Address Translation (NAT).</p>
+
+<p>The idea behind NAT lies in using <strong>one public IP address</strong> to provide Internet access to <strong>many private IP addresses</strong>. In other words, if you are connecting a company with twenty computers, you can provide Internet access to all twenty computers by using a single public IP address instead of twenty public IP addresses. (Note: <em>Technically speaking, the number of IP addresses is always expressed as a power of two. To be technically accurate, with NAT, you reserve two public IP addresses instead of thirty-two. Consequently, you would have saved thirty public IP addresses.</em>)</p>
+
+<p>Unlike routing, which is the natural way to route packets to the destination host, routers that support NAT must find a way to track ongoing connections. Consequently, NAT-supporting routers maintain a table translating network addresses between internal and external networks. Generally, the internal network would use a private IP address range, while the external network would use a public IP address.</p>
+
+<p>In the diagram below, multiple devices access the Internet via a router that supports NAT. The router maintains a table that maps the internal IP address and port number with its external IP address and port number. For instance, the laptop might establish a connection with some web server. From the laptop perspective, the connection is initiated from its IP address <code class="language-plaintext highlighter-rouge">192.168.0.129</code> from TCP source port number <code class="language-plaintext highlighter-rouge">15401</code>; however, the web server will see this same connection as being established from <code class="language-plaintext highlighter-rouge">212.3.4.5</code> and TCP port number <code class="language-plaintext highlighter-rouge">19273</code>, as shown in the translation table. The router does this address translation seamlessly.</p>
+
+<p><img src="/tryhackme/Networking%20Essentials/5f04259cf9bf5b57aed2c476-1719849362861.svg" alt="" /></p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: In the network diagram above, what is the public IP that the phone will appear to use when accessing the Internet?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">212.3.4.5</code></p>
+
+<p>Q: Assuming that the router has infinite processing power, approximately speaking, how many <strong>thousand</strong> simultaneous TCP connections can it maintain?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">65</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

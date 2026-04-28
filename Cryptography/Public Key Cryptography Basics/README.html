@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Public Key Cryptography Basics · THM Writeups</title>
+  
+  <meta name="description" content="Discover how public key ciphers such as RSA work and explore their role in applications such as SSH." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Public Key Cryptography Basics</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Cryptography/Public Key Cryptography Basics/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">RSA</span>
+          
+          <span class="tag-pill">dh</span>
+          
+          <span class="tag-pill">ssh</span>
+          
+          <span class="tag-pill">digitalsignature</span>
+          
+          <span class="tag-pill">pgp</span>
+          
+          <span class="tag-pill">gpg</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Discover how public key ciphers such as RSA work and explore their role in applications such as SSH.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="public-key-cryptography-basics"><a href="https://tryhackme.com/room/publickeycrypto">Public Key Cryptography Basics</a></h1>
+
+<p>Let’s say you are meeting a business partner over coffee and discussing somewhat confidential business plans. Let’s break down the meeting from the security perspective.</p>
+
+<ul>
+  <li>You can see and hear the other person. Consequently, it is easy to be sure of their identity. That’s <strong>authentication</strong>, i.e., you are confirming the identity of who you are talking with.</li>
+  <li>You can also confirm that what you are “hearing” is coming from your business partner. You can tell what words and sentences are coming from your business partner and what is coming from others. That’s <strong>authenticity</strong>, i.e., you verify that the message genuinely comes from a specific sender. Moreover, you know that what they are saying is reaching you, and there is no chance of anything changing the other party’s words across the table. That’s <strong>integrity</strong>, i.e., ensuring that the data has not been altered or tampered with.</li>
+  <li>Finally, you can pick a seat away from the other customers and keep your voice low so that only your business partner can hear you. That’s <strong>confidentiality</strong>, i.e., only the authorised parties can access the data.</li>
+</ul>
+
+<p>Let’s quickly compare this with correspondence in the cyber realm. When someone sends you a text message, how can you be sure they are who they claim to be? How can you be sure that nothing changed the text as it travelled across various network links? When you are communicating with your business partner over an online messaging platform, you need to be sure of the following:</p>
+
+<ul>
+  <li><strong>Authentication</strong>: You want to be sure you communicate with the right person, not someone else pretending.</li>
+  <li><strong>Authenticity</strong>: You can verify that the information comes from the claimed source.</li>
+  <li><strong>Integrity</strong>: You must ensure that no one changes the data you exchange.</li>
+  <li><strong>Confidentiality</strong>: You want to prevent an unauthorised party from eavesdropping on your conversations.</li>
+</ul>
+
+<p>Cryptography can provide solutions to satisfy the above requirements, among many others. Private key cryptography, i.e., symmetric encryption, mainly protects confidentiality. However, public key cryptography, i.e., asymmetric cryptography, plays a significant role in authentication, authenticity, and integrity. This room will show various examples of how public key cryptography achieves that.</p>
+
+<h2 id="common-use-of-asymmetric-encryption">Common Use of Asymmetric Encryption</h2>
+
+<p>Exchanging keys for symmetric encryption is a widespread use of asymmetric cryptography. Asymmetric encryption is relatively slow compared to symmetric encryption; therefore, we rely on asymmetric encryption to negotiate and agree on symmetric encryption ciphers and keys.</p>
+
+<p>But the question is, how do you agree on a key with the server without transmitting the key for people snooping to see?</p>
+
+<h3 id="analogy">Analogy</h3>
+
+<p>Imagine you have a secret code for communicating and instructions for using the secret code. The question is how you can send these instructions to your friend without anyone else being able to read them. The answer is more straightforward than it seems; you could ask your friend for a lock. Only your friend has the key for this lock, and we’ll assume you have an indestructible box you can lock with it.</p>
+
+<p>If you send the instructions in a locked box to your friend, they can unlock it once it reaches them and read the instructions. After that, you can communicate using the secret code without the risk of people snooping.</p>
+
+<p>In this metaphor, the secret code represents a symmetric encryption cipher and key, the lock represents the server’s public key, and the key represents the server’s private key.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Analogy</th>
+      <th>Cryptographic System</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Secret Code</td>
+      <td>Symmetric Encryption Cipher and Key</td>
+    </tr>
+    <tr>
+      <td>Lock</td>
+      <td>Public Key</td>
+    </tr>
+    <tr>
+      <td>Lock’s Key</td>
+      <td>Private Key</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Consequently, you would only need to use asymmetric cryptography once so that it won’t affect the speed, and then you can communicate privately using symmetric encryption.</p>
+
+<h3 id="the-real-world">The Real World</h3>
+
+<p>In reality, you need more cryptography to verify that the person you’re talking to is who they say they are. This is achieved using digital signatures and certificates</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: In the analogy presented, what real object is analogous to the public key?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">lock</code></p>
+
+<h2 id="rsa">RSA</h2>
+
+<p>RSA is a public-key encryption algorithm that enables secure data transmission over insecure channels. With an insecure channel, we expect adversaries to eavesdrop on it.</p>
+
+<p>RSA is based on the mathematically difficult problem of factoring a large number. Multiplying two large prime numbers is a straightforward operation; however, finding the factors of a huge number takes much more computing power.</p>
+
+<p>It’s simple to multiply two prime numbers together even on paper, say 113 × 127 = 14351. Even for larger prime numbers, it would still be a feasible job, even by hand. Consider the following numeric example:</p>
+
+<ul>
+  <li>Prime number 1: 982451653031</li>
+  <li>Prime number 2: 169743212279</li>
+  <li>Their product: 982451653031 × 169743212279 = 166764499494295486767649</li>
+</ul>
+
+<p>On the other hand, it’s pretty tricky to determine what two prime numbers multiply together to make 14351 and even more challenging to find the factors of 166764499494295486767649.</p>
+
+<p>In real-world examples, the prime numbers would be much bigger than the ones in this example. A computer can easily factorise 166764499494295486767649; however, it cannot factorise a number with more than 600 digits. And you would agree that the multiplication of the two huge prime numbers, each around 300 digits, would be easier than the factorisation of their product.</p>
+
+<p>In the following simplified numerical example, we see the RSA algorithm in action:</p>
+
+<ol>
+  <li>Bob chooses two prime numbers: <em>p</em> = 157 and <em>q</em> = 199. He calculates <em>n</em> = <em>p</em> × <em>q</em> = 31243.</li>
+  <li>With <em>ϕ</em>(<em>n</em>) = <em>n</em> − <em>p</em> − <em>q</em> + 1 = 31243 − 157 − 199 + 1 = 30888, Bob selects <em>e</em> = 163 such that <em>e</em> is relatively prime to <em>ϕ</em>(<em>n</em>); moreover, he selects <em>d</em> = 379, where <em>e</em> × <em>d</em> = 1 mod <em>ϕ</em>(<em>n</em>), i.e., <em>e</em> × <em>d</em> = 163 × 379 = 61777 and 61777 mod 30888 = 1. The public key is (<em>n</em>,<em>e</em>), i.e., (31243,163) and the private key is $(n,d), i.e., (31243,379).</li>
+  <li>Let’s say that the value they want to encrypt is <em>x</em> = 13, then Alice would calculate and send <em>y</em> = <em>x__e</em> mod <em>n</em> = 13163 mod 31243 = 16341.</li>
+  <li>Bob will decrypt the received value by calculating <em>x</em> = <em>y__d</em> mod <em>n</em> = 16341379 mod 31243 = 13. This way, Bob recovers the value that Alice sent.</li>
+</ol>
+
+<p>The proof that the above algorithm works can be found in <a href="https://www.britannica.com/science/modular-arithmetic">modular arithmetic</a> and is beyond the scope of this module. It is worth repeating that in this example, we picked a three-digit prime number, while in an actual application, <em>p</em> and <em>q</em> would be at least a 300-digit prime number each.</p>
+
+<h3 id="rsa-in-ctfs">RSA in CTFs</h3>
+
+<p>The math behind RSA comes up relatively often in CTFs, requiring you to calculate variables or break some encryption based on them. Many good articles online explain RSA, and they will give you almost all of the information you need to complete the challenges. One good example of an RSA CTF challenge is the <a href="https://tryhackme.com/r/room/breakrsa">Breaking RSA</a> room.</p>
+
+<p>There are some excellent tools for defeating RSA challenges in CTFs. My favourite is <a href="https://github.com/Ganapati/RsaCtfTool">RsaCtfTool</a>, which has worked well for me. I’ve also had some success with <a href="https://github.com/ius/rsatool">rsatool</a>.</p>
+
+<p>You need to know the main variables for RSA in CTFs: p, q, m, n, e, d, and c. As per our numerical example:</p>
+
+<ul>
+  <li>p and q are large prime numbers</li>
+  <li>n is the product of p and q</li>
+  <li>The public key is n and e</li>
+  <li>The private key is n and d</li>
+  <li>m is used to represent the original message, i.e., plaintext</li>
+  <li>c represents the encrypted text, i.e., ciphertext</li>
+</ul>
+
+<p>Crypto CTF challenges often present you with a set of these values, and you need to break the encryption and decrypt a message to retrieve the flag.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: Knowing that <em>p</em> = 4391 and <em>q</em> = 6659. What is <em>n</em>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">29239669</code></p>
+
+<p>Q: Knowing that <em>p</em> = 4391 and <em>q</em> = 6659. What is <em>ϕ</em>(<em>n</em>)?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">29228620</code></p>
+
+<h2 id="diffie-hellman-key-exchange">Diffie-Hellman Key Exchange</h2>
+
+<p>One of the challenges of using symmetric encryption is sharing the secret key.</p>
+
+<h3 id="diffie-hellman-key-exchange-1">Diffie-Hellman Key Exchange</h3>
+
+<p><strong>Key exchange</strong> aims to establish a shared secret between two parties. It is a method that allows two parties to establish a shared secret over an insecure communication channel without requiring a pre-existing shared secret and without an observer being able to get this key. Consequently, this shared key can be used for symmetric encryption in subsequent communications.</p>
+
+<p>Consider the following scenario. Alice and Bob want to talk securely. They want to establish a shared key for symmetric cryptography but don’t want to use asymmetric cryptography for the key exchange. This is where the Diffie-Hellman Key Exchange comes in.</p>
+
+<p>Alice and Bob generate secrets independently; let’s call these secrets A and B. They also have some public common material; let’s call this C.</p>
+
+<p>We need to make some assumptions. Firstly, whenever we combine secrets, they’re practically impossible to separate. Secondly, the order in which they’re combined doesn’t matter. Alice and Bob will combine their secrets with the common material to form AC and BC. They will then send these to each other and combine the received part with their secret to create two identical keys, both ABC. Now, they can use this key to communicate.</p>
+
+<p>If you found the previous paragraphs too abstract, let’s investigate the exact process.</p>
+
+<ol>
+  <li>Alice and Bob agree on the <strong>public variables</strong>: a large prime number <em>p</em> and a generator <em>g</em>, where 0 &lt; <em>g</em> &lt; <em>p</em>. These values will be disclosed publicly over the communication channel. Although insecurely small, we will choose <em>p</em> = 29 and <em>g</em> = 3 to simplify our calculations.</li>
+  <li>Each party chooses a private integer. As a numerical example, Alice chooses <em>a</em> = 13, and Bob chooses <em>b</em> = 15. Each of these values represents a <strong>private key</strong> and must not be disclosed.</li>
+  <li>It is time for each party to calculate their <strong>public key</strong> using their private key from step 2 and the agreed-upon public variables from step 1. Alice calculates <em>A</em> = <em>g__a</em> mod <em>p</em> = 313 mod 29 = 19 and Bob calculates <em>B</em> = <em>g__b</em> mod <em>p</em> = 315 mod 29 = 26. These are the public keys.</li>
+  <li>Alice and Bob send the keys to each other. Bob receives <em>A</em> = <em>g__a</em> mod <em>p</em> = 19, i.e., Alice’s public key. And Alice receives <em>B</em> = <em>g__b</em> mod <em>p</em> = 26, i.e., Bob’s public key. This step is called the <strong>key exchange</strong>.</li>
+  <li>Alice and Bob can finally calculate the <strong>shared secret</strong> using the received public key and their own private key. Alice calculates <em>B__a</em> mod <em>p</em> = 2613 mod 29 = 10 and Bob calculates <em>A__b</em> mod <em>p</em> = 1915 mod 29 = 10. Both calculations yield the same result, <em>g__a__b</em> mod <em>p</em> = 10, the shared secret key.</li>
+</ol>
+
+<p><img src="/tryhackme/Cryptography/Public%20Key%20Cryptography%20Basics/5f04259cf9bf5b57aed2c476-1728439878360.svg" alt="Diffie-Hellman Key Exchange" /></p>
+
+<p>The chosen numbers are too small to provide any security, and in real-life applications, we would consider much bigger numbers.</p>
+
+<p>Diffie-Hellman Key Exchange is often used alongside RSA public key cryptography. Diffie-Hellman is used for key agreement, while RSA is used for digital signatures, key transport, and authentication, among many others. For instance, RSA helps prove the identity of the person you’re talking to via digital signing, as you can confirm based on their public key. This would prevent someone from attacking the connection with a man-in-the-middle attack against Alice by pretending to be Bob. In brief, Diffie-Hellman and RSA are incorporated into many security protocols and standards to provide a comprehensive security solution.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Consider <em>p</em> = 29, <em>g</em> = 5, <em>a</em> = 12. What is <em>A</em>?</p>
+
+<p>5^12 mod 29</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">7</code></p>
+
+<p>Q: Consider <em>p</em> = 29, <em>g</em> = 5, <em>b</em> = 17. What is <em>B</em>?</p>
+
+<p>5^17 mod 29</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">9</code></p>
+
+<p>Q: Knowing that <em>p</em> = 29, <em>a</em> = 12, and you have <em>B</em> from the second question, what is the key calculated by Bob? (key = <em>B__a</em> mod <em>p</em>)</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">24</code></p>
+
+<p>Q: Knowing that <em>p</em> = 29, <em>b</em> = 17, and you have <em>A</em> from the first question, what is the key calculated by Alice? (key = <em>A__b</em> mod <em>p</em>)</p>
+
+<p>A: ``</p>
+
+<h2 id="ssh">SSH</h2>
+
+<h3 id="authenticating-the-server">Authenticating the Server</h3>
+
+<p>If you have used an SSH client before, you would know the confirmation prompt in the terminal output below.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh 10.10.244.173 
+The authenticity of host <span class="s1">'10.10.244.173 (10.10.244.173)'</span> can<span class="s1">'t be established. ED25519 key fingerprint is SHA256:lLzhZc7YzRBDchm02qTX0qsLqeeiTCJg5ipOT0E/YM8. This key is not known by any other name. Are you sure you want to continue connecting (yes/no/[fingerprint])? yes Warning: Permanently added '</span>10.10.244.173<span class="s1">' (ED25519) to the list of known hosts.
+</span></code></pre></div></div>
+
+<p>In the above interaction, the SSH client confirms whether we recognise the server’s public key fingerprint. ED25519 is the public-key algorithm used for digital signature generation and verification in this example. Our SSH client didn’t recognise this key and is asking us to confirm whether we want to continue with the connection. This warning is because a man-in-the-middle attack is probable; a malicious server might have intercepted the connection and replied, pretending to be the target server.</p>
+
+<p>In this case, the user must authenticate the server, i.e., confirm the server’s identity by checking the public key signature. Once you answer with “yes”, the SSH client will record this public key signature for this host. In the future, it will connect you silently unless this host replies with a different public key.</p>
+
+<h3 id="authenticating-the-client">Authenticating the Client</h3>
+
+<p>Now that we have confirmed that we are talking with the correct server, we need to identify ourselves and get authenticated. In many cases, SSH users are authenticated using usernames and passwords like you would log in to a physical machine. However, considering the inherent issues with passwords, this does not fall within the best security practices.</p>
+
+<p>At some point, one will surely hit a machine with SSH configured with key authentication instead. This authentication uses public and private keys to prove the client is a valid and authorised user on the server. By default, SSH keys are RSA keys. You can choose which algorithm to generate and add a passphrase to encrypt the SSH key.</p>
+
+<p><code class="language-plaintext highlighter-rouge">ssh-keygen</code> is the program usually used to generate key pairs</p>
+
+<p>The following is just for your information. At this stage, we recommend that you recognise their names only.</p>
+
+<ul>
+  <li><strong>DSA (Digital Signature Algorithm)</strong> is a public-key cryptography algorithm specifically designed for digital signatures.</li>
+  <li><strong>ECDSA (Elliptic Curve Digital Signature Algorithm)</strong> is a variant of DSA that uses elliptic curve cryptography to provide smaller key sizes for equivalent security.</li>
+  <li><strong>ECDSA-SK (ECDSA with Security Key)</strong> is an extension of ECDSA. It incorporates hardware-based security keys for enhanced private key protection.</li>
+  <li><strong>Ed25519</strong> is a public-key signature system using EdDSA (Edwards-curve Digital Signature Algorithm) with Curve25519.</li>
+  <li><strong>Ed25519-SK (Ed25519 with Security Key)</strong> is a variant of Ed25519. Similar to ECDSA-SK, it uses a hardware-based security key for improved private key protection.</li>
+</ul>
+
+<h4 id="ssh-private-keys">SSH Private Keys</h4>
+
+<p>As just mentioned, you should treat your private SSH keys like passwords. Never share them under any circumstances; they’re called private keys for a reason. Someone with your private key can log in to servers that accept it, i.e., include it among the authorised keys, unless the key is encrypted with a passphrase.</p>
+
+<p>It’s very important to mention that the passphrase used to decrypt the private key doesn’t identify you to the server at all; it only decrypts the SSH private key. The passphrase is never transmitted and never leaves your system.</p>
+
+<p>Using tools like John the Ripper, you can attack an encrypted SSH key to attempt to find the passphrase, highlighting the importance of using a complex passphrase and keeping your private key private.</p>
+
+<p>When generating an SSH key to log in to a remote machine, you should generate the keys on your machine and then copy the public key over, as this means the private key never exists on the target machine using <code class="language-plaintext highlighter-rouge">ssh-copy-id</code>. However, this doesn’t matter as much for temporary keys generated to access CTF boxes.</p>
+
+<p>The permissions must be set up correctly to use a private SSH key; otherwise, your SSH client will ignore the file with a warning. Only the owner should be able to read or write to the private key (<code class="language-plaintext highlighter-rouge">600</code> or stricter). <code class="language-plaintext highlighter-rouge">ssh -i privateKeyFileName user@host</code> is how you specify a key for the standard Linux OpenSSH client.</p>
+
+<p><strong>Keys Trusted by the Remote Host</strong></p>
+
+<p>The <code class="language-plaintext highlighter-rouge">~/.ssh</code> folder is the default place to store these keys for OpenSSH. The <code class="language-plaintext highlighter-rouge">authorized_keys</code> (note the US English spelling) file in this directory holds public keys that are allowed access to the server if key authentication is enabled. By default on many Linux distributions, key authentication is enabled as it is more secure than using a password to authenticate. Only key authentication should be accepted if you want to allow SSH access for the root user.</p>
+
+<h3 id="using-ssh-keys-to-get-a-better-shell">Using SSH Keys to Get a “Better Shell”</h3>
+
+<p>During CTFs, penetration testing, and red teaming exercises, SSH keys are an excellent way to “upgrade” a reverse shell, assuming the user has login enabled. Note that www-data usually does not allow this, but regular users and root will work. Leaving an SSH key in the <code class="language-plaintext highlighter-rouge">authorized_keys</code> file on a machine can be a useful backdoor, and you don’t need to deal with any of the issues of unstabilised reverse shells like Control-C or lack of tab completion.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Check the SSH Private Key in <code class="language-plaintext highlighter-rouge">~/Public-Crypto-Basics/Task-5</code>. What algorithm does the key use?</p>
+
+<p><img src="/tryhackme/Cryptography/Public%20Key%20Cryptography%20Basics/2025-12-17_12-01.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">RSA</code></p>
+
+<h2 id="digital-signatures-and-certificates">Digital Signatures and Certificates</h2>
+
+<p>In the <strong>“analogue” world</strong>, you are asked to sign a paper now and then. When you visit the bank to open a savings account, you are most likely asked to sign several documents. When you want to create an account at the local library, you will be asked to fill out and sign the application. The purpose can vary depending on the situation. For example, it can confirm that you agree to the terms and conditions, authorise a transaction, or acknowledge receiving an item. In the <strong>“digital” world</strong>, you cannot use your signature, stamp or fingerprint; you need a digital signature.</p>
+
+<h3 id="whats-a-digital-signature">What’s a Digital Signature?</h3>
+
+<p>Digital signatures provide a way to verify the authenticity and integrity of a digital message or document. Proving the authenticity of files means we know who created or modified them. Using asymmetric cryptography, you produce a signature with your private key, which can be verified using your public key. Only you should have access to your private key, which proves you signed the file. In many modern countries, digital and physical signatures have the same legal value.</p>
+
+<p>The simplest form of digital signature is encrypting the document with your private key. If someone wants to verify this signature, they would decrypt it with your public key and check if the files match.</p>
+
+<p>we use the term <em>digital signature</em> to refer to signing a document using a private key or a certificate.</p>
+
+<p>This process is similar to the scenario when Bob encrypts a hash of his document and shares it with Alice, along with the original document. Alice can decrypt the encrypted hash and compare it with the hash of the file she received. This approach proves the document’s integrity, unlike pasting a fancy image of a signature.</p>
+
+<h3 id="certificates-prove-who-you-are">Certificates: Prove Who You Are!</h3>
+
+<p>Certificates are an essential application of public key cryptography, and they are also linked to digital signatures. A common place where they’re used is for HTTPS. How does your web browser know that the server you’re talking to is the real tryhackme.com?</p>
+
+<p>The answer lies in certificates. The web server has a certificate that says it is the real tryhackme.com. The certificates have a chain of trust, starting with a root CA (Certificate Authority). From install time, your device, operating system, and web browser automatically trust various root CAs. Certificates are trusted only when the Root CAs say they trust the organisation that signed them. In a way, it is a chain; for example, the certificate is signed by an organisation, the organisation is trusted by a CA, and the CA is trusted by your browser. Therefore, your browser trusts the certificate. In general, there are long chains of trust. You can take a look at the certificate authorities trusted by Mozilla Firefox <a href="https://wiki.mozilla.org/CA/Included_Certificates">here</a> and by Google Chrome <a href="https://chromium.googlesource.com/chromium/src/+/main/net/data/ssl/chrome_root_store/root_store.md">here</a>.</p>
+
+<p>Let’s say you have a website and want to use HTTPS. This step requires having a TLS certificate. You can get one from the various certificate authorities for an annual fee. Furthermore, you can get your own TLS certificates for domains you own using <a href="https://letsencrypt.org/">Let’s Encrypt</a> for free</p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: What does a remote web server use to prove itself to the client?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Certificate</code></p>
+
+<p>Q: What would you use to get a free TLS certificate for your website?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Let's Encrypt</code></p>
+
+<h2 id="pgp-and-gpg">PGP and GPG</h2>
+
+<p><strong>PGP</strong> stands for Pretty Good Privacy. It’s software that implements encryption for encrypting files, performing digital signing, and more. <a href="https://gnupg.org/">GnuPG or GPG</a> is an open-source implementation of the OpenPGP standard.</p>
+
+<p>GPG is commonly used in email to protect the confidentiality of the email messages. Furthermore, it can be used to sign an email message and confirm its integrity.</p>
+
+<p>Below is an example of generating GPG. You are asked about the purpose of using <code class="language-plaintext highlighter-rouge">gpg</code>, whether signing only or signing and encrypting. Besides selecting the cryptographic algorithm, we needed to choose an expiry date for the generated key. Finally, we provided some information about us: our name, email address, and a comment usually about the purpose of this key.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--full-gen-key</span> 
+gpg <span class="o">(</span>GnuPG<span class="o">)</span> 2.4.4<span class="p">;</span> Copyright <span class="o">(</span>C<span class="o">)</span> 2024 g10 Code GmbH 
+This is free software: you are free to change and redistribute it. 
+There is NO WARRANTY, to the extent permitted by law.  
+Please <span class="k">select </span>what kind of key you want:    
+<span class="o">(</span>1<span class="o">)</span> RSA and RSA    
+<span class="o">(</span>2<span class="o">)</span> DSA and Elgamal    
+<span class="o">(</span>3<span class="o">)</span> DSA <span class="o">(</span>sign only<span class="o">)</span>    
+<span class="o">(</span>4<span class="o">)</span> RSA <span class="o">(</span>sign only<span class="o">)</span>    
+<span class="o">(</span>9<span class="o">)</span> ECC <span class="o">(</span>sign and encrypt<span class="o">)</span> <span class="k">*</span>default<span class="k">*</span>   
+<span class="o">(</span>10<span class="o">)</span> ECC <span class="o">(</span>sign only<span class="o">)</span>   
+<span class="o">(</span>14<span class="o">)</span> Existing key from card Your selection? 9 
+Please <span class="k">select </span>which elliptic curve you want:    
+<span class="o">(</span>1<span class="o">)</span> Curve 25519 <span class="k">*</span>default<span class="k">*</span>    
+<span class="o">(</span>4<span class="o">)</span> NIST P-384    
+<span class="o">(</span>6<span class="o">)</span> Brainpool P-256 
+Your selection? 1 
+Please specify how long the key should be valid.          
+0 <span class="o">=</span> key does not expire       
+&lt;n&gt;  <span class="o">=</span> key expires <span class="k">in </span>n days       
+&lt;n&gt;w <span class="o">=</span> key expires <span class="k">in </span>n weeks       
+&lt;n&gt;m <span class="o">=</span> key expires <span class="k">in </span>n months       
+&lt;n&gt;y <span class="o">=</span> key expires <span class="k">in </span>n years 
+Key is valid <span class="k">for</span>? <span class="o">(</span>0<span class="o">)</span>  
+Key does not expire at all 
+Is this correct? <span class="o">(</span>y/N<span class="o">)</span> y
+
+GnuPG needs to construct a user ID to identify your key.
+
+Real name: strategos
+Email address: strategos@tryhackme.thm
+<span class="o">[</span>...]
+pub   ed25519 2024-08-29 <span class="o">[</span>SC]
+      AB7E6AA87B6A8E0D159CA7FFE5E63DBD5F83D5ED
+uid                      Strategos &lt;strategos@tryhackme.thm&gt;
+sub   cv25519 2024-08-29 <span class="o">[</span>E]
+</code></pre></div></div>
+
+<p>You may need to use GPG to decrypt files in CTFs. With PGP/GPG, private keys can be protected with passphrases in a similar way that we protect SSH private keys. If the key is passphrase protected, you can attempt to crack it using John the Ripper and <code class="language-plaintext highlighter-rouge">gpg2john</code>.</p>
+
+<h3 id="practical-example">Practi﻿cal Example</h3>
+
+<p>Now that you have your GPG key pair, you can share the public key with your contacts. Whenever your contacts want to communicate securely, they encrypt their messages to you using your public key. To decrypt the message, you will have to use your private key. Due to the importance of the GPG keys, it is vital that you keep a backup copy in a secure location.</p>
+
+<p>Let’s say you got a new computer. All you need to do is import your key, and you can start decrypting your received messages again:</p>
+
+<ul>
+  <li>You would use <code class="language-plaintext highlighter-rouge">gpg --import backup.key</code> to import your key from backup.key</li>
+  <li>To decrypt your messages, you need to issue <code class="language-plaintext highlighter-rouge">gpg --decrypt confidential_message.gpg</code></li>
+</ul>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: Use GPG to decrypt the message in <code class="language-plaintext highlighter-rouge">~/Public-Crypto-Basics/Task-7</code>. What secret word does the message hold?</p>
+
+<p><img src="/tryhackme/Cryptography/Public%20Key%20Cryptography%20Basics/2025-12-17_12-13.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Pineapple</code></p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>We have defined <strong>cryptography</strong> as the science of securing communication in the presence of adversaries. Another important science that studies how to break or bypass cryptographic systems is <strong>cryptanalysis</strong>. As for trying every possible password combination, we call that a <strong>brute-force attack</strong>. However, when we know that the password is most likely a dictionary word, it will make more sense to try words from a dictionary instead of every possible password combination; this is called a <strong>dictionary attack</strong>.</p>
+
+<ul>
+  <li><strong>Cryptography</strong> is the science of securing communication and data using codes and ciphers.</li>
+  <li><strong>Cryptanalysis</strong> is the study of methods to break or bypass cryptographic security systems without knowing the key.</li>
+  <li><strong>Brute-Force Attack</strong> is an attack method that involves trying every possible key or password to decrypt a message.</li>
+  <li><strong>Dictionary Attack</strong> is an attack method where the attacker tries dictionary words or combinations of them.</li>
+</ul>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

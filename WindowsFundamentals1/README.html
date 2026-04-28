@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows Fundamentals 1 · THM Writeups</title>
+  
+  <meta name="description" content="In part 1 of the Windows Fundamentals module, we&#39;ll start our journey learning about the Windows desktop, the NTFS file system, UAC, the Control Panel, and more." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Windows Fundamentals 1</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">WindowsFundamentals1/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">windows</span>
+          
+        
+        
+        <span class="writeup-meta-desc">In part 1 of the Windows Fundamentals module, we'll start our journey learning about the Windows desktop, the NTFS file system, UAC, the Control Panel, and more.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="windows-fundamentals-1"><a href="https://tryhackme.com/room/windowsfundamentals1xbx">Windows Fundamentals 1</a></h1>
+
+<h2 id="windows-editions">Windows Editions</h2>
+
+<ul>
+  <li>
+    <p>The Windows operating system has a long history dating back to <em>1985</em>, and currently, it is the dominant operating system in both home use and corporate networks.</p>
+  </li>
+  <li>
+    <p><strong>Windows XP</strong> was a popular version of Windows and had a long-running.</p>
+  </li>
+  <li>
+    <p>Microsoft announced <strong>Windows Vista</strong>, which was a complete overhaul of the Windows operating system.</p>
+
+    <ul>
+      <li>
+        <p>There were many issues with Windows Vista.</p>
+      </li>
+      <li>
+        <p>It wasn’t received well by Windows users, and it was quickly phased out.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>When Microsoft announced the end-of-life date for Windows XP, many customers panicked.</p>
+  </li>
+  <li>
+    <p>Corporations, hospitals, etc., scrambled and tested the next viable Windows version, which was <strong>Windows 7</strong>, against many other hardware and devices.</p>
+  </li>
+  <li>
+    <p>Vendors had to work against the clock to ensure their products worked with Windows 7 for their customers.</p>
+  </li>
+  <li>
+    <p>If they couldn’t, their customers had to break their agreement and find another vendor that upgraded their products to work with Windows 7.</p>
+
+    <ul>
+      <li>It was a nightmare for many, and Microsoft took note of it.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Windows 7, as quickly as it was released soon after, was marked with an end of support date.</p>
+
+    <ul>
+      <li>Windows 8.x came and left and it was short-lived, like Vista.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Then arrived <strong>Windows 10</strong>, which is the current Windows operating system version for desktop computers.</p>
+  </li>
+  <li>
+    <p>Windows 10 comes in 2 flavors, <code class="language-plaintext highlighter-rouge">Home</code> and <code class="language-plaintext highlighter-rouge">Pro</code>.</p>
+  </li>
+</ul>
+
+ 	- You can read the difference between the Home and Pro <a href="https://www.microsoft.com/en-us/windows/compare-windows-10-home-vs-pro">here</a>. 
+
+<ul>
+  <li>
+    <p>Even though we didn’t talk about servers, the current version of the Windows operating system for servers is <strong>Windows Server 2019</strong>.</p>
+  </li>
+  <li>
+    <p>Even though we didn’t talk about servers, the current version of the Windows operating system for servers is Windows Server 2019.</p>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>What encryption can you enable on Pro that you can’t enable in Home?</li>
+</ol>
+
+<ul>
+  <li>We go to the link provided and check the comparison table:</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals1/Screenshot%20at%202022-06-12%2018-59-03.png" alt="" /></p>
+
+<p>A: BitLocker</p>
+
+<h2 id="the-desktop-gui">The Desktop (GUI)</h2>
+
+<p><img src="/tryhackme/WindowsFundamentals1/Screenshot%20at%202022-06-12%2019-01-19.png" alt="" /></p>
+
+<ul>
+  <li>Here are Microsoft’s brief documents for the <a href="https://support.microsoft.com/en-us/windows/see-what-s-on-the-start-menu-a8ccb400-ad49-962b-d2b1-93f453785a13">Start Menu</a> and  <a href="https://support.microsoft.com/en-us/windows/customize-the-taskbar-notification-area-e159e8d2-9ac5-b2bd-61c5-bb63c1d437c3#WindowsVersion=Windows_10">Notification Area</a>.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>Which selection will hide/disable the Search box?</li>
+</ol>
+
+<p>A: Hidden</p>
+
+<ol>
+  <li>Which selection will hide/disable the Task View button?</li>
+</ol>
+
+<p>A: Show Task View Button</p>
+
+<ol>
+  <li>Besides Clock and Network, what other icon is visible in the Notification Area?</li>
+</ol>
+
+<p>A: Action Center</p>
+
+<h2 id="the-file-system">The File System</h2>
+
+<p>#ntfs #hpfs #fat</p>
+
+<ul>
+  <li>
+    <p>The file system used in modern versions of Windows is the <strong>New Technology File System</strong> or simply <strong>NTFS</strong>.</p>
+  </li>
+  <li>
+    <p>Before NTFS, there was <strong>FAT16/FAT32</strong> (<strong>File Allocation Table</strong>) and <strong>HPFS</strong> (<strong>High Performance File System</strong>).</p>
+  </li>
+  <li>
+    <p>You still see FAT partitions in use today.</p>
+
+    <ul>
+      <li>For example, you typically see FAT partitions in <em>USB devices</em>, <em>MicroSD cards</em>, etc. but traditionally not on personal Windows computers/laptops or Windows servers.</li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://docs.microsoft.com/en-us/troubleshoot/windows-client/backup-and-storage/fat-hpfs-and-ntfs-file-systems">Official documentation</a> on these three types of file systems</p>
+  </li>
+  <li>
+    <p>NTFS is known as a <strong>journaling file system</strong>.</p>
+
+    <ul>
+      <li>
+        <p>In case of a failure, the file system can automatically repair the folders/files on disk using information stored in a log file.</p>
+      </li>
+      <li>
+        <p>This function is not possible with FAT.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>NTFS addresses many of the limitations of the previous file systems; such as:</p>
+
+    <ul>
+      <li>Supports files larger than 4GB</li>
+      <li>Set specific permissions on folders and files</li>
+      <li>Folder and file compression</li>
+      <li>Encryption (<a href="https://docs.microsoft.com/en-us/windows/win32/fileio/file-encryption">Encryption File System</a> or <strong>EFS</strong>)</li>
+    </ul>
+  </li>
+  <li>
+    <p>Windows <em>permissions</em>:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals1/ntfs-permissions1.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>How to view permissions on a file or folder:</p>
+
+    <ul>
+      <li>Right-click the file or folder you want to check for permissions.</li>
+      <li>From the context menu, select <code class="language-plaintext highlighter-rouge">Properties</code>.</li>
+      <li>Within Properties, click on the <code class="language-plaintext highlighter-rouge">Security</code> tab.</li>
+      <li>In the <code class="language-plaintext highlighter-rouge">Group or user names</code> list, select the user, computer, or group whose permissions you want to view.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#ads</p>
+<ul>
+  <li>
+    <p>Another feature of <em>NTFS</em> is <strong>Alternate Data Streams (ADS)</strong>.</p>
+  </li>
+  <li>
+    <p><strong>Alternate Data Streams (ADS)</strong> is a file attribute specific to Windows NTFS (New Technology File System).</p>
+  </li>
+  <li>
+    <p>Every file has at least one data stream (<code class="language-plaintext highlighter-rouge">$DATA</code>), and ADS allows files to contain more than one stream of data.</p>
+
+    <ul>
+      <li>Natively Window Explorer doesn’t display ADS to the user.</li>
+    </ul>
+  </li>
+  <li>
+    <p>There are 3rd party executables that can be used to view this data, but <em>Powershell</em> gives you the ability to view ADS for files.</p>
+  </li>
+  <li>
+    <p>From a security perspective, malware writers have used ADS to hide data.</p>
+  </li>
+  <li>
+    <p>Not all its uses are malicious.</p>
+
+    <ul>
+      <li>For example, when you download a file from the Internet, there are identifiers written to ADS to identify that the file was downloaded from the Internet.</li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://blog.malwarebytes.com/101/2015/07/introduction-to-alternate-data-streams/">More on ADS</a></p>
+  </li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>What is the meaning of NTFS?</li>
+</ol>
+
+<p>A: New Technology File System</p>
+
+<h2 id="the-windowssystem32-folders">The Windows\System32 Folders</h2>
+
+<p>#system32</p>
+
+<ul>
+  <li>
+    <p>The Windows folder (<code class="language-plaintext highlighter-rouge">C:\Windows</code>) is traditionally known as the folder which contains the <em>Windows operating system</em>.</p>
+  </li>
+  <li>
+    <p>The folder doesn’t have to reside in the C drive necessarily.</p>
+
+    <ul>
+      <li>It can reside in any other drive and technically can reside in a different folder.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#important</p>
+<ul>
+  <li>This is where environment variables, more specifically <em>system environment variables</em>, come into play. Even though not discussed yet, the system  environment variable for the Windows directory is <code class="language-plaintext highlighter-rouge">%windir%</code>.</li>
+</ul>
+
+<blockquote>
+  <p>Per Microsoft, “Environment variables store information about the operating system environment. This information includes details such as the operating system path, the number of processors used by the operating system, and the location of temporary folders”.</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>One of the many folders that the Windows folder include is <strong>System32</strong></p>
+  </li>
+  <li>
+    <p>The System32 folder holds the important files that are critical for the operating system.</p>
+  </li>
+  <li>
+    <p><a href="https://www.howtogeek.com/346997/what-is-the-system32-directory-and-why-you-shouldnt-delete-it/">More</a> on System32</p>
+  </li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>What is the system variable for the Windows folder?</li>
+</ol>
+
+<p>A: %windir%</p>
+
+<h2 id="user-accounts-profiles-and-permissions">User Accounts, Profiles, and Permissions</h2>
+
+<ul>
+  <li>
+    <p>User accounts can be one of two types on a typical local Windows system: <strong>Administrator</strong> &amp; <strong>Standard User</strong>.</p>
+  </li>
+  <li>
+    <p>There are several ways to determine which user accounts exist on the system:</p>
+
+    <ul>
+      <li>One way is to click the <code class="language-plaintext highlighter-rouge">Start Menu</code> and type <code class="language-plaintext highlighter-rouge">Other User</code>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Since you’re the Administrator, you see an option to Add someone else to this PC.</p>
+
+    <ul>
+      <li>Note: A Standard User will not see this option.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals1/Screenshot%20at%202022-06-13%2010-35-40.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Another way to access this information, and then some, is using <code class="language-plaintext highlighter-rouge">Local User and Group Management</code>.</p>
+
+    <ul>
+      <li>Right-click on the Start Menu and click Run. 
+#lusrmgr
+        <ul>
+          <li>Type <code class="language-plaintext highlighter-rouge">lusrmgr.msc</code>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>What is the name of the other user account?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals1/Screenshot%20at%202022-06-13%2010-40-19.png" alt="" /></p>
+
+<p>A: tryhackmebilly</p>
+
+<ol>
+  <li>What groups is this user a member of?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals1/Screenshot%20at%202022-06-13%2010-41-34.png" alt="" /></p>
+
+<p>A: Remote Desktop Users, Users</p>
+
+<ol>
+  <li>What built-in account is for guest access to the computer?</li>
+</ol>
+
+<p>A: Guest</p>
+
+<ol>
+  <li>What is the account status?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals1/Screenshot%20at%202022-06-13%2010-43-11.png" alt="" /></p>
+
+<p>A: Account is disabled</p>
+
+<h2 id="user-account-control">User Account Control</h2>
+
+<p>#uac</p>
+
+<ul>
+  <li>
+    <p>A user doesn’t need to run with high (elevated) privileges on the system to run tasks that don’t require such privileges, such as surfing the Internet, working on a Word document, etc.</p>
+  </li>
+  <li>
+    <p>This elevated privilege increases the risk of system compromise because it makes it easier for malware to infect the system.</p>
+  </li>
+  <li>
+    <p>Consequently, since the user account can make changes to the system, the malware would run in the context of the logged-in user.</p>
+  </li>
+  <li>
+    <p>To protect the local user with such privileges, Microsoft introduced <strong>User Account Control (UAC)</strong>.</p>
+
+    <ul>
+      <li>This concept was first introduced with the short-lived Windows Vista and continued with versions of Windows that followed.</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Note: UAC (by default) doesn’t apply for the built-in local administrator account.</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>How does UAC work?</p>
+
+    <ul>
+      <li>
+        <p>When a user with an account type of administrator logs into a system, the current session doesn’t run with elevated permissions.</p>
+      </li>
+      <li>
+        <p>When an operation requiring higher-level privileges needs to execute, the user will be prompted to confirm if they permit the operation to run.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>More on UAC <a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works">here</a></p>
+  </li>
+</ul>
+
+<h3 id="questions-5">Questions</h3>
+
+<ol>
+  <li>What does UAC mean?</li>
+</ol>
+
+<p>A: User Account Control</p>
+
+<h2 id="settings-and-the-control-panel">Settings and the Control Panel</h2>
+
+<h3 id="settings-vs-control-panel">Settings vs Control Panel</h3>
+
+<ul>
+  <li>
+    <p>For a long time, the Control Panel has been the go-to location to make system changes, such as adding a printer, uninstall a program, etc.</p>
+  </li>
+  <li>
+    <p>The Settings menu was introduced in Windows 8, the first Windows operating system catered to touch screen tablets, and is still available in Windows 10.</p>
+  </li>
+  <li>
+    <p>Control Panel is the menu where you will access more complex settings and perform more complex actions.</p>
+
+    <ul>
+      <li>In some cases, you can start in Settings and end up in the Control Panel.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<ol>
+  <li>In the Control Panel, change the view to Small icons. What is the last setting in the Control Panel view?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals1/Screenshot%20at%202022-06-13%2011-06-14.png" alt="" /></p>
+
+<p>A: Windows Defender Firewall</p>
+
+<h2 id="task-manager">Task Manager</h2>
+
+<p>#taskmanager</p>
+
+<ul>
+  <li><a href="https://www.howtogeek.com/405806/windows-task-manager-the-complete-guide/">More</a> on the Task Manager</li>
+</ul>
+
+<h3 id="questions-7">Questions</h3>
+
+<ol>
+  <li>What is the keyboard shortcut to open Task Manager?</li>
+</ol>
+
+<p>A: Ctrl+Shift+Esc</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

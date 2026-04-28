@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Forensics Fundamentals · THM Writeups</title>
+  
+  <meta name="description" content="Learn about digital forensics and related processes and experiment with a practical example." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Digital Forensics Fundamentals</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Digital Forensics Fundamentals/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">digitalforensics</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about digital forensics and related processes and experiment with a practical example.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="digital-forensics-fundamentals"><a href="https://tryhackme.com/room/digitalforensicsfundamentals">Digital Forensics Fundamentals</a></h1>
+
+<h2 id="intro-to-digital-forensics">Intro to Digital Forensics</h2>
+
+<p>Forensics is the application of methods and procedures to investigate and solve crimes. The branch of forensics that investigates cyber crimes is known as <strong>digital forensics</strong>. <strong>Cyber crime</strong> is any criminal activity conducted on or using a digital device. Several tools and techniques are used to investigate digital devices thoroughly after any crime to find and analyze evidence for necessary legal action.</p>
+
+<p>Consider an example where law enforcement agencies raid a bank robber’s place with proper search warrants. Some digital devices, including a laptop, mobile phone, hard drive, and a USB, were found in the robber’s home. The law enforcement agency handed over the case to the digital forensics team. The team collected evidence securely and conducted a thorough investigation inside their digital forensics lab equipped with forensics tools. The following evidence was found on the digital devices:</p>
+
+<ul>
+  <li>A digital map of the bank was found on the suspect’s laptop, which they kept for planning the robbery.</li>
+  <li>A document with the bank’s entrance and escape routes was found on the suspect’s hard drive.</li>
+  <li>A document on the hard drive that listed all the bank’s physical security controls. The suspect devised plans to bypass the security measures.</li>
+  <li>Some media files, including photos and videos of the suspect’s previous robberies, were inside the suspect’s laptop.</li>
+  <li>After conducting a thorough investigation of the suspect’s mobile phone, some illegal chat groups and call records related to the bank robbery were also found.</li>
+</ul>
+
+<p><img src="/tryhackme/Digital%20Forensics%20Fundamentals/6645aa8c024f7893371eb7ac-1719849822553.png" alt="A map of the bank" /></p>
+
+<p>All this evidence helped law enforcement in the legal proceedings of the case. This scenario discusses a case from the start till the end. Some procedures are followed by the digital forensics team while collecting the evidence, storing it, analyzing it, and reporting it.</p>
+<h3 id="questions">Questions</h3>
+
+<p>Which team was handed the case by law enforcement?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Digital Forensics</code></p>
+
+<h2 id="digital-forensics-methodology">Digital Forensics Methodology</h2>
+
+<p>The digital forensics team has various cases requiring different tools and techniques. However, the National Institute of Standards and Technology (NIST) defines a general process for every case. The NIST works on defining frameworks for different areas of technology, including cyber security, where they introduce the process of digital forensics in four phases.</p>
+
+<p><img src="/tryhackme/Digital%20Forensics%20Fundamentals/6645aa8c024f7893371eb7ac-1721898813933.png" alt="" /></p>
+
+<ol>
+  <li><strong>Collection:</strong> The first phase of digital forensics is data collection. Identifying all the devices from which the data can be collected is essential. Usually, an investigator can find personal computers, laptops, digital cameras, USBs, etc., on the crime scene. It is also necessary to ensure the original data is not tampered with while collecting the evidence and to maintain a proper document containing the collected items’ details. We will also be discussing the evidence-acquisition procedures in the upcoming tasks.</li>
+  <li><strong>Examination:</strong> The collected data may overwhelm investigators due to its size. This data usually needs to be filtered, and the data of interest needs to be extracted. For example, as an investigator, you collected all the media files from a digital camera on the crime scene. You may only require some of the media as you are concerned with the media recorded on a specific date and time. So, in the examination phase, you would filter the media files of the required time and move them to the next phase. Similarly, you may only need the data of a specific user from a system containing numerous user accounts. The examination phase helps you filter this particular data for analysis.</li>
+  <li><strong>Analysis:</strong> This is a critical phase. The investigators now have to analyze the data by correlating it with multiple pieces of evidence to draw conclusions. The analysis depends upon the case scenario and available data. The analysis aims to extract the activities relevant to the case chronologically.</li>
+  <li><strong>Reporting:</strong> In the last phase of digital forensics, a detailed report is prepared. This report contains the investigation’s methodology and detailed findings from the collected evidence. It may also contain recommendations. This report is presented to law enforcement and executive management. It is important to include executive summaries as part of the report, considering the level of understanding of all the receiving parties.</li>
+</ol>
+
+<p>As part of the collection phase, we saw that various pieces of evidence can be found at the crime scene. Analyzing these multiple categories of evidence requires various tools and techniques. There are different types of digital forensics, all with their own collection and analysis methodologies. Some of the most common types are listed below.</p>
+
+<p><img src="/tryhackme/Digital%20Forensics%20Fundamentals/6645aa8c024f7893371eb7ac-1719849921657.png" alt="The different fields of digital forensics around it." /></p>
+
+<ul>
+  <li><strong>Computer forensics:</strong> The most common type of digital forensics is computer forensics, which concerns investigating computers, the devices most commonly used in crimes.</li>
+  <li><strong>Mobile forensics:</strong> Mobile forensics involves investigating mobile devices and extracting evidence such as call records, text messages, GPS locations, and more.</li>
+  <li><strong>Network forensics:</strong> This area of forensics covers investigation beyond individual devices. It includes the whole network. The majority of the evidence found in networks is the network traffic logs.</li>
+  <li><strong>Database forensics:</strong> Many critical data is stored in dedicated databases. Database forensics investigates any intrusion into these databases that results in data modification or exfiltration.</li>
+  <li><strong>Cloud forensics:</strong> Cloud forensics is the type of forensics that involves investigating data stored on cloud infrastructure. This type of forensics sometimes gets tricky for the investigators as there is little evidence on cloud infrastructures.</li>
+  <li><strong>Email forensics:</strong> Email, the most common communication method between professionals, has become an important part of digital forensics. Emails are investigated to determine whether they are part of phishing or fraudulent campaigns.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Which phase of digital forensics is concerned with correlating the collected data to draw any conclusions from it?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Analysis</code></p>
+
+<p>Which phase of digital forensics is concerned with extracting the data of interest from the collected evidence?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Examination</code></p>
+
+<h2 id="evidence-acquisition">Evidence Acquisition</h2>
+
+<p>Acquiring evidence is a critical job. The forensics team must collect all the evidence securely without tampering with the original data. Evidence acquisition methods for digital devices depend on the type of digital device. However, some general practices must be followed while the evidence is acquired. Let’s discuss some of the important ones.</p>
+
+<h3 id="proper-authorization">Proper Authorization</h3>
+
+<p>The forensics team should obtain authorization from the relevant authorities before collecting any data. Evidence collected without prior approval may be deemed inadmissible in court. Forensic evidence contains private and sensitive data of an organization or individual. Proper authorization before collecting this data is essential for investigating according to the limits of the law.</p>
+
+<h3 id="chain-of-custody">Chain of Custody</h3>
+
+<p>Imagine that a team of investigators collects all the evidence from the crime scene, and some of the evidence goes missing after a few days, or there is any change in the evidence. No individual can be held accountable in this scenario because there is no proper process for documenting the evidence owners. This problem can be solved by maintaining a chain of custody document. A chain of custody is a formal document containing all the details of the evidence. Some of the key details are listed below:</p>
+
+<ul>
+  <li>Description of the evidence (name, type).</li>
+  <li>Name of individuals who collected the evidence.</li>
+  <li>Date and time of evidence collection.</li>
+  <li>Storage location of each piece of evidence.</li>
+  <li>Access times and the individual record who accessed the evidence.</li>
+</ul>
+
+<p>This creates a proper trail of evidence and helps preserve it. The chain of custody document can be used to prove the integrity and reliability of the evidence admitted in court. A sample chain of custody can be downloaded from <strong><a href="https://www.nist.gov/document/sample-chain-custody-formdocx">here</a></strong>.</p>
+
+<h4 id="use-of-write-blockers">Use of Write Blockers</h4>
+
+<p>Write blockers are an essential part of the digital forensics team’s toolbox. Suppose you are collecting evidence from a suspect’s hard drive and attaching the hard drive to the forensic workstation. While the collection occurs, some background tasks in the forensic workstation may alter the timestamps of the files on the hard drive. This can cause hindrances during the analysis, ultimately producing incorrect results. Suppose the data was collected from the hard drive using a write blocker instead in the same scenario. This time, the suspect’s hard drive would remain in its original state as the write blocker can block any evidence alteration actions.</p>
+
+<p><img src="/tryhackme/Digital%20Forensics%20Fundamentals/6645aa8c024f7893371eb7ac-1719477004541" alt="A write blocker." /></p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Which tool is used to ensure data integrity during the collection?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">write blocker</code></p>
+
+<p>What is the name of the document that has all the details of the collected digital evidence?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">chain of custody</code></p>
+
+<h2 id="windows-forensics">Windows Forensics</h2>
+
+<p>The most common types of evidence collected from crime scenes are desktop computers and laptops, as most criminal activity involves a personal system. These devices have different operating systems running on them.</p>
+
+<p>As part of the data collection phase, forensic images of the Windows operating system are taken. These forensic images are bit-by-bit copies of the whole operating system. Two different categories of forensic images are taken from a Windows operating system.</p>
+
+<ul>
+  <li>
+    <p><strong>Disk image:</strong> The disk image contains all the data present on the storage device of the system (HDD, SSD, etc.). This data is non-volatile, meaning that the disk data would survive even after a restart of the operating system. For example, all the files like media, documents, internet browsing history, and more.</p>
+  </li>
+  <li>
+    <p><strong>Memory image:</strong> The memory image contains the data inside the operating system’s RAM. This memory is volatile, meaning the data will get lost after the system is powered off or restarted. For example, to capture open files, running processes, current network connections, etc., the memory image should be prioritized and taken first from the suspect’s operating system; otherwise, any restart or shutdown of the system would result in all the volatile data getting deleted. While carrying out digital forensics on a Windows operating system, disk and memory images are very important to collect.</p>
+  </li>
+</ul>
+
+<p>Let’s discuss some popular tools used for disk and memory image acquisition and analysis of the Windows operating system.</p>
+
+<p><strong>FTK Imager:</strong> FTK Imager is a widely used tool for taking disk images of Windows operating systems. It offers a user-friendly graphical interface for creating the image in various formats. This tool can also analyze the contents of a disk image. It can be used for both acquisition and analysis purposes.</p>
+
+<p><strong>Autopsy:</strong> <a href="https://www.autopsy.com/">Autopsy</a> is a popular open-source digital forensics platform. An investigator can import an acquired disk image into this tool, and the tool will conduct an extensive analysis of the image. It offers various features during image analysis, including keyword search, deleted file recovery, file metadata, extension mismatch detection, and many more.</p>
+
+<p><strong>DumpIt:</strong> <a href="https://www.toolwar.com/2014/01/dumpit-memory-dump-tools.html">DumpIt</a> offers the utility of taking a memory image from a Windows operating system. This tool creates memory images using a command-line interface and a few commands. The memory image can also be taken in different formats.</p>
+
+<p><strong>Volatility:</strong> <a href="https://volatilityfoundation.org/">Volatility</a> is a powerful open-source tool for analyzing memory images. It offers some extremely useful plugins. Each artifact can be analyzed using a specific plugin. This tool supports various operating systems, including Windows, Linux, macOS, and Android</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Which type of forensic image is taken to collect the volatile data from the operating system?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Memory Image</code></p>
+
+<h2 id="practical-example-of-digital-forensics">Practical Example of Digital Forensics</h2>
+
+<p>Our cat, Gado, has been kidnapped. The kidnapper has sent us a document with their requests in MS Word Document format. We have converted the document to PDF format and extracted the image from the MS Word file for your convenience.</p>
+
+<p>Once started, open a new terminal and navigate to the <code class="language-plaintext highlighter-rouge">/root/Rooms/introdigitalforensics</code> directory as shown below. In the following terminal output, we changed to the directory containing the case files.</p>
+
+<p>When you create a text file, <code class="language-plaintext highlighter-rouge">TXT</code>, some metadata gets saved by the operating system, such as file creation date and last modification date. However, much information gets kept within the file’s metadata when you use a more advanced editor, such as MS Word. There are various ways to read the file metadata; you might open them within their official viewer/editor or use a suitable forensic tool. Note that exporting the file to other formats, such as <code class="language-plaintext highlighter-rouge">PDF</code>, would maintain most of the metadata of the original document, depending on the PDF writer used.</p>
+
+<p>Let’s see what we can learn from the PDF file. We can try to read the metadata using the program <code class="language-plaintext highlighter-rouge">pdfinfo</code>. Pdfinfo displays various metadata related to a PDF file, such as title, subject, author, creator, and creation date.</p>
+
+<p>EXIF stands for Exchangeable Image File Format; it is a standard for saving metadata to image files. Whenever you take a photo with your smartphone or with your digital camera, plenty of information gets embedded in the image. The following are examples of metadata that can be found in the original digital images:</p>
+
+<ul>
+  <li>Camera model / Smartphone model</li>
+  <li>Date and time of image capture</li>
+  <li>Photo settings such as focal length, aperture, shutter speed, and ISO settings</li>
+</ul>
+
+<p>Because smartphones are equipped with a GPS sensor, finding GPS coordinates embedded in the image is highly probable. The GPS coordinates, i.e., latitude and longitude, would generally show the place where the photo was taken.</p>
+
+<p>There are many online and offline tools to read the EXIF data from images. One command-line tool is <code class="language-plaintext highlighter-rouge">exiftool</code>. ExifTool is used to read and write metadata in various file types, such as JPEG images.</p>
+<h3 id="questions-4">Questions</h3>
+
+<p>Using <code class="language-plaintext highlighter-rouge">pdfinfo</code>, find out the author of the attached PDF file, <code class="language-plaintext highlighter-rouge">ransom-letter.pdf</code>.</p>
+
+<p><img src="/tryhackme/Digital%20Forensics%20Fundamentals/2025-12-04_17-27.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Ann Gree Shepherd</code></p>
+
+<p>Using <code class="language-plaintext highlighter-rouge">exiftool</code> or any similar tool, try to find where the kidnappers took the image they attached to their document. What is the name of the street?</p>
+
+<p>Running <code class="language-plaintext highlighter-rouge">exiftool</code> on the given image file yields the following information:</p>
+
+<p><img src="/tryhackme/Digital%20Forensics%20Fundamentals/2025-12-04_17-31.png" alt="" /></p>
+
+<p>I concatenated the two and tranformed it to this: <code class="language-plaintext highlighter-rouge">51°30'51.90" N, 0°5'38.73" W</code></p>
+
+<p>Google searching this yields the correct street:</p>
+
+<p><img src="/tryhackme/Digital%20Forensics%20Fundamentals/2025-12-04_17-35.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Milk Street</code></p>
+
+<p>What is the model name of the camera used to take this photo?</p>
+
+<p>Ran the following command: <code class="language-plaintext highlighter-rouge">exiftool letter-image.jpg | grep -i "model"</code> and got this result:</p>
+
+<p><img src="/tryhackme/Digital%20Forensics%20Fundamentals/2025-12-04_17-37.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Canon EOS R6</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

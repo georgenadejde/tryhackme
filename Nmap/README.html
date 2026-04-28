@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nmap · THM Writeups</title>
+  
+  <meta name="description" content="An in depth look at scanning with Nmap, a powerful network scanning tool." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Nmap</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Nmap/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">nmap</span>
+          
+          <span class="tag-pill">ports</span>
+          
+          <span class="tag-pill">networking</span>
+          
+          <span class="tag-pill">udp</span>
+          
+          <span class="tag-pill">tcp</span>
+          
+          <span class="tag-pill">threewayhandshake</span>
+          
+          <span class="tag-pill">ids</span>
+          
+          <span class="tag-pill">icmp</span>
+          
+          <span class="tag-pill">scanning</span>
+          
+          <span class="tag-pill">enumerating</span>
+          
+        
+        
+        <span class="writeup-meta-desc">An in depth look at scanning with Nmap, a powerful network scanning tool.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="nmap"><a href="https://tryhackme.com/room/furthernmap">Nmap</a></h1>
+
+<h2 id="intro">Intro</h2>
+
+<ul>
+  <li>
+    <p>port scanning</p>
+  </li>
+  <li>
+    <p>when we open multiple tabs in our web browser, the program must know which tabs connets to which website</p>
+
+    <ul>
+      <li>this is done by establishing connections to the remote services using different ports on our machine</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Nmap/ports.png" alt="" /></p>
+
+<ul>
+  <li>every computer has a total of <strong>65535 available ports</strong></li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>What networking constructs are used to direct traffic to the right application on a server?</li>
+</ol>
+
+<p>A: ports</p>
+
+<ol>
+  <li>How many of these are available on any network-enabled computer?</li>
+</ol>
+
+<p>A: 65535</p>
+
+<ol>
+  <li>How many of these are considered “well-known”? (These are the “standard” numbers mentioned in the task)</li>
+</ol>
+
+<p>A: 1024 (ports 0-1023)</p>
+
+<h2 id="nmap-switches">Nmap Switches</h2>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>What is the first switch listed in the help menu for a ‘Syn Scan’ (more on this later!)?</li>
+</ol>
+
+<p>A: <strong>-sS</strong></p>
+
+<ol>
+  <li>Which switch would you use for a “UDP scan”?</li>
+</ol>
+
+<p>A: <strong>-sU</strong></p>
+
+<ol>
+  <li>If you wanted to detect which operating system the target is running on, which switch would you use?</li>
+</ol>
+
+<p>A: <strong>-O</strong></p>
+
+<ol>
+  <li>Nmap provides a switch to detect the version of the services running on the target. What is this switch?</li>
+</ol>
+
+<p>A: <strong>-sV</strong></p>
+
+<ol>
+  <li>The default output provided by nmap often does not provide enough information for a pentester. How would you increase the verbosity?</li>
+</ol>
+
+<p>A: <strong>-v</strong></p>
+
+<ol>
+  <li>Verbosity level one is good, but verbosity level two is better! How would you set the verbosity level to two?
+(Note: it’s highly advisable to always use at least this option)</li>
+</ol>
+
+<p>A: <strong>-vv</strong></p>
+
+<p>We should always save the output of our scans – this means that we only need to run the scan once (reducing network traffic and thus chance of detection), and gives us a reference to use when writing reports for clients.</p>
+
+<ol>
+  <li>What switch would you use to save the nmap results in three major formats?</li>
+</ol>
+
+<p>A: <strong>-oA</strong></p>
+
+<ol>
+  <li>What switch would you use to save the nmap results in a “normal” format?</li>
+</ol>
+
+<p>A: <strong>-oN</strong></p>
+
+<ol>
+  <li>A very useful output format: how would you save results in a “grepable” format?</li>
+</ol>
+
+<p>A: <strong>-oG</strong></p>
+
+<p>Sometimes the results we’re getting just aren’t enough. If we don’t care about how loud we are, we can enable “aggressive” mode. This is a shorthand switch that activates service detection, operating system detection, a traceroute and common script scanning.</p>
+
+<ol>
+  <li>How would you activate this setting?</li>
+</ol>
+
+<p>A: <strong>-A</strong></p>
+
+<p>Nmap offers five levels of “timing” template. These are essentially used to increase the speed your scan runs at. Be careful though: higher speeds are noisier, and can incur errors!</p>
+
+<ol>
+  <li>How would you set the timing template to level 5?</li>
+</ol>
+
+<p>A: <strong>-T5</strong></p>
+
+<p>We can also choose which port(s) to scan.</p>
+
+<ol>
+  <li>How would you tell nmap to only scan port 80?</li>
+</ol>
+
+<p>A: <strong>-p 80</strong></p>
+
+<ol>
+  <li>How would you tell nmap to scan ports 1000-1500?</li>
+</ol>
+
+<p>A: <strong>-p 1000-1500</strong></p>
+
+<p>A very useful option that should not be ignored:</p>
+
+<ol>
+  <li>How would you tell nmap to scan all ports?</li>
+</ol>
+
+<p>A: <strong>-p-</strong></p>
+
+<ol>
+  <li>How would you activate a script from the nmap scripting library (lots more on this later!)?</li>
+</ol>
+
+<p>A: <strong>–script</strong></p>
+
+<ol>
+  <li>How would you activate all of the scripts in the “vuln” category?</li>
+</ol>
+
+<p>A: <strong>–script=vuln</strong></p>
+
+<h2 id="scan-types-overview">Scan Types Overview</h2>
+
+<ul>
+  <li>
+    <p>three basic scans:</p>
+
+    <ul>
+      <li>
+        <p><em>TCP Connect Scans</em> (<strong>-sT</strong>)</p>
+      </li>
+      <li>
+        <p><em>SYN “Half-open” scans</em> (<strong>-sS</strong>)</p>
+      </li>
+      <li>
+        <p><em>UDP Scans</em> (<strong>-sU</strong>)</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Less common port scans:</p>
+
+    <ul>
+      <li>
+        <p><em>TCP Null Scans</em> (<strong>-sN</strong>)</p>
+      </li>
+      <li>
+        <p><em>TCP FIN Scans</em> (<strong>-sF</strong>)</p>
+      </li>
+      <li>
+        <p><em>TCP Xmas Scans</em> (<strong>-sX</strong>)</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="tcp-connect-scans">TCP Connect Scans</h2>
+
+<ul>
+  <li>
+    <p>nmap tries to connect to each specified port by performing the three-way handshake</p>
+  </li>
+  <li>
+    <p><a href="https://tools.ietf.org/html/rfc793">RFC 793</a>:</p>
+  </li>
+</ul>
+
+<p>&lt; “… If the connection does not exist (CLOSED) then a reset is sent in response to any incoming segment except another reset.  In particular, SYNs addressed to a non-existent connection are rejected by this means.”</p>
+
+<ul>
+  <li>
+    <p>if the port responds with RST, we know it is closed.</p>
+  </li>
+  <li>
+    <p>if the ports responds with a SYN/ACK, it is open.</p>
+  </li>
+  <li>
+    <p><em>however</em>, there is a third possibility:</p>
+
+    <ul>
+      <li>what if the port is open but hidden behind a firewall?</li>
+    </ul>
+  </li>
+  <li>
+    <p>in this case, nmap will not get any response back when it sends a TCP SYN Request.</p>
+
+    <ul>
+      <li>this indicates the port is <strong>filtered</strong></li>
+    </ul>
+  </li>
+  <li>
+    <p>because we can easily configure a firewall to respond with a RST TCP packet to SYN TCP packets, it gets difficult to accurately scan the target (<code class="language-plaintext highlighter-rouge">iptables -I INPUT -p tcp --dport -j REJECT --reject-with tcp-reset</code>)</p>
+  </li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>Which RFC defines the appropriate behaviour for the TCP protocol?</li>
+</ol>
+
+<p>A: RFC 793</p>
+
+<ol>
+  <li>If a port is closed, which flag should the server send back to indicate this?</li>
+</ol>
+
+<p>A: RST</p>
+
+<h2 id="syn-scans">SYN Scans</h2>
+
+<ul>
+  <li>
+    <p>reffered to as ‘half-open scans’ or ‘stealth scans’</p>
+  </li>
+  <li>
+    <p>it works similar to a TCP Scan but with a twist:</p>
+
+    <ul>
+      <li>when it receives a TCP packet with SYN/ACK flags set, it sends a RST TCP packet (preventing the server from repeatedly trying to make a request).</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Nmap/synscans.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><em>Advantages</em>:</p>
+
+    <ul>
+      <li>
+        <p>bypasses older <em>Intrusion Detection Systems</em> (<strong>IDS</strong>) as they are looking out for a full three way handshake (nowadays, modern IDS solutions take care of this problem)</p>
+      </li>
+      <li>
+        <p>SYN scans are often <strong>not logged</strong> by applications listening on open ports, as they usually do that when a full connection has been established.</p>
+      </li>
+      <li>
+        <p>SYN scans, as they do not complete the handshake, are <strong>significantly faster</strong> than a standard TCP scan.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><em>Disadvantages</em>:</p>
+
+    <ul>
+      <li>
+        <p><strong>requires sudo permissions</strong>, as only the root user has the permissio to create <em>raw packets</em> (as opposed to the full TCP handshake)</p>
+      </li>
+      <li>
+        <p><strong>unstable services are sometimes brought down by SYN scans</strong>, which could be problematic if a client has provided a production environment for the test.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>if nmap is run <em>with sudo permission</em>, it does a SYN Scan by default.</p>
+
+    <ul>
+      <li><em>without sudo permission</em>, by default it does a TCP Scan</li>
+    </ul>
+  </li>
+  <li>
+    <p>it acts the as the TCP Scan regarding the closed and filtered ports</p>
+
+    <ul>
+      <li>the <em>difference</em> is on <strong>handling the open ports</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>There are two other names for a SYN scan, what are they?</li>
+</ol>
+
+<p>A: half-open, stealth</p>
+
+<ol>
+  <li>Can Nmap use a SYN scan without Sudo permissions (Y/N)?</li>
+</ol>
+
+<p>A: N</p>
+
+<h2 id="udp-scans">UDP Scans</h2>
+
+<ul>
+  <li>
+    <p>when there is no response to UDP packets, nmap refers to the port as being <code class="language-plaintext highlighter-rouge">open|filtered</code>.</p>
+
+    <ul>
+      <li>in the rare case that it gets a response, it marks it as <code class="language-plaintext highlighter-rouge">open</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>when there is no response, nmap sends a packet one more time to double-check</p>
+
+    <ul>
+      <li>if it gets no response this time as well, it moves on, marking the port as <code class="language-plaintext highlighter-rouge">open|filtered</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>if the ports responds with an <strong>ICMP (ping) packet (port unreachable)</strong>, it means that the port is closed.</p>
+  </li>
+  <li>
+    <p>as we expect, UDP scans are slow (around 20 minutes to scan the first 1000 ports)</p>
+
+    <ul>
+      <li>hence, a common practice is to only scan a number of top ports:</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nmap <span class="nt">-sU</span> <span class="nt">--top-ports</span> 20 &lt;TARGET_IP&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>usually, nmap sends raw UDP packets, but in case for some well-known services, these packets get specific payload so that the chance of getting a response is higher.</li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>If a UDP port doesn’t respond to an Nmap scan, what will it be marked as?</li>
+</ol>
+
+<table>
+  <tbody>
+    <tr>
+      <td>A: open</td>
+      <td>filtered</td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
+  <li>When a UDP port is closed, by convention the target should send back a “port unreachable” message. Which protocol would it use to do so?</li>
+</ol>
+
+<p>A: ICMP</p>
+
+<h2 id="null-fin-and-xmas">NULL, FIN and Xmas</h2>
+
+<ul>
+  <li>
+    <p>usually stealthier than the other, though not as frequently used</p>
+  </li>
+  <li>
+    <p>The Null Scan (<strong>-sN</strong>) sends a TCP request without any flags set.</p>
+
+    <ul>
+      <li>if the port is closed, it gets a TCP RST as a response.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Nmap/RST.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The FIN Scan (<strong>-sF</strong>) sends a TCP Request with the FIN flag set, which is usually used to “gracefuly close an active connection”</p>
+
+    <ul>
+      <li>nmap expects an RST if the port is closed.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The XMAS scan (<strong>-sX</strong>) works the same as the other two</p>
+
+    <ul>
+      <li>It’s referred to as an xmas scan as the flags that it sets (<em>PSH</em>, <em>URG</em> and <em>FIN</em>) give it the appearance of a blinking christmas tree when viewed as a packet capture in Wireshark.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Nmap/xmas.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The expected response for open ports with these scans is also identical, and is very similar to that of a UDP scan.</p>
+  </li>
+  <li>
+    <p>If the port is open then there is no response to the malformed packet.</p>
+
+    <ul>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>Unfortunately (as with open UDP ports), that is also an expected behaviour if the port is protected by a firewall, so NULL, FIN and Xmas scans will only ever identify ports as being open</td>
+              <td>filtered, closed, or filtered. If a port is identified as filtered with one of these scans then it is usually because the target has responded with an ICMP unreachable packet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>It’s also worth noting that while RFC 793 mandates that network hosts respond to malformed packets with a RST TCP packet for closed ports, and don’t respond at all for open ports; this is not always the case in practice.</p>
+
+    <ul>
+      <li>
+        <p>In particular <em>Microsoft Windows</em> (and a lot of <em>Cisco network devices</em>) are known to respond with a RST to any malformed TCP packet – regardless of whether the port is actually open or not.</p>
+
+        <ul>
+          <li>This results in all ports showing up as being closed.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>That said, the goal here is, of course, <strong>firewall evasion</strong>.</p>
+
+    <ul>
+      <li>
+        <p>Many firewalls are configured to drop incoming TCP packets to blocked ports which have the SYN flag set (thus blocking new connection initiation requests).</p>
+      </li>
+      <li>
+        <p>By sending requests which do not contain the SYN flag, we effectively bypass this kind of firewall.</p>
+      </li>
+      <li>
+        <p>Whilst this is good in theory, most modern IDS solutions are savvy to these scan types, so don’t rely on them to be 100% effective when dealing with modern systems.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-5">Questions</h3>
+
+<ol>
+  <li>Which of the three shown scan types uses the URG flag?</li>
+</ol>
+
+<p>A: XMAS</p>
+
+<ol>
+  <li>Why are NULL, FIN and Xmas scans generally used?</li>
+</ol>
+
+<p>A: firewall evasion</p>
+
+<ol>
+  <li>Which common OS may respond to a NULL, FIN or Xmas scan with a RST for every port?</li>
+</ol>
+
+<p>A: Microsoft Windows</p>
+
+<h2 id="icmp-network-scanning">ICMP Network Scanning</h2>
+
+<ul>
+  <li>
+    <p>when we first connect to a target network, we want to check which IP addresses contain active hosts and which do not.</p>
+  </li>
+  <li>
+    <p>we can do this using “<em>ping sweep</em>”</p>
+
+    <ul>
+      <li>
+        <p>nmap sends ICMP packets and if it gets a response, it marks the IP as alive</p>
+
+        <ul>
+          <li>though, this is not allways <em>accurate</em></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>we can perform the “ping sweep” by using the flag <strong>-sn</strong> in conjunction with IP ranges either using a hyphen or using CIDR notation:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">nmap -sn 192.168.0.1-254</code></p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">nmap -sn 192.168.0.0/24</code></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>the -sn switch tells nmap not to scan for any ports, forcing it to rely on ICMP echo requests (or <a href="arp.md">ARP</a> requests on a local network if run with sudo privileges)</p>
+
+    <ul>
+      <li>nmap also sends a TCP SYN packet to port 443 and a TCP ACK (or TCP SYN if not run as root) packet to port 80 of the target.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<ol>
+  <li>How would you perform a ping sweep on the 172.16.x.x network (Netmask: 255.255.0.0) using Nmap? (CIDR notation)</li>
+</ol>
+
+<p>A: nmap -sn 172.16.0.0/16</p>
+
+<h2 id="nse-scripts-overview">NSE Scripts Overview</h2>
+
+<ul>
+  <li>
+    <p><strong>The Nmap Scripting Engine</strong> is a powerful addition to nmap; its scripts are written in Lua programming language and be used from <em>scanning for vulnerabilities</em>, to <em>automating exploits</em> for them</p>
+
+    <ul>
+      <li>primarily used for reconnaisance</li>
+    </ul>
+  </li>
+  <li>
+    <p>Categories:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">safe</code> - won’t affect the target</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">intrusive</code> - likely to affect the target</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">vuln</code> - scan for vulnerabilities</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">exploit</code> - attempt to exploit a vuln.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">auth</code> - attempt to bypass authentication for running services (e.g: log into an FTP server anonymously)</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">brute</code> - attempt to bruteforce credentials for running services</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">discovery</code> - attempt to query running services for further information about the network (e.g: query an SNMP server)</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>A more exhaustive <a href="https://nmap.org/book/nse-usage.html">list</a></p>
+  </li>
+</ul>
+
+<h3 id="questions-7">Questions</h3>
+
+<ol>
+  <li>What language are NSE scripts written in?</li>
+</ol>
+
+<p>A: Lua</p>
+
+<ol>
+  <li>Which category of scripts would be a very bad idea to run in a production environment?</li>
+</ol>
+
+<p>A: intrusive</p>
+
+<h2 id="nse-scripts---working-with-the-nse">NSE Scripts - Working with the NSE</h2>
+
+<ul>
+  <li>
+    <p>use: <code class="language-plaintext highlighter-rouge">--script=safe</code></p>
+  </li>
+  <li>
+    <p>use a specific script: <code class="language-plaintext highlighter-rouge">--script=http-fileupload-exploiter</code></p>
+  </li>
+  <li>
+    <p>use multiple scripts: <code class="language-plaintext highlighter-rouge">--script=smb-enum-users,smb-enum-shares</code></p>
+  </li>
+  <li>
+    <p>some scripts need arguments, hence we use <code class="language-plaintext highlighter-rouge">--script-args</code></p>
+
+    <ul>
+      <li>
+        <p>an example of this is <code class="language-plaintext highlighter-rouge">http-put</code> script which uploads a file on a website using PUT Requests</p>
+
+        <ul>
+          <li>
+            <p><code class="language-plaintext highlighter-rouge">nmap -p 80 --script http-put --script-args http-put.url='/dav/shell.php',http-put.file='./shell.php'</code></p>
+          </li>
+          <li>
+            <p>Note: script’s arguments are separated by commas and connected to the script with periods (<code class="language-plaintext highlighter-rouge">&lt;script-name&gt;.&lt;argument&gt;</code>)</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://nmap.org/nsedoc/">List</a> of scripts and their arguments</p>
+  </li>
+  <li>
+    <p>Nmap scripts come with built in help menus: <code class="language-plaintext highlighter-rouge">nmap --script-help &lt;script_name&gt;</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Nmap/scripthelp.png" alt="" /></p>
+
+<h3 id="questions-8">Questions</h3>
+
+<ol>
+  <li>What optional argument can the ftp-anon.nse script take?</li>
+</ol>
+
+<p><img src="/tryhackme/Nmap/ftpanon.png" alt="" /></p>
+
+<p>A: maxlist</p>
+
+<h2 id="nse-scripts---searching-for-scripts">NSE Scripts - Searching for Scripts</h2>
+
+<ul>
+  <li>
+    <p>How to find nmap scripts?</p>
+
+    <ul>
+      <li>
+        <p>Using the <a href="https://nmap.org/nsedoc/">website</a></p>
+      </li>
+      <li>
+        <p>using your local machine by accessing the directory <code class="language-plaintext highlighter-rouge">/usr/share/nmap/scripts</code></p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>searching for installed scripts:</p>
+
+    <ul>
+      <li>
+        <p>using the file <code class="language-plaintext highlighter-rouge">usr/share/nmap/scripts/script.db</code></p>
+
+        <ul>
+          <li>this is not a database file, but a formatted text file containing the filenames and categories</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Nmap/scriptsss.png" alt="" /></p>
+
+<ul>
+  <li>We can use grep on this file to find what we are looking for:</li>
+</ul>
+
+<p><img src="/tryhackme/Nmap/scriptftp.png" alt="" /></p>
+
+<ul>
+  <li>or we can just use the <code class="language-plaintext highlighter-rouge">ls</code> command:</li>
+</ul>
+
+<p><img src="/tryhackme/Nmap/lscommand.png" alt="" /></p>
+
+<ul>
+  <li>if we want to install a script, we can do this from the nmap website:</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>wget <span class="nt">-O</span> /usr/share/nmap/scripts/&lt;script-name&gt;.nse https://svn.nmap.org/nmap/scripts/&lt;script-name&gt;.nse
+
+nmap <span class="nt">--script-updatedb</span> <span class="c"># updates the script.db file</span>
+</code></pre></div></div>
+
+<h3 id="questions-9">Questions</h3>
+
+<ol>
+  <li>Search for “smb” scripts in the /usr/share/nmap/scripts/ directory using either of the demonstrated methods.
+What is the filename of the script which determines the underlying OS of the SMB server?</li>
+</ol>
+
+<p>A: smb-os-discovery.nse</p>
+
+<ol>
+  <li>Read through this script. What does it depend on? (Hint: look for “dependencies”)</li>
+</ol>
+
+<p>A: smb-brute</p>
+
+<h2 id="firewall-evasion">Firewall Evasion</h2>
+
+<ul>
+  <li>
+    <p>unfortunately, Windows blocks ICMP packets and hence, our ping results may induce nmap in registering the host as down.</p>
+  </li>
+  <li>
+    <p>what we can do is use <code class="language-plaintext highlighter-rouge">-Pn</code> to tell nmap to treat every host as if it is alive, and not bother pinging them</p>
+
+    <ul>
+      <li>this comes with the price of a long and slow scan, but at least it bypasses the ICMP block.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Note: if the target is on the local network, we can use ARP requests.</p>
+  </li>
+  <li>
+    <p><a href="https://nmap.org/book/man-bypass-firewalls-ids.html">Switches</a> that we can use to evade the firewall</p>
+  </li>
+  <li>
+    <p>Examples:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-f</code>: splits the packets into smaller pieces, making it less likely to be detected by a firewall or IDS</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">--mtu &lt;number&gt;</code>: alternative to <code class="language-plaintext highlighter-rouge">-f</code>, but provides more control over the size of the packets, accepting a maximum transmission unit size  to use for the packets sent (this must be a multiple of 8)</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">--scan-delay &lt;time&gt;ms</code>: adds delay between packets - useful when the network is <em>unstable</em> and evading <em>time-based firewal/IDS triggers</em></p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">--badsum</code>: generates invalid checksum for packets - TCP/IP stack would drop this packet, but firewalls may respond automatically without bothering to check the checksum of the packets -&gt; <strong>this switch can be used to determine the presence of a firewall / IDS</strong></p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-10">Questions</h3>
+
+<ol>
+  <li>Which simple (and frequently relied upon) protocol is often blocked, requiring the use of the -Pn switch?</li>
+</ol>
+
+<p>A: ICMP</p>
+
+<ol>
+  <li>[Research] Which Nmap switch allows you to append an arbitrary length of random data to the end of packets?</li>
+</ol>
+
+<p>A: –data-length</p>
+
+<h2 id="practical">Practical</h2>
+
+<ol>
+  <li>Does the target (10.10.32.158)respond to ICMP (ping) requests (Y/N)?</li>
+</ol>
+
+<p>A: N (did a <code class="language-plaintext highlighter-rouge">ping -c 5 &lt;IP&gt;</code>)</p>
+
+<ol>
+  <li>Perform an Xmas scan on the first 999 ports of the target – how many ports are shown to be open or filtered?</li>
+</ol>
+
+<p><img src="/tryhackme/Nmap/nmapscan.png" alt="" /></p>
+
+<p>A: 999</p>
+
+<p>There is a reason given for this – what is it?</p>
+
+<ol>
+  <li>Note: The answer will be in your scan results. Think carefully about which switches to use – and read the hint before asking for help!</li>
+</ol>
+
+<p>A: no response (you could try -vv)</p>
+
+<ol>
+  <li>Perform a TCP SYN scan on the first 5000 ports of the target – how many ports are shown to be open?</li>
+</ol>
+
+<p><img src="/tryhackme/Nmap/nmapscan2.png" alt="" /></p>
+
+<p>A: 5</p>
+
+<ol>
+  <li>
+    <p>Open Wireshark (see Cryillic’s Wireshark Room for instructions) and perform a TCP Connect scan against port 80 on the target, monitoring the results. Make sure you understand what’s going on.</p>
+  </li>
+  <li>
+    <p>Deploy the ftp-anon script against the box. Can Nmap login successfully to the FTP server on port 21? (Y/N)</p>
+  </li>
+</ol>
+
+<p><img src="/tryhackme/Nmap/ftpanonscan.png" alt="" /></p>
+
+<p>A: Y</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

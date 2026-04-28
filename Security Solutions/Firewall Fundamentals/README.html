@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firewall Fundamentals · THM Writeups</title>
+  
+  <meta name="description" content="Learn about firewalls and get hands-on with Windows and Linux built-in firewalls." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Firewall Fundamentals</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Security Solutions/Firewall Fundamentals/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">firewall</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about firewalls and get hands-on with Windows and Linux built-in firewalls.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="firewall-fundamentals"><a href="https://tryhackme.com/room/firewallfundamentals">Firewall Fundamentals</a></h1>
+
+<h2 id="what-is-the-purpose-of-a-firewall">What Is the Purpose of a Firewall</h2>
+
+<p>We have seen security guards outside shopping malls, banks, restaurants, and houses. These guards are placed at the entrances of these areas to keep a check on people coming in or going out. The purpose of maintaining this check is to ensure nobody sneaks in without being permitted. This guard acts as a wall between his area and the visitors.</p>
+
+<p>A lot of incoming and outgoing traffic flows daily between our digital devices and the Internet they are connected to. What if somebody sneaks in between this massive traffic without getting caught? We would also need a security guard for our digital devices then, who can check the data coming in and going out of them. This security guard is what we call a <strong>firewall</strong>. A firewall is designed to inspect a network’s or digital device’s incoming and outgoing traffic. The goal is the same as for the security guard sitting outside a building: not letting any unauthorized visitor enter a system or a network. You instruct the firewall by giving it rules to check against all the traffic. Anything that comes in or goes out of your device or network would face the firewall first. The firewall will allow or deny that traffic based on its maintained rules. Most firewalls today go beyond rule-based filtering and offer extra functionalities to protect your device or network from the outside world.</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Which security solution inspects the incoming and outgoing traffic of a device or a network?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">firewall</code></p>
+
+<h2 id="types-of-firewalls">Types of Firewalls</h2>
+
+<p>Firewall deployment became common in networks after organizations discovered their ability to filter harmful traffic from their systems and networks. Several different types of firewalls were introduced afterward, each serving a unique purpose. It’s also important to note that different types of firewalls work on different OSI model layers. Firewalls are categorized into many types.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/6645aa8c024f7893371eb7ac-1725967312491.png" alt="" /></p>
+
+<h3 id="stateless-firewall">Stateless Firewall</h3>
+
+<p>This type of firewall operates on layer 3 and layer 4 of the OSI model and works solely by filtering the data based on predetermined rules without taking note of the state of the previous connections. This means it will match every packet with the rules regardless of whether it is part of a legitimate connection. It maintains no information on the state of the previous connections to make decisions for future packets. Due to this, these firewalls can process the packets quickly. However, they cannot apply complex policies to the data based on its relationship with the previous connections. Suppose the firewall denies a few packets from a single source based on its rules. Ideally, it should drop all the future packets from this source because the previous packets could not comply with the firewall’s rules. However, the firewall keeps forgetting this, and future packets from this source will be treated as new and matched by its rules again.</p>
+
+<h3 id="stateful-firewall">Stateful Firewall</h3>
+
+<p>Unlike stateless firewalls, this type of firewall goes beyond filtering packets by predetermined rules. It also keeps track of previous connections and stores them in a state table. This adds another layer of security by inspecting the packets based on their history with connections. Stateful firewalls operate at layer 3 and layer 4 of the OSI model. Suppose the firewall accepts a few packets from a source address based on its rules. In that case, it will take note of this connection in its stated table and allow all the future packets for this connection to automatically get allowed without inspecting each of them. Similarly, the stateful firewalls take note of the connections for which they deny a few packets, and based upon this information, they deny all the subsequent packets coming from the same source.</p>
+
+<h3 id="proxy-firewall">Proxy Firewall</h3>
+
+<p>The problem with previous firewalls was their inability to inspect the contents of a packet. Proxy firewalls, or application-level gateways, act as intermediaries between the private network and the Internet and operate on the OSI model’s layer 7. They inspect the content of all packets as well. The requests made by users in a network are forwarded by this proxy after inspection and masking them with their own IP address to provide anonymity for the internal IP addresses. Content filtering policies can be applied to these firewalls to allow/deny incoming and outgoing traffic based on their content.</p>
+
+<h3 id="next-generation-firewall-ngfw">Next-Generation Firewall (NGFW)</h3>
+
+<p>This is the most advanced type of firewall that operates from layer 3 to layer 7 of the OSI model, offering deep packet inspection and other functionalities that enhance the security of incoming and outgoing network traffic. It has an intrusion prevention system that blocks malicious activities in real time. It offers heuristic analysis by analyzing the patterns of attacks and blocking them instantly before reaching the network. NGFWs have SSL/TLS decryption capabilities, which inspect the packets after decrypting them and correlate the data with the threat intelligence feeds to make efficient decisions.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Firewalls</th>
+      <th>Characteristics</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Stateless firewalls</td>
+      <td>- Basic filtering  <br />- No track of previous connections  <br />- Efficient for high-speed networks</td>
+    </tr>
+    <tr>
+      <td>Stateful firewalls</td>
+      <td>- Recognize traffic by patterns  <br />- Complex rules can be applicable  <br />- Monitor the network connections</td>
+    </tr>
+    <tr>
+      <td>Proxy firewalls</td>
+      <td>- Inspect the data inside the packets as well  <br />- Provides content filtering options  <br />- Provides application control  <br />- Decrypts and inspects SSL/TLS data packets</td>
+    </tr>
+    <tr>
+      <td>Next-generation firewalls</td>
+      <td>- Provides advanced threat protection  <br />- Comes with an intrusion prevention system  <br />- Identify anomalies based on heuristic analysis  <br />- Decrypts and inspects SSL/TLS data packets</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: Which type of firewall maintains the state of connections?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">stateful firewall</code></p>
+
+<p>Q: Which type of firewall offers heuristic analysis for the traffic?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">next-generation firewall</code></p>
+
+<p>Q: Which type of firewall inspects the traffic coming to an application?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">proxy firewall</code></p>
+
+<h2 id="rules-in-firewalls">Rules in Firewalls</h2>
+
+<p>The basic components of a firewall’s rule are described below:</p>
+
+<ul>
+  <li><strong>Source address:</strong> The machine’s IP address that would originate the traffic.</li>
+  <li><strong>Destination address:</strong> The machine’s IP address that would receive the data.</li>
+  <li><strong>Port:</strong> The port number for the traffic.</li>
+  <li><strong>Protocol:</strong> The protocol that would be used during the communication.</li>
+  <li><strong>Action:</strong> This defines the action that would be taken upon identifying any traffic of this particular nature.</li>
+  <li><strong>Direction:</strong> This field defines the rule’s applicability to incoming or outgoing traffic.</li>
+</ul>
+
+<h3 id="types-of-actions">Types of Actions</h3>
+
+<p>The component “Action” from a rule indicates the steps to take after a data packet falls under the category of the defined rule. Three main actions that can be applied to a rule are explained below.</p>
+
+<h5 id="allow">Allow</h5>
+
+<p>A rule’s “Allow” action indicates that the particular traffic defined inside the rule would be permitted.</p>
+
+<p>For example, let’s create a rule with an action to allow all the outgoing traffic from our network for port 80 (used for HTTP traffic to the Internet).</p>
+
+<p>Action 	Source 	Destination 	Protocol 	Port 	Direction
+Allow 	192.168.1.0/24 	Any 	TCP 	80 	Outbound
+Deny</p>
+
+<p>A rule’s “Deny” action means that the traffic defined inside the rule would be blocked and not permitted. These rules are fundamental for the security team to deny specific traffic coming from malicious IP addresses and create more rules to reduce the threat surface of the network.</p>
+
+<p>For example, let’s create a rule with an action to deny all the incoming traffic on port 22 (used for remotely connecting to a machine via SSH) of our critical server.</p>
+
+<p>Action 	Source 	Destination 	Protocol 	Port 	Direction
+Deny 	Any 	192.168.1.0/24 	TCP 	22 	Inbound
+Forward</p>
+
+<p>The action “Forward” redirects traffic to a different network segment using the forwarding rules created on the firewalls. This applies to the firewalls that provide routing functionality and act as gateways between different network segments.</p>
+
+<p>For example, let’s create a rule with an action to forward all the incoming traffic on port 80 (used for HTTP traffic) to the web server 192.168.1.8.</p>
+
+<p>Action 	Source 	Destination 	Protocol 	Port 	Direction
+Forward 	Any 	192.168.1.8 	TCP 	80 	Inbound</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/6645aa8c024f7893371eb7ac-1725970029903.svg" alt="" /></p>
+
+<h5 id="inbound-rules">Inbound Rules</h5>
+
+<p>Rules are categorized as inbound rules when they are meant to be applied to incoming traffic only. For example, you might allow incoming HTTP traffic (port 80) on your web server.</p>
+
+<h5 id="outbound-rules">Outbound Rules</h5>
+
+<p>These rules are made for outgoing traffic only. For example, blocking all outgoing SMTP traffic (port 25) from all the devices except the mail server.</p>
+
+<h5 id="forward-rules">Forward Rules</h5>
+
+<p>Forwarding rules are created to forward specific traffic inside the network. For example, a forwarding rule can be created to forward the incoming HTTP (port 80) traffic to the web server located in your network.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Which type of action should be defined in a rule to permit any traffic?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">allow</code></p>
+
+<p>Q: What is the direction of the rule that is created for the traffic leaving our network?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">outbound</code></p>
+
+<h2 id="windows-defender-firewall">Windows Defender Firewall</h2>
+
+<h3 id="windows-defender-firewall-1">Windows Defender Firewall</h3>
+
+<p>Windows Defender is a built-in firewall introduced by Microsoft in the Windows OS. This firewall contains all the basic functionality for creating, allowing, or denying specific programs or creating customized rules. This task is designed to cover some of the essential components of the Windows Defender Firewall, which you can utilize to restrict your system’s incoming and outgoing network traffic. To open this firewall, you have to open the Windows search and type “Windows Defender Firewall.”</p>
+
+<p>The Windows Defender Firewall’s home page shows the “Network Profiles” and the available options. This is the main dashboard with all the options for the firewall.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/5f9c7574e201fe31dad228fc-1726660679211.png" alt="Windows Defender Firewall dashboard." /></p>
+
+<h3 id="network-profiles">Network Profiles</h3>
+
+<p>There are two available network profiles. Windows firewall determines your current network based on Network Location Awareness (NLA) and applies that profile firewall settings for you. We can have different firewall settings for each of them.</p>
+
+<ol>
+  <li><strong>Private networks:</strong> This includes the firewall configurations to apply when connected to our home network.</li>
+  <li><strong>Guest or public networks:</strong> This includes the firewall configurations to apply when connected to a public or untrusted network like coffee shops, restaurants, or similar. For example, when connecting to public networks, you can configure firewall settings to block all incoming network connections and allow only some outgoing connections that are essential for you. These settings will apply to the public network profile and will not be implemented when you are in your private home network.</li>
+</ol>
+
+<p>To allow/disallow any application in any of your network profiles, click on the option (highlighted as 1 in the screenshot). This will take you to the page listing all the apps and features installed in your system. You can checkmark the ones you want to allow in any of your network profiles or uncheck those if not needed. Windows Defender Firewall is turned on by default. However, if you want to turn it on/off, you can click on the option (highlighted as 2 in the screenshot). This will take you to the settings for both of your network profiles. Rather than completely turning it off, which Microsoft doesn’t recommend, you can also block all incoming connections. You can also click on “Restore Defaults” (highlighted as 3 in the screenshot) from the main dashboard anytime to restore all the firewall’s default settings.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/5f9c7574e201fe31dad228fc-1726665055716.png" alt="Windows Defender Firewall different options." /></p>
+
+<h3 id="custom-rules">Custom Rules</h3>
+
+<p>Windows Defender Firewall also allows you to create custom rules for your network to allow/disallow specific traffic as needed. Let’s create a custom rule to block all outgoing traffic on HTTP (port 80) or HTTPS (port 443). After creating this rule, we will be unable to browse any website on the Internet as the websites are working on port 80 or 443, which we will be blocking.</p>
+
+<p>Before creating this rule, let’s test if we are able to visit a website. For testing, let’s visit <code class="language-plaintext highlighter-rouge">http://10.10.10.10/</code>. As shown in the screenshot below, we are able to visit this website.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/6645aa8c024f7893371eb7ac-1726644402513.png" alt="" /></p>
+
+<p>To create a custom rule, choose “Advanced Settings” from the available options in the main dashboard. This will open a new tab where you can create your own rules.</p>
+
+<p><strong>Note:</strong> The rule created below is already available inside the attached VM. If you want to test it, you can create it on your Windows host machine or any other machine.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/5f9c7574e201fe31dad228fc-1726665941622.png" alt="Windows Defender Firewall Advanced Settings tab." /></p>
+
+<p>You can see the available options to create inbound and outbound rules.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/5f9c7574e201fe31dad228fc-1726665941554.png" alt="Inbound and outbound rules in Windows Defender firewall." /></p>
+
+<p>Let’s create an outbound rule to block all our outgoing HTTP and HTTPS traffic. For this, click on the <strong>Outbound Rules</strong> option on the left side, then click on <strong>New Rule</strong> on the right side. It will open the rule wizard.In the first step, select the <strong>Custom</strong> option and press <strong>Next</strong>.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/5f9c7574e201fe31dad228fc-1726665941601.png" alt="Selecting the rule type." /></p>
+
+<p>In the second step, select <strong>All programs</strong> from the next option and press <strong>Next</strong>. It will ask you to select the protocol type in the third step. Select the <strong>Protocol type</strong> as “TCP”, keep the <strong>Local port</strong> as it is, and change the <strong>Remote port</strong> to “Specific ports” from the dropdown. Write the port numbers in the field below (in our case, 80,443). Now, click on <strong>Next</strong>.</p>
+
+<p><strong>Note:</strong> Separate the port numbers by commas, and please don’t leave spaces between them.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/5f9c7574e201fe31dad228fc-1726665941608.png" alt="Selecting the protocols and ports." /></p>
+
+<p>In the <strong>Scope</strong> tab, keep the local and remote IP addresses as they are and press the <strong>Next</strong> button. In the <strong>Action</strong> tab, enable the <strong>Block the connection</strong> option and press <strong>Next</strong>.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/5f9c7574e201fe31dad228fc-1726665941604.png" alt="Selecting the action." /></p>
+
+<p>In the <strong>Profile</strong> tab, we keep all the network profiles check-marked. Lastly, the final phase is to give your rule a name and an optional description and press the <strong>Finish</strong> button.</p>
+
+<p>We can see our rule is there in the available outbound rules.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/5f9c7574e201fe31dad228fc-1726665941608.png" alt="Outbound rules list." /></p>
+
+<p>Now, let’s test our rule by browsing to <code class="language-plaintext highlighter-rouge">http://10.10.10.10/</code>. We get an error message saying we cannot reach this page, meaning the rule works.</p>
+
+<p><img src="/tryhackme/Security%20Solutions/Firewall%20Fundamentals/6645aa8c024f7893371eb7ac-1726644747236.png" alt="" /></p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: What is the name of the rule that was created to block all incoming traffic on the SSH port?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Core Op</code></p>
+
+<p>Q: A rule was created to allow SSH from one single IP address. What is the rule name?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">infra team</code></p>
+
+<p>Q: Which IP address is allowed under this rule?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">192.168.13.7</code></p>
+
+<h2 id="linux-iptables-firewall">Linux iptables Firewall</h2>
+
+<p>Linux also offers the functionality of a built-in firewall. We have multiple firewall options available here. Let’s briefly review most of them and explore one of them in detail.</p>
+
+<h3 id="netfilter">Netfilter</h3>
+
+<p>Netfilter is the framework inside the Linux OS with core firewall functionalities, including packet filtering, NAT, and connection tracking. This framework serves as the foundation for various firewall utilities available in Linux to control network traffic. Some common firewall utilities that utilize this framework are listed below:</p>
+
+<ul>
+  <li><strong>iptables:</strong> This is the most widely used utility in many Linux distributions. It uses the Netfilter framework that provides various functionalities to control network traffic.</li>
+  <li><strong>nftables:</strong> It is a successor to the “iptables” utility, with enhanced packet filtering and NAT capabilities. It is also based on the Netfilter framework.</li>
+  <li><strong>firewalld:</strong> This utility also operates on the Netfilter framework and has predefined rule sets. It works differently from the others and comes with different pre-built network zone configurations.</li>
+</ul>
+
+<h3 id="ufw">ufw </h3>
+
+<p>ufw (Uncomplicated Firewall), as the name says, eliminates the complications of making rules in a complex syntax in “iptables”(or its successor) by giving you an easier interface. It is more beginner-friendly. Basically, whatever rules you need in “iptables”, you can define them with some easy commands via ufw, which would then be configuring your desired rules in “iptables”.</p>
+
+<p>To check the status of the firewall, you could use the command <code class="language-plaintext highlighter-rouge">sudo ufw status</code>.</p>
+
+<p>If it appears inactive, you can enable it using the command <code class="language-plaintext highlighter-rouge">sudo ufw enable</code>.</p>
+
+<p>Below is a rule created to allow all the outgoing connections from a Linux machine. The <code class="language-plaintext highlighter-rouge">default</code> in the command means that we are defining this policy as a default policy allowing all the outgoing traffic unless we define an outgoing traffic restriction on any specific application in a separate rule. You can also make a rule to allow/deny traffic coming into your machine by replacing <code class="language-plaintext highlighter-rouge">outgoing</code> with <code class="language-plaintext highlighter-rouge">incoming</code> in the following command: <code class="language-plaintext highlighter-rouge">sudo ufw default allow outgoing</code>.</p>
+
+<p>You can deny incoming traffic at any port in your system. Let’s say that we want to block incoming SSH traffic. We can achieve this with the command <code class="language-plaintext highlighter-rouge">ufw deny 22/tcp</code>. As you can see, we first specified the action, <code class="language-plaintext highlighter-rouge">deny</code> in this case; furthermore, we specified the port and the transport protocol, which is TCP port 22, or simply <code class="language-plaintext highlighter-rouge">22/tcp</code>.</p>
+
+<p>To list down all the active rules in a numbered order, you can use the command <code class="language-plaintext highlighter-rouge">sudo ufw status numbered</code>.</p>
+
+<p>To delete any rule, execute the following command with the rule number to delete: <code class="language-plaintext highlighter-rouge">sudo ufw delete 2</code>.</p>
+
+<p>These different utilities can be used to manage Netfilter. Choosing the right utility for the Linux OS depends on multiple factors, such as familiarity with the OS and your requirements.</p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: Which Linux firewall utility is considered to be the successor of “iptables”?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">nftables</code></p>
+
+<p>Q: What rule would you issue with ufw to deny all outgoing traffic from your machine as a default policy? (answer without sudo)</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">ufw default deny outgoing</code></p>
+
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

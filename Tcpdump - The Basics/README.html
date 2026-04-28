@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tcpdump The Basics · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to use Tcpdump to save, filter, and display packets." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Tcpdump The Basics</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Tcpdump - The Basics/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">web</span>
+          
+          <span class="tag-pill">tcpdump</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to use Tcpdump to save, filter, and display packets.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="tcpdump---the-basics"><a href="https://tryhackme.com/room/tcpdump">Tcpdump - The Basics</a></h1>
+
+<h2 id="basic-packet-capture">Basic Packet Capture</h2>
+
+<p>The main challenge when studying networking protocols is that we don’t get a chance to see the protocol “conversations” taking place. All the technical complexities are hidden behind friendly and elegant user interfaces. You access resources on your local network without ever seeing an ARP query. Similarly, you would access Internet services for years without seeing a single three-way handshake till you check a networking book or inspect a network traffic capture. The best study aid would be capturing network traffic and taking a closer look at the various protocols; this helps us better understand how networks work.</p>
+
+<p>This room introduces some basic command-line arguments for using Tcpdump. The Tcpdump tool and its <code class="language-plaintext highlighter-rouge">libpcap</code> library are written in C and C++ and were released for Unix-like systems in the late 1980s or early 1990s. Consequently, they are very stable and offer optimal speed. The <code class="language-plaintext highlighter-rouge">libpcap</code> library is the foundation for various other networking tools today. Moreover, it was ported to MS Windows as <code class="language-plaintext highlighter-rouge">winpcap</code>.</p>
+
+<p>You can run <code class="language-plaintext highlighter-rouge">tcpdump</code> without providing any arguments; however, this is only useful to test that you have it installed! In any real scenario, we must be specific about what to listen to, where to write, and how to display the packets.</p>
+
+<h3 id="specify-the-network-interface">Specify the Network Interface</h3>
+
+<p>The first thing to decide is which network interface to listen to using <code class="language-plaintext highlighter-rouge">-i INTERFACE</code>. You can choose to listen on all available interfaces using <code class="language-plaintext highlighter-rouge">-i any</code>; alternatively, you can specify an interface you want to listen on, such as <code class="language-plaintext highlighter-rouge">-i eth0</code>.</p>
+
+<p>A command such as <code class="language-plaintext highlighter-rouge">ip address show</code> (or merely <code class="language-plaintext highlighter-rouge">ip a s</code>) would list the available network interfaces.</p>
+
+<h3 id="save-the-captured-packets">Save the Captured Packets</h3>
+
+<p>In many cases, you should check the captured packets again later. This can be achieved by saving to a file using <code class="language-plaintext highlighter-rouge">-w FILE</code>. The file extension is most commonly set to <code class="language-plaintext highlighter-rouge">.pcap</code>. The saved packets can be inspected later using another program, such as Wireshark. You won’t see the packets scrolling when you choose the <code class="language-plaintext highlighter-rouge">-w</code> option.</p>
+
+<h3 id="read-captured-packets-from-a-file">Read Captured Packets from a File</h3>
+
+<p>You can use Tcpdump to read packets from a file by using <code class="language-plaintext highlighter-rouge">-r FILE</code>.</p>
+
+<h3 id="limit-the-number-of-captured-packets">Limit the Number of Captured Packets</h3>
+
+<p>You can specify the number of packets to capture by specifying the count using <code class="language-plaintext highlighter-rouge">-c COUNT</code>. Without specifying a count, the packet capture will continue till you interrupt it, for example, by pressing CTRL-C.</p>
+
+<h3 id="dont-resolve-ip-addresses-and-port-numbers">Don’t Resolve IP Addresses and Port Numbers</h3>
+
+<p>Tcpdump will resolve IP addresses and print friendly domain names where possible. To avoid making such DNS lookups, you can use the <code class="language-plaintext highlighter-rouge">-n</code> argument. Similarly, if you don’t want port numbers to be resolved, such as <code class="language-plaintext highlighter-rouge">80</code> being resolved to <code class="language-plaintext highlighter-rouge">http</code>, you can use the <code class="language-plaintext highlighter-rouge">-nn</code> to stop both DNS and port number lookups.</p>
+
+<h3 id="produce-more-verbose-output">Produce (More) Verbose Output</h3>
+
+<p>If you want to print more details about the packets, you can use <code class="language-plaintext highlighter-rouge">-v</code> to produce a slightly more verbose output. According to the Tcpdump manual page (<code class="language-plaintext highlighter-rouge">man tcpdump</code>), the addition of <code class="language-plaintext highlighter-rouge">-v</code> will print “the time to live, identification, total length and options in an IP packet” among other checks. The <code class="language-plaintext highlighter-rouge">-vv</code> will produce more verbose output; the <code class="language-plaintext highlighter-rouge">-vvv</code> will provide even more verbosity; check the manual page for details.</p>
+
+<h3 id="summary-and-examples">Summary and Examples</h3>
+
+<p>The table below provides a summary of the command line options that we covered.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -i INTERFACE</code></td>
+      <td>Captures packets on a specific network interface</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -w FILE</code></td>
+      <td>Writes captured packets to a file</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -r FILE</code></td>
+      <td>Reads captured packets from a file</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -c COUNT</code></td>
+      <td>Captures a specific number of packets</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -n</code></td>
+      <td>Don’t resolve IP addresses</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -nn</code></td>
+      <td>Don’t resolve IP addresses and don’t resolve protocol numbers</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -v</code></td>
+      <td>Verbose display; verbosity can be increased with <code class="language-plaintext highlighter-rouge">-vv</code> and <code class="language-plaintext highlighter-rouge">-vvv</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Consider the following examples:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump -i eth0 -c 50 -v</code> captures and displays 50 packets by listening on the <code class="language-plaintext highlighter-rouge">eth0</code> interface, which is a wired Ethernet, and displays them verbosely.</li>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump -i wlo1 -w data.pcap</code> captures packets by listening on the <code class="language-plaintext highlighter-rouge">wlo1</code> interface (the WiFi interface) and writes the packets to <code class="language-plaintext highlighter-rouge">data.pcap</code>. It will continue till the user interrupts the capture by pressing CTRL-C.</li>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump -i any -nn</code> captures packets on all interfaces and displays them on screen without domain name or protocol resolution.</li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What option can you add to your command to display addresses only in numeric format?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">-n</code></p>
+
+<h2 id="filtering-expressions">Filtering Expressions</h2>
+
+<h3 id="filtering-by-host">Filtering by Host</h3>
+
+<p>Let’s say you are only interested in IP packets exchanged with your network printer or a specific game server. You can easily limit the captured packets to this host using <code class="language-plaintext highlighter-rouge">host IP</code> or <code class="language-plaintext highlighter-rouge">host HOSTNAME</code>. In the terminal below, we capture all the packets exchanged with <code class="language-plaintext highlighter-rouge">example.com</code> and save them to <code class="language-plaintext highlighter-rouge">http.pcap</code>. It is important to note that capturing packets requires you to be logged-in as <code class="language-plaintext highlighter-rouge">root</code> or to use <code class="language-plaintext highlighter-rouge">sudo</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>tcpdump host example.com <span class="nt">-w</span> http.pcap
+</code></pre></div></div>
+
+<p>If you want to limit the packets to those from a particular source IP address or hostname, you must use <code class="language-plaintext highlighter-rouge">src host IP</code> or <code class="language-plaintext highlighter-rouge">src host HOSTNAME</code>. Similarly, you can limit packets to those sent to a specific destination using <code class="language-plaintext highlighter-rouge">dst host IP</code> or <code class="language-plaintext highlighter-rouge">dst host HOSTNAME</code>.</p>
+
+<h3 id="filtering-by-port">Filtering by Port</h3>
+
+<p>If you want to capture all DNS traffic, you can limit the captured packets to those on <code class="language-plaintext highlighter-rouge">port 53</code>. Remember that DNS uses UDP and TCP ports 53 by default.</p>
+
+<p>You can limit the packets to those from a particular source port number or to a particular destination port number using <code class="language-plaintext highlighter-rouge">src port PORT_NUMBER</code> and <code class="language-plaintext highlighter-rouge">dst port PORT_NUMBER</code>, respectively.</p>
+
+<h3 id="filtering-by-protocol">Filtering by Protocol</h3>
+
+<p>The final type of filtering we will cover is filtering by protocol. You can limit your packet capture to a specific protocol; examples include: <code class="language-plaintext highlighter-rouge">ip</code>, <code class="language-plaintext highlighter-rouge">ip6</code>, <code class="language-plaintext highlighter-rouge">udp</code>, <code class="language-plaintext highlighter-rouge">tcp</code>, and <code class="language-plaintext highlighter-rouge">icmp</code></p>
+
+<h3 id="logical-operators">Logical Operators</h3>
+
+<p>Three logical operators that can be handy:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">and</code>: Captures packets where both conditions are true. For example, <code class="language-plaintext highlighter-rouge">tcpdump host 1.1.1.1 and tcp</code> captures <code class="language-plaintext highlighter-rouge">tcp</code> traffic with <code class="language-plaintext highlighter-rouge">host 1.1.1.1</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">or</code>: Captures packets when either one of the conditions is true. For instance, <code class="language-plaintext highlighter-rouge">tcpdump udp or icmp</code> captures UDP or ICMP traffic.</li>
+  <li><code class="language-plaintext highlighter-rouge">not</code>: Captures packets when the condition is not true. For example, <code class="language-plaintext highlighter-rouge">tcpdump not tcp</code> captures all packets except TCP segments; we expect to find UDP, ICMP, and ARP packets among the results.</li>
+</ul>
+
+<h3 id="summary-and-examples-1">Summary and Examples</h3>
+
+<p>The table below offers a summary of the command line options that we covered.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump host IP</code> or <code class="language-plaintext highlighter-rouge">tcpdump host HOSTNAME</code></td>
+      <td>Filters packets by IP address or hostname</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump src host IP</code> or</td>
+      <td>Filters packets by a specific source host</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump dst host IP</code></td>
+      <td>Filters packets by a specific destination host</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump port PORT_NUMBER</code></td>
+      <td>Filters packets by port number</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump src port PORT_NUMBER</code></td>
+      <td>Filters packets by the specified source port number</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump dst port PORT_NUMBER</code></td>
+      <td>Filters packets by the specified destination port number</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump PROTOCOL</code></td>
+      <td>Filters packets by protocol; examples include <code class="language-plaintext highlighter-rouge">ip</code>, <code class="language-plaintext highlighter-rouge">ip6</code>, and <code class="language-plaintext highlighter-rouge">icmp</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Consider the following examples:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump -i any tcp port 22</code> listens on all interfaces and captures <code class="language-plaintext highlighter-rouge">tcp</code> packets to or from <code class="language-plaintext highlighter-rouge">port 22</code>, i.e., SSH traffic.</li>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump -i wlo1 udp port 123</code> listens on the WiFi network card and filters <code class="language-plaintext highlighter-rouge">udp</code> traffic to <code class="language-plaintext highlighter-rouge">port 123</code>, the Network Time Protocol (NTP).</li>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump -i eth0 host example.com and tcp port 443 -w https.pcap</code> will listen on <code class="language-plaintext highlighter-rouge">eth0</code>, the wired Ethernet interface and filter traffic exchanged with <code class="language-plaintext highlighter-rouge">example.com</code> that uses <code class="language-plaintext highlighter-rouge">tcp</code> and <code class="language-plaintext highlighter-rouge">port 443</code>. In other words, this command is filtering HTTPS traffic related to <code class="language-plaintext highlighter-rouge">example.com</code>.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: How many packets in <code class="language-plaintext highlighter-rouge">traffic.pcap</code> use the ICMP protocol?</p>
+
+<p><img src="/tryhackme/Tcpdump%20-%20The%20Basics/2025-12-15_15-15.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">tcpdump -r traffic.pcap -n icmp | wc</code></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">26</code></p>
+
+<p>Q: What is the IP address of the host that asked for the MAC address of 192.168.124.137?</p>
+
+<p><img src="/tryhackme/Tcpdump%20-%20The%20Basics/2025-12-15_15-17.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">tcpdump -r traffic.pcap -n arp</code></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">192.168.124.148</code></p>
+
+<p>Q: What hostname (subdomain) appears in the first DNS query?</p>
+
+<p><img src="/tryhackme/Tcpdump%20-%20The%20Basics/2025-12-15_15-20_1.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">tcpdump -r traffic.pcap -n -c 1 port 53</code></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">mirrors.rockylinux.org</code></p>
+
+<h2 id="advanced-filtering">Advanced Filtering</h2>
+
+<p>We can limit the displayed packets to those smaller or larger than a certain length:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">greater LENGTH</code>: Filters packets that have a length greater than or equal to the specified length</li>
+  <li><code class="language-plaintext highlighter-rouge">less LENGTH</code>: Filters packets that have a length less than or equal to the specified length</li>
+</ul>
+
+<p>We recommend you check the <code class="language-plaintext highlighter-rouge">pcap-filter</code> manual page by issuing the command <code class="language-plaintext highlighter-rouge">man pcap-filter</code>;</p>
+
+<p>we will focus on one advanced option that allows you to filter packets based on the TCP flags. Understanding the TCP flags will make it easy to build on this knowledge and master more advanced filtering techniques.</p>
+
+<h3 id="header-bytes">Header Bytes</h3>
+
+<p>The purpose of this section is to be able to filter packets based on the contents of a header byte. Consider the following protocols: ARP, Ethernet, ICMP, IP, TCP, and UDP. How can we tell Tcpdump to filter packets based on the contents of protocol header bytes?</p>
+
+<p>Using pcap-filter, Tcpdump allows you to refer to the contents of any byte in the header using the following syntax <code class="language-plaintext highlighter-rouge">proto[expr:size]</code>, where:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">proto</code> refers to the protocol. For example, <code class="language-plaintext highlighter-rouge">arp</code>, <code class="language-plaintext highlighter-rouge">ether</code>, <code class="language-plaintext highlighter-rouge">icmp</code>, <code class="language-plaintext highlighter-rouge">ip</code>, <code class="language-plaintext highlighter-rouge">ip6</code>, <code class="language-plaintext highlighter-rouge">tcp</code>, and <code class="language-plaintext highlighter-rouge">udp</code> refer to ARP, Ethernet, ICMP, IPv4, IPv6, TCP, and UDP respectively.</li>
+  <li><code class="language-plaintext highlighter-rouge">expr</code> indicates the byte offset, where <code class="language-plaintext highlighter-rouge">0</code> refers to the first byte.</li>
+  <li><code class="language-plaintext highlighter-rouge">size</code> indicates the number of bytes that interest us, which can be one, two, or four. It is optional and is one by default.</li>
+</ul>
+
+<p>To better understand this, consider the following two examples from the pcap-filter manual page (and don’t worry if you find them difficult):</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ether[0] &amp; 1 != 0</code> takes the first byte in the Ethernet header and the decimal number 1 (i.e., <code class="language-plaintext highlighter-rouge">0000 0001</code> in binary) and applies the <code class="language-plaintext highlighter-rouge">&amp;</code> (the And binary operation). It will return true if the result is not equal to the number 0 (i.e., <code class="language-plaintext highlighter-rouge">0000 0000</code>). The purpose of this filter is to show packets sent to a multicast address. A multicast Ethernet address is a particular address that identifies a group of devices intended to receive the same data.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ip[0] &amp; 0xf != 5</code> takes the first byte in the IP header and compares it with the hexadecimal number F (i.e., <code class="language-plaintext highlighter-rouge">0000 1111</code> in binary). It will return true if the result is not equal to the (decimal) number 5 (i.e., <code class="language-plaintext highlighter-rouge">0000 0101</code> in binary). The purpose of this filter is to catch all IP packets with options.</p>
+  </li>
+</ul>
+
+<p>You can use <code class="language-plaintext highlighter-rouge">tcp[tcpflags]</code> to refer to the TCP flags field. The following TCP flags are available to compare with:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">tcp-syn</code> TCP SYN (Synchronize)</li>
+  <li><code class="language-plaintext highlighter-rouge">tcp-ack</code> TCP ACK (Acknowledge)</li>
+  <li><code class="language-plaintext highlighter-rouge">tcp-fin</code> TCP FIN (Finish)</li>
+  <li><code class="language-plaintext highlighter-rouge">tcp-rst</code> TCP RST (Reset)</li>
+  <li><code class="language-plaintext highlighter-rouge">tcp-push</code> TCP Push</li>
+</ul>
+
+<p>Based on the above, we can write:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump "tcp[tcpflags] == tcp-syn"</code> to capture TCP packets with <strong>only</strong> the SYN (Synchronize) flag set, while all the other flags are unset.</li>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump "tcp[tcpflags] &amp; tcp-syn != 0"</code> to capture TCP packets with <strong>at least</strong> the SYN (Synchronize) flag set.</li>
+  <li><code class="language-plaintext highlighter-rouge">tcpdump "tcp[tcpflags] &amp; (tcp-syn|tcp-ack) != 0"</code> to capture TCP packets with <strong>at least</strong> the SYN (Synchronize) <strong>or</strong> ACK (Acknowledge) flags set.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: How many packets have only the TCP Reset (RST) flag set?</p>
+
+<p><code class="language-plaintext highlighter-rouge">tcpdump -r traffic.pcap "tcp[tcpflags] == tcp-rst" | wc</code></p>
+
+<p><img src="/tryhackme/Tcpdump%20-%20The%20Basics/2025-12-15_15-28.png" alt="" /></p>
+
+<p>Q: What is the IP address of the host that sent packets larger than 15000 bytes?</p>
+
+<p><img src="/tryhackme/Tcpdump%20-%20The%20Basics/2025-12-15_15-31.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">185.117.80.53</code></p>
+
+<h2 id="displaying-packets">Displaying Packets</h2>
+
+<p>Tcpdump is a rich program with many options to customize how the packets are printed and displayed. We have selected to cover the following five options:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-q</code>: Quick output; print brief packet information</li>
+  <li><code class="language-plaintext highlighter-rouge">-e</code>: Print the link-level header
+    <ul>
+      <li>If you are on an Ethernet or WiFi network and want to include the MAC addresses in Tcpdump output</li>
+      <li>This is convenient when you are learning how specific protocols, such as ARP and DHCP function.</li>
+      <li>It can also help you track the source of any unusual packets on your network.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">-A</code>: Show packet data in ASCII
+    <ul>
+      <li>display all the bytes mapped to English letters, numbers, and symbols.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">-xx</code>: Show packet data in hexadecimal format, referred to as hex</li>
+  <li><code class="language-plaintext highlighter-rouge">-X</code>: Show packet headers and data in hex and ASCII</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Explanation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -q</code></td>
+      <td>Quick and quite: brief packet information</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -e</code></td>
+      <td>Include MAC addresses</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -A</code></td>
+      <td>Print packets as ASCII encoding</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -xx</code></td>
+      <td>Display packets in hexadecimal format</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tcpdump -X</code></td>
+      <td>Show packets in both hexadecimal and ASCII formats</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: What is the MAC address of the host that sent an ARP request?</p>
+
+<p><img src="/tryhackme/Tcpdump%20-%20The%20Basics/2025-12-15_15-36.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">tcpdump -r traffic.pcap arp -e</code></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">52:54:00:7c:d3:5b</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authentication Bypass · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to defeat logins and other authentication mechanisms to allow you access to unpermitted areas." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Authentication Bypass</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Intro to Web Hacking/Authentication Bypass/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">cookie</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to defeat logins and other authentication mechanisms to allow you access to unpermitted areas.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="authentication-bypass"><a href="https://tryhackme.com/room/authenticationbypass">Authentication Bypass</a></h1>
+
+<h2 id="username-enumeration">Username Enumeration</h2>
+
+<p>A helpful exercise to complete when trying to find authentication vulnerabilities is creating a list of valid usernames, which we’ll use later in other tasks.</p>
+
+<p>Website error messages are great resources for collating this information to build our list of valid usernames. We have a form to create a new user account if we go to the Acme IT Support website (<a href="http://10.80.170.161/customers/signup">http://10.80.170.161/customers/signup</a>) signup page.</p>
+
+<p>If you try entering the username <strong>admin</strong> and fill in the other form fields with fake information, you’ll see we get the error <strong>An account with this username already exists</strong>. We can use the existence of this error message to produce a list of valid usernames already signed up on the system by using the ffuf tool below. The ffuf tool uses a list of commonly used usernames to check against for any matches.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffuf <span class="nt">-w</span> /usr/share/wordlists/SecLists/Usernames/Names/names.txt <span class="nt">-X</span> POST <span class="nt">-d</span> <span class="s2">"username=FUZZ&amp;email=x&amp;password=x&amp;cpassword=x"</span> <span class="nt">-H</span> <span class="s2">"Content-Type: application/x-www-form-urlencoded"</span> <span class="nt">-u</span> http://10.80.170.161/customers/signup <span class="nt">-mr</span> <span class="s2">"username already exists"</span>
+</code></pre></div></div>
+
+<p>In the above example, the <code class="language-plaintext highlighter-rouge">-w</code> argument selects the file’s location on the computer that contains the list of usernames that we’re going to check exists. The <code class="language-plaintext highlighter-rouge">-X</code> argument specifies the request method, this will be a GET request by default, but it is a POST request in our example. The <code class="language-plaintext highlighter-rouge">-d</code> argument specifies the data that we are going to send. In our example, we have the fields username, email, password and cpassword. We’ve set the value of the username to <strong>FUZZ</strong>. In the ffuf tool, the FUZZ keyword signifies where the contents from our wordlist will be inserted in the request. The <code class="language-plaintext highlighter-rouge">-H</code> argument is used for adding additional headers to the request. In this instance, we’re setting the <code class="language-plaintext highlighter-rouge">Content-Type</code> so the web server knows we are sending form data. The <code class="language-plaintext highlighter-rouge">-u</code> argument specifies the URL we are making the request to, and finally, the <code class="language-plaintext highlighter-rouge">-mr</code> argument is the text on the page we are looking for to validate we’ve found a valid username.</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What is the username starting with si*** ?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">simon</code></p>
+
+<p>Q: What is the username starting with st*** ?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">steve</code></p>
+
+<p>Q: What is the username starting with ro<em>**</em> ?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">robert</code></p>
+
+<h2 id="brute-force">Brute Force</h2>
+
+<p>Using the valid_usernames.txt file we generated in the previous task, we can now use this to attempt a brute force attack on the login page (<a href="http://10.80.170.161/customers/login">http://10.80.170.161/customers/login</a>).</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffuf <span class="nt">-w</span> valid_usernames.txt:W1,/usr/share/wordlists/SecLists/Passwords/Common-Credentials/10-million-password-list-top-100.txt:W2 <span class="nt">-X</span> POST <span class="nt">-d</span> <span class="s2">"username=W1&amp;password=W2"</span> <span class="nt">-H</span> <span class="s2">"Content-Type: application/x-www-form-urlencoded"</span> <span class="nt">-u</span> http://10.80.170.161/customers/login <span class="nt">-fc</span> 200
+</code></pre></div></div>
+
+<p>Previously we used the <strong>FUZZ</strong> keyword to select where in the request the data from the wordlists would be inserted, but because we’re using multiple wordlists, we have to specify our own FUZZ keyword. In this instance, we’ve chosen <code class="language-plaintext highlighter-rouge">W1</code> for our list of valid usernames and <code class="language-plaintext highlighter-rouge">W2</code> for the list of passwords we will try. The multiple wordlists are again specified with the <code class="language-plaintext highlighter-rouge">-w</code> argument but separated with a comma.  For a positive match, we’re using the <code class="language-plaintext highlighter-rouge">-fc</code> argument to check for an HTTP status code other than 200.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: What is the valid username and password (format: username/password)?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">steve/thunder</code></p>
+
+<h2 id="logic-flaw">Logic Flaw</h2>
+
+<p>Sometimes authentication processes contain logic flaws. A logic flaw is when the typical logical path of an application is either bypassed, circumvented or manipulated by a hacker. Logic flaws can exist in any area of a website, but we’re going to concentrate on examples relating to authentication in this instance.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Authentication%20Bypass/58e63d7810ac4b23051e1dd4a24ef792.png" alt="" /></p>
+
+<p>The below mock code example checks to see whether the start of the path the client is visiting begins with /admin and if so, then further checks are made to see whether the client is, in fact, an admin. If the page doesn’t begin with /admin, the page is shown to the client.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="p">(</span> <span class="n">url</span><span class="mf">.</span><span class="nb">substr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span> <span class="o">===</span> <span class="s1">'/admin'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1"># Code to check user is an admin</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1"># View Page</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Because the above PHP code example uses three equals signs (<code class="language-plaintext highlighter-rouge">===</code>), it’s looking for an exact match on the string, including the same letter casing. The code presents a logic flaw because an unauthenticated user requesting <strong>/adMin</strong> will not have their privileges checked and have the page displayed to them, totally bypassing the authentication checks.</p>
+
+<p>We’re going to examine the <strong>Reset Password</strong> function of the Acme IT Support website (<a href="http://10.80.170.161/customers/reset">http://10.80.170.161/customers/reset</a>). We see a form asking for the email address associated with the account on which we wish to perform the password reset. If an invalid email is entered, you’ll receive the error message “<strong>Account not found from supplied email address</strong>”.</p>
+
+<p>For demonstration purposes, we’ll use the email address robert@acmeitsupport.thm which is accepted. We’re then presented with the next stage of the form, which asks for the username associated with this login email address. If we enter robert as the username and press the Check Username button, you’ll be presented with a confirmation message that a password reset email will be sent to robert@acmeitsupport.thm.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Authentication%20Bypass/f457baf00c357990014739bd6bce5b75.png" alt="" /></p>
+
+<p>At this stage, you may be wondering what the vulnerability could be in this application as you have to know both the email and username and then the password link is sent to the email address of the account owner.</p>
+
+<p>In the second step of the reset email process, the username is submitted in a POST field to the web server, and the email address is sent in the query string request as a GET field.</p>
+
+<p>Let’s illustrate this by using the curl tool to manually make the request to the webserver</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="s1">'http://10.80.170.161/customers/reset email=robert%40acmeitsupport.thm'</span> <span class="nt">-H</span> <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="nt">-d</span> <span class="s1">'username=robert'</span>
+</code></pre></div></div>
+
+<p>We use the <code class="language-plaintext highlighter-rouge">-H</code> flag to add an additional header to the request. In this instance, we are setting the <code class="language-plaintext highlighter-rouge">Content-Type</code> to <code class="language-plaintext highlighter-rouge">application/x-www-form-urlencoded</code>, which lets the web server know we are sending form data so it properly understands our request.</p>
+
+<p>In the application, the user account is retrieved using the query string, but later on, in the application logic, the password reset email is sent using the data found in the PHP variable <code class="language-plaintext highlighter-rouge">$_REQUEST</code>.</p>
+
+<p>The PHP <code class="language-plaintext highlighter-rouge">$_REQUEST</code> variable is an array that contains data received from the query string and POST data. If the same key name is used for both the query string and POST data, the application logic for this variable favours POST data fields rather than the query string, so if we add another parameter to the POST form, we can control where the password reset email gets delivered.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="s1">'http://10.80.170.161/customers/reset?email=robert%40acmeitsupport.thm'</span> <span class="nt">-H</span> <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="nt">-d</span> <span class="s1">'username=robert&amp;email=attacker@hacker.com'</span>
+</code></pre></div></div>
+
+<p>For the next step, you’ll need to create an account on the Acme IT support customer section, doing so gives you a unique email address that can be used to create support tickets. The email address is in the format of <code class="language-plaintext highlighter-rouge">{username}</code><strong>@customer.acmeitsupport.thm</strong></p>
+
+<p>Now rerunning <strong>Curl Request 2</strong> but with your @acmeitsupport.thm in the email field you’ll have a ticket created on your account which contains a link to log you in as Robert. Using Robert’s account, you can view their support tickets and reveal a flag.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="s1">'http://10.80.170.161/customers/reset?email=robert@acmeitsupport.thm'</span> <span class="nt">-H</span> <span class="s1">'Content-Type: application/x-www-form-urlencoded'</span> <span class="nt">-d</span> <span class="s1">'username=robert&amp;email={username}@customer.acmeitsupport.thm'</span>
+</code></pre></div></div>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: What is the flag from Robert’s support ticket?</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Authentication%20Bypass/2025-12-30_11-46.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{AUTH_BYPASS_COMPLETE}</code></p>
+
+<h2 id="cookie-tampering">Cookie Tampering</h2>
+
+<p>Examining and editing the cookies set by the web server during your online session can have multiple outcomes, such as unauthenticated access, access to another user’s account, or elevated privileges</p>
+
+<p>The contents of some cookies can be in plain text, and it is obvious what they do. Take, for example, if these were the cookie set after a successful login:</p>
+
+<p><strong>Set-Cookie: logged_in=true; Max-Age=3600; Path=/</strong><br />
+<strong>**Set-Cookie: admin=false; Max-Age=3600; Path=/</strong>**</p>
+
+<p>We see one cookie (logged_in), which appears to control whether the user is currently logged in or not, and another (admin), which controls whether the visitor has admin privileges. Using this logic, if we were to change the contents of the cookies and make a request we’ll be able to change our privileges.</p>
+
+<p>First, we’ll start just by requesting the target page:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl http://10.80.170.161/cookie-test
+</code></pre></div></div>
+
+<p>We can see we are returned a message of: <strong>Not Logged In</strong></p>
+
+<p>Now we’ll send another request with the logged_in cookie set to true and the admin cookie set to false:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-H</span> <span class="s2">"Cookie: logged_in=true; admin=false"</span> http://10.80.170.161/cookie-test
+</code></pre></div></div>
+
+<p>We are given the message: <strong>Logged In As A User</strong></p>
+
+<p>Finally, we’ll send one last request setting both the logged_in and admin cookie to true:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-H</span> <span class="s2">"Cookie: logged_in=true; admin=true"</span> http://10.80.170.161/cookie-test
+</code></pre></div></div>
+
+<p>This returns the result: <strong>Logged In As An Admin</strong> as well as a flag which you can use to answer question one.</p>
+
+<h3 id="hashing"><strong>Hashing</strong></h3>
+
+<p>Sometimes cookie values can look like a long string of random characters; these are called hashes which are an irreversible representation of the original text. Here are some examples that you may come across:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Original String</strong></td>
+      <td><strong>Hash Method</strong></td>
+      <td><strong>Output</strong></td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>md5</td>
+      <td>c4ca4238a0b923820dcc509a6f75849b</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>sha-256</td>
+      <td>6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>sha-512</td>
+      <td>4dff4ea340f0a823f15d3f4f01ab62eae0e5da579ccb851f8db9dfe84c58b2b37b89903a740e1ee172da793a6e79d560e5f7f9bd058a12a280433ed6fa46510a</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>sha1</td>
+      <td>356a192b7913b04c54574d18c28d46e6395428ab</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>You can see from the above table that the hash output from the same input string can significantly differ depending on the hash method in use. Even though the hash is irreversible, the same output is produced every time, which is helpful for us as services such as <a href="https://crackstation.net/">https://crackstation.net/</a> keep databases of billions of hashes and their original strings.</p>
+
+<h3 id="encoding"><strong>Encoding</strong></h3>
+
+<p>Encoding is similar to hashing in that it creates what would seem to be a random string of text, but in fact, the encoding is reversible. So it begs the question, what is the point in encoding? Encoding allows us to convert binary data into human-readable text that can be easily and safely transmitted over mediums that only support plain text ASCII characters.</p>
+
+<p>Common encoding types are base32 which converts binary data to the characters A-Z and 2-7, and base64 which converts using the characters a-z, A-Z, 0-9,+, / and the equals sign for padding.</p>
+
+<p>Take the below data as an example which is set by the web server upon logging in:</p>
+
+<p><strong>**Set-Cookie:</strong> session=eyJpZCI6MSwiYWRtaW4iOmZhbHNlfQ==; Max-Age=3600; Path=/**</p>
+
+<p>This string base64 decoded has the value of <strong>{“id”:1,”admin”: false}</strong> we can then encode this back to base64 encoded again but instead setting the admin value to true, which now gives us admin access.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: What is the flag from changing the plain text cookie values?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{COOKIE_TAMPERING}</code></p>
+
+<p>Q: What is the value of the md5 hash 3b2a1053e3270077456a79192070aa78 ?</p>
+
+<p>Use CrackStation.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">463729</code></p>
+
+<p>Q: What is the base64 decoded value of VEhNe0JBU0U2NF9FTkNPRElOR30= ?</p>
+
+<p><code class="language-plaintext highlighter-rouge">echo "VEhNe0JBU0U2NF9FTkNPRElOR30=" | base64 -d</code></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{BASE64_ENCODING}</code></p>
+
+<p>Q: Encode the following value using base64 {“id”:1,”admin”:true}</p>
+
+<p><code class="language-plaintext highlighter-rouge">echo -n '{"id":1,"admin":true}' | base64</code></p>
+
+<p>(<code class="language-plaintext highlighter-rouge">-n</code> to prevent an <code class="language-plaintext highlighter-rouge">\n</code> being added at the end )</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">eyJpZCI6MSwiYWRtaW4iOnRydWV9</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

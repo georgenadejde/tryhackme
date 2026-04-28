@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intro to SSRF · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to exploit Server-Side Request Forgery (SSRF) vulnerabilities, allowing you to access internal server resources." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Intro to SSRF</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Intro to Web Hacking/Intro to SSRF/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">ssrf</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to exploit Server-Side Request Forgery (SSRF) vulnerabilities, allowing you to access internal server resources.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="intro-to-ssrf"><a href="https://tryhackme.com/room/ssrfqi">Intro to SSRF</a></h1>
+
+<h2 id="ssrf-examples">SSRF Examples</h2>
+
+<p>SSRF stands for Server-Side Request Forgery. It’s a vulnerability that allows a malicious user to cause the webserver to make an additional or edited HTTP request to the resource of the attacker’s choosing.</p>
+
+<p>There are two types of SSRF vulnerability; the first is a regular SSRF where data is returned to the attacker’s screen. The second is a Blind SSRF vulnerability where an SSRF occurs, but no information is returned to the attacker’s screen.</p>
+
+<p>A successful SSRF attack can result in any of the following: </p>
+
+<ul>
+  <li>Access to unauthorised areas.</li>
+  <li>Access to customer/organisational data.</li>
+  <li>Ability to Scale to internal networks.</li>
+  <li>Reveal authentication tokens/credentials.</li>
+</ul>
+
+<p>The below example shows how the attacker can have complete control over the page requested by the webserver.<br />
+The Expected Request is what the website.thm server is expecting to receive, with the section in red being the URL that the website will fetch for the information.<br />
+The attacker can modify the area in red to an URL of their choice.</p>
+
+<p><img src="https://static-labs.tryhackme.cloud/sites/ssrf-examples/images/ssrf_1.png" alt="" /></p>
+
+<p>The below example shows how an attacker can still reach the /api/user page with only having control over the path by utilising directory traversal. When website.thm receives ../ this is a message to move up a directory which removes the /stock portion of the request and turns the final request into /api/user
+<img src="https://static-labs.tryhackme.cloud/sites/ssrf-examples/images/ssrf_2.png" alt="" /></p>
+
+<p>In this example, the attacker can control the server’s subdomain to which the request is made. Take note of the payload ending in <strong>&amp;x=</strong> being used to stop the remaining path from being appended to the end of the attacker’s URL and instead turns it into a parameter (?x=) on the query string:</p>
+
+<p><img src="https://static-labs.tryhackme.cloud/sites/ssrf-examples/images/ssrf_3.png" alt="" /></p>
+
+<p>Going back to the original request, the attacker can instead force the webserver to request a server of the attacker’s choice. By doing so, we can capture request headers that are sent to the attacker’s specified domain. These headers could contain authentication credentials or API keys sent by website.thm (that would normally authenticate to api.website.thm).</p>
+
+<p><img src="https://static-labs.tryhackme.cloud/sites/ssrf-examples/images/ssrf_4.png" alt="" /></p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What is the flag from the SSRF Examples site?</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/2026-01-02_11-45.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{SSRF_MASTER}</code></p>
+
+<h2 id="finding-an-ssrf">Finding an SSRF</h2>
+
+<p><strong>When a full URL is used in a parameter in the address bar:</strong></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/956e1914b116cbc9e564e3bb3d9ab50a.png" alt="" /></p>
+
+<p><strong>A hidden field in a form:</strong></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/237696fc8e405d25d4fc7bbcc67919f0.png" alt="" /></p>
+
+<p><strong>A partial URL such as just the hostname:</strong></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/f3c387849e91a4f15a7b59ff7324be75.png" alt="" /></p>
+
+<p><strong>Or perhaps only the path of the URL:</strong></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/3fd583950617f7a3713a107fcb4cfa49.png" alt="" /></p>
+
+<p>Some of these examples are easier to exploit than others, and this is where a lot of trial and error will be required to find a working payload.</p>
+
+<p>If working with a blind SSRF where no output is reflected back to you, you’ll need to use an external HTTP logging tool to monitor requests such as requestbin.com, your own HTTP server or Burp Suite’s Collaborator client.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: Based on simple observation, which of the following URLs is more likely to be vulnerable to SSRF?</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">https://website.thm/index.php</code></li>
+  <li><code class="language-plaintext highlighter-rouge">https://website.thm/list-products.php?categoryId=5325</code></li>
+  <li><code class="language-plaintext highlighter-rouge">https://website.thm/fetch-file.php?fname=242533.pdf&amp;srv=filestorage.cloud.thm&amp;port=8001</code></li>
+  <li><code class="language-plaintext highlighter-rouge">https://website.thm/buy-item.php?itemId=213&amp;price=100&amp;q=2</code></li>
+</ol>
+
+<p>A: <code class="language-plaintext highlighter-rouge">3</code></p>
+
+<h2 id="defeating-common-ssrf-defenses">Defeating Common SSRF Defenses</h2>
+
+<p>More security-savvy developers aware of the risks of SSRF vulnerabilities may implement checks in their applications to make sure the requested resource meets specific rules. There are usually two approaches to this, either a deny list or an allow list.</p>
+
+<h3 id="deny-list"><strong>Deny List</strong></h3>
+
+<p>A Deny List is where all requests are accepted apart from resources specified in a list or matching a particular pattern. A Web Application may employ a deny list to protect sensitive endpoints, IP addresses or domains from being accessed by the public while still allowing access to other locations. A specific endpoint to restrict access is the localhost, which may contain server performance data or further sensitive information, so domain names such as localhost and 127.0.0.1 would appear on a deny list. Attackers can bypass a Deny List by using alternative localhost references such as 0, 0.0.0.0, 0000, 127.1, 127.<em>.</em>.*, 2130706433, 017700000001 or subdomains that have a DNS record which resolves to the IP Address 127.0.0.1 such as 127.0.0.1.nip.io.</p>
+
+<p>Also, in a cloud environment, it would be beneficial to block access to the IP address 169.254.169.254, which contains metadata for the deployed cloud server, including possibly sensitive information. An attacker can bypass this by registering a subdomain on their own domain with a DNS record that points to the IP Address 169.254.169.254.</p>
+
+<h3 id="allow-list"><strong>Allow List</strong></h3>
+
+<p>An allow list is where all requests get denied unless they appear on a list or match a particular pattern, such as a rule that an URL used in a parameter must begin with <strong>https://website.thm.</strong> An attacker could quickly circumvent this rule by creating a subdomain on an attacker’s domain name, such as https://website.thm.attackers-domain.thm. The application logic would now allow this input and let an attacker control the internal HTTP request.</p>
+
+<h3 id="open-redirect"><strong>Open Redirect</strong></h3>
+
+<p>If the above bypasses do not work, there is one more trick up the attacker’s sleeve, the open redirect. An open redirect is an endpoint on the server where the website visitor gets automatically redirected to another website address. Take, for example, the link https://website.thm/link?url=https://tryhackme.com. This endpoint was created to record the number of times visitors have clicked on this link for advertising/marketing purposes. But imagine there was a potential SSRF vulnerability with stringent rules which only allowed URLs beginning with https://website.thm/. An attacker could utilise the above feature to redirect the internal HTTP request to a domain of the attacker’s choice.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: What method can be used to bypass strict rules?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">open redirect</code></p>
+
+<p>Q: What IP address may contain sensitive data in a cloud environment?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">169.254.169.254</code></p>
+
+<p>Q: What type of list is used to <strong>permit</strong> only certain input?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Allow List</code></p>
+
+<p>Q: What type of list is used to <strong>stop</strong> certain input?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Deny List</code></p>
+
+<h2 id="ssrf-practical">SSRF Practical</h2>
+
+<p>We’ve come across two new endpoints during a content discovery exercise against the <strong>Acme IT Support</strong> website. The first one is <strong>/private</strong>, which gives us an error message explaining that the contents cannot be viewed from our IP address. The second is a new version of the customer account page at <strong>/customers/new-account-page</strong> with a new feature allowing customers to choose an avatar for their account.</p>
+
+<p>First, create a customer account and sign in. Once you’ve signed in, visit <a href="https://10-80-188-95.reverse-proxy.cell-prod-eu-west-1a.vm.tryhackme.com/customers/new-account-page">https://10-80-188-95.reverse-proxy.cell-prod-eu-west-1a.vm.tryhackme.com/customers/new-account-page</a> to view the new avatar selection feature. By viewing the page source of the avatar form, you’ll see the avatar form field value contains the path to the image. The background-image style can confirm this in the above DIV element as per the screenshot below:</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/bd9ee9ac0b7592b5343cbc8dd9b57189.png" alt="" /></p>
+
+<p>If you choose one of the avatars and then click the <strong>Update Avatar</strong> button, you’ll see the form change and, above it, display your currently selected avatar.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/8685bf7a4b24616031425a7f5e8db1ae.png" alt="" /></p>
+
+<p>Viewing the page source will show your current avatar is displayed using the data URI scheme, and the image content is base64 encoded as per the screenshot below.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/fff0ea113602635dcf5d1e8d0b1d8bca.png" alt="" /></p>
+
+<p>Now let’s try making the request again but changing the avatar value to <strong>private</strong> in hopes that the server will access the resource and get past the IP address block. To do this, firstly, right-click on one of the radio buttons on the avatar form and select <strong>Inspect</strong>:</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/2ef87608418e47625bedad9d0361ed08.png" alt="" /></p>
+
+<p><strong>And then edit the value of the radio button to private:</strong></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/a1712298679cc642d792d935b14effe5.png" alt="" /></p>
+
+<p>Be sure to select the avatar you edited and then click the <strong>Update Avatar</strong> button. Unfortunately, it looks like the web application has a deny list in place and has blocked access to the /private endpoint.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/a59460cc19eaf5776ee8a882e25b2d64.png" alt="" /></p>
+
+<p>As you can see from the error message, the path cannot start with /private but don’t worry, we’ve still got a trick up our sleeve to bypass this rule. We can use a directory traversal trick to reach our desired endpoint. Try setting the avatar value to <strong>x/../private</strong></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/84b88d9c6fa6a29450520625bb42870d.png" alt="" /></p>
+
+<p>You’ll see we have now bypassed the rule, and the user updated the avatar. This trick works because when the web server receives the request for <strong>x/../private</strong>, it knows that the <strong>../</strong> string means to move up a directory that now translates the request to just <strong>/private</strong>.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: What is the flag from the /private directory?</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/2026-01-02_12-01.png" alt="" /></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Intro%20to%20SSRF/2026-01-02_12-06.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{YOU_WORKED_OUT_THE_SSRF}</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

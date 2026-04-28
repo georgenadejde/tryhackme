@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yara · THM Writeups</title>
+  
+  <meta name="description" content="Learn the applications and language that is Yara for everything threat intelligence, forensics, and threat hunting!" />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Yara</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Yara/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">yara</span>
+          
+          <span class="tag-pill">loki</span>
+          
+          <span class="tag-pill">thor</span>
+          
+          <span class="tag-pill">fenrir</span>
+          
+          <span class="tag-pill">yaya</span>
+          
+          <span class="tag-pill">yargen</span>
+          
+          <span class="tag-pill">valhalla</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn the applications and language that is Yara for everything threat intelligence, forensics, and threat hunting!</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="yara"><a href="https://tryhackme.com/room/yara">Yara</a></h1>
+
+<h2 id="what-is-yara">What is Yara?</h2>
+
+<ul>
+  <li><a href="https://yara.readthedocs.io/en/stable/writingrules.html">Docs</a></li>
+</ul>
+
+<p>&lt; “The pattern matching swiss knife for malware researchers (and everyone else)” - VirusTotal, 2020</p>
+
+<ul>
+  <li>
+    <p>Yara can identify information based on both binary and textual patterns, such as hexadecimal and strings contained within a file.</p>
+  </li>
+  <li>
+    <p>rules are used to label these patterns</p>
+
+    <ul>
+      <li>Yara rules are frequently written to determine if a file is malicious or not, based upon the pattern it presents.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="tasks">Tasks</h3>
+
+<ol>
+  <li>What is the name of the base-16 numbering system that Yara can detect?</li>
+</ol>
+
+<p>A: Hex</p>
+
+<ol>
+  <li>Would the text “Enter your Name” be a string in an application? (Yay/Nay)</li>
+</ol>
+
+<p>A: Yay</p>
+
+<h2 id="intro-to-yara-rules">Intro To Yara Rules</h2>
+
+<ul>
+  <li>
+    <p>every Yara command require two arguments to be valid:</p>
+
+    <p>1). The rule file we create
+  2). Name of file, directory, or process ID to use the rule for.</p>
+  </li>
+  <li>
+    <p>Every rule must have a name and condition.</p>
+  </li>
+  <li>
+    <p>Standard file extension for all Yara rules: <strong>.yar</strong></p>
+  </li>
+  <li>
+    <p>we create a .yar file in which we write:</p>
+  </li>
+</ul>
+
+<pre><code class="language-yara">rule examplerule{
+	condition: true 
+}
+</code></pre>
+
+<ul>
+  <li>
+    <p>it checks if the file/directory/PID we give as an argument exists.</p>
+
+    <ul>
+      <li>if it exists, we are given the name of the rule: <code class="language-plaintext highlighter-rouge">examplerule</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Yara/yara.png" alt="" /></p>
+
+<h2 id="expanding-on-yara-rules">Expanding on Yara Rules</h2>
+
+<ul>
+  <li>Conditions:</li>
+</ul>
+
+<h3 id="meta">Meta</h3>
+
+<ul>
+  <li>
+    <p>This section of a Yara rule is reserved for descriptive information by the author of the rule.</p>
+
+    <ul>
+      <li>
+        <p>For example, you can use <code class="language-plaintext highlighter-rouge">desc</code>, short for description, to summarise what your rule checks for.</p>
+      </li>
+      <li>
+        <p>Anything within this section does not influence the rule itself.</p>
+      </li>
+      <li>
+        <p>Similar to commenting code, it is useful to summarise your rule.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="strings">Strings</h3>
+
+<ul>
+  <li>
+    <p>Remember our discussion about strings in Task 2? Well, here we go.</p>
+  </li>
+  <li>
+    <p>You can use strings to search for specific text or hexadecimal in files or programs.</p>
+
+    <ul>
+      <li>For example, say we wanted to search a directory for all files containing “Hello World!”, we would create a rule such as below:</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Yara/TzxFGbd.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Of course, we need a condition here to make the rule valid.</p>
+
+    <ul>
+      <li>In this example, to make this string the condition, we need to use the variable’s name. In this case, $hello_world:</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Yara/helloworld_checker_con11.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Essentially, if any file has the string “Hello World!” then the rule will match.</p>
+
+    <ul>
+      <li>However, this is literally saying that it will only match if “Hello World!” is found and will not match if “hello world” or “HELLO WORLD.</li>
+    </ul>
+  </li>
+  <li>
+    <p>use <code class="language-plaintext highlighter-rouge">any of them</code>:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Yara/TGFw8sH.png" alt="" /></p>
+
+<h3 id="conditions">Conditions</h3>
+
+<ul>
+  <li>We have already used the true and any of them condition. Much like regular programming, you can use operators such as: &lt;=, &gt;=, !=.</li>
+</ul>
+
+<p><img src="/tryhackme/Yara/helloworld_checker.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The rule will now:</p>
+
+    <ul>
+      <li>Look for the “Hello World!” string</li>
+      <li>Only say the rule matches if there are less than or equal to ten occurrences of the “Hello World!” string</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="combining-keywords">Combining keywords</h3>
+
+<ul>
+  <li>To combine multiple conditions. Say if you wanted the rule to match if any .txt files with “Hello World!” is found, you can use a rule like below:</li>
+</ul>
+
+<p><img src="/tryhackme/Yara/jkADv0i.png" alt="" /></p>
+
+<h3 id="anatomy-of-a-yara-rule">Anatomy of a Yara Rule</h3>
+
+<p><img src="1*gThGNPenpT-AS-gjr8JCtA.png" alt="" /></p>
+
+<h2 id="yara-modules">Yara Modules</h2>
+
+<ul>
+  <li>Frameworks such as the <a href="https://cuckoosandbox.org/">Cuckoo Sandbox</a> or <a href="https://pypi.org/project/pefile/">Python’s PE Module</a> allows you to improve the technicality of your Yara rules ten-fold.</li>
+</ul>
+
+<h3 id="cuckoo">Cuckoo</h3>
+
+<ul>
+  <li>
+    <p>Cuckoo Sandbox is an <em>automated malware analysis environment</em>.</p>
+  </li>
+  <li>
+    <p>This module allows you to generate Yara rules based upon the behaviours discovered from Cuckoo Sandbox.</p>
+  </li>
+  <li>
+    <p>As this environment executes malware, you can create rules on specific behaviours such as runtime strings and the likes.</p>
+  </li>
+</ul>
+
+<h3 id="python-pe">Python PE</h3>
+
+<ul>
+  <li>Python’s PE module allows you to create Yara rules from the various sections and elements of the Windows Portable Executable (PE) structure.</li>
+</ul>
+
+<h2 id="yara-tools">Yara Tools</h2>
+
+<h3 id="loki">Loki</h3>
+
+<ul>
+  <li>
+    <p>free open source IOC (<em>Indicator of Compromise</em>)</p>
+  </li>
+  <li>
+    <p><em>Detection</em> is based on 4 methods:</p>
+
+    <ol>
+      <li>File Name IOC Check</li>
+      <li>Yara Rule Check</li>
+      <li>Hash Check</li>
+      <li>C2 Back Connect Check</li>
+    </ol>
+  </li>
+</ul>
+
+<h3 id="thor">Thor</h3>
+
+<ul>
+  <li>
+    <p>commercial variant of Loki</p>
+  </li>
+  <li>
+    <p>multi-platform IOC AND YARA scanner.</p>
+  </li>
+  <li>
+    <p>Note that THOR is geared towards corporate customers. THOR Lite is the free version.</p>
+  </li>
+</ul>
+
+<h3 id="fenrir">Fenrir</h3>
+
+<ul>
+  <li>Fenrir is a bash script; it will run on any system capable of running bash (nowadays even Windows).</li>
+</ul>
+
+<h3 id="yaya">Yaya</h3>
+
+<ul>
+  <li>
+    <p>YAYA is a new open-source tool to help researchers manage multiple YARA rule repositories.</p>
+  </li>
+  <li>
+    <p>YAYA starts by importing a set of high-quality YARA rules and then lets researchers add their own rules, disable specific rulesets, and run scans of files.</p>
+  </li>
+</ul>
+
+<h2 id="use-loki">Use Loki</h2>
+
+<h3 id="tasks-1">Tasks</h3>
+
+<p>Scenario: You are the security analyst for a mid-size law firm. A co-worker discovered suspicious files on a web server within your organization. These files were discovered while performing updates to the corporate website. The files have been copied to your machine for analysis. The files are located in the <code class="language-plaintext highlighter-rouge">suspicious-files</code> directory. Use Loki to answer the questions below.</p>
+
+<ul>
+  <li>Command used: <code class="language-plaintext highlighter-rouge">cmnatic@thm-yara:~/suspicious-files/file1$ python ../../tools/Loki/loki.py -p .</code></li>
+</ul>
+
+<ol>
+  <li>Scan file 1. Does Loki detect this file as suspicious/malicious or benign?</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/loki1.png" alt="" /></p>
+
+<p>A: Suspicious</p>
+
+<ol>
+  <li>What Yara rule did it match on?</li>
+</ol>
+
+<p>A: webshell_metaslsoft</p>
+
+<ol>
+  <li>What does Loki classify this file as?</li>
+</ol>
+
+<p>A: Web Shell</p>
+
+<ol>
+  <li>Based on the output, what string within the Yara rule did it match on?</li>
+</ol>
+
+<p>A: Str1</p>
+
+<ol>
+  <li>What is the name and version of this hack tool?</li>
+</ol>
+
+<p>A: b374k 2.2</p>
+
+<ol>
+  <li>Inspect the actual Yara file that flagged file 1. Within this rule, how many strings are there to flag this file?</li>
+</ol>
+
+<p>A: 1</p>
+
+<ol>
+  <li>Scan file 2. Does Loki detect this file as suspicious/malicious or benign?</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/loki2.png" alt="" /></p>
+
+<p>A: benign</p>
+
+<ol>
+  <li>Inspect file 2. What is the name and version of this web shell?</li>
+</ol>
+
+<p>A: b374k  3.2.3</p>
+
+<h2 id="creating-yara-rules-with-yargen">Creating Yara rules with yarGen</h2>
+
+<ul>
+  <li>
+    <p>file2 did not get flagged on by Loki, so we need to make a Yara rule to detect this specific web shell in our environment</p>
+  </li>
+  <li>
+    <p>we can search manually for potential Strings</p>
+  </li>
+  <li>
+    <p>we can use <em>yarGen</em> = YARA rules generator</p>
+  </li>
+  <li>
+    <p>“The main principle is the creation of yara rules from strings found in malware files while removing all strings that also appear in goodware files. Therefore yarGen includes a big goodware strings and opcode database as ZIP archives that have to be extracted before the first use.”</p>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">python3</span> <span class="n">yarGen</span><span class="p">.</span><span class="n">py</span> <span class="o">-</span><span class="n">m</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">cmnatic</span><span class="o">/</span><span class="n">suspicious</span><span class="o">-</span><span class="n">files</span><span class="o">/</span><span class="n">file2</span> <span class="o">--</span><span class="n">excludegood</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">cmnatic</span><span class="o">/</span><span class="n">suspicious</span><span class="o">-</span><span class="n">files</span><span class="o">/</span><span class="n">file2</span><span class="p">.</span><span class="n">yar</span> 
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Explanations:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-m</code>: path to the files you want to generate rules for</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">--excludegood</code>: force to exclude all goodware strings (these are strings found in legitimate software and can increase false positives)</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">-o</code>: location and name you want to output the Yara rule.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Another tool that go well with this: <a href="https://github.com/Neo23x0/yarAnalyzer/">yarAnalyzer</a></p>
+  </li>
+  <li>
+    <p>Further reading on yarGen:</p>
+
+    <ul>
+      <li>
+        <p>https://www.bsk-consulting.de/2015/02/16/write-simple-sound-yara-rules/</p>
+      </li>
+      <li>
+        <p>https://www.bsk-consulting.de/2015/10/17/how-to-write-simple-but-sound-yara-rules-part-2/</p>
+      </li>
+      <li>
+        <p>https://www.bsk-consulting.de/2016/04/15/how-to-write-simple-but-sound-yara-rules-part-3/</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="tasks-2">Tasks</h3>
+
+<ol>
+  <li>From within the root of the suspicious files directory, what command would you run to test Yara and your Yara rule against file 2?</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/loki3.png" alt="" /></p>
+
+<p>A: yara file2.yar file2/1ndex.php</p>
+
+<ol>
+  <li>Did Yara rule flag file 2? (Yay/Nay)</li>
+</ol>
+
+<p>A: Yay</p>
+
+<ol>
+  <li>Copy the Yara rule you created into the Loki signatures directory.</li>
+</ol>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">cp file2.yar ../tools/Loki/signature-base/</code></li>
+</ul>
+
+<ol>
+  <li>Test the Yara rule with Loki, does it flag file 2? (Yay/Nay)</li>
+</ol>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">python ../../tools/Loki/loki.py -p . </code></li>
+</ul>
+
+<p>A: yay</p>
+
+<ol>
+  <li>What is the name of the variable for the string that it matched on?</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/sdds.png" alt="" /></p>
+
+<p>A: Zepto</p>
+
+<ol>
+  <li>Inspect the Yara rule, how many strings were generated?</li>
+</ol>
+
+<p>A: 20</p>
+
+<ol>
+  <li>One of the conditions to match on the Yara rule specifies file size. The file has to be less than what amount?</li>
+</ol>
+
+<p>A: 700KB</p>
+
+<h2 id="valhalla">Valhalla</h2>
+
+<ul>
+  <li>
+    <p>online Yara feed</p>
+  </li>
+  <li>
+    <p>“<a href="https://valhalla.nextron-systems.com/">VALHALLA</a> boosts your detection capabilities with the power of thousands of hand-crafted high-quality YARA rules.”</p>
+  </li>
+</ul>
+
+<h3 id="tasks-3">Tasks</h3>
+<ol>
+  <li>Enter the SHA256 hash of file 1 into Valhalla. Is this file attributed to an APT group? (Yay/Nay)</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/file1.png" alt="" /></p>
+
+<p>A: Yay</p>
+
+<ol>
+  <li>Do the same for file 2. What is the name of the first Yara rule to detect file 2?</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/file2val.png" alt="" /></p>
+
+<p>A: Webshell_b374k_rule1</p>
+
+<ol>
+  <li>Examine the information for file 2 from Virus Total (VT). The Yara Signature Match is from what scanner?</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/thora.png" alt="" /></p>
+
+<p>A: THOR APT Scanner</p>
+
+<ol>
+  <li>Enter the SHA256 hash of file 2 into Virus Total. Did every AV detect this as malicious? (Yay/Nay)</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/virus.png" alt="" /></p>
+
+<p>A: Nay</p>
+
+<ol>
+  <li>Besides .PHP, what other extension is recorded for this file?</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/asd.png" alt="" /></p>
+
+<p>A: exe</p>
+
+<ol>
+  <li>What JavaScript library is used by file 2?</li>
+</ol>
+
+<p><img src="/tryhackme/Yara/sads.png" alt="" /></p>
+
+<p>A: zepto</p>
+
+<ol>
+  <li>Is this Yara rule in the default Yara file Loki uses to detect these type of hack tools? (Yay/Nay)</li>
+</ol>
+
+<p>A: Nay</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

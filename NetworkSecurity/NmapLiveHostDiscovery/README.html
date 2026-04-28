@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nmap: Live Host Discovery · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to use Nmap to discover live hosts using ARP scan, ICMP scan, and TCP/UDP ping scan." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Nmap: Live Host Discovery</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">NetworkSecurity/NmapLiveHostDiscovery/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">nmap</span>
+          
+          <span class="tag-pill">arp</span>
+          
+          <span class="tag-pill">networking</span>
+          
+          <span class="tag-pill">subnet</span>
+          
+          <span class="tag-pill">icmp</span>
+          
+          <span class="tag-pill">tcp</span>
+          
+          <span class="tag-pill">udp</span>
+          
+          <span class="tag-pill">dns</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to use Nmap to discover live hosts using ARP scan, ICMP scan, and TCP/UDP ping scan.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="nmap-live-host-discovery"><a href="https://tryhackme.com/room/nmap01">Nmap Live Host Discovery</a></h1>
+
+<h2 id="intro">Intro</h2>
+
+<ul>
+  <li>
+    <p>When we target a network and we want to know:</p>
+
+    <ul>
+      <li>Which systems are up?</li>
+      <li>What services are running on these systems?</li>
+    </ul>
+  </li>
+  <li>
+    <p>we use <em>Nmap</em>.</p>
+  </li>
+  <li>
+    <p>this room covers the different approaches that Nmap uses to discover live hosts:</p>
+
+    <ul>
+      <li>
+        <p><strong>ARP scan</strong>: using ARP requests to <em>discover</em> live hosts</p>
+      </li>
+      <li>
+        <p><strong>ICMP scan</strong>: using ICMP to <em>identify</em> live hosts.</p>
+      </li>
+      <li>
+        <p><strong>TCP/UDP ping scan</strong>: sends packets to TCP ports and UDP ports to <em>determine</em> live hosts.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Nmap is short for <em>Network Mapper</em></p>
+  </li>
+  <li>
+    <p>An Nmap scan usually goes through these steps:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/nmap1.png" alt="" /></p>
+
+<h2 id="subnetworks">Subnetworks</h2>
+
+<ul>
+  <li>
+    <p><em>network segment</em> = group of computers connected using a shared medium (the medium can be the Ethernet switch or Wifi access Point)</p>
+  </li>
+  <li>
+    <p><em>subnetwork</em> = one or more network segments connected together and configured to use the same router.</p>
+  </li>
+  <li>
+    <p>the network segment reffers to a <em>physical connection</em>, while a subnetwork to a <em>logical connection</em>.</p>
+  </li>
+  <li>
+    <p>in the diagram we have four nework segments or subnetworks.</p>
+
+    <ul>
+      <li>a subnetwork, or simply a <em>subnet</em> has its own IP address range and is connected to a more extensive network via a router.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/subnetworks.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Subnets with /16 have the subnet mask 255.255.0.0 and can have around 65k hosts.</p>
+  </li>
+  <li>
+    <p>Subnets with /24 have subnet mask expressed like this 255.255.255.0 and it can have around 250 hosts.</p>
+  </li>
+  <li>
+    <p>If we are connected to the same subnet as the targeted group of hosts, your scanner will rely on ARP (<em>Address Resolution Protocol</em>) queries to discover live hosts.</p>
+
+    <ul>
+      <li>An ARP query aims to get the hardware / MAC address so that communication over the link-layer is possible.</li>
+    </ul>
+  </li>
+  <li>
+    <p>But if, instead, the targets are on a different subnet, the packets generated will go through the default gateway (router)</p>
+
+    <ul>
+      <li>however, ARP queries will not get routed, as they are bound to their subnet.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>How many devices can see the ARP Request?</li>
+</ol>
+
+<p>R: 4</p>
+
+<ol>
+  <li>Did computer6 receive the ARP Request? (Y/N)</li>
+</ol>
+
+<p>R: N</p>
+
+<ol>
+  <li>How many devices can see the ARP Request?</li>
+</ol>
+
+<p>R: 4</p>
+
+<ol>
+  <li>Did computer6 reply to the ARP Request? (Y/N)</li>
+</ol>
+
+<p>R: Y</p>
+
+<h2 id="enumerating-targets">Enumerating Targets</h2>
+
+<ul>
+  <li>
+    <p>we need to specify our targets and this can be done in 3 ways:</p>
+
+    <ul>
+      <li>
+        <p><em>list</em> of IPs or domain names: <em>MACHINE_IP scanme.nmap.org example.com</em> will can 3 IP addresses</p>
+      </li>
+      <li>
+        <p><em>range</em>: 10.11.12.15-20 will scan 6 IP adresses</p>
+      </li>
+      <li>
+        <p><em>subnet</em>: MACHINE_IP/30 will scan 4 IP addresses</p>
+      </li>
+      <li>
+        <p>provide a file:</p>
+      </li>
+    </ul>
+
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  nmap <span class="nt">-iL</span> list_of_hosts.txt
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>check the list of targets that nmap scans:</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nmap <span class="nt">-sL</span> TARGETS
+</code></pre></div></div>
+<ul>
+  <li>nmap automatically tries a reverse DNS lookup. To disable this, use the <em>-n</em> flag.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>What is the first IP address Nmap would scan if you provided 10.10.12.13/29 as your target?</li>
+</ol>
+
+<p>R: 10.10.12.8</p>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/nmapex.png" alt="" /></p>
+
+<ol>
+  <li>How many IP addresses will Nmap scan if you provide the following range 10.10.0-255.101-125?</li>
+</ol>
+
+<p>R: 256 * 25 = 6400</p>
+
+<h2 id="discovering-live-hosts">Discovering Live Hosts</h2>
+
+<ul>
+  <li>
+    <p>we make use of the protocols in the TCP/IP layers:</p>
+
+    <ul>
+      <li>
+        <p><em>ARP</em> from Link Layer: sends a frame to the broadcast address on the network segment and asking the computer with a specific IP address to respond  by providing its MAC address</p>
+      </li>
+      <li>
+        <p><em>ICMP</em> from Network Layer, using Type 8 (Echo) and Type 0 (Echo Reply)</p>
+      </li>
+      <li>
+        <p><em>TCP</em> and <em>UDP</em> from Transport Layer</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/OSITCPIP.png" alt="" /></p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/Question.png" alt="" /></p>
+
+<p>Send a packet with the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>From computer1
+To computer3
+Packet Type: “Ping Request”
+</code></pre></div></div>
+
+<ol>
+  <li>What is the type of packet that computer1 sent before the ping?</li>
+</ol>
+
+<p>R: ARP Request</p>
+
+<ol>
+  <li>What is the type of packet that computer1 received before being able to send the ping?</li>
+</ol>
+
+<p>R: ARP Response</p>
+
+<ol>
+  <li>How many computers responded to the ping request?</li>
+</ol>
+
+<p>R: 1</p>
+
+<p>Send a packet with the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>From computer2
+To computer5
+Packet Type: “Ping Request”
+</code></pre></div></div>
+
+<ol>
+  <li>What is the name of the first device that responded to the first ARP Request?</li>
+</ol>
+
+<p>R: Router</p>
+
+<ol>
+  <li>What is the name of the first device that responded to the second ARP Request?</li>
+</ol>
+
+<p>R: computer5</p>
+
+<ol>
+  <li>Send another Ping Request. Did it require new ARP Requests? (Y/N)</li>
+</ol>
+
+<p>R: N</p>
+
+<h2 id="nmap-host-discovery-using-arp">Nmap Host Discovery Using ARP</h2>
+
+<ul>
+  <li>
+    <p>How would you know which hosts are up and running?</p>
+
+    <ul>
+      <li>It is essential to avoid wasting our time port-scanning an offline host or an IP address not in use.</li>
+    </ul>
+  </li>
+  <li>
+    <p>When no option regarding host discovery is provided, nmap uses the following procedure:</p>
+
+    <ul>
+      <li>
+        <p>when a <em>privileged</em> user (root, or a user that is part of <em>sudoers</em> and can run sudo) scans targets on a local network, nmap uses <em>ARP requests</em>.</p>
+      </li>
+      <li>
+        <p>when a <em>privileged</em> user scans for targets outside the network, Nmap uses <em>ICMP echo requests</em>, <em>TCP ACK to port 80</em>, <em>TCP SYN to port 443</em> and <em>ICMP timestamp Request</em>.</p>
+      </li>
+      <li>
+        <p>when an <em>unprivileged</em> user scans for targets outside the network, nmap uses <em>TCP 3-way handshake by sending SYN packets to port 80 and 443</em>.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>use Nmap to discover live hosts without port-scanning the live systems:</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nmap <span class="nt">-sn</span> TARGETS
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>ARP scans are possible only if the targets are on the same subnet as you.</p>
+  </li>
+  <li>
+    <p>Perform only an ARP scan without port-scanning</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nmap <span class="nt">-sn</span> <span class="nt">-PR</span> TARGETS <span class="c"># -PR indicates you only want ARP scan</span>
+</code></pre></div></div>
+
+<ul>
+  <li>scanner built around ARP queries: <strong>arp-scan</strong></li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>arp-scan <span class="nt">--localnet</span> <span class="c"># -i to choose interface</span>
+</code></pre></div></div>
+<h3 id="questions-3">Questions</h3>
+
+<p>We will be sending broadcast ARP Requests packets with the following options:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>From computer1
+To computer1 (to indicate it is broadcast)
+Packet Type: “ARP Request”
+Data: try all the possible eight devices (other than computer1) in the network: computer2, computer3, computer4, computer5, computer6, switch1, switch2, and router.
+</code></pre></div></div>
+
+<ol>
+  <li>How many devices are you able to discover using ARP requests?</li>
+</ol>
+
+<p>R: 3 (computer 2, computer 3 and router)</p>
+
+<h2 id="nmap-host-discovery-using-icmp">Nmap Host Discovery Using ICMP</h2>
+
+<ul>
+  <li>
+    <p>Even though ping requests seem the most straightforward approach, it is not always reliable, as many firewalls block ICMP echo.</p>
+
+    <ul>
+      <li>new versions of MS Windows are configured with a firewall that block ICMP Echo by default.</li>
+    </ul>
+  </li>
+  <li>
+    <p>to use ICMP echo requests to discover live hosts, add the option <strong>-PE</strong> (<strong>E</strong>cho):</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nmap <span class="nt">-sn</span> <span class="nt">-PE</span> TARGETS
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>As ICMP echo tend to be blocked, we can use ICMP Timestamp or ICMP Address Mask to tell if a system is online</p>
+
+    <ul>
+      <li>Nmap uses a timestamp request (ICMP TYPE 13) and checks if it receives a Timestamp reply (ICMP Type 14) with the use of the flag <strong>-PP</strong> (Timestam<strong>p</strong>)</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nmap <span class="nt">-PP</span> <span class="nt">-sn</span> TARGETS
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Nmap can use also <em>address mask queries (ICMP type 17)</em> and checks if it receives address mask reply (<em>ICMP Type 18</em>)</p>
+
+    <ul>
+      <li>use flag <em>-PM</em> (<strong>M</strong>ask)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>What is the option required to tell Nmap to use ICMP Timestamp to discover live hosts?</li>
+</ol>
+
+<p>R: -PP</p>
+
+<ol>
+  <li>What is the option required to tell Nmap to use ICMP Address Mask to discover live hosts?</li>
+</ol>
+
+<p>R: -PM</p>
+
+<ol>
+  <li>What is the option required to tell Nmap to use ICMP Echo to discover life hosts?</li>
+</ol>
+
+<p>R: -PE</p>
+
+<h2 id="nmap-host-discovery-using-tcp-and-udp">Nmap Host Discovery Using TCP and UDP</h2>
+
+<h3 id="tcp-syn-ping">TCP SYN Ping</h3>
+
+<ul>
+  <li>
+    <p>we send a TCP SYN Ping to a TCP port, 80 by default, and wait for a response</p>
+
+    <ul>
+      <li>if the host is up, we get a SYN ACK otherwise we get <em>RST</em> (Reset)</li>
+    </ul>
+  </li>
+  <li>
+    <p>to use TCP SYN ping, use the flag <strong>-PS</strong> followed by a port, a range of ports or a list of ports (-PS21; -PS21-25; -PS 80,443,8080)</p>
+  </li>
+  <li>
+    <p>privileged users don’t need to complete the 3-way handshake even if the port is open</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/wayhanshake.png" alt="" /></p>
+
+<ul>
+  <li>however, unprivileged users have to complete the 3-way handshake if the port is open.</li>
+</ul>
+
+<h3 id="tcp-ack-ping">TCP ACK Ping</h3>
+
+<ul>
+  <li>
+    <p>you can do this <strong>only if you are a privileged user</strong></p>
+
+    <ul>
+      <li>unprivileged need to complete the 3-way handshake</li>
+    </ul>
+  </li>
+  <li>
+    <p>by default, port 80 will be used</p>
+
+    <ul>
+      <li>syntax is similar to TCP SYN Ping: <strong>-PA</strong> with a port, a list of ports or a range of ports</li>
+    </ul>
+  </li>
+  <li>
+    <p>if the host is online, it will respond with <em>RST</em>, as the TCP packet with the ACK flag is not part of a connection.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/ssd.png" alt="" /></p>
+
+<p><img src="example.png" alt="" /></p>
+
+<h3 id="udp-ping">UDP Ping</h3>
+
+<ul>
+  <li>
+    <p>contrary to TCP packets, sending a UDP packet to an open port is not expected to return any response.</p>
+
+    <ul>
+      <li>however, if we send one to a closed UDP port, we expect to get an <strong>ICMP port unreachable packet</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/sdsa.png" alt="" /></p>
+
+<ul>
+  <li>syntax: <strong>-PU</strong></li>
+</ul>
+
+<h3 id="masscan">Masscan</h3>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/masscan.png" alt="" /></p>
+
+<h3 id="questions-5">Questions</h3>
+
+<ol>
+  <li>Which TCP ping scan does not require a privileged account?</li>
+</ol>
+
+<p>R: TCP SYN ping</p>
+
+<ol>
+  <li>Which TCP ping scan requires a privileged account?</li>
+</ol>
+
+<p>R: TCP ACK Ping</p>
+
+<ol>
+  <li>What option do you need to add to Nmap to run a TCP SYN ping scan on the telnet port?</li>
+</ol>
+
+<p>R: -PS23</p>
+
+<h2 id="using-reverse-dns-lookup">Using Reverse-DNS Lookup</h2>
+
+<ul>
+  <li>
+    <p>skip this step using the falg <strong>-n</strong></p>
+  </li>
+  <li>
+    <p>query even offline hosts: <strong>-R</strong></p>
+  </li>
+  <li>
+    <p>use a specific DNS server: <strong>–dns-servers 8.8.4.4</strong></p>
+  </li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<ol>
+  <li>We want Nmap to issue a reverse DNS lookup for all the possibles hosts on a subnet, hoping to get some insights from the names. What option should we add?</li>
+</ol>
+
+<p>R: -R</p>
+
+<p><img src="/tryhackme/NetworkSecurity/NmapLiveHostDiscovery/recap.png" alt="" /></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

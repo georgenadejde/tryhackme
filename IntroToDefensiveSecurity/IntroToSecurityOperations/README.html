@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intro To Security Operations · THM Writeups</title>
+  
+  <meta name="description" content="Security operations" />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Intro To Security Operations</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">IntroToDefensiveSecurity/IntroToSecurityOperations/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">soc</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Security operations</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="security-operations">Security Operations</h1>
+
+<h2 id="introduction-to-security-operations">Introduction to Security Operations</h2>
+
+<ul>
+  <li>A <em>Security Operations Center</em> (SOC) is a <em>team</em> of IT security professionals tasked with monitoring a company’s network and systems 24 hours a day, seven days a week.</li>
+  <li>Their purpose of monitoring is to:
+    <ul>
+      <li><strong>Find vulnerabilities on the network</strong>:
+        <ul>
+          <li>A <em>vulnerability</em> is a weakness that an attacker can exploit to carry out things beyond their permission level.</li>
+          <li>A vulnerability might be discovered in any device’s software (operating system and programs) on the network, such as a server or a computer.</li>
+          <li>For instance, the SOC might discover a set of MS Windows computers that must be patched against a specific published vulnerability.</li>
+          <li>Strictly speaking, vulnerabilities are not necessarily the SOC’s responsibility; however, unfixed vulnerabilities affect the security level of the entire company.</li>
+        </ul>
+      </li>
+      <li><strong>Detect unauthorized activity</strong>:
+        <ul>
+          <li>Consider the case where an attacker discovered the username and password of one of the employees and used it to log in to the company system.</li>
+          <li>It is crucial to detect this kind of unauthorized activity quickly before it causes any damage.</li>
+          <li>Many clues can help us detect this, such as geographic location.</li>
+        </ul>
+      </li>
+      <li><strong>Discover policy violations</strong>:
+        <ul>
+          <li>A <em>security policy</em> is a set of rules and procedures created to help protect a company against security threats and ensure compliance.</li>
+          <li>What is considered a violation would vary from one company to another; examples include downloading pirated media files and sending confidential company files insecurely.</li>
+        </ul>
+      </li>
+      <li><strong>Detect intrusions</strong>: 
+        <ul>
+          <li><em>Intrusions</em> refer to system and network intrusions.</li>
+          <li>One example scenario would be an attacker successfully exploiting our web application.</li>
+          <li>Another example scenario would be a user visiting a malicious site and getting their computer infected.</li>
+        </ul>
+      </li>
+      <li><strong>Support with the incident response</strong>:
+        <ul>
+          <li>An <em>incident</em> can be an observation, a policy violation, an intrusion attempt, or something more damaging such as a major breach.</li>
+          <li>Responding correctly to a severe incident is not an easy task.</li>
+          <li>The SOC can support the incident response team handle the situation.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>What does SOC stand for?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Security Operations Center`
+</code></pre></div></div>
+
+<p>How many hours a day does the SOC monitor the network?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 24`
+</code></pre></div></div>
+
+<h2 id="elements-of-security-operations">Elements of Security Operations</h2>
+
+<ul>
+  <li>The SOC uses many data sources to monitor the network for signs of intrusions and to detect any malicious behaviour.</li>
+  <li>Some of these sources are:
+    <ul>
+      <li><strong>Server logs</strong>:
+        <ul>
+          <li>There are many types of servers on a network, such as a mail server, web server, and domain controller on MS Windows networks.</li>
+          <li>Logs contain information about various activities, such as successful and failed login attempts, among many others.</li>
+          <li>There is a trove of information that can be found in the server logs.</li>
+        </ul>
+      </li>
+      <li><strong>DNS activity</strong>: 
+        <ul>
+          <li>DNS stands for Domain Name System, and it is the protocol responsible for converting a domain name, such as <code class="language-plaintext highlighter-rouge">tryhackme.com</code>, to an IP address, such as <code class="language-plaintext highlighter-rouge">10.3.13.37</code>, among other domain name related queries.</li>
+          <li>One analogy of the DNS query is asking, “How can I reach TryHackMe?” and someone replying with the postal address.</li>
+          <li>In practice, if someone tries to browse <code class="language-plaintext highlighter-rouge">tryhackme.com</code>, the DNS server has to resolve it and can log the DNS query to monitoring.</li>
+          <li>The SOC can gather information about domain names that internal systems are trying to communicate with by merely inspecting DNS queries.</li>
+        </ul>
+      </li>
+      <li><strong>Firewall logs</strong>:
+        <ul>
+          <li>A firewall is a device that controls network packets entering and leaving the network mainly by letting them through or blocking them.</li>
+          <li>Consequently, firewall logs can reveal much information about what packets passed or tried to pass through the firewall.</li>
+        </ul>
+      </li>
+      <li><strong>DHCP logs</strong>: 
+        <ul>
+          <li>DHCP stands for Dynamic Host Configuration Protocol, and it is responsible for assigning an IP address to the systems that try to connect to a network.</li>
+          <li>One analogy of the DHCP request would be when you enter a fancy restaurant, and the waiter welcomes you and guides you to an empty table.</li>
+          <li>Know that DHCP has automatically provided your device with the network settings whenever you can join a network without manual configuration.</li>
+          <li>By inspecting DHCP transactions, we can learn about the devices that joined the network.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li> SOC might use a Security Information and Event Management (SIEM) system.
+    <ul>
+      <li>The SIEM aggregates the data from the different sources so that the SOC can efficiently correlate the data and respond to attacks.</li>
+    </ul>
+  </li>
+  <li>SOC services include reactive and proactive services in addition to other services.
+    <ul>
+      <li>Reactive services refer to the tasks initiated after detecting an intrusion or a malicious event.</li>
+    </ul>
+  </li>
+  <li>Example reactive services include:
+    <ul>
+      <li><strong>Monitor security posture</strong>:
+        <ul>
+          <li>This is the primary role of the SOC, and it includes monitoring the network and computers for security alerts and notifications and responding to them as the need dictates.</li>
+        </ul>
+      </li>
+      <li><strong>Vulnerability management</strong>:
+        <ul>
+          <li>This refers to finding vulnerabilities in the company systems and patching (fixing) them. The SOC can assist with this task but not necessarily execute it.</li>
+        </ul>
+      </li>
+      <li><strong>Malware analysis</strong>:
+        <ul>
+          <li>The SOC might recover malicious programs that reached the network. The SOC can do basic analysis by executing it in a controlled environment. However, more advanced analysis requires sending it to a dedicated team.</li>
+        </ul>
+      </li>
+      <li><strong>Intrusion detection</strong>:
+        <ul>
+          <li>An <em>intrusion detection system</em> (IDS) is used to detect and log intrusions and suspicious packets. The SOC’s job is to maintain such a system, monitor its alerts, and go through its logs as the need dictates.</li>
+        </ul>
+      </li>
+      <li><strong>Reporting</strong>:
+        <ul>
+          <li>It is essential to report incidents and alarms. Reporting is necessary to ensure a smooth workflow and to support compliance requirements.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Proactive services refer to the tasks handled by the SOC without any indicator of an intrusion.</li>
+  <li>Example proactive services carried out by the SOC include:
+    <ul>
+      <li><strong>Network security monitoring (NSM)</strong>:
+        <ul>
+          <li>This focuses on monitoring the network data and analyzing the traffic to detect signs of intrusions.</li>
+        </ul>
+      </li>
+      <li><strong>Threat hunting</strong>:
+        <ul>
+          <li>With <em>threat hunting</em>, the SOC assumes an intrusion has already taken place and begins its hunt to see if they can confirm this assumption.</li>
+        </ul>
+      </li>
+      <li><strong>Threat Intelligence</strong>:
+        <ul>
+          <li>Threat intelligence focuses on learning about potential adversaries and their tactics and techniques to improve the company’s defences.</li>
+          <li>The purpose would be to establish a <em>threat-informed defence</em>.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Other services by the SOC include <strong>cyber security training</strong>.
+    <ul>
+      <li>Many data breaches and intrusions can be avoided by raising users’ security awareness and arming them with solid security training.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>What does NSM stand for?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Network security monitoring`
+</code></pre></div></div>
+
+<h2 id="practical-example-of-soc">Practical Example of SOC</h2>
+
+<p>xWhat is the flag that you have received after successfully stopping the attack?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: `
+</code></pre></div></div>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Services 2 · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Network Services 2</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Network Services/NetworkServices_2/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">nfs</span>
+          
+          <span class="tag-pill">smtp</span>
+          
+          <span class="tag-pill">mysql</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="network-service-2">Network Service 2</h1>
+
+<h2 id="understanding-nfs">Understanding NFS</h2>
+
+<ul>
+  <li><strong>NFS</strong> stands for “Network File System” and allows a system to share directories and files with others over a network.
+    <ul>
+      <li>By using NFS, users and programs can access files on remote systems almost as if they were local files.</li>
+    </ul>
+  </li>
+  <li>It does this by mounting all, or a portion of a file system on a server.
+    <ul>
+      <li>The portion of the file system that is mounted can be accessed by clients with whatever privileges are assigned to each file.</li>
+    </ul>
+  </li>
+  <li>How does NFS work?
+    <ul>
+      <li><a href="[https://docs.oracle.com/cd/E19683-01/816-4882/6mb2ipq7l/index.html](https://docs.oracle.com/cd/E19683-01/816-4882/6mb2ipq7l/index.html)">Resource</a></li>
+    </ul>
+  </li>
+  <li>First, the client will request to mount a directory from a remote host on a local directory just the same way it can mount a physical device.
+    <ul>
+      <li>The mount service will then act to connect to the relevant mount daemon using RPC.</li>
+    </ul>
+  </li>
+  <li>The server checks if the user has permission to mount whatever directory has been requested.
+    <ul>
+      <li>It will then return a file handle which uniquely identifies each file and directory that is on the server.</li>
+    </ul>
+  </li>
+  <li>If someone wants to access a file using NFS, an RPC call is placed to NFSD (the NFS daemon) on the server.
+    <ul>
+      <li>This call takes parameters such as:
+        <ul>
+          <li> The file handle</li>
+          <li> The name of the file to be accessed</li>
+          <li> The user’s, user ID</li>
+          <li> The user’s group ID</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>These are used in determining access rights to the specified file.
+    <ul>
+      <li>This is what controls user permissions, I.E read and write of files.</li>
+    </ul>
+  </li>
+  <li>Resources that explain the technical implementation of NFS.
+    <ul>
+      <li><a href="https://www.datto.com/blog/what-is-nfs-file-share/">https://www.datto.com/blog/what-is-nfs-file-share/</a></li>
+      <li><a href="http://nfs.sourceforge.net/">http://nfs.sourceforge.net/</a></li>
+      <li><a href="https://wiki.archlinux.org/index.php/NFS">https://wiki.archlinux.org/index.php/NFS</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>What does NFS stand for?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Network File System`
+</code></pre></div></div>
+
+<p>What process allows an NFS client to interact with a remote directory as though it was a physical device?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: mounting`
+</code></pre></div></div>
+
+<p>What does NFS use to represent files and directories on the server?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: file handle`
+</code></pre></div></div>
+
+<p>What protocol does NFS use to communicate between the server and client?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: RPC`
+</code></pre></div></div>
+
+<p>What two pieces of user data does the NFS server take as parameters for controlling user permissions? Format: parameter 1 / parameter 2</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: user id / group id`
+</code></pre></div></div>
+
+<p>Can a Windows NFS server share files with a Linux client? (Y/N)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Y`
+</code></pre></div></div>
+
+<p>Can a Linux NFS server share files with a MacOS client? (Y/N)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Y`
+</code></pre></div></div>
+
+<p>What is the latest version of NFS? [released in 2016, but is still up to date as of 2020] This will require external research.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 4.2`
+</code></pre></div></div>
+
+<h2 id="enumerating-nfs">Enumerating NFS</h2>
+
+<ul>
+  <li><strong>Mounting NFS shares</strong>
+    <ul>
+      <li>Your client’s system needs a directory where all the content shared by the host server in the export folder can be accessed.</li>
+      <li>You can create this folder anywhere on your system.</li>
+      <li>Once you’ve created this mount point, you can use the “mount” command to connect the NFS share to the mount point on your machine like so:</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>sudo mount -t nfs IP:share /tmp/mount/ -nolock</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Tag</strong></th>
+      <th><strong>Function</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">sudo</code></td>
+      <td>Run as root</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">mount</code></td>
+      <td>Execute the mount command</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-t nfs</code></td>
+      <td>Type of device to mount, specifying that it’s NFS</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">IP:share</code></td>
+      <td>The IP address of the NFS server and the name of the share to mount</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-nolock</code></td>
+      <td>Specifies not to use NLM locking</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Conduct a thorough port scan scan of your choosing, how many ports are open?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240913141619.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 7`
+</code></pre></div></div>
+
+<p>Which port contains the service we’re looking to enumerate?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 2049`
+</code></pre></div></div>
+
+<p>Now, use /usr/sbin/showmount -e [IP] to list the NFS shares, what is the name of the visible share?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240913142013.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: /home`
+</code></pre></div></div>
+
+<p>Time to mount the share to our local machine!</p>
+
+<p>First, use “<em>mkdir /tmp/mount</em>” to create a directory on your machine to mount the share to. This is in the /tmp directory- so be aware that it will be removed on restart.</p>
+
+<p>Then, use the mount command we broke down earlier to mount the NFS share to your local machine. Change directory to where you mounted the share- what is the name of the folder inside?</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">sudo mount -t nfs 10.10.18.84:home /tmp/mount/ -nolock</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: cappucino</code></p>
+  </li>
+</ul>
+
+<p>Interesting! Let’s do a bit of research now, have a look through the folders. Which of these folde<strong>rs</strong> could cont<strong>a</strong>in keys that would give us remote access to the server?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: .ssh`
+</code></pre></div></div>
+
+<p>Which of these keys is most useful to us?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: id_rsa`
+</code></pre></div></div>
+
+<p>Copy this file to a different location your local machine, and change the permissions to “600” using “chmod 600 [file]”.</p>
+
+<p>Assuming we were right about what type of directory this is, we can pretty easily work out the name of the user this key corresponds to.</p>
+
+<p>Can we log into the machine using<code class="language-plaintext highlighter-rouge">ssh -i &lt;key-file&gt; &lt;username&gt;@&lt;ip&gt; </code>? (Y/N)</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ssh -i id_rsa cappucino@&lt;ip&gt;</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: Y</code></p>
+  </li>
+</ul>
+
+<h2 id="exploiting-nfs">Exploiting NFS</h2>
+
+<ul>
+  <li>By default, on NFS shares- <strong>Root Squashing</strong> is enabled, and prevents anyone connecting to the NFS share from having root access to the NFS volume.</li>
+  <li>Remote root users are assigned a user “nfsnobody” when connected, which has the least local privileges. Not what we want.
+    <ul>
+      <li>However, if this is turned off, it can allow the creation of SUID bit files, allowing a remote user root access to the connected system.</li>
+    </ul>
+  </li>
+  <li>What are files with the SUID bit set?
+    <ul>
+      <li>Essentially, this means that the file or files can be run with the permissions of the file(s) owner/group.
+        <ul>
+          <li>In this case, as the super-user.</li>
+        </ul>
+      </li>
+      <li>We can leverage this to get a shell with these privileges!</li>
+    </ul>
+  </li>
+  <li>We’re able to upload files to the NFS share, and control the permissions of these files.
+    <ul>
+      <li>We can set the permissions of whatever we upload, in this case a bash shell executable.</li>
+    </ul>
+  </li>
+  <li>
+    <p>We can then log in through SSH, as we did in the previous task- and execute this executable to gain a root shell!</p>
+  </li>
+  <li>we can use SCP with the command <code class="language-plaintext highlighter-rouge">scp -i id_rsa cappucino@10.10.18.84:/bin/bash ~/Downloads/bash</code> to download the executable onto our attacking machine.</li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240913144228.png" alt="" /></p>
+
+<h3 id="questions-2">Questions</h3>
+
+<ul>
+  <li>Now, we’re going to add the SUID bit permission to the bash executable we just copied to the share using “<code class="language-plaintext highlighter-rouge">sudo chmod +[permission] bash</code>”. What letter do we use to set the SUID bit set using chmod?</li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240913144543.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: s`
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Let’s do a sanity check, let’s check the permissions of the “bash” executable using “<code class="language-plaintext highlighter-rouge">ls -la bash</code>”. What does the permission set look like? Make sure that it ends with -sr-x.</p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: -rwsr-sr-x</code></p>
+  </li>
+  <li>
+    <p>Great! If all’s gone well you should have a shell as root! What’s the root flag?</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">./bash -p</code> -&gt; persist the permission</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240913144931.png" alt="" /></p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240913145346.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{nfs_got_pwned}`
+</code></pre></div></div>
+
+<h2 id="understanding-smtp">Understanding SMTP</h2>
+
+<ul>
+  <li>SMTP stands for “Simple Mail Transfer Protocol”.
+    <ul>
+      <li>It is utilised to handle the sending of emails.</li>
+    </ul>
+  </li>
+  <li>In order to support email services, a protocol pair is required, comprising of SMTP and POP/IMAP.
+    <ul>
+      <li>Together they allow the user to send outgoing mail and retrieve incoming mail, respectively.</li>
+    </ul>
+  </li>
+  <li>The SMTP server performs three basic functions:
+    <ul>
+      <li> It verifies who is sending emails through the SMTP server.</li>
+      <li> It sends the outgoing mail</li>
+      <li> If the outgoing mail can’t be delivered it sends the message back to the sender</li>
+    </ul>
+  </li>
+  <li><strong>POP</strong>, or “<strong>Post Office Protocol</strong>” and <strong>IMAP</strong>, “Internet Message Access Protocol” are both email protocols who are responsible for the transfer of email between a client and a mail server.
+    <ul>
+      <li>The main differences is in POP’s more simplistic approach of downloading the inbox from the mail server, to the client.</li>
+      <li>Where IMAP will synchronise the current inbox, with new mail on the server, downloading anything new.
+        <ul>
+          <li>This means that changes to the inbox made on one computer, over IMAP, will persist if you then synchronise the inbox from another computer.</li>
+        </ul>
+      </li>
+      <li>The POP/IMAP server is responsible for fulfiling this process.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240913150413.png" alt="" /></p>
+
+<ol>
+  <li>
+    <p>The mail user agent, which is either your email client or an external program. connects to the SMTP server of your domain, e.g. smtp.google.com. This initiates the SMTP handshake. This connection works over the SMTP port- which is usually 25. Once these connections have been made and validated, the SMTP session starts.</p>
+  </li>
+  <li>
+    <p>The process of sending mail can now begin. The client first submits the sender, and recipient’s email address- the body of the email and any attachments, to the server.</p>
+  </li>
+  <li>
+    <p>The SMTP server then checks whether the domain name of the recipient and the sender is the same.</p>
+  </li>
+  <li>
+    <p>The SMTP server of the sender will make a connection to the recipient’s SMTP server before relaying the email. If the recipient’s server can’t be accessed, or is not available- the Email gets put into an SMTP queue.</p>
+  </li>
+  <li>
+    <p>Then, the recipient’s SMTP server will verify the incoming email. It does this by checking if the domain and user name have been recognised. The server will then forward the email to the POP or IMAP server, as shown in the diagram above.</p>
+  </li>
+  <li>
+    <p>The E-Mail will then show up in the recipient’s inbox.</p>
+  </li>
+</ol>
+
+<ul>
+  <li>
+    <p>If you’re looking to learn more about this topic, this is a really friendly to read breakdown of the finer technical details: <a href="https://computer.howstuffworks.com/e-mail-messaging/email3.htm">https://computer.howstuffworks.com/e-mail-messaging/email3.htm</a></p>
+  </li>
+  <li>
+    <p>Here is a resource that explain the technical implementation, and working of, SMTP in more detail: <a href="https://www.afternerd.com/blog/smtp/">https://www.afternerd.com/blog/smtp/</a></p>
+  </li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>What does SMTP stand for?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Simple Mail Transfer Protocol`
+</code></pre></div></div>
+
+<p>What does SMTP handle the sending of? (answer in plural)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: emails`
+</code></pre></div></div>
+
+<p>What is the first step in the SMTP process?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: SMTP handshake`
+</code></pre></div></div>
+
+<p>What is the default SMTP port?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 25`
+</code></pre></div></div>
+
+<p>Where does the SMTP server send the email if the recipient’s server is not available?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: SMTP queue`
+</code></pre></div></div>
+
+<p>On what server does the Email ultimately end up on?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: POP/IMAP`
+</code></pre></div></div>
+
+<p>Can a Linux machine run an SMTP server? (Y/N)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Y`
+</code></pre></div></div>
+
+<p>Can a Windows machine run an SMTP server? (Y/N)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Y`
+</code></pre></div></div>
+
+<h2 id="enumerating-smtp">Enumerating SMTP</h2>
+
+<ul>
+  <li>The SMTP service has two internal commands that allow the enumeration of users:
+    <ul>
+      <li><strong>VRFY</strong> (confirming the names of valid users)</li>
+      <li><strong>EXPN</strong> (which reveals the actual address of user’s aliases and lists of e-mail (mailing lists). 
+        <ul>
+          <li>Using these SMTP commands, we can reveal a list of valid users</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<ul>
+  <li>First, lets run a port scan against the target machine, same as last time. What port is SMTP running on?</li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918105105.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 25`
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Okay, now we know what port we should be targeting, let’s start up Metasploit. What command do we use to do this?</p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: msfconsole</code></p>
+  </li>
+  <li>
+    <p>Let’s search for the module “smtp_version”, what’s it’s full module name?</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918105944.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: auxiliary/scanner/smtp/smtp_version `
+</code></pre></div></div>
+
+<p>Great, now- select the module and list the options. How do we do this?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918110256.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: options`
+</code></pre></div></div>
+
+<p>Have a look through the options, does everything seem correct? What is the option we need to set?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: RHOSTS`
+</code></pre></div></div>
+
+<p>Set that to the correct value for your target machine. Then run the exploit. What’s the system mail name?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918110521.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: polosmtp.home`
+</code></pre></div></div>
+
+<p>What Mail Transfer Agent (MTA) is running the SMTP server? This will require some external research.</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918110952.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Postfix`
+</code></pre></div></div>
+
+<p>Good! We’ve now got a good amount of information on the target system to move onto the next stage. Let’s search for the module “<em>smtp_enum</em>”, what’s it’s full module name?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918111051.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: auxiliary/scanner/smtp/smtp_enum`
+</code></pre></div></div>
+
+<p>We’re going to be using the <em>“top-usernames-shortlist.txt”</em> wordlist from the Usernames subsection of seclists (/usr/share/wordlists/SecLists/Usernames if you have it installed).</p>
+
+<p>Seclists is an amazing collection of wordlists. If you’re running Kali or Parrot you can install seclists with: “sudo apt install seclists” Alternatively, you can download the repository from <a href="https://github.com/danielmiessler/SecLists">here</a>.</p>
+
+<p>What option do we need to set to the wordlist’s path?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918111209.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: USER_FILE`
+</code></pre></div></div>
+
+<p>Once we’ve set this option, what is the other essential paramater we need to set?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: RHOSTS`
+</code></pre></div></div>
+
+<p>Okay! Now that’s finished, what username is returned?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918111456.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: administrator`
+</code></pre></div></div>
+
+<h2 id="exploiting-smtp">Exploiting SMTP</h2>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918111739.png" alt="" /></p>
+<h3 id="questions-5">Questions</h3>
+
+<p>What is the password of the user we found during our enumeration stage?</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">hydra -t 16 -l administrator -P /usr/share/wordlists/rockyou.txt -vV 10.10.103.238 ssh</code></li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918112200.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: alejandro`
+</code></pre></div></div>
+
+<p>Great! Now, let’s SSH into the server as the user, what is contents of smtp.txt</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ssh administrator@&lt;ip&gt;</code></li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918112307.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{who_knew_email_servers_were_c00l?}`
+</code></pre></div></div>
+
+<h2 id="understanding-mysql">Understanding MySQL</h2>
+
+<ul>
+  <li>
+    <p><strong>MySQL</strong> is a relational database management system (RDBMS) based on Structured Query Language (SQL).</p>
+  </li>
+  <li>
+    <p>A database is simply a persistent, organised collection of structured data</p>
+  </li>
+  <li><strong>RDBMS:</strong> A software or service used to create and manage databases based on a relational model.
+    <ul>
+      <li>The word ”relational” just means that the data stored in the dataset is organised as tables.
+        <ul>
+          <li>Every table relates in some way to each other’s “primary key” or other “key” factors.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>it uses a client-server model
+    <h3 id="questions-6">Questions</h3>
+  </li>
+</ul>
+
+<p>What type of software is MySQL?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Relational Database Management System`
+</code></pre></div></div>
+
+<p>What language is MySQL based on?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: SQL`
+</code></pre></div></div>
+
+<p>What communication model does MySQL use?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: client-server`
+</code></pre></div></div>
+
+<p>What is a common application of MySQL?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: back end database`
+</code></pre></div></div>
+
+<p>What major social network uses MySQL as their back-end database? This will require further research.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Facebook`
+</code></pre></div></div>
+
+<h2 id="enumerating-mysql">Enumerating MySQL</h2>
+
+<ul>
+  <li> for the sake of the scenario, we’re going to assume that you found the <strong>credentials: “root:password”</strong> while enumerating subdomains of a web server.</li>
+  <li>After trying the login against SSH unsuccessfully, you decide to try it against MySQL.</li>
+</ul>
+
+<h3 id="questions-7">Questions</h3>
+
+<p>As always, let’s start out with a port scan, so we know what port the service we’re trying to attack is running on. What port is MySQL using?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918113710.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 3306`
+</code></pre></div></div>
+
+<ul>
+  <li>Try connecting manually to the server with the credentials root:password
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">mysql -h 10.10.198.212 -u root -p</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>We’re going to be using the “mysql_sql” module.</p>
+
+<p>Search for, select and list the options it needs. What three options do we need to set? (in descending order).</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918114229.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: PASSWORD/RHOSTS/USERNAME `
+</code></pre></div></div>
+
+<p>Run the exploit. By default it will test with the “select version()” command, what result does this give you?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918114413.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 5.7.29-0ubuntu0.18.04.1 `
+</code></pre></div></div>
+
+<p>Great! We know that our exploit is landing as planned. Let’s try to gain some more ambitious information. Change the “sql” option to “show databases”. how many databases are returned?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918114608.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 4`
+</code></pre></div></div>
+
+<h2 id="exploiting-mysql">Exploiting MySQL</h2>
+
+<ul>
+  <li>In MySQL, physically, a <em>schema</em> is synonymous with a <em>database</em>.
+    <ul>
+      <li>You can substitute the keyword “SCHEMA” instead of DATABASE in MySQL SQL syntax, for example using CREATE SCHEMA instead of CREATE DATABASE.</li>
+    </ul>
+  </li>
+  <li>It’s important to understand this relationship because some other database products draw a distinction.
+    <ul>
+      <li>For example, in the Oracle Database product, a <em>schema</em> represents only a part of a database: the tables and other objects owned by a single user.</li>
+    </ul>
+  </li>
+  <li>In MySQL hashes can be used in different ways, for instance to index data into a hash table.
+    <ul>
+      <li>Each hash has a unique ID that serves as a pointer to the original data.</li>
+    </ul>
+  </li>
+  <li>This creates an index that is significantly smaller than the original data, allowing the values to be searched and accessed more efficiently</li>
+</ul>
+
+<h3 id="questions-8">Questions</h3>
+
+<p>First, let’s search for and select the “mysql_schemadump” module. What’s the module’s full name?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: auxiliary/scanner/mysql/mysql_schemadump`
+</code></pre></div></div>
+
+<p>Great! Now, you’ve done this a few times by now so I’ll let you take it from here. Set the relevant options, run the exploit. What’s the name of the last table that gets dumped?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: x$waits_global_by_latency`
+</code></pre></div></div>
+
+<p>Awesome, you have now dumped the tables, and column names of the whole database. But we can do one better… search for and select the “mysql_hashdump” module. What’s the module’s full name?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: auxiliary/scanner/mysql/mysql_hashdump`
+</code></pre></div></div>
+
+<p>Again, I’ll let you take it from here. Set the relevant options, run the exploit. What non-default user stands out to you?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918115410.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: carl`
+</code></pre></div></div>
+
+<p>Another user! And we have their password hash. This could be very interesting. Copy the hash string in full, like: bob:*HASH to a text file on your local machine called “hash.txt”.</p>
+
+<p>What is the user/hash combination string?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: carl:*EA031893AA21444B170FC2162A56978B8CEECE18`
+</code></pre></div></div>
+
+<p>Now, we need to crack the password! Let’s try John the Ripper against it using: “<em>john hash.txt</em>” what is the password of the user we found?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918115712.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: doggie`
+</code></pre></div></div>
+
+<p>Awesome. Password reuse is not only extremely dangerous, but extremely common. What are the chances that this user has reused their password for a different service?</p>
+
+<p>What’s the contents of MySQL.txt</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices_2/Pasted%20image%2020240918115851.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{congratulations_you_got_the_mySQL_flag}`
+</code></pre></div></div>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

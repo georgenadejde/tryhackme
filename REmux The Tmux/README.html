@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REmux The Tmux · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>REmux The Tmux</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">REmux The Tmux/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">tmux</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="remux-the-tmux">REmux The Tmux</h1>
+
+<h2 id="starting-tmux-sessions-and-default-tmux-prefix">Starting tmux “Sessions” and default tmux “prefix”</h2>
+
+<ul>
+  <li>To start a new tmux session just run the tmux command with no arguments.</li>
+  <li>The first session create will have the name “0”.
+    <ul>
+      <li>By default, tmux status bar will be green.</li>
+      <li>With session name on the left.</li>
+    </ul>
+  </li>
+  <li>Windows in the middle and window names in the middle.
+    <ul>
+      <li>Hostname, time, and date on the right of the bottom green bar.</li>
+    </ul>
+  </li>
+  <li>﻿Tmux doesn’t allow to create of a nested tmux within a tmux unless you force it to.
+    <ul>
+      <li>When running the tmux command a second time.</li>
+    </ul>
+  </li>
+  <li>All commands within a tmux session all start with the tmux prefix is.
+    <ul>
+      <li>By default, the tmux prefix is “Ctrl b”.</li>
+    </ul>
+  </li>
+  <li>After the tmux prefix.
+    <ul>
+      <li>To the hotkeys to change the current tmux session’s name is “shift $”.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/qHQj6k3.png" alt="" /></p>
+
+<ul>
+  <li>If there is a need to create another tmux session within the current one, use the <code class="language-plaintext highlighter-rouge">-d</code> argument with the tmux command to spawn a new tmux session without attaching to it. The <code class="language-plaintext highlighter-rouge">-s</code> argument is used to specify the session name for the new session.</li>
+  <li>
+    <p>Typed as “<code class="language-plaintext highlighter-rouge">tmux new -s &lt;new-session-name&gt; -d</code>”.</p>
+  </li>
+  <li>To list all active tmux sessions.</li>
+  <li>Run tmux with <code class="language-plaintext highlighter-rouge">list-sessions</code>.</li>
+  <li>Or the short version of list-sessions as <code class="language-plaintext highlighter-rouge">ls</code>.</li>
+  <li>In the example below.</li>
+  <li>Running tmux ls also shows the current session in use.
+    <ul>
+      <li>Marked by “(attached)”.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/i3WCJhc.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Exiting a tmux session without closing it can be done with the prefix followed by <code class="language-plaintext highlighter-rouge">d</code></p>
+  </li>
+  <li>Checking again with the tmux ls command. “(attached)” is missing from both sessions.</li>
+  <li>This means the sessions are active but we are detached and are unable to interact with either session.</li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/Xhd2eev.png" alt="" /></p>
+
+<ul>
+  <li>To reattach to an active tmux session.</li>
+  <li>Run tmux with the attach option and -t followed by the desired session name.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tmux attach -t tryhackme
+</code></pre></div>    </div>
+  </li>
+  <li>The tmux session name has changed to the attached session of “tryhackme”. Double-checking with tmux ls. Can confirm that “(attached)” also on the “tryhackme” session name.</li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/B4vt59w.png" alt="" /></p>
+
+<ul>
+  <li>Delete a single session by its session name. Is done with the kill-session option with tmux. Followed by <code class="language-plaintext highlighter-rouge">-t</code> and the <code class="language-plaintext highlighter-rouge">&lt;target-session-name-to-delete&gt;</code></li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tmux kill-session -t box-dev
+</code></pre></div></div>
+
+<ul>
+  <li>In the example below there are many sessions open.</li>
+  <li>Another way to swap sessions without having to detach and reattach to another session.</li>
+  <li>Is to use the prefix followed by the s-key to list all open sessions.
+    <ul>
+      <li>Using up or down arrow keys to navigate to the desired tmux session.</li>
+      <li>Then enter to select the new session.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/hYjo7Wh.png" alt="" /></p>
+
+<ul>
+  <li>From the five active sessions above. If there was a need to kill all the sessions except for a single one. When using the tmux kill-session. Use the -a argument to close all sessions except the one specified by the -t argument.</li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/OnDPvRh.png" alt="" /></p>
+
+<ul>
+  <li>When spiting the session into different sized panes</li>
+  <li>
+    <p>The new pane will spawn in the directory that the tmux session was first started in.</p>
+  </li>
+  <li>To change the base starting directory, you must first learn about tmux prompt or command mode.</li>
+  <li>The tmux prompt allows tmux sessions to run tmux commands without the tmux binary name.</li>
+  <li>Useful when the terminal has been filled with other text.</li>
+  <li>
+    <p>Enter a tmux prompt with prefix shift :</p>
+  </li>
+  <li>Followed by “<code class="language-plaintext highlighter-rouge">attach -c /path/to/new/starting/directory</code>”</li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/WBJEHcn.png" alt="" /></p>
+
+<ul>
+  <li>With the updated starting or base directory done above as /dev/shm. Creating a new pane start in the /dev/shm directory.</li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/aFTBDnj.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Just by changing the number of prefix used before the following command. Can determine which session gets the command.</p>
+  </li>
+  <li>
+    <p>prefix, prefix, and command. This will run on the second nested tmux session of the ssh ubuntu machine.</p>
+  </li>
+  <li>
+    <p>prefix and command. This will run on the first tmux session.</p>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>Do the ctrl and b keys need to be held down the whole time with every commands to work? yea/nay</p>
+
+<p>A: nay</p>
+
+<p>How to start tmux with the session with the name “thm”?</p>
+
+<p>A: tmux new -s thm</p>
+
+<p>How to change the current tmux session name?</p>
+
+<p>A: ctrl b shift $</p>
+
+<p>How to quit a tmux session without closing the session? To attach back later.</p>
+
+<p>A: ctrl b d</p>
+
+<p>How to list all tmux sessions?</p>
+
+<p> A: tmux ls</p>
+
+<p>How to reattach to a detached tmux session with the session name of “thm”</p>
+
+<p>A: tmux a -t thm</p>
+
+<p>How to create a new tmux session from your current tmux session with the name kali?</p>
+
+<p>A: tmux new -s kali -d</p>
+
+<p>How to switch between two or more tmux sessions without detaching from the current tmux session?</p>
+
+<p>A: ctrl b s</p>
+
+<p>How do you force kill the tmux session named “thm” if it’s not responsive from a new terminal window or tmux session?</p>
+
+<p>A: tmux kill-session -t thm</p>
+
+<p>Within a nested tmux session. A second tmux session within the first one. How to change the session name of the second/internal tmux session?</p>
+
+<p> A: ctrl b ctrl b shift $</p>
+
+<p>How to get into a tmux prompt to run/type tmux commands?</p>
+
+<p>A: ctrl b shift :</p>
+
+<p>Are there more than one way to exit a tmux prompt? yea/nay</p>
+
+<p>A: yea</p>
+
+<p>Is tmux case sensitive. Will hitting the caps lock break tmux? yea/nay</p>
+
+<p>A: yea</p>
+
+<p>Within tmux prompt or command mode how would you change the tmux directory? Where a new window or pane will start from the changed directory of /opt.</p>
+
+<p>A: a -c /opt</p>
+
+<p>How to kill all tmux sessions accept the one currently in use? With the name “notes”.</p>
+
+<p>A: tmux kill-session -t notes -a</p>
+
+<h2 id="manage-tmux-panes">Manage tmux “Panes”</h2>
+
+<ul>
+  <li>Tmux panes are used to divide the current session into multiple-sized terminals.</li>
+  <li>That allows multiple commands to run within the same session window.</li>
+  <li>To split the currently selected pane horizontally.
+    <ul>
+      <li>Do the prefix. This followed by a shift “</li>
+    </ul>
+  </li>
+  <li>To split the currently select pane vertically.
+    <ul>
+      <li>Do the prefix. Followed by shift %</li>
+    </ul>
+  </li>
+  <li>The <code class="language-plaintext highlighter-rouge">exit</code> command can be used to close the currently selected pane.</li>
+  <li>Moving to another pane within the same window can be done with the prefix. Followed by the arrow keys.</li>
+  <li>
+    <p>However, the main problem with this method is sometimes when using the arrow keys again. For example, to move the terminal cursor box could move to another tmux pane instead. </p>
+  </li>
+  <li>To resolve this issue can prefix followed by o instead.</li>
+  <li>This can cycle through all the tmux panes.
+    <ul>
+      <li>This has the added benefit of the line cursor not escaping to another pane.</li>
+    </ul>
+  </li>
+  <li>
+    <p>To swap between the most used tmux panes if more than two panes are open. “ctrl b ;” is the better option. “ctrl b o” is better when there are just two panes open.</p>
+  </li>
+  <li>
+    <p>If a tmux pane isn’t responsive and ctrl-c isn’t resolving the issue. Force close or kill the currently selected tmux pane with the prefix and x. Then y to confirm.</p>
+  </li>
+  <li>
+    <p>Managing the placement of panes. Can change the layout without having to exit panes or open create new panes.</p>
+  </li>
+  <li>To move the currently selected pane. In a clockwise rotation.
+    <ul>
+      <li>Do prefix shift }
+        <blockquote>
+          <p>Note. All other panes will move clockwise with the currently selected pane.</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>To move the currently selected pane counter-clockwise. Do prefix shift {</p>
+  </li>
+  <li>
+    <p>Another way to manage the pane location is with five built-in layouts. This can be done with the prefix followed by the escape OR esc key and the desired option from the number selected from 1 to 5.</p>
+  </li>
+  <li>
+    <p>To cycle through the built-in pane layouts one at a time. Do the prefix with the spacebar. This can also be an alternative using a clockwise or counter-clockwise option when there are only two panes open on the current tmux window.</p>
+  </li>
+  <li>Lastly when it comes to managing panes. There might be a need to swap the place between two panes. When cycling panes don’t create the desired pane layout.</li>
+  <li>
+    <p>Before swapping, you can identify pane numbers with <code class="language-plaintext highlighter-rouge">ctrl b q</code>﻿. You must first check the number each pane has been assigned. This also provides the size of each pane.</p>
+  </li>
+  <li>For the swap pane example. It will be done within tmux prompt or command mode with prefix shift : then the commands swap-pane. With <code class="language-plaintext highlighter-rouge">-s &lt;source-pane&gt; and -t &lt;destination-pane&gt;</code>. This will send the move/swap the currently selected pane and keep the currently selected pane selected after the swap.</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">:swap-pane -s &lt;source pane final swap location&gt; -t &lt;currently selected destination pane&gt;</code></p>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/aIdDnTg.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The currently selected pane of the parrot has moved to the bottom right and has followed the currently selected pane. Still able to start typing within the parrot pane without having to switch to another pane.</p>
+  </li>
+  <li>
+    <p>o swap places with another pane and select the other open pane. Instead of the currently selected pane. Have the -<code class="language-plaintext highlighter-rouge">t &lt;destination-pane&gt;</code> first with the pane you want to swap with. Followed by the <code class="language-plaintext highlighter-rouge">-s &lt;source-pane&gt;</code> or currently selected pane</p>
+  </li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">:swap-pane -t &lt;pane to swap with&gt; -s &lt;currently selected pane&gt;</code></p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>How to create a new pane split horizontally?</p>
+
+<p>A: ctrl b shift “</p>
+
+<p>How to close a tmux pane like closing a ssh session?</p>
+
+<p>A: exit</p>
+
+<p>How to create a new pane split vertically?</p>
+
+<p>A: ctrl b shift %</p>
+
+<p>How to cycle between tmux pre built layout options? Starting with the number 1.</p>
+
+<p>A: ctrl b esc 1</p>
+
+<p>How to cycle/toggle between tmux layouts, one at a time?</p>
+
+<p>A: ctrl b spacebar</p>
+
+<p>How to force quit a frozen, crashed or borked pane?</p>
+
+<p>A: ctrl b x y</p>
+
+<p>How to move between the two must used tmux panes for the current tmux window?</p>
+
+<p>A: ctrl b o</p>
+
+<p>Can you use the arrow to move to the desired pane? yea/nay</p>
+
+<p>A: yea</p>
+
+<p>How to move the currently selected pane clockwise?</p>
+
+<p>A: ctrl b shift {
+ 
+How to move the currently selected pane counter-clockwise</p>
+
+<p> A: ctrl b shift }
+ 
+Before using swap-pane. How to check for which pane has what number?</p>
+
+<p> A: ctrl b q
+ 
+How to swap two panes and move with the swapped pane?  Within tmux prompt mode. 1 -&gt; 3 location</p>
+
+<p>A: :swap-pane -t 3 -s 1</p>
+
+<p>How to swap two panes without changing the currently selected pane location? Within tmux prompt mode. 1 -&gt; 4 pane number</p>
+
+<p>A: swap-pane -s 1 -t 4</p>
+
+<h2 id="manage-tmux-windows">Manage tmux “Windows”</h2>
+
+<ul>
+  <li>Tmux windows are like a new terminal tab that you can easily swap from and more.</li>
+  <li>To create a new empty tmux window to work on.
+    <ul>
+      <li>Do prefix c.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Shown with the new window number and name. Note the currently selected window will be marked with a * or wildcard star.</p>
+  </li>
+  <li>To change the name of the current window.
+    <ul>
+      <li>Do prefix ,</li>
+    </ul>
+  </li>
+  <li>
+    <p>After retyping the new window name. Hit the enter key to save changes.</p>
+  </li>
+  <li>To detach a pane into its own window. move the desired pane to move to its own window.
+    <ul>
+      <li>Then prefix shift !</li>
+      <li>The Nmap has been sent to a new window named “bash”. Now able to view the whole Nmap scan without run the Nmap scan again.</li>
+    </ul>
+  </li>
+  <li>to cycle between windows can be done with <strong>prefix n</strong> for the next window.
+    <ul>
+      <li>Or <strong>prefix p</strong> for the previous windows.</li>
+    </ul>
+  </li>
+  <li>Another method to switch to the desired window is to use <strong>prefix w</strong>.
+    <ul>
+      <li>This will list all the tmux windows.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Using the arrow keys to select the desired windows and enter-key to select the highlighted window.</p>
+  </li>
+  <li>
+    <p>If a tmux window has been borked and needs to be terminated quickly. Killing the window will also close any panes open within the currently selected tmux window. To kill or close a tmux window do prefix shift &amp; and followed by y to close the window. Or n to keep it open.</p>
+  </li>
+  <li>To join two different windows/panes back into one. Can be done with the window name or number. The command is run within tmux prompt or command mode. Prefix shift : then within the prompt :<code class="language-plaintext highlighter-rouge">join-pane -t &lt;window-name&gt;</code> OR <code class="language-plaintext highlighter-rouge">:join-pane -s &lt;window-name&gt;</code>. Where -s is the source name and -t is the destination window name.</li>
+  <li>For the join-pane commands adding -h on the end fuses the two panes together horizontally. Adding -v on the end of the join-pane command fuses two panes together vertically.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>How to create a new empty tmux window?</p>
+
+<p> A: ctrl b c</p>
+
+<p>How to change the currently select window’s name?</p>
+
+<p>A: ctrl b ,</p>
+
+<p>How to move the currently selected pane to it’s own tmux window?</p>
+
+<p>A: ctrl b shift !</p>
+
+<p>How to fuse two panes together with the “source” window of “bash”? After entering a tmux prompt?</p>
+
+<p>A: join-pane -s bash</p>
+
+<p>How to fuse two panes together with the “destination” window of “sudo”? After entering a tmux prompt?</p>
+
+<p>A: join-pane -t sudo</p>
+
+<p>What option can added with question 4 and 5 to fuse together vertically?</p>
+
+<p> A: -v</p>
+
+<p>What option can added with question 4 and 5 to fuse together horizontally?</p>
+
+<p>A: -h</p>
+
+<p>With join-pane can you use the window number instead of the window’s name? yea/nay</p>
+
+<p>A: yea</p>
+
+<p>How to kill or completely close a window. Including all the panes open on that window. If it’s unresponsive?</p>
+
+<p>A: ctrl b shift &amp;</p>
+
+<p>How to view and cycle between all the tmux windows for the current tmux session without detaching from the current session?</p>
+
+<p>A: ctrl b w</p>
+
+<p>How to move back to the previous tmux window?</p>
+
+<p>A: ctrl b p</p>
+
+<p>How to move up to the next tmux window?</p>
+
+<p>A: ctrl b n</p>
+
+<h2 id="tmux-copy-mode">Tmux “copy” mode</h2>
+
+<ul>
+  <li>
+    <p>Copy mode can be used to scroll up and down the page. If the text is larger than the length of the pane or window size. To start copy mode. Type <code class="language-plaintext highlighter-rouge">ctrl b [</code> and a number will show up in the top right corner of the current pane or window using copy mode. After scrolling. Exit copy mode with the q key.</p>
+  </li>
+  <li>
+    <p>To search up the page. Within copy mode. Type <strong>ctrl r</strong> and the search term or string to search for. To continue searching the same string. Hold down ctrl and press r again to jump to the next string location. Resume scrolling by hitting the enter key. Will stop at the search string/term.</p>
+  </li>
+  <li>
+    <p>To search down the page. Is the same basic idea as search up. However, this is done with s instead of r as <strong>ctrl s</strong> and then the search term or string. While holding down ctrl retype s to jump to the next string location. Again resume scrolling by hitting the enter key. Will stop at the search string/term.</p>
+  </li>
+  <li>To copy and paste within tmux copy-mode takes 4 steps.</li>
+  <li>Note that this method will only apply to the tmux clipboard as follows.</li>
+</ul>
+
+<p>0. <code class="language-plaintext highlighter-rouge">ctrl b [ #</code> enter copy mode</p>
+
+<p>1. <strong>scroll to the start of the block of text you would like to copy</strong></p>
+
+<ol>
+  <li>enable highlighting with <strong>ctrl spacebar</strong>. Then use the arrow keys to up to select all the text. Down if you start from the top instead.</li>
+  <li>copy all the highlighted text to the tmux clipboard with <strong>alt w</strong>. Note! Even though the highlight will disappear. The text still copied to the tmux clipboard.</li>
+  <li>create a new file to paste the final text with <code class="language-plaintext highlighter-rouge">ctrl b ]</code>.
+    <ul>
+      <li>To double-check what the text that is currently copied to the tmux clipboard. Do prefix followed by shift #</li>
+      <li>To quit back to the terminal. Hit the <strong>q key</strong> once.</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>How to start copy mode?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">ctrl b [</code></p>
+
+<p>While in copy mode. How to search/grep up the wall of terminal text?</p>
+
+<p>A: ctrl r</p>
+
+<p>While in copy mode. How to search/grep down the wall of terminal text?</p>
+
+<p>A: ctrl s</p>
+
+<p>How to exit search up or search down within copy mode?</p>
+
+<p>A: esc</p>
+
+<p>What single key can also be used to to exit out of copy mode.</p>
+
+<p>A: q</p>
+
+<p>After starting copy mode. How do you enable text highlighting to select for text copying?</p>
+
+<p>A: ctrl spacebar</p>
+
+<p>After selecting the text you want to copy. How do copy it?</p>
+
+<p>A: alt w</p>
+
+<p>When in a terminal text editor. How to paste from the tmux clipboard?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">ctrl b ]</code></p>
+
+<p>How to double check what is currently copied to the tmux clipboard</p>
+
+<p>A: ctrl b shift #</p>
+
+<h2 id="oh-my-tmux-and-beyond">Oh My Tmux and beyond</h2>
+
+<ul>
+  <li>
+    <p>Tmux by default doesn’t have a default configuration file. That doesn’t mean you can make one.</p>
+  </li>
+  <li>
+    <p>Before crafting a custom configuration file for tmux. It might be a good idea to show all the options of the defaults. With tmux show -g argument for global.</p>
+  </li>
+  <li>
+    <p>When creating the tmux configuration script it is important that. The file name is .tmux.conf and .tmux.conf is saved within the user’s home directory /home/username/.tmux.conf</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/jvZpTO0.png" alt="" /></p>
+
+<ul>
+  <li><strong>set -g status-style bg=’#44475a’,fg=’#8be9fd’</strong>
+    <ul>
+      <li>This line is to modify the color of the status bar.</li>
+    </ul>
+  </li>
+  <li><strong>setw -g window-status-current-style fg=black,bg=white</strong>
+    <ul>
+      <li>This line adds highlight in the color of white for the currently selected window.</li>
+    </ul>
+  </li>
+  <li><strong>set -g prefix C-a</strong>
+    <ul>
+      <li>Allow changing the prefix from ctrl b to ctrl a. If there is any need to use the alt key instead of ctrl. Then set prefix as M-b or another second character, such as M-a. Changing the prefix from ctrl b to alt a.</li>
+    </ul>
+  </li>
+  <li>Allow changing the prefix from ctrl b to ctrl a. If there is any need to use the alt key instead of ctrl. Then set prefix as M-b or another second character, such as M-a.</li>
+</ul>
+
+<blockquote>
+  <p>Note: bind or bind-key options allow adding extra hotkey options without overwriting the default hotkeys. set options overwrite the default tmux hotkeys for the updated ones written within the .tmux.conf file</p>
+</blockquote>
+
+<ul>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>Using bind-key with</td>
+          <td>and - to add extra ways to split-window and create a new pane. The -c argument with “#{pane_current_path}” on the end allows any new pane within a different directory to keep that directory path, even if it is not the directory that session had started in.</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>**ctrl b shift</td>
+          <td>** # will split horizontally</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p><strong>ctrl b -</strong> # will split vertically</p>
+  </li>
+  <li>
+    <p>The set history limit allows copying mode to have a higher max character limit. Useful for copying output that goes beyond the default tmux history limit.</p>
+  </li>
+  <li>The left side of the status bar can be customized with status-left within set or set-option. In the example below the first one status-left-length 15. Set the total amount of characters that can be shown on the left. The following line displays ‘Try Harderer’ with the echo Linux command.</li>
+</ul>
+
+<p><img src="/tryhackme/REmux%20The%20Tmux/XoRjUGj.png" alt="" /></p>
+
+<ul>
+  <li>After reloading the tmux configuration file within the session ctrl b shift : followed by source-file /home/username/.tmux.conf OR source-file ~/.tmux.conf</li>
+</ul>
+
+<blockquote>
+  <p>NOTE the .tmux.conf can also be reloaded by closing and restarting a new session. Or with the tmux command as <code class="language-plaintext highlighter-rouge">tmux source /home/username/.tmux.conf</code></p>
+</blockquote>
+
+<ul>
+  <li>In addition to calling script though .tmux.conf is calling custom plugins. The plugins are shown were sourced from GitHub.</li>
+</ul>
+
+<p><a href="https://github.com/tmux-plugins/tmux-resurrect.git">https://github.com/tmux-plugins/tmux-resurrect.git</a><a href="https://github.com/tmux-plugins/tmux-resurrect.git"></a> # save sessions to resume after a system reboot.</p>
+
+<p><a href="https://github.com/tmux-plugins/tmux-logging.git">https://github.com/tmux-plugins/tmux-logging.git</a> # plugin for creating command history to review later.</p>
+
+<p><a href="https://github.com/tmux-plugins/tmux-yank.git">https://github.com/tmux-plugins/tmux-yank.git</a><a href="https://github.com/tmux-plugins/tmux-yank.git"></a> # plugin copy text from outside the tmux clipboard to use with other programs.</p>
+
+<ul>
+  <li>The alternative to building a custom .tmux.conf configuration script it utilize a open-source .tmux.conf script. That can be easily found by searching online with Oh My Tmux. For this example will use the tmuxconfig repository from github. that can be found at the link below.</li>
+</ul>
+
+<p><a href="https://github.com/chaosma/tmuxconfig.git">https://github.com/chaosma/tmuxconfig.git</a><a href="https://github.com/chaosma/tmuxconfig.git"></a></p>
+
+<blockquote>
+  <p>NOTE. That using the tmuxconfig or other tmux.conf configuration files is the only one that loads in. Regardless if the .tmux.conf had been deleted or replaced with another .tmux.conf file. Tmux can be reset back to its default configuration by killing the tmux server. with kill-server</p>
+</blockquote>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Does tmux have a default tmux.conf config file? yea/nay</p>
+
+<p>A: nay</p>
+
+<p>Where can you find examples for custom tmux.conf config files?</p>
+
+<p>A: /usr/share/doc/tmux</p>
+
+<p>Can you use Hex color codes in place of the color name? yea/nay</p>
+
+<p>A: yea</p>
+
+<p>What directory must the .tmux.conf be put in to work with the next tmux session</p>
+
+<p>A: home</p>
+
+<p>How would you update tmux changes without quitting the tmux session from a tmux prompt?</p>
+
+<p>A: source-file ~/.tmux.conf</p>
+
+<p>How to completely reset tmux to its default and kill all sessions? If the .tmux.conf is borked.</p>
+
+<p>A: tmux kill-server</p>
+
+<p>How would you select addition hotkeys. Without overwriting the default hotkey?</p>
+
+<p>A: bind</p>
+
+<p>How would you change the prefix to Ctrl a?</p>
+
+<p>A: set -g prefix C-a</p>
+
+<p>Can you display shell command output. From a script or one line command? yea/nay</p>
+
+<p>A: yea</p>
+
+<p>How would you load a plugin into a tmux config file?</p>
+
+<p>A: set -g @plugin</p>
+
+<p>How can you run the desired plugin after loading it?</p>
+
+<p>A: run-shell</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

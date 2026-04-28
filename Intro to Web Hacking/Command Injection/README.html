@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command Injection · THM Writeups</title>
+  
+  <meta name="description" content="Learn about a vulnerability allowing you to execute commands through a vulnerable app, and its remediations." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Command Injection</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Intro to Web Hacking/Command Injection/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">rce</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about a vulnerability allowing you to execute commands through a vulnerable app, and its remediations.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="command-injection"><a href="https://tryhackme.com/room/oscommandinjection">Command Injection</a></h1>
+
+<h2 id="discovering-command-injection">Discovering Command Injection</h2>
+
+<p>Command injection is the abuse of an application’s behaviour to execute commands on the operating system, using the same privileges that the application on a device is running with. For example, achieving command injection on a web server running as a user named <code class="language-plaintext highlighter-rouge">joe</code> will execute commands under this <code class="language-plaintext highlighter-rouge">joe</code> user - and therefore obtain any permissions that <code class="language-plaintext highlighter-rouge">joe</code> has.</p>
+
+<p>Command injection is also often known as “Remote Code Execution” (RCE) because of the ability to remotely execute code within an application. These vulnerabilities are often the most lucrative to an attacker because it means that the attacker can directly interact with the vulnerable system. For example, an attacker may read system or user files, data, and things of that nature.</p>
+
+<p>For example, being able to abuse an application to perform the command <code class="language-plaintext highlighter-rouge">whoami</code> to list what user account the application is running will be an example of command injection.</p>
+
+<p>This vulnerability exists because applications often use functions in programming languages such as PHP, Python and NodeJS to pass data to and to make system calls on the machine’s operating system. For example, taking input from a field and searching for an entry into a file. Take this code snippet below as an example:</p>
+
+<p>In this code snippet, the application takes data that a user enters in an input field named <code class="language-plaintext highlighter-rouge">$title</code> to search a directory for a song title. Let’s break this down into a few simple steps.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Command%20Injection/a54a09f7c4efa1d340ab678ece230c44.png" alt="" /></p>
+
+<p><strong>1.</strong> The application stores MP3 files in a directory contained on the operating system.</p>
+
+<p><strong>2.</strong> The user inputs the song title they wish to search for. The application stores this input into the <code class="language-plaintext highlighter-rouge">$title</code> variable.</p>
+
+<p><strong>3.</strong> The data within this <code class="language-plaintext highlighter-rouge">$title</code> variable is passed to the command <code class="language-plaintext highlighter-rouge">grep</code> to search a text file named <em>songtitle.__txt</em> for the entry of whatever the user wishes to search for.</p>
+
+<p><strong>4.</strong> The output of this search of <em>songtitle.__txt</em> will determine whether the application informs the user that the song exists or not.</p>
+
+<p>Now, this sort of information would typically be stored in a database; however, this is just an example of where an application takes input from a user to interact with the application’s operating system.</p>
+
+<p>An attacker could abuse this application by injecting their own commands for the application to execute. Rather than using <code class="language-plaintext highlighter-rouge">grep</code> to search for an entry in <code class="language-plaintext highlighter-rouge">songtitle.txt</code>, they could ask the application to read data from a more sensitive file.</p>
+
+<p>Abusing applications in this way can be possible no matter the programming language the application uses. As long as the application processes and executes it, it can result in command injection. For example, this code snippet below is an application written in Python.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Command%20Injection/04a1cb87fad0a9b47761afddc48e0bf2.png" alt="" /></p>
+
+<p>Note, you are not expected to understand the syntax behind these applications. However, for the sake of reason, I have outlined the steps of how this Python application works as well.</p>
+
+<ol>
+  <li>The “flask” package is used to set up a web server</li>
+  <li>A function that uses the “subprocess” package to execute a command on the device</li>
+  <li>We use a route in the webserver that will execute whatever is provided. For example, to execute <code class="language-plaintext highlighter-rouge">whoami</code>, we’d need to visit http://flaskapp.thm/whoami</li>
+</ol>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What variable stores the user’s input in the PHP code snippet in this task?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">$title</code></p>
+
+<p>Q: What HTTP method is used to retrieve data submitted by a user in the PHP code snippet?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">GET</code></p>
+
+<p>Q: If I wanted to execute the <code class="language-plaintext highlighter-rouge">id</code> command in the Python code snippet, what route would I need to visit?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">/id</code></p>
+
+<h2 id="exploiting-command-injection">Exploiting Command Injection</h2>
+
+<p>Applications that use user input to populate system commands with data can often be combined in unintended behaviour. <strong>For example, the shell operators <code class="language-plaintext highlighter-rouge">;</code>, <code class="language-plaintext highlighter-rouge">&amp;</code> and <code class="language-plaintext highlighter-rouge">&amp;&amp;</code> will combine two (or more) system commands and execute them both</strong>.</p>
+
+<p>Command Injection can be detected in mostly one of two ways:</p>
+
+<ol>
+  <li>Blind command injection</li>
+  <li>Verbose command injection</li>
+</ol>
+
+<p>I have defined these two methods in the table below, where the two sections underneath will explain these in greater detail.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Method</strong></td>
+      <td><strong>Description</strong></td>
+    </tr>
+    <tr>
+      <td>Blind</td>
+      <td>This type of injection is where there is no direct output from the application when testing payloads. You will have to investigate the behaviours of the application to determine whether or not your payload was successful.</td>
+    </tr>
+    <tr>
+      <td>Verbose</td>
+      <td>This type of injection is where there is direct feedback from the application once you have tested a payload. For example, running the <code class="language-plaintext highlighter-rouge">whoami</code> command to see what user the application is running under. The web application will output the username on the page directly.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="detecting-blind-command-injection">Detecting Blind Command Injection</h3>
+
+<p>For this type of command injection, we will need to use payloads that will cause some time delay. For example, the <code class="language-plaintext highlighter-rouge">ping</code> and <code class="language-plaintext highlighter-rouge">sleep</code> commands are significant payloads to test with. Using <code class="language-plaintext highlighter-rouge">ping</code> as an example, the application will hang for <em>x</em> seconds in relation to how many <em>pings</em> you have specified.</p>
+
+<p>Another method of detecting blind command injection is by forcing some output. This can be done by using redirection operators such as <code class="language-plaintext highlighter-rouge">&gt;</code>.  For example, we can tell the web application to execute commands such as <code class="language-plaintext highlighter-rouge">whoami</code> and redirect that to a file. We can then use a command such as <code class="language-plaintext highlighter-rouge">cat</code> to read this newly created file’s contents.</p>
+
+<p>Testing command injection this way is often complicated and requires quite a bit of experimentation, significantly as the syntax for commands varies between Linux and Windows.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">curl</code> command is a great way to test for command injection. This is because you are able to use <code class="language-plaintext highlighter-rouge">curl</code> to deliver data to and from an application in your payload. Take this code snippet below as an example, a simple curl payload to an application is possible for command injection.</p>
+
+<p><code class="language-plaintext highlighter-rouge">curl http://vulnerable.app/process.php%3Fsearch%3DThe%20Beatles%3B%20whoami</code></p>
+
+<h3 id="useful-payloads">Useful payloads</h3>
+
+<p>Linux</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Payload</strong></th>
+      <th><strong>Description</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>whoami</td>
+      <td>See what user the application is running under.</td>
+    </tr>
+    <tr>
+      <td>ls</td>
+      <td>List the contents of the current directory. You may be able to find files such as configuration files, environment files (tokens and application keys), and many more valuable things.</td>
+    </tr>
+    <tr>
+      <td>ping</td>
+      <td>This command will invoke the application to hang. This will be useful in testing an application for blind command injection.</td>
+    </tr>
+    <tr>
+      <td>sleep</td>
+      <td>This is another useful payload in testing an application for blind command injection, where the machine does not have <code class="language-plaintext highlighter-rouge">ping</code> installed.</td>
+    </tr>
+    <tr>
+      <td>nc</td>
+      <td>Netcat can be used to spawn a reverse shell onto the vulnerable application. You can use this foothold to navigate around the target machine for other services, files, or potential means of escalating privileges.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Windows</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Payload</strong></th>
+      <th><strong>Description</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>whoami</td>
+      <td>See what user the application is running under.</td>
+    </tr>
+    <tr>
+      <td>dir</td>
+      <td>List the contents of the current directory. You may be able to find files such as configuration files, environment files (tokens and application keys), and many more valuable things.</td>
+    </tr>
+    <tr>
+      <td>ping</td>
+      <td>This command will invoke the application to hang. This will be useful in testing an application for blind command injection.</td>
+    </tr>
+    <tr>
+      <td>timeout</td>
+      <td>This command will also invoke the application to hang. It is also useful for testing an application for blind command injection if the <code class="language-plaintext highlighter-rouge">ping</code> command is not installed.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: What payload would I use if I wanted to determine what user the application is running as?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">whoami</code></p>
+
+<p>Q: What popular network tool would I use to test for blind command injection on a <strong>Linux</strong> machine?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">ping</code></p>
+
+<p>Q: What payload would I use to test a <strong>Windows</strong> machine for blind command injection?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">timeout</code></p>
+
+<h2 id="remediating-command-injection">Remediating Command Injection</h2>
+
+<h3 id="vulnerable-functions"><strong>Vulnerable Functions</strong></h3>
+
+<p>In PHP, many functions interact with the operating system to execute commands via shell; these include:</p>
+<ul>
+  <li>Exec</li>
+  <li>Passthru</li>
+  <li>System</li>
+</ul>
+
+<p>Take this snippet below as an example. Here, the application will only accept and process numbers that are inputted into the form. This means that any commands such as <code class="language-plaintext highlighter-rouge">whoami</code> will not be processed.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Command%20Injection/14acf436361fcfb7efced4b2f416b3d5.png" alt="" /></p>
+
+<ol>
+  <li>The application will only accept a specific pattern of characters (the digits  0-9)</li>
+  <li>The application will then only proceed to execute this data which is all numerical.</li>
+</ol>
+
+<p>These functions take input such as a string or user data and will execute whatever is provided on the system. Any application that uses these functions without proper checks will be vulnerable to command injection.</p>
+
+<h3 id="input-sanitisation"><strong>Input sanitisation</strong></h3>
+
+<p>Sanitising any input from a user that an application uses is a great way to prevent command injection. This is a process of specifying the formats or types of data that a user can submit. For example, an input field that only accepts numerical data or removes any special characters such as <code class="language-plaintext highlighter-rouge">&gt;</code> ,  <code class="language-plaintext highlighter-rouge">&amp;</code> and <code class="language-plaintext highlighter-rouge">/</code>.</p>
+
+<p>In the snippet below, the <code class="language-plaintext highlighter-rouge">filter_input</code> <a href="https://www.php.net/manual/en/function.filter-input.php">PHP function</a> is used to check whether or not any data submitted via an input form is a number or not. If it is not a number, it must be invalid input.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Command%20Injection/06e83dfe3791664ed0bb9bc9ffd3e581.png" alt="" /></p>
+
+<h3 id="bypassing-filters">Bypassing Filters</h3>
+
+<p>Applications will employ numerous techniques in filtering and sanitising data that is taken from a  user’s input. These filters will restrict you to specific payloads; however, we can abuse the logic behind an application to bypass these filters. For example, an application may strip out quotation marks; we can instead use the hexadecimal value of this to achieve the same result.</p>
+
+<p>When executed, although the data given will be in a different format than what is expected, it can still be interpreted and will have the same result.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Command%20Injection/fd59464e2884390ee1b8bb52b327d454.png" alt="" /></p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: What is the term for the process of “cleaning” user input that is provided to an application?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">sanitisation</code></p>
+
+<h2 id="practical-command-injection-deploy">Practical: Command Injection (Deploy)</h2>
+
+<p>Refer to <a href="https://github.com/payloadbox/command-injection-payload-list">this cheat sheet</a> if you are stuck or wish to explore some more complex payloads.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Command%20Injection/2026-01-06_15-38.png" alt="" /></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/Command%20Injection/2026-01-06_15-39.png" alt="" /></p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: What user is this application running as?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">www-data</code></p>
+
+<p>Q: What are the contents of the flag located in /home/tryhackme/flag.txt?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{COMMAND_INJECTION_COMPLETE}</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

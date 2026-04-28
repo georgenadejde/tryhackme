@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burp Suite Repeater · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to use Repeater to duplicate requests in Burp Suite." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Burp Suite Repeater</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">BurpSuite/Burp Suite Repeater/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">burpsuite</span>
+          
+          <span class="tag-pill">repeater</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to use Repeater to duplicate requests in Burp Suite.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="burp-suite-repeater"><a href="https://tryhackme.com/room/burpsuiterepeater">Burp Suite: Repeater</a></h1>
+
+<h2 id="what-is-repeater">What is Repeater?</h2>
+
+<p>Repeater enables us to modify and resend intercepted requests to a target of our choosing. It allows us to take requests captured in the Burp Proxy and manipulate them, sending them repeatedly as needed. Alternatively, we can manually create requests from scratch, similar to using a command-line tool like cURL.</p>
+
+<p>The ability to edit and resend requests multiple times makes Repeater invaluable for manual exploration and testing of endpoints. It provides a user-friendly graphical interface for crafting request payloads and offers various views of the response, including a rendering engine for a graphical representation.</p>
+
+<p>The Repeater interface consists of six main sections, as depicted in the annotated diagram below:</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/3a4a4ee2008a2ed6a1aa8e9af3601ab2.png" alt="Showing a sample request in burp suite repeater" /></p>
+
+<ol>
+  <li>
+    <p><strong>Request List</strong>: Located at the top left of the tab, it displays the list of Repeater requests. Multiple requests can be managed simultaneously, and each new request sent to Repeater will appear here.</p>
+  </li>
+  <li>
+    <p><strong>Request Controls</strong>: Positioned directly beneath the request list, these controls allow us to send a request, cancel a hanging request, and navigate through the request history.</p>
+  </li>
+  <li>
+    <p><strong>Request and Response View</strong>: Occupying the majority of the interface, this section displays the <strong>Request</strong> and <strong>Response</strong> views. We can edit the request in the Request view and then forward it, while the corresponding response will be shown in the Response view.</p>
+  </li>
+  <li>
+    <p><strong>Layout Options</strong>: Located at the top-right of the Request/Response view, these options enable us to customize the layout of the Request and Response views. The default setting is a side-by-side (horizontal) layout, but we can also choose a vertical layout or combine them in separate tabs.</p>
+  </li>
+  <li>
+    <p><strong>Inspector</strong>: Positioned on the right-hand side, the Inspector allows us to analyze and modify requests in a more intuitive manner than using the raw editor. We will explore this feature in a later task.</p>
+  </li>
+  <li>
+    <p><strong>Target</strong>: Situated above the Inspector, the Target field specifies the IP address or domain to which the requests are sent. When requests are sent to Repeater from other Burp Suite components, this field is automatically populated.</p>
+  </li>
+</ol>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Which sections gives us a more intuitive control over our requests?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Inspector</code></p>
+
+<h2 id="basic-usage">Basic Usage</h2>
+
+<p>While manual request crafting is an option, it is more common to capture a request using the Proxy module and subsequently transmit it to Repeater for further editing and resending.</p>
+
+<p>Once a request has been captured in the Proxy module, we can send it to Repeater by either right-clicking on the request and selecting <strong>Send to Repeater</strong>, or by utilizing the keyboard shortcut <code class="language-plaintext highlighter-rouge">Ctrl + R</code>.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: Which view will populate when sending a request from the Proxy module to Repeater?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Request</code></p>
+
+<h2 id="message-analysis-toolbar">Message Analysis Toolbar</h2>
+
+<p>Repeater provides us with various request and response presentation options, ranging from hexadecimal output to a fully rendered page.</p>
+
+<p>To explore these options, we can refer to the section located above the response box, where the following four view buttons are available:</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/635ad62b0204b104bbd58489716eccde.png" alt="Four buttons above the response box" /></p>
+
+<p>We are presented with the following display choices:</p>
+
+<ol>
+  <li>
+    <p><strong>Pretty</strong>: This is the default option, which takes the raw response and applies slight formatting enhancements to improve readability.</p>
+  </li>
+  <li>
+    <p><strong>Raw</strong>: This option displays the unmodified response directly received from the server without any additional formatting.</p>
+  </li>
+  <li>
+    <p><strong>Hex</strong>: By selecting this view, we can examine the response in a byte-level representation, which is particularly useful when dealing with binary files.</p>
+  </li>
+  <li>
+    <p><strong>Render</strong>: The render option allows us to visualize the page as it would appear in a web browser. While not commonly utilised in Repeater, as our focus is usually on the source code, it still offers a valuable feature. For most scenarios, the <strong>Pretty</strong> option is generally sufficient.</p>
+  </li>
+</ol>
+
+<p>Adjacent to the view buttons, on the right-hand side, we find the <strong>Show non-printable</strong> characters button (<code class="language-plaintext highlighter-rouge">\n</code>). This functionality enables the display of characters that may not be visible with the <strong>Pretty</strong> or <strong>Raw</strong> options. For example, each line in the response typically ends with the characters <code class="language-plaintext highlighter-rouge">\r\n</code>, representing a carriage return followed by a new line. These characters play an important role in the interpretation of HTTP headers.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Which option allows us to visualize the page as it would appear in a web browser?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Render</code></p>
+
+<h2 id="inspector">Inspector</h2>
+
+<p>Inspector is a supplementary feature to the Request and Response views in the Repeater module. It is also used to obtain a visually organized breakdown of requests and responses, as well as for experimenting to see how changes made using the higher-level Inspector affect the equivalent raw versions.</p>
+
+<p>Inspector can be utilized both in the Proxy and Repeater module. In both instances, it is situated on the far-right side of the window, presenting a list of components within the request and response:</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/6c95db764fe7491d938485256fd1dd87.png" alt="" /></p>
+
+<p>Among these components, the sections pertaining to the request can typically be modified, enabling the addition, editing, and removal of items. For instance, in the <strong>Request Attributes</strong> section, we can alter elements related to the location, method, and protocol of the request. This includes modifying the desired resource to retrieve, changing the HTTP method from GET to another variant, or switching the protocol from HTTP/1 to HTTP/2:</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/4f3a0f3714ceebbd6016e077369b48e8.png" alt="Switching the protocol from HTTP/1 to HTTP/2" /></p>
+
+<p>Other sections available for viewing and/or editing include:</p>
+
+<ol>
+  <li><strong>Request Query Parameters:</strong> These refer to data sent to the server via the URL. For example, in a GET request like <code class="language-plaintext highlighter-rouge">https://admin.tryhackme.com/?redirect=false</code>, the query parameter <strong>redirect</strong> has a value of “false”.</li>
+  <li><strong>Request Body Parameters:</strong> Similar to query parameters, but specific to POST requests. Any data sent as part of a POST request will be displayed in this section, allowing us to modify the parameters before resending.</li>
+  <li><strong>Request Cookies:</strong> This section contains a modifiable list of cookies sent with each request.</li>
+  <li><strong>Request Headers:</strong> It enables us to view, access, and modify (including adding or removing) any headers sent with our requests. Editing these headers can be valuable when examining how a web server responds to unexpected headers.</li>
+  <li><strong>Response Headers:</strong> This section displays the headers returned by the server in response to our request. It cannot be modified, as we have no control over the headers returned by the server. Note that this section becomes visible only after sending a request and receiving a response.</li>
+</ol>
+
+<p>While the textual representation of these components can be found within the Request and Response views, Inspector’s tabular format provides a convenient way to visualise and interact with them.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Which section in Inspector is specific to POST requests?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Body Parameters</code></p>
+
+<h2 id="practical-example">Practical Example</h2>
+
+<p>Repeater is particularly well-suited for tasks requiring repetitive sending of similar requests, typically with minor modifications. This is particularly useful for activities such as manual testing for SQL Injection vulnerabilities (to be covered in a forthcoming task), attempting to bypass web application firewall filters, or adjusting parameters in a form submission.</p>
+
+<p>Let’s begin with an exceedingly simple example: Utilizing Repeater to modify the headers of a request sent to a target.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/2026-03-22_22-00.jpg" alt="" /></p>
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: What is the flag you receive?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{Yzg2MWI2ZDhlYzdlNGFiZTUzZTIzMzVi}</code></p>
+
+<h2 id="challenge">Challenge</h2>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: Enable intercept again and capture a request to one of the numeric products endpoints in the Proxy module, then forward it to Repeater.</p>
+
+<p>Q: See if you can get the server to error out with a “500 Internal Server Error” code by changing the number at the end of the request to extreme inputs.What is the flag you receive when you cause a 500 error in the endpoint?</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/2026-03-22_22-10.jpg" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{N2MzMzFhMTA1MmZiYjA2YWQ4M2ZmMzhl}</code></p>
+
+<h2 id="extra-mile-challenge">Extra-mile Challenge</h2>
+
+<p>Your objective in this challenge is to identify and exploit a Union SQL Injection vulnerability present in the ID parameter of the <code class="language-plaintext highlighter-rouge">/about/ID</code> endpoint. By leveraging this vulnerability, your task is to launch an attack to retrieve the notes about the CEO stored in the database.</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/2026-03-22_22-14.jpg" alt="" /></p>
+
+<p>As we know the table name and the number of rows, we can use a union query to select the column names for the <code class="language-plaintext highlighter-rouge">people</code> table from the <code class="language-plaintext highlighter-rouge">columns</code> table in the <code class="language-plaintext highlighter-rouge">information_schema</code> default database.</p>
+
+<p>A simple query for this is as follows:<br />
+<code class="language-plaintext highlighter-rouge">/about/0 UNION ALL SELECT column_name,null,null,null,null FROM information_schema.columns WHERE table_name="people"</code></p>
+
+<p>This creates a union query and selects our target, then four null columns (to avoid the query erroring out). Notice that we also changed the ID that we are selecting from <code class="language-plaintext highlighter-rouge">2</code> to <code class="language-plaintext highlighter-rouge">0</code>. By setting the ID to an invalid number, we ensure that we don’t retrieve anything with the original (legitimate) query; this means that the first row returned from the database will be our desired response from the injected query.</p>
+
+<p>Looking through the returned response, we can see that the first column name (<code class="language-plaintext highlighter-rouge">id</code>) has been inserted into the page title:</p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/2026-03-22_22-19.jpg" alt="" /></p>
+
+<p>We have successfully pulled the first column name out of the database, but we now have a problem. The page is only displaying the first matching item — we need to see all of the matching items.</p>
+
+<p>Fortunately, we can use our SQLi to group the results. We can still only retrieve one result at a time, but by using the <code class="language-plaintext highlighter-rouge">group_concat()</code> function, we can amalgamate all of the column names into a single output:<br />
+<code class="language-plaintext highlighter-rouge">/about/0 UNION ALL SELECT group_concat(column_name),null,null,null,null FROM information_schema.columns WHERE table_name="people"</code></p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/2026-03-22_22-21.jpg" alt="" /></p>
+
+<p>We have successfully identified eight columns in this table: <code class="language-plaintext highlighter-rouge">id</code>, <code class="language-plaintext highlighter-rouge">firstName</code>, <code class="language-plaintext highlighter-rouge">lastName</code>, <code class="language-plaintext highlighter-rouge">pfpLink</code>, <code class="language-plaintext highlighter-rouge">role</code>, <code class="language-plaintext highlighter-rouge">shortRole</code>, <code class="language-plaintext highlighter-rouge">bio</code>, and <code class="language-plaintext highlighter-rouge">notes</code>.</p>
+
+<p>Considering our task, it seems a safe bet that our target column is <code class="language-plaintext highlighter-rouge">notes</code>.</p>
+
+<p>Finally, we are ready to take the flag from this database — we have all of the information that we need:</p>
+
+<ul>
+  <li>The name of the table: <code class="language-plaintext highlighter-rouge">people</code>.</li>
+  <li>The name of the target column: <code class="language-plaintext highlighter-rouge">notes</code>.</li>
+  <li>The ID of the CEO is <code class="language-plaintext highlighter-rouge">1</code>; this can be found simply by clicking on Jameson Wolfe’s profile on the <code class="language-plaintext highlighter-rouge">/about/</code> page and checking the ID in the URL.</li>
+</ul>
+
+<p>Let’s craft a query to extract this flag:<br />
+<code class="language-plaintext highlighter-rouge">0 UNION ALL SELECT notes,null,null,null,null FROM people WHERE id = 1</code></p>
+
+<p><img src="/tryhackme/BurpSuite/Burp%20Suite%20Repeater/2026-03-22_22-23.jpg" alt="" /></p>
+<h3 id="questions-6">Questions</h3>
+
+<p>Q: Exploit the union SQL injection vulnerability in the site.What is the flag?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{ZGE3OTUyZGMyMzkwNjJmZjg3Mzk1NjJh}</code></p>
+
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

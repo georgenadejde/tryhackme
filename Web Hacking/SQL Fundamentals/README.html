@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SQL Fundamentals · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to perform basic SQL queries to retrieve and manage data in a database." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>SQL Fundamentals</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Web Hacking/SQL Fundamentals/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">sql</span>
+          
+          <span class="tag-pill">sqlinjection</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to perform basic SQL queries to retrieve and manage data in a database.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="sql-fundamentals"><a href="https://tryhackme.com/room/sqlfundamentals">SQL Fundamentals</a></h1>
+
+<h2 id="databases-101">Databases 101</h2>
+
+<p>Databases are an organised collection of structured information or data that is easily accessible and can be manipulated or analysed. That data can take many forms, such as user authentication data (such as usernames and passwords), which are stored and checked against when authenticating into an application or site (like TryHackMe, for example), user-generated data on social media (Like Instagram and Facebook) where data such as user posts, comments, likes etc are collected and stored, as well as information such as watch history which is stored by streaming services such as Netflix and used to generate recommendations.</p>
+
+<h3 id="different-types-of-databases">Different Types of Databases</h3>
+
+<p>Now it makes sense that something is used by so many and for (relatively) so long that there would be multiple types of implementations. There are quite a few different types of databases that can be built, but for this introductory room, we are going to focus on the two primary types: <strong>relational databases</strong> (aka SQL) vs <strong>non-relational databases</strong> (aka NoSQL). </p>
+
+<p><img src="/tryhackme/Web%20Hacking/SQL%20Fundamentals/66c513e4445cb5649e636a36-1727686858009.png" alt="An illustration comparing relational and non-relational databases. On the left, a relational database is shown with structured tables, rows, and columns, connected by relationships between tables. On the right, a non-relational database is depicted with flexible, unstructured data stored in formats like key-value pairs, documents, or collections, with no defined relationships between data points. The relational database emphasizes structured organization and data relationships, while the non-relational database highlights flexibility and scalability for diverse data types." /></p>
+
+<p><strong>Relational databases:</strong> Store structured data, meaning the data inserted into this database follows a structure. For example, the data collected on a user consists of first_name, last_name, email_address, username and password. When a new user joins, an entry is made in the database following this structure. This structured data is stored in rows and columns in a table (all of which will be covered shortly); relationships can then be made between two or more tables (for example, user and order_history), hence the term relational databases.</p>
+
+<p><strong>Non-relational databases:</strong> Instead of storing data the above way, store data in a non-tabular format. For example, if documents are being scanned, which can contain varying types and quantities of data, and are stored in a database that calls for a non-tabular format. Here is an example of what that might look like: </p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">{</span>
+    _id: ObjectId<span class="o">(</span><span class="s2">"4556712cd2b2397ce1b47661"</span><span class="o">)</span>,
+    name: <span class="o">{</span> first: <span class="s2">"Thomas"</span>, last: <span class="s2">"Anderson"</span> <span class="o">}</span>,
+    date_of_birth: new Date<span class="o">(</span><span class="s1">'Sep 2, 1964'</span><span class="o">)</span>,
+    occupation: <span class="o">[</span> <span class="s2">"The One"</span><span class="o">]</span>,
+    steps_taken : NumberLong<span class="o">(</span>4738947387743977493<span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>In terms of what database should be chosen, it always comes down to the context in which the database is going to be used. Relational databases are often used when the data being stored is reliably going to be received in a consistent format, where accuracy is important, such as when processing e-commerce transactions. Non-relational databases, on the other hand, are better used when the data being received can vary greatly in its format but need to be collected and organised in the same place, such as social media platforms collecting user-generated content.</p>
+
+<h3 id="primary-and-foreign-keys">Primary and Foreign Keys</h3>
+
+<p>Once a table has been defined and populated, more data may need to be stored. For instance, we want to create a table named “Authors” that stores the authors of the books sold in the store. Here is a very clear example of a relationship. A book (stored in the Books table) is written by an author (stored in the Authors table). If we wanted to query for a book in our story but also have the author of that book returned, our data would need to be related somehow; we do this with keys. There are two types of <strong>keys</strong>:</p>
+
+<p><img src="/tryhackme/Web%20Hacking/SQL%20Fundamentals/66c513e4445cb5649e636a36-1727686918373.png" alt="An illustration comparing a Primary Key and a Foreign Key in database tables. On the left, a table is shown with a highlighted column labeled 'Primary Key,' which uniquely identifies each record in that table. On the right, another table is displayed with a highlighted column labeled 'Foreign Key,' which references the Primary Key from the first table. Arrows connect the Foreign Key to the Primary Key, emphasizing the relationship between the two tables, where the Foreign Key enforces referential integrity by linking related data across tables." /></p>
+
+<p><strong>Primary Keys</strong>: A primary key is used to ensure that the data collected in a certain column is unique. That is, there needs to be a way to identify each record stored in a table, a value unique to that record and is not repeated by any other record in that table. Think about matriculation numbers in a university; these are numbers assigned to a student so they can be uniquely identified in records (as sometimes students can have the same name). A column has to be chosen in each table as a primary key; in our example, “id” would make the most sense as an id has been uniquely created for each book where, as books can have the same publication date or (in rarer cases) book title. Note that there can only be one primary key column in a table.</p>
+
+<p><strong>Foreign Keys</strong>: A foreign key is a column (or columns) in a table that also exists in another table within the database, and therefore provides a link between the two tables. In our example, think about adding an “author_id” field to our “Books” table; this would then act as a foreign key because the author_id in our Books table corresponds to the “id” column in the author table. Foreign keys are what allow the relationships between different tables in relational databases. Note that there can be more than one foreign key column in a table.</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What type of database should you consider using if the data you’re going to be storing will vary greatly in its format?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Non-relational database</code></p>
+
+<p>Q: What type of database should you consider using if the data you’re going to be storing will reliably be in the same structured format?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">relational database</code></p>
+
+<p>Q: In our example, once a record of a book is inserted into our “Books” table, it would be represented as a ___ in that table?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">row</code></p>
+
+<p>Q: Which type of key provides a link from one table to another?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">foreign key</code></p>
+
+<p>Q: which type of key ensures a record is unique within a table?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">primary key</code></p>
+
+<h2 id="sql">SQL</h2>
+
+<h3 id="what-is-sql">What is SQL?</h3>
+
+<p>Now, all of this theoretically sounds great, but in practice, how do databases work? How would you go and make your first table and populate it with data? What would you use? Databases are usually controlled using a Database Management System (DBMS). Serving as an interface between the end user and the database, a DBMS is a software program that allows users to retrieve, update and manage the data being stored. Some examples of DBMSs include MySQL, MongoDB, Oracle Database and Maria D</p>
+
+<p>The interaction between the end user and the database can be done using SQL (Structured Query Language). SQL is a programming language that can be used to query, define and manipulate the data stored in a relational database.</p>
+
+<h2 id="the-benefits-of-sql-and-relational-databases">The Benefits of SQL and Relational Databases</h2>
+
+<p>SQL is almost as ubiquitous as databases themselves, and for good reason. Here are some of the benefits that come with learning and using to use SQL:</p>
+
+<ul>
+  <li>
+    <p><strong>It’s <em>fast</em>:</strong> Relational databases (aka those that SQL is used for) can return massive batches of data almost instantaneously due to how little storage space is used and high processing speeds. </p>
+  </li>
+  <li>
+    <p><strong>Easy to Learn:</strong> Unlike many programming languages, SQL is written in plain English, making it much easier to pick up. The highly readable nature of the language means users can concentrate on learning the functions and syntax.</p>
+  </li>
+  <li>
+    <p><strong>Reliable:</strong> As mentioned before, relational databases can guarantee a level of accuracy when it comes to data by defining a strict structure into which data sets must fall in order to be inserted.</p>
+  </li>
+  <li>
+    <p><strong>Flexible:</strong> SQL provides all kinds of capabilities when it comes to querying a database; this allows users to perform vast data analysis tasks very efficiently.</p>
+  </li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">user@tryhackme$ mysql -u root -p</code></p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: What serves as an interface between a database and an end user?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">DBMS</code></p>
+
+<p>Q: What query language can be used to interact with a relational database?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">SQL</code></p>
+
+<h2 id="database-and-table-statements">Database and Table Statements</h2>
+
+<h3 id="create-database"><strong>CREATE DATABASE</strong></h3>
+
+<p>If a new database is needed, the first step you would take is to create it. This can be done in SQL using the <code class="language-plaintext highlighter-rouge">CREATE DATABASE</code> statement. This would be done using the following syntax:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; CREATE DATABASE database_name;</code></p>
+
+<p>Run the following command to create a database named <code class="language-plaintext highlighter-rouge">thm_bookmarket_db</code>:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; CREATE DATABASE thm_bookmarket_db;</code></p>
+
+<h3 id="show-databases"><strong>SHOW DATABASES</strong></h3>
+
+<p>Now that we have created a database, we can view it using the <code class="language-plaintext highlighter-rouge">SHOW DATABASES</code> statement. The <code class="language-plaintext highlighter-rouge">SHOW DATABASES</code> statement will return a list of present databases. Run the statement as follows:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; SHOW DATABASES;</code></p>
+
+<p>In the returned list, you should see the database you have just created and some databases that are included by default (mysql, information_scheme, performance_scheme and sys), which are used for various purposes that enable mysql to function. Also present are various tables needed for this lesson.</p>
+
+<h3 id="use-database"><strong>USE DATABASE</strong></h3>
+
+<p>Once a database is created, you may want to interact with it. Before we can interact with it, we need to tell mysql which database we would like to interact with (so it knows which database to run subsequent queries against). To set the database we have just created as the active database, we would run the <code class="language-plaintext highlighter-rouge">USE</code> statement as follows (make sure to run this on your machine):</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; USE thm_bookmarket_db;</code></p>
+
+<h3 id="drop-database"><strong>DROP DATABASE</strong></h3>
+
+<p>Once a database is no longer needed (maybe it was created for test purposes, or is no longer required), it can be removed using the <code class="language-plaintext highlighter-rouge">DROP</code> statement. To remove a database, we would use the following statement syntax (although, in our case, we want to keep our database, so no need to run this one yourself!):</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; DROP database database_name;</code></p>
+
+<h3 id="create-table"><strong>CREATE TABLE</strong></h3>
+
+<p>Following the logic of the database statements, creating tables also uses a <code class="language-plaintext highlighter-rouge">CREATE</code> statement. Once a database is active (you have run the <code class="language-plaintext highlighter-rouge">USE</code> statement on it), a table can be created within it using the following statement syntax:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; CREATE TABLE example_table_name (     example_column1 data_type,     example_column2 data_type,     example_column3 data_type );</code></p>
+
+<p>As you can see, there is a little more involved here. In the Databases 101 task, we covered how and when a table is created; it must be decided what columns will make up a record in that table, as well as what data type is expected to be contained within that column. That is what is represented by this syntax here. In the example, there are 3 example columns, but SQL supports many (over 1000). Let’s try populating our <code class="language-plaintext highlighter-rouge">thm_bookmarket_db</code> with a table using the following statement:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; CREATE TABLE book_inventory (     book_id INT AUTO_INCREMENT PRIMARY KEY,     book_name VARCHAR(255) NOT NULL,     publication_date DATE );</code></p>
+
+<p>This statement will create a table <code class="language-plaintext highlighter-rouge">book_inventory</code> with three columns: <code class="language-plaintext highlighter-rouge">book_id</code>, <code class="language-plaintext highlighter-rouge">book_name</code> and <code class="language-plaintext highlighter-rouge">publication_date</code>. <code class="language-plaintext highlighter-rouge">book_id</code> is an <code class="language-plaintext highlighter-rouge">INT</code> (Integer) as it should only ever be a number, <code class="language-plaintext highlighter-rouge">AUTO_INCREMENT</code> is present, meaning the first book inserted would be assigned book_id 1, the second book inserted would be assigned a book_id of 2, and so on. Finally, <code class="language-plaintext highlighter-rouge">book_id</code> is set as the <code class="language-plaintext highlighter-rouge">PRIMARY KEY</code> as it will be the way we uniquely identify a book record in our table (and a primary must be present in a table). </p>
+
+<p>Book_name has the data type <code class="language-plaintext highlighter-rouge">VARCHAR(255)</code>, meaning it can use variable characters (text/numbers/punctuation) and a limit of 255 characters is set and <code class="language-plaintext highlighter-rouge">NOT NULL</code>, meaning it cannot be empty (so if someone tried to insert a record into this table but the book_name was empty it would be rejected. Publication_date is set as the data type <code class="language-plaintext highlighter-rouge">DATE</code>.</p>
+
+<h3 id="show-tables"><strong>SHOW TABLES</strong> </h3>
+
+<p>Just as we can list databases using a SHOW statement, we can also list the tables in our currently active database (the database on which we last used the USE statement). Run the following command, and you should see the table you have just created:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; SHOW TABLES;</code></p>
+
+<h3 id="describe"><strong>DESCRIBE</strong> </h3>
+
+<p>If we want to know what columns are contained within a table (and their data type), we can describe them using the <code class="language-plaintext highlighter-rouge">DESCRIBE</code> command (which can also be abbreviated to <code class="language-plaintext highlighter-rouge">DESC</code>). Describe the table you have just created using the following command:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; DESCRIBE book_inventory;</code></p>
+
+<p>This will give you a detailed view of the table like so:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; DESCRIBE book_inventory;</code></p>
+
+<h3 id="alter"><strong>ALTER</strong> </h3>
+
+<p>Once you have created a table, there may come a time when your need for the dataset changes, and you need to alter the table. This can be done using the <code class="language-plaintext highlighter-rouge">ALTER</code> statement. Let’s now imagine that we have decided that we actually want to have a column in our book inventory that has the page count for each book. Add this to our table using the following statement:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; ALTER TABLE book_inventory ADD page_count INT;</code></p>
+
+<p>The <code class="language-plaintext highlighter-rouge">ALTER</code> statement can be used to make changes to a table, such as renaming columns, changing the data type in a column or removing a column. </p>
+
+<h3 id="drop"><strong>DROP</strong> </h3>
+
+<p>Similar to removing a database, you can also remove tables using the <code class="language-plaintext highlighter-rouge">DROP</code> statement. We don’t need to do this, but the syntax you would use for this is:</p>
+
+<p><code class="language-plaintext highlighter-rouge">mysql&gt; DROP TABLE table_name;</code></p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Using the statement you’ve learned to list all databases, it should reveal a database with a flag for a name; what is it?</p>
+
+<p><img src="/tryhackme/Web%20Hacking/SQL%20Fundamentals/2025-12-23_12-13.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{575a947132312f97b30ee5aeebba629b723d30f9}</code></p>
+
+<p>Q: In the list of available databases, you should also see the  <code class="language-plaintext highlighter-rouge">task_4_db</code> database. Set this as your active database and list all tables in this database; what is the flag present here?</p>
+
+<p><img src="/tryhackme/Web%20Hacking/SQL%20Fundamentals/2025-12-23_12-14.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{692aa7eaec2a2a827f4d1a8bed1f90e5e49d2410}</code></p>
+
+<h2 id="crud-operations">CRUD Operations</h2>
+
+<p><strong>CRUD</strong> stands for <strong>C</strong>reate, <strong>R</strong>ead, <strong>U</strong>pdate, and <strong>D</strong>elete, which are considered the basic operations in any system that manages data.</p>
+
+<p>Let’s explore all these different operations when working with <strong>MySQL</strong></p>
+
+<h3 id="create-operation-insert">Create Operation (INSERT)</h3>
+
+<p>The <strong>Create</strong> operation will create new records in a table. In MySQL, this can be achieved by using the statement <code class="language-plaintext highlighter-rouge">INSERT INTO</code>, as shown below.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>INSERT INTO books <span class="o">(</span><span class="nb">id</span>, name, published_date, description<span class="o">)</span>
+<span class="gp">    VALUES (1, "Android Security Internals", "2014-10-14", "An In-Depth Guide to Android's Security Architecture");</span><span class="w">
+</span><span class="go">
+Query OK, 1 row affected (0.01 sec)
+</span></code></pre></div></div>
+
+<p>As we can observe, the <code class="language-plaintext highlighter-rouge">INSERT INTO</code> statement specifies a table, in this case, <strong>books</strong>, where you can add a new record; the columns <strong>id</strong>, <strong>name</strong>, <strong>published_date</strong>, and <strong>description</strong> are the records in the table. In this example, a new record with an <strong>id</strong> of  <strong>1</strong>, a <strong>name</strong> of <strong>“Android Security Internals</strong>”, a <strong>published_date</strong> of “<strong>2014-10-14</strong>”, and a <strong>description</strong> stating “<strong>Android Security Internals provides a complete understanding of the security internals of Android devices</strong>” was added.</p>
+
+<h3 id="read-operation-select">Read Operation (SELECT)</h3>
+
+<p>The <strong>Read</strong> operation, as the name suggests, is used to read or retrieve information from a table. We can fetch a column or all columns from a table with the <code class="language-plaintext highlighter-rouge">SELECT</code> statement, as shown in the next example:</p>
+
+<p><code class="language-plaintext highlighter-rouge">SELECT * FROM books;</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">SELECT name, description FROM books;</code></p>
+
+<h3 id="update-operation-update">Update Operation (UPDATE)</h3>
+
+<p>The <strong>Update</strong> operation modifies an existing record within a table, and the same statement, <code class="language-plaintext highlighter-rouge">UPDATE</code>, can be used for this.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>UPDATE books
+<span class="go">    SET description = "An In-Depth Guide to Android's Security Architecture."
+</span><span class="gp">    WHERE id = 1;</span><span class="w">
+</span><span class="go">
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0     
+</span></code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">UPDATE</code> statement specifies the table, in this case, <strong>books</strong>, and then we can use <code class="language-plaintext highlighter-rouge">SET</code> followed by the column name we will update. The <code class="language-plaintext highlighter-rouge">WHERE</code> clause specifies which row to update when the clause is met, in this case, the one with <strong>id 1</strong>.</p>
+
+<h3 id="delete-operation-delete">Delete Operation (DELETE)</h3>
+
+<p>The <strong>delete</strong> operation removes records from a table. We can achieve this with the <code class="language-plaintext highlighter-rouge">DELETE</code> statement.</p>
+
+<p><strong>Note:</strong> There is no need to run the query. Deleting this entry will affect the rest of the examples in the upcoming tasks.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>DELETE FROM books WHERE <span class="nb">id</span> <span class="o">=</span> 1<span class="p">;</span>
+<span class="go">
+Query OK, 1 row affected (0.00 sec)    
+</span></code></pre></div></div>
+
+<p>Above, we can observe the <code class="language-plaintext highlighter-rouge">DELETE</code> statement followed by the <code class="language-plaintext highlighter-rouge">FROM</code> clause, which allows us to specify the table where the record will be removed, in this case, <strong>books</strong>, followed by the <code class="language-plaintext highlighter-rouge">WHERE</code> clause that indicates that it should be the one where the <strong>id</strong> is <strong>1</strong>.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what is the name of the tool in the <code class="language-plaintext highlighter-rouge">hacking_tools</code> table that can be used to perform man-in-the-middle attacks on wireless networks?</p>
+
+<p><img src="/tryhackme/Web%20Hacking/SQL%20Fundamentals/2025-12-23_12-20.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Wi-Fi Pineapple</code></p>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what is the shared category for both <strong>USB Rubber Ducky</strong> and <strong>Bash Bunny</strong>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">USB attacks</code></p>
+
+<h2 id="clauses">Clauses</h2>
+
+<p>A clause is a part of a statement that specifies the criteria of the data being manipulated, usually by an initial statement. Clauses can help us define the type of data and how it should be retrieved or sorted. </p>
+
+<p>In previous tasks, we already used some clauses, such as <code class="language-plaintext highlighter-rouge">FROM</code> that is used to specify the table we are accessing with our statement and <code class="language-plaintext highlighter-rouge">WHERE</code>, which specifies which records should be used.</p>
+
+<h3 id="distinct-clause">DISTINCT Clause</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">DISTINCT</code> clause is used to avoid duplicate records when doing a query, returning only unique values.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">SELECT DISTINCT name FROM books;</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="group-by-clause">GROUP BY Clause</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">GROUP BY</code> clause aggregates data from multiple records and <strong>groups</strong> the query results in columns. This can be helpful for aggregating functions.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">SELECT name, COUNT(*)
+    FROM books
+</span><span class="gp">    GROUP BY name;</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="order-by-clause">ORDER BY Clause</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">ORDER BY</code> clause can be used to sort the records returned by a query in ascending or descending order. Using functions like <code class="language-plaintext highlighter-rouge">ASC</code> and <code class="language-plaintext highlighter-rouge">DESC</code> can help us to accomplish that, as shown below in the next two examples.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">SELECT *
+    FROM books
+</span><span class="gp">    ORDER BY published_date ASC;</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="having-clause">HAVING Clause</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">HAVING</code> clause is used with other clauses to filter groups or results of records based on a condition. In the case of <code class="language-plaintext highlighter-rouge">GROUP BY</code>, it evaluates the condition to <code class="language-plaintext highlighter-rouge">TRUE</code> or <code class="language-plaintext highlighter-rouge">FALSE</code>, unlike the <code class="language-plaintext highlighter-rouge">WHERE</code> clause <code class="language-plaintext highlighter-rouge">HAVING</code> filters the results after the aggregation is performed.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">SELECT name, COUNT(*)
+    FROM books
+    GROUP BY name
+</span><span class="gp">    HAVING name LIKE '%Hack%';</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what is the total number of distinct categories in the <code class="language-plaintext highlighter-rouge">hacking_tools</code> table?</p>
+
+<p><img src="/tryhackme/Web%20Hacking/SQL%20Fundamentals/2025-12-23_12-23.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">6</code></p>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what is the first tool (by name) in ascending order from the <code class="language-plaintext highlighter-rouge">hacking_tools</code> table?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Bash Bunny</code></p>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what is the first tool (by name) in descending order from the <code class="language-plaintext highlighter-rouge">hacking_tools</code> table?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Wi-fi pineapple</code></p>
+
+<h2 id="operators">Operators</h2>
+
+<p>When working with <strong>SQL</strong> and dealing with logic and comparisons, <strong>operators</strong> are our way to filter and manipulate data effectively. Understanding these operators will help us to create more precise and powerful queries.</p>
+
+<h3 id="like-operator">LIKE Operator</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">LIKE</code> operator is commonly used in conjunction with clauses like <code class="language-plaintext highlighter-rouge">WHERE</code> in order to filter for specific patterns within a column. Let’s continue using our DataBase to query an example of its usage.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">SELECT *
+    FROM books
+</span><span class="gp">    WHERE description LIKE "%guide%";</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="and-operator">AND Operator</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">AND</code> operator uses multiple conditions within a query and returns <code class="language-plaintext highlighter-rouge">TRUE</code> if all of them are true.</p>
+
+<h3 id="or-operator">OR Operator</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">OR</code> operator combines multiple conditions within queries and returns <code class="language-plaintext highlighter-rouge">TRUE</code> if at least one of these conditions is true.</p>
+
+<h3 id="not-operator">NOT Operator</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">NOT</code> operator reverses the value of a boolean operator, allowing us to exclude a specific condition.</p>
+
+<h3 id="between-operator">BETWEEN Operator</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">BETWEEN</code> operator allows us to test if a value exists within a defined <strong>range</strong>.</p>
+
+<h3 id="equal-to-operator">Equal To Operator</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">=</code> (Equal) operator compares two expressions and determines if they are equal, or it can check if a value matches another one in a specific column.</p>
+
+<h3 id="not-equal-to-operator">Not Equal To Operator</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">!=</code> (not equal) operator compares expressions and tests if they are not equal; it also checks if a value differs from the one within a column.</p>
+
+<h3 id="less-than-operator">Less Than Operator</h3>
+
+<p>Less Than Operator</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">&lt;</code> (less than) operator compares if the expression with a given value is lesser than the provided one.</p>
+
+<h3 id="greater-than-operator">Greater Than Operator</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">&gt;</code> (greater than) operator compares if the expression with a given value is greater than the provided one.</p>
+
+<h3 id="less-than-or-equal-to-and-greaterthan-or-equal-tooperators">Less Than or Equal To and Greater  Than or Equal To Operators</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">&lt;=</code> (Less than or equal) operator compares if the expression with a given value is less than or equal to the provided one. On the other hand, The <code class="language-plaintext highlighter-rouge">&gt;=</code> (Greater than or Equal) operator compares if the expression with a given value is greater than or equal to the provided one.</p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, which tool falls under the <strong>Multi-tool</strong> category and is useful for <strong>pentesters</strong> and <strong>geeks</strong>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Flipper Zero</code></p>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what is the category of tools with an amount <strong>greater than</strong> or <strong>equal</strong> to <strong>300</strong>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">RFID cloning</code></p>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, which tool falls under the <strong>Network intelligence</strong> category with an amount <strong>less than 100</strong>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Lan Turtle</code></p>
+
+<h2 id="functions">Functions</h2>
+
+<h3 id="concat-function">CONCAT() Function</h3>
+
+<p>This function is used to add two or more strings together. It is useful to combine text from different columns.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>SELECT CONCAT<span class="o">(</span>name, <span class="s2">" is a type of "</span>, category, <span class="s2">" book."</span><span class="o">)</span> AS book_info FROM books<span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="group_concat-function">GROUP_CONCAT() Function</h3>
+
+<p>This function can help us to concatenate data from multiple rows into one field. Let’s explore an example of its usage.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>SELECT category, GROUP_CONCAT<span class="o">(</span>name SEPARATOR <span class="s2">", "</span><span class="o">)</span> AS books
+<span class="go">    FROM books
+</span><span class="gp">    GROUP BY category;</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="substring-function">SUBSTRING() Function</h3>
+
+<p>This function will retrieve a substring from a string within a query, starting at a determined position. The length of this substring can also be specified.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>SELECT SUBSTRING<span class="o">(</span>published_date, 1, 4<span class="o">)</span> AS published_year FROM books<span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="length-function">LENGTH() Function</h3>
+
+<p>This function returns the number of characters in a string. This includes spaces and punctuation.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>SELECT LENGTH<span class="o">(</span>name<span class="o">)</span> AS name_length FROM books<span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="count-function">COUNT() Function</h3>
+
+<p>This function returns the number of records within an expression, as the example below shows.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>SELECT COUNT<span class="o">(</span><span class="k">*</span><span class="o">)</span> AS total_books FROM books<span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="sum-function">SUM() Function</h3>
+
+<p>This function sums all values (not NULL) of a determined column.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>SELECT SUM<span class="o">(</span>price<span class="o">)</span> AS total_price FROM books<span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="max-function">MAX() Function</h3>
+
+<p>This function calculates the maximum value within a provided column in an expression.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>SELECT MAX<span class="o">(</span>published_date<span class="o">)</span> AS latest_book FROM books<span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="min-function">MIN() Function</h3>
+
+<p>This function calculates the minimum value within a provided column in an expression.</p>
+
+<div class="language-shell-session highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">mysql&gt;</span><span class="w"> </span>SELECT MIN<span class="o">(</span>published_date<span class="o">)</span> AS earliest_book FROM books<span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what is the tool with the longest name based on character length?</p>
+
+<p><img src="/tryhackme/Web%20Hacking/SQL%20Fundamentals/2025-12-23_12-31.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">USB Rubber Ducky</code></p>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what is the total sum of all tools?</p>
+
+<p><img src="/tryhackme/Web%20Hacking/SQL%20Fundamentals/2025-12-23_12-32.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">1444</code></p>
+
+<p>Q: Using the <code class="language-plaintext highlighter-rouge">tools_db</code> database, what are the tool names where the amount does not end in <strong>0</strong>, and <strong>group</strong> the tool names <strong>concatenated</strong> by “ &amp; “.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Flipper zero &amp; icopy-XS</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

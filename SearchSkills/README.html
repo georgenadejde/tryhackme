@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Skills · THM Writeups</title>
+  
+  <meta name="description" content="Learn to efficiently search the Internet and use specialized search engines and technical docs." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Search Skills</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">SearchSkills/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">web</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn to efficiently search the Internet and use specialized search engines and technical docs.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="search-skills"><a href="https://tryhackme.com/room/searchskills">Search Skills</a></h1>
+
+<h2 id="evaluation-of-search-results">Evaluation of Search Results</h2>
+
+<p>A  few things to consider when evaluating information:</p>
+
+<ul>
+  <li><strong>Source</strong>: Identify the author or organization publishing the information. Consider whether they are reputable and authoritative on the subject matter. Publishing a blog post does not make one an authority on the subject.</li>
+  <li><strong>Evidence and reasoning</strong>: Check whether the claims are backed by credible evidence and logical reasoning. We are seeking hard facts and solid arguments.</li>
+  <li><strong>Objectivity and bias</strong>: Evaluate whether the information is presented impartially and rationally, reflecting multiple perspectives. We are not interested in authors pushing shady agendas, whether to promote a product or attack a rival.</li>
+  <li><strong>Corroboration and consistency</strong>: Validate the presented information by corroboration from multiple independent sources. Check whether multiple reliable and reputable sources agree on the central claims.</li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>What do you call a cryptographic method or product considered bogus or fraudulent?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Snake oil</code></p>
+
+<p>What is the name of the command replacing <code class="language-plaintext highlighter-rouge">netstat</code> in Linux systems?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">ss</code></p>
+
+<h2 id="search-engines">Search Engines</h2>
+
+<p>Let’s consider the search operators supported by Google.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">"exact phrase"</code>: Double quotes indicate that you are looking for pages with the exact word or phrase. For example, one might search for <code class="language-plaintext highlighter-rouge">"passive reconnaissance"</code> to get pages with this exact phrase.</li>
+  <li><code class="language-plaintext highlighter-rouge">site:</code>: This operator lets you specify the domain name to which you want to limit your search. For example, we can search for success stories on TryHackMe using <code class="language-plaintext highlighter-rouge">site:tryhackme.com success stories</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">-</code>: The minus sign allows you to omit search results that contain a particular word or phrase. For example, you might be interested in learning about the pyramids, but you don’t want to view tourism websites; one approach is to search for <code class="language-plaintext highlighter-rouge">pyramids -tourism</code> or <code class="language-plaintext highlighter-rouge">-tourism pyramids</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">filetype:</code>: This search operator is indispensable for finding files instead of web pages. Some of the file types you can search for using Google are Portable Document Format (PDF), Microsoft Word Document (DOC), Microsoft Excel Spreadsheet (XLS), and Microsoft PowerPoint Presentation (PPT). For example, to find cyber security presentations, try searching for <code class="language-plaintext highlighter-rouge">filetype:ppt cyber security</code>.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>How would you limit your Google search to PDF files containing the terms <strong>cyber warfare report</strong>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">filetype:pdf cyber warfare report</code></p>
+
+<p>What phrase does the Linux command <code class="language-plaintext highlighter-rouge">ss</code> stand for?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">socket statistics</code></p>
+
+<h2 id="specialized-search-engines">Specialized Search Engines</h2>
+
+<h3 id="shodan">Shodan</h3>
+
+<p><a href="https://www.shodan.io/">Shodan</a> is a search engine for devices connected to the Internet. It allows you to search for specific types and versions of servers, networking equipment, industrial control systems, and IoT devices. You may want to see how many servers are still running Apache 2.4.1 and the distribution across countries. To find the answer, we can search for <code class="language-plaintext highlighter-rouge">apache 2.4.1</code>, which will return the list of servers with the string “apache 2.4.1” in their headers.</p>
+
+<p><img src="/tryhackme/SearchSkills/5f04259cf9bf5b57aed2c476-1718112514634" alt="" /></p>
+
+<h3 id="censys">Censys</h3>
+
+<p>At first glance, <a href="https://search.censys.io/">Censys</a> appears similar to Shodan. However, Shodan focuses on Internet-connected devices and systems, such as servers, routers, webcams, and IoT devices. Censys, on the other hand, focuses on Internet-connected hosts, websites, certificates, and other Internet assets. Some of its use cases include enumerating domains in use, auditing open ports and services, and discovering rogue assets within a network.</p>
+
+<p><img src="/tryhackme/SearchSkills/5f04259cf9bf5b57aed2c476-1718112720346" alt="" /></p>
+
+<h3 id="virustotal">VirusTotal</h3>
+
+<p><a href="https://www.virustotal.com/">VirusTotal</a> is an online website that provides a virus-scanning service for files using multiple antivirus engines. It allows users to upload files or provide URLs to scan them against numerous antivirus engines and website scanners in a single operation. They can even input file hashes to check the results of previously uploaded files.</p>
+
+<h3 id="have-i-been-pwned">Have I Been Pwned</h3>
+
+<p><a href="https://haveibeenpwned.com/">Have I Been Pwned</a> (HIBP) does one thing; it tells you if an email address has appeared in a leaked data breach. Finding one’s email within leaked data indicates leaked private information and, more importantly, passwords. Many users use the same password across multiple platforms, if one platform is breached, their password on other platforms is also exposed. Indeed, passwords are usually stored in encrypted format; however, many passwords are not that complex and can be recovered using a variety of attacks.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>What is the top country with <strong>lighttpd</strong> servers?</p>
+
+<p><img src="/tryhackme/SearchSkills/2025-11-28_23-13.png" alt="" /></p>
+
+<p>A:  <code class="language-plaintext highlighter-rouge">United States</code></p>
+
+<p>What does BitDefenderFalx detect the file with the hash <code class="language-plaintext highlighter-rouge">2de70ca737c1f4602517c555ddd54165432cf231ffc0e21fb2e23b9dd14e7fb4</code> as?</p>
+
+<p><img src="/tryhackme/SearchSkills/2025-11-28_23-16.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Android.Riskware.Agent.LHH</code></p>
+
+<h2 id="vulnerabilities-and-exploits">Vulnerabilities and Exploits</h2>
+
+<h3 id="cve">CVE</h3>
+
+<p>We can think of the Common Vulnerabilities and Exposures (CVE) program as a dictionary of vulnerabilities. It provides a standardized identifier for vulnerabilities and security issues in software and hardware products. Each vulnerability is assigned a CVE ID with a standardized format like <code class="language-plaintext highlighter-rouge">CVE-2024-29988</code>. This unique identifier (CVE ID) ensures that everyone from security researchers to vendors and IT professionals is referring to the same vulnerability, <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-29988">CVE-2024-29988</a> in this case.</p>
+
+<p>The MITRE Corporation maintains the CVE system. For more information and to search for existing CVEs, visit the <a href="https://www.cve.org/">CVE Program</a> website. Alternatively, visit the <a href="https://nvd.nist.gov/">National Vulnerability Database</a> (NVD) website. The screenshot below shows CVE-2014-0160, also known as Heartbleed.</p>
+
+<p><img src="/tryhackme/SearchSkills/5f04259cf9bf5b57aed2c476-1718112739122" alt="" /></p>
+
+<h3 id="exploit-database">Exploit Database</h3>
+
+<p>There are many reasons why you would want to exploit a vulnerable application; one would be assessing a company’s security as part of its red team. Needless to say, we should not try to exploit a vulnerable system unless we are given permission, usually via a legally binding agreement.</p>
+
+<p>Now that we have permission to exploit a vulnerable system, we might need to find a working exploit code. One resource is the <a href="https://www.exploit-db.com/">Exploit Database</a>. The Exploit Database lists exploit codes from various authors; some of these exploit codes are tested and marked as verified.</p>
+
+<p><img src="/tryhackme/SearchSkills/5f04259cf9bf5b57aed2c476-1718112752814" alt="" /></p>
+
+<p><a href="https://github.com/">GitHub</a>, a web-based platform for software development, can contain many tools related to CVEs, along with proof-of-concept (PoC) and exploit codes. To demonstrate this idea, check the screenshot below of search results on GitHub that are related to the Heartbleed vulnerability.</p>
+
+<p><img src="/tryhackme/SearchSkills/5f04259cf9bf5b57aed2c476-1718112771383" alt="" /></p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>What utility does CVE-2024-3094 refer to?</p>
+
+<p><img src="/tryhackme/SearchSkills/2025-11-28_23-22.png" alt="" /></p>
+
+<p>A:  <code class="language-plaintext highlighter-rouge">xz</code></p>
+
+<h2 id="technical-documentation">Technical Documentation</h2>
+
+<h3 id="linuxmanual-pages">Linux Manual Pages</h3>
+
+<p>Long before the Internet was everywhere, how would you get help using a command in a Linux or Unix-like system? The answer would be checking the manual page, man page for short. On Linux and every Unix-like system, each command is expected to have a man page. In fact, man pages also exist for system calls, library functions, and even configuration files.</p>
+
+<h3 id="microsoft-windows">Microsoft Windows</h3>
+
+<p>Microsoft provides an official <a href="https://learn.microsoft.com/">Technical Documentation</a> page for its products. The screenshot below shows the search results for the command <code class="language-plaintext highlighter-rouge">ipconfig</code>.</p>
+
+<p><img src="/tryhackme/SearchSkills/5f04259cf9bf5b57aed2c476-1718112815041" alt="" /></p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>What does the Linux command <code class="language-plaintext highlighter-rouge">cat</code> stand for?</p>
+
+<p><img src="/tryhackme/SearchSkills/2025-11-28_23-25.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">concatenate</code></p>
+
+<p>What is the <code class="language-plaintext highlighter-rouge">netstat</code> parameter in MS Windows that displays the executable associated with each active connection and listening port?</p>
+
+<p>Navigate <a href="https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/netstat">here</a>.</p>
+
+<p><img src="/tryhackme/SearchSkills/2025-11-28_23-27.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">-b</code></p>
+
+<h2 id="social-media">Social Media</h2>
+
+<p>The power of social media is that it allows you to connect with companies and people you are interested in. Furthermore, social media offers a wealth of information for cyber security professionals, whether they are searching for people or technical information. Why is searching for people important, you ask?</p>
+
+<p>When protecting a company, you should ensure that the people you protect are not oversharing on social media. For instance, their social media might give away the answer to their secret questions, such as, “Which school did you go to as a child?”. Such information might allow adversaries to reset their passwords and take over their accounts effortlessly.</p>
+<h3 id="questions-5">Questions</h3>
+
+<p>You are hired to evaluate the security of a particular company. What is a popular social media website you would use to learn about the technical background of one of their employees?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">LinkedIn</code></p>
+
+<p>Continuing with the previous scenario, you are trying to find the answer to the secret question, “Which school did you go to as a child?”. What social media website would you consider checking to find the answer to such secret questions?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Facebook</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

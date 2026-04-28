@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows Fundamentals 3 · THM Writeups</title>
+  
+  <meta name="description" content="In part 3 of the Windows Fundamentals module, learn about the built-in Microsoft tools that help keep the device secure, such as Windows Updates, Windows Security, BitLocker, and more..." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Windows Fundamentals 3</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">WindowsFundamentals3/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">windows</span>
+          
+        
+        
+        <span class="writeup-meta-desc">In part 3 of the Windows Fundamentals module, learn about the built-in Microsoft tools that help keep the device secure, such as Windows Updates, Windows Security, BitLocker, and more...</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="windows-fundamentals-3"><a href="https://tryhackme.com/room/windowsfundamentals3xzx">Windows Fundamentals 3</a></h1>
+
+<h2 id="windows-updates">Windows Updates</h2>
+
+<ul>
+  <li>
+    <p>Updates are typically released on the 2nd Tuesday of each month.</p>
+
+    <ul>
+      <li>This day is called <strong>Patch Tuesday</strong>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>That doesn’t necessarily mean that a critical update/patch has to wait for the next Patch Tuesday to be released.</p>
+
+    <ul>
+      <li>If the update is urgent, then Microsoft will push the update via the Windows Update service to the Windows devices.</li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://msrc.microsoft.com/update-guide">More</a> on Windows Update</p>
+  </li>
+  <li>
+    <p>Another way to access Windows Update is from the Run dialog box, or CMD, by running the command <code class="language-plaintext highlighter-rouge">control /name Microsoft.WindowsUpdate</code>.</p>
+  </li>
+  <li>
+    <p>Throughout the years, Windows users have grown accustomed to pushing Windows Updates off to a later date or not installing the updates at all.</p>
+  </li>
+  <li>
+    <p>Microsoft notably addressed this issue with Windows 10.</p>
+
+    <ul>
+      <li>The updates can no longer be ignored or pushed to the side until forgotten.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Windows updates can only be postponed, but eventually, the update will happen, and your computer will reboot.</p>
+
+    <ul>
+      <li>Microsoft provides these updates to keep the device safe and secure.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>There were two definition updates installed in the attached VM. On what date were these updates installed?</li>
+</ol>
+
+<p>A: 5/3/2021</p>
+
+<h2 id="windows-security">Windows Security</h2>
+
+<p>#windowssecurity</p>
+
+<ul>
+  <li>Per Microsoft, “Windows Security is your home to manage the tools that protect your device and your data”.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-security.png" alt="" /></p>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-security1b.png" alt="" /></p>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-security2.png" alt="" /></p>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>In the above image, which area needs immediate attention?</li>
+</ol>
+
+<p>A: Virus &amp; threat protection</p>
+
+<h2 id="virus--threat-protection">Virus &amp; threat protection</h2>
+
+<ul>
+  <li>
+    <p>Virus &amp; threat protection is divided into two parts:</p>
+
+    <ul>
+      <li>Current threats</li>
+      <li>Virus &amp; threat protection settings</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The image below only focuses on Current threats.</p>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-security3.png" alt="" /></p>
+
+<h3 id="current-threats">Current threats</h3>
+
+<ul>
+  <li>
+    <p>Scan options</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Quick scan</code> - Checks folders in your system where threats are commonly found.</li>
+      <li><code class="language-plaintext highlighter-rouge">Full scan</code> - Checks all files and running programs on your hard disk. This scan could take longer than one hour.</li>
+      <li><code class="language-plaintext highlighter-rouge">Custom scan</code> - Choose which files and locations you want to check.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Threat history</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Last scan</code> - Windows Defender Antivirus automatically scans your device for viruses and other threats to help keep it safe.</li>
+      <li><code class="language-plaintext highlighter-rouge">Quarantined threats</code> - Quarantined threats have been isolated and prevented from running on your device. They will be periodically removed.</li>
+      <li><code class="language-plaintext highlighter-rouge">Allowed threats</code> - Allowed threats are items identified as threats, which you allowed to run on your device.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="virus--threat-protection-settings">Virus &amp; threat protection settings</h2>
+
+<ul>
+  <li>
+    <p>Manage settings</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Real-time protection</code> - Locates and stops malware from installing or running on your device.</li>
+      <li><code class="language-plaintext highlighter-rouge">Cloud-delivered protection</code> - Provides increased and faster protection with access to the latest protection data in the cloud.</li>
+      <li><code class="language-plaintext highlighter-rouge">Automatic sample submission</code> - Send sample files to Microsoft to help protect you and others from potential threats.</li>
+      <li><code class="language-plaintext highlighter-rouge">Controlled folder access</code> - Protect files, folders, and memory areas on your device from unauthorized changes by unfriendly applications.</li>
+      <li><code class="language-plaintext highlighter-rouge">Exclusions</code> - Windows Defender Antivirus won’t scan items that you’ve excluded.</li>
+      <li><code class="language-plaintext highlighter-rouge">Notifications</code> - Windows Defender Antivirus will send notifications with critical information about the health and security of your device.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-security4.png" alt="" /></p>
+
+<ul>
+  <li>Tip: You can perform on-demand scans on any file/folder by right-clicking the item and selecting ‘Scan with Microsoft Defender’.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-defender-scan.png" alt="" /></p>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>Specifically, what is turned off that Windows is notifying you to turn on?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals3/Screenshot%20at%202022-06-15%2019-40-59.png" alt="" /></p>
+
+<p>A: Real-time Protection</p>
+
+<h2 id="firewall--network-protection">Firewall &amp; network protection</h2>
+
+<p>#firewall</p>
+
+<blockquote>
+  <p>Per Microsoft, “Traffic flows into and out of devices via what we call ports. A <strong>firewall</strong> is what controls what is - and more importantly isn’t - allowed to pass through those ports. You can think of it like a security guard standing at the door, checking the ID of everything that tries to enter or exit”.</p>
+</blockquote>
+
+<ul>
+  <li>The below image will reflect what you will see when you navigate to Firewall &amp; network protection.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-firewall.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Per Microsoft, “Windows Firewall offers three firewall profiles: domain, private and public”.</p>
+
+    <ul>
+      <li>
+        <p><strong>Domain</strong> - The domain profile applies to networks where the host system can authenticate to a domain controller.</p>
+      </li>
+      <li>
+        <p><strong>Private</strong> - The private profile is a user-assigned profile and is used to designate private or home networks.</p>
+      </li>
+      <li>
+        <p><strong>Public</strong> - The default profile is the public profile, used to designate public networks such as Wi-Fi hotspots at coffee shops, airports, and other locations.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-firewall3.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-firewall/best-practices-configuring">Documentation on Windows Firewall</a></p>
+  </li>
+  <li>
+    <p>Tip: Command to open the Windows Defender Firewall is <code class="language-plaintext highlighter-rouge">WF.msc</code>.</p>
+  </li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>If you were connected to airport Wi-Fi, what most likely will be the active firewall profile?</li>
+</ol>
+
+<p>A: public network</p>
+
+<h2 id="app--browser-control">App &amp; browser control</h2>
+
+<blockquote>
+  <p>Per Microsoft, “Microsoft Defender SmartScreen protects against phishing or malware websites and applications, and the downloading of potentially malicious files”.</p>
+</blockquote>
+
+<ul>
+  <li><a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-smartscreen/microsoft-defender-smartscreen-overview">More on Microsoft Defender SmartScreen</a></li>
+</ul>
+
+<h2 id="device-security">Device security</h2>
+
+<h3 id="core-isolation">Core isolation</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Memory Integrity</code> - Prevents attacks from inserting malicious code into high-security processes.</li>
+</ul>
+
+<h3 id="security-processor">Security processor</h3>
+
+<p>#tpm</p>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-sec-processor.png" alt="" /></p>
+
+<p><img src="/tryhackme/WindowsFundamentals3/windows-tpm.png" alt="" /></p>
+
+<blockquote>
+  <p>Per Microsoft, “Trusted Platform Module (TPM) technology is designed to provide hardware-based, security-related functions. A TPM chip is a secure crypto-processor that is designed to carry out cryptographic operations. The chip includes multiple physical security mechanisms to make it tamper-resistant, and malicious software is unable to tamper with the security functions of the TPM”.</p>
+</blockquote>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>What is the TPM?</li>
+</ol>
+
+<p>A: Trusted Platform Module</p>
+
+<h2 id="bitlocker">BitLocker</h2>
+
+<p>#bitlocker</p>
+
+<blockquote>
+  <p>Per Microsoft, “BitLocker Drive Encryption is a data protection feature that integrates with the operating system and addresses the threats of data theft or exposure from lost, stolen, or inappropriately decommissioned computers”.</p>
+</blockquote>
+
+<ul>
+  <li>On devices with TPM installed, BitLocker offers the <em>best protection</em>.</li>
+</ul>
+
+<blockquote>
+  <p>Per Microsoft, “BitLocker provides the most protection when used with a Trusted Platform Module (TPM) version 1.2 or later. The TPM is a hardware component installed in many newer computers by the computer manufacturers. It works with BitLocker to help protect user data and to ensure that a computer has not been tampered with while the system was offline”.</p>
+</blockquote>
+
+<ul>
+  <li><a href="https://docs.microsoft.com/en-us/windows/security/information-protection/bitlocker/bitlocker-overview">More on Bitlocker</a></li>
+</ul>
+
+<h2 id="questions-5">Questions</h2>
+
+<ol>
+  <li>What must a user insert on computers that DO NOT have a TPM version 1.2 or later?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals3/Screenshot%20at%202022-06-15%2020-00-23.png" alt="" /></p>
+
+<p>A: USB Startup Key</p>
+
+<h2 id="volume-shadow-copy-service">Volume Shadow Copy Service</h2>
+
+<p>#vss</p>
+
+<ul>
+  <li>
+    <p>Per Microsoft, the <strong>Volume Shadow Copy Service (VSS)</strong> coordinates the required actions to create a consistent shadow copy (also known as a <em>snapshot</em> or a <em>point-in-time copy</em>) of the data that is to be backed up.</p>
+  </li>
+  <li>
+    <p>Volume Shadow Copies are stored on the <em>System Volume Information</em> folder on each drive that has protection enabled.</p>
+  </li>
+  <li>
+    <p>If VSS is enabled (<strong>System Protection</strong> turned on), you can perform the following tasks from within advanced system settings.</p>
+
+    <ul>
+      <li>Create a restore point</li>
+      <li>Perform system restore</li>
+      <li>Configure restore settings</li>
+      <li>Delete restore points</li>
+    </ul>
+  </li>
+  <li>
+    <p>From a security perspective, malware writers know of this Windows feature and write code in their malware to look for these files and delete them.</p>
+
+    <ul>
+      <li>Doing so makes it impossible to recover from a ransomware attack unless you have an offline/off-site backup.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Configuring VSS:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals3/vss1.png" alt="" /></p>
+
+<h2 id="questions-6">Questions</h2>
+
+<ol>
+  <li>What is VSS?</li>
+</ol>
+
+<p>A: Volum Shadow Copy Service</p>
+
+<ul>
+  <li>Note: Attackers use built-in Windows tools and utilities in an attempt to go undetected within the victim environment.
+    <ul>
+      <li>This tactic is known as <strong>Living Off The Land</strong>. Refer to the following resource <a href="https://lolbas-project.github.io/">here</a> to learn more about this.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Further reading material:</p>
+
+    <ul>
+      <li><a href="https://docs.microsoft.com/en-us/windows/win32/amsi/antimalware-scan-interface-portal">Antimalware Scan Interface</a></li>
+      <li><a href="https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-manage">Credential Guard</a></li>
+      <li><a href="https://support.microsoft.com/en-us/windows/learn-about-windows-hello-and-set-it-up-dae28983-8242-bb2a-d3d1-87c9d265a5f0#:~:text=Windows%2010,in%20with%20just%20your%20PIN.">Windows 10 Hello</a></li>
+      <li><a href="https://www.csoonline.com/article/3253899/the-best-new-windows-10-security-features.html">CSO Online - The best new Windows 10 security features</a></li>
+    </ul>
+  </li>
+</ul>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

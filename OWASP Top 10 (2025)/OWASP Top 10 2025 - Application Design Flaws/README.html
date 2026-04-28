@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OWASP Top 10 2025 - Application Design Flaws · THM Writeups</title>
+  
+  <meta name="description" content="Learn about A02, A03, A06, and A10 and how they related to design flaws in the application." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>OWASP Top 10 2025   Application Design Flaws</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">OWASP Top 10 (2025)/OWASP Top 10 2025 - Application Design Flaws/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">owasp</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about A02, A03, A06, and A10 and how they related to design flaws in the application.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="owasp-top-10-2025---application-design-flaws"><a href="https://tryhackme.com/room/owasptopten2025two">OWASP Top 10 2025 - Application Design Flaws</a></h1>
+
+<h2 id="as02-security-misconfigurations">AS02: Security Misconfigurations</h2>
+
+<h3 id="security-misconfigurations">Security Misconfigurations</h3>
+
+<p><strong>What It Is</strong><br />
+Security misconfigurations happen when systems, servers, or applications are deployed with unsafe defaults, incomplete settings, or exposed services. These are not code bugs but mistakes in how the environment, software, or network is set up. They create easy entry points for attackers.</p>
+
+<p><strong>Why It Matters</strong><br />
+Even small misconfigurations can expose sensitive data, enable privilege escalation, or give attackers a foothold into the system. Modern applications rely on complex stacks, cloud services, and third-party APIs. A single exposed admin panel, an open storage bucket, or misconfigured permissions can compromise the entire system.</p>
+
+<p><strong>Example</strong><br />
+In 2017, <a href="https://www.huntress.com/threat-library/data-breach/uber-data-breach">Uber</a> exposed a backup AWS S3 bucket with sensitive user data, including driver and rider information, because the bucket was publicly accessible. Attackers could download data directly without needing credentials. This shows how a deployment mistake can lead to a significant breach.</p>
+
+<p><strong>Common Patterns</strong></p>
+
+<ul>
+  <li>Default credentials or weak passwords left unchanged</li>
+  <li>Unnecessary services or endpoints exposed to the internet</li>
+  <li>Misconfigured cloud storage or permissions (S3, Azure Blob, GCP buckets)</li>
+  <li>Unrestricted API access or missing authentication/authorisation</li>
+  <li>Verbose error messages exposing stack traces or system details</li>
+  <li>Outdated software, frameworks, or containers with known vulnerabilities</li>
+  <li>Exposed AI/ML endpoints without proper access controls</li>
+</ul>
+
+<p><strong>How To Prevent It</strong></p>
+
+<ul>
+  <li>Harden default configurations and remove unused features or services</li>
+  <li>Enforce strong authentication and least privilege across all systems</li>
+  <li>Limit network exposure and segment sensitive resources</li>
+  <li>Keep software, frameworks, and containers up to date with patches</li>
+  <li>Hide stack traces and system information from error messages</li>
+  <li>Audit cloud configurations and permissions regularly</li>
+  <li>Secure AI endpoints and automation services with proper access controls and monitoring</li>
+  <li>Integrate configuration reviews and automated security checks into your deployment pipeline</li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: What’s the flag?</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20(2025)/OWASP%20Top%2010%202025%20-%20Application%20Design%20Flaws/2025-12-19_13-45.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{V3RB0S3_3RR0R_L34K}</code></p>
+
+<h2 id="as03-software-supply-chain-failures">AS03: Software Supply Chain Failures</h2>
+
+<p><strong>What It Is</strong><br />
+Software supply chain failures happen when applications rely on components, libraries, services, or models that are compromised, outdated, or improperly verified. These weaknesses are not inherent in your code, but rather in the software and tools you depend on. Attackers exploit these weak links to inject malicious code, bypass security, or steal sensitive data.</p>
+
+<p><strong>Why It Matters</strong><br />
+Modern applications are built from many third-party packages, APIs, and AI models. One compromised dependency can compromise your entire system, allowing attackers to gain access without ever touching your own code. Supply chain attacks can be automated and distributed, making them hard to detect and very damaging.</p>
+
+<p><strong>Example</strong><br />
+In 2021, the <a href="https://www.fortinet.com/uk/resources/cyberglossary/solarwinds-cyber-attack">SolarWinds</a> Orion compromise showed the danger of supply chain attacks. Attackers inserted malicious code into a trusted update, affecting thousands of organisations that automatically installed it. This wasn’t a bug in SolarWinds’ core logic. It was a flaw in the software update building, verification, and distribution process.</p>
+
+<p>With AI, we can observe this when using unverified third-party models or fine-tuned datasets that can embed hidden behaviours, backdoors, or biased outputs, compromising systems or leaking data.</p>
+
+<p><strong>Common Patterns</strong></p>
+
+<ul>
+  <li>Using unverified or unmaintained libraries and dependencies</li>
+  <li>Automatically installing updates without verification</li>
+  <li>Over-reliance on third-party AI models without monitoring or auditing</li>
+  <li>Insecure build pipelines or CI/CD processes that allow tampering</li>
+  <li>Poor license or provenance tracking for components</li>
+  <li>Lack of monitoring for vulnerabilities in dependencies after deployment</li>
+</ul>
+
+<p><strong>How To Protect The Supply Chain</strong></p>
+
+<ul>
+  <li>Verify all third-party components, libraries, and AI models before use</li>
+  <li>Monitor and patch dependencies regularly</li>
+  <li>Sign, verify, and audit software updates and packages</li>
+  <li>Lock down CI/CD pipelines and build processes to prevent tampering</li>
+  <li>Track provenance and licensing for all dependencies</li>
+  <li>Implement runtime monitoring for unusual behaviour from dependencies or AI components</li>
+  <li>Integrate supply chain threat modelling into the SDLC, including testing, deployment, and update workflows</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: What’s the flag?</p>
+
+<p>By checking out the code, we observe that if we pass <code class="language-plaintext highlighter-rouge">data  = debug</code> we will get a different response than usual.</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20(2025)/OWASP%20Top%2010%202025%20-%20Application%20Design%20Flaws/2025-12-19_14-02.png" alt="" /></p>
+
+<p>We can do this using <code class="language-plaintext highlighter-rouge">curl</code></p>
+
+<p><code class="language-plaintext highlighter-rouge">curl -X POST http://10.81.131.27:5003/api/process \   -H "Content-Type: application/json" \   -d '{"data":"debug"}'</code></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{SUPPLY_CH41N_VULN3R4B1L1TY}</code></p>
+
+<h2 id="as04-cryptographic-failures">AS04: Cryptographic Failures</h2>
+
+<p><strong>What It Is</strong><br />
+Cryptographic failures happen when encryption is used incorrectly or not at all. This includes weak algorithms, hard-coded keys, poor key handling, or unencrypted sensitive data. These flaws let attackers access information that should be private.</p>
+
+<p><strong>Why It Matters</strong><br />
+Web applications rely on cryptography everywhere: protecting network traffic, securing stored data, verifying identities, and safeguarding secrets. When these controls fail, sensitive data such as passwords, tokens, or personal information can be exposed, leading to account takeovers or full-scale breaches.</p>
+
+<p>Attackers can exploit these flaws through man-in-the-middle attacks, brute-force attacks on weak keys, or by simply discovering secrets that were never properly protected.</p>
+
+<p><strong>Common Patterns</strong> </p>
+
+<ul>
+  <li>Using deprecated or weak algorithms like MD5, SHA-1, or ECB mode</li>
+  <li>Hard-coded secrets in code or configuration</li>
+  <li>Poor key rotation or management practices</li>
+  <li>Lack of encryption for sensitive data at rest or in transit</li>
+  <li>Self-signed or invalid TLS certificates</li>
+  <li>Using AI/ML systems without proper secret handling for model parameters or sensitive inputs</li>
+</ul>
+
+<p><strong>How To Prevent It</strong></p>
+
+<ul>
+  <li>Use strong, modern algorithms such as AES-GCM, ChaCha20-Poly1305, or enforce TLS 1.3 with valid certificates</li>
+  <li>Use secure key management services like Azure Key Vault, AWS KMS, or HashiCorp Vault</li>
+  <li>Rotate secrets and keys regularly, following defined crypto periods</li>
+  <li>Document and enforce policies and standard operating procedures for key lifecycle management</li>
+  <li>Maintain a complete inventory of certificates, keys, and their owners</li>
+  <li>Ensure AI models and automation agents never expose unencrypted secrets or sensitive data</li>
+  <li>The web application in this room contains a weakness of this type for you to explore.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: What’s the flag?</p>
+
+<p>Check the <code class="language-plaintext highlighter-rouge">/static/js/decrypt.js</code> file found when viewing the page source.</p>
+
+<p>We have all the details we need here:</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20(2025)/OWASP%20Top%2010%202025%20-%20Application%20Design%20Flaws/2025-12-19_14-08.png" alt="" /></p>
+
+<p>We then go to an online tool and decrypt it.</p>
+
+<p><img src="/tryhackme/OWASP%20Top%2010%20(2025)/OWASP%20Top%2010%202025%20-%20Application%20Design%20Flaws/2025-12-19_14-14.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{CRYPTO_FAILURE_H4RDCOD3D_K3Y}</code></p>
+
+<h2 id="as06-insecure-design">AS06: Insecure Design</h2>
+
+<p><strong>What It Is</strong></p>
+
+<p>Insecure design happens when flawed logic or architecture is built into a system from the start. These flaws stem from skipped threat modelling, no design requirements or reviews, or accidental errors.</p>
+
+<p>Moreover, with the introduction of AI assistants, AI systems exacerbate insecure design. Developers often assume that models are safe, correct, or predictable, or that the code they produce is flaw-free. When an AI system can generate queries, write code, or classify users without limits, the risk is built into the design, leading to poor architectural patterns.</p>
+
+<p><strong>Example</strong><br />
+A good example is <a href="https://www.networkintelligence.ai/blogs/vulnerabilities-and-privacy-issues-with-clubhouse-app/">Clubhouse</a>. Its early design assumed users would only interact through the mobile app, but the backend API had no proper authentication. Anyone could query user data, room info, and even private conversations directly. When researchers tested it, “he entire “private c “nversation” premise fell apart.</p>
+
+<p><strong>Why It Matters</strong><br />
+You can’t patch an insecure design. It’s built into the workflow, logic, and trust boundaries. Fixing it means rethinking how systems, and now AI, make decisions.</p>
+
+<p><strong>Common Insecure Designs In 2025</strong></p>
+
+<ul>
+  <li>Weak business logic controls, like recovery or approval flows</li>
+  <li>Flawed assumptions about user or model behaviour</li>
+  <li>AI components with unchecked authority or access</li>
+  <li>Missing guardrails for LLMs and automation agents</li>
+  <li>Test or debug bypasses left in production</li>
+  <li>No consistent abuse-case review or AI threat modelling</li>
+</ul>
+
+<p><strong>Insecure Design In The AI Era</strong></p>
+
+<p>AI introduces new kinds of design failures. For example, prompt injection occurs when user input is blended with system prompts, allowing attackers to hijack the context or extract hidden data. Blind trust in model output creates fragile systems that act on AI decisions without validation or oversight, which is why human review remains necessary. When it comes to poisoned models, pulled from unverified sources or fine-tuned on unsafe data, they can embed hidden behaviours or backdoors that compromise the system from within.</p>
+
+<p><strong>How To Design Securely</strong></p>
+
+<ul>
+  <li>Treat every model as untrusted until proven otherwise.</li>
+  <li>Validate and filter all model inputs and outputs to ensure accuracy and integrity.</li>
+  <li>Separate system prompts from user content.</li>
+  <li>Keep sensitive data out of prompts unless absolutely needed and protect it with strict controls.</li>
+  <li>Require human review for high-risk AI actions.</li>
+  <li>Log model provenance, monitor behaviour, and apply differential privacy for sensitive data.</li>
+  <li>Include AI-specific threat modelling for prompt attacks, inference risks, agent misuse, and supply chain compromise throughout the design process.</li>
+  <li>Build threat modelling into every stage of development, not just at the start.</li>
+  <li>Define clear security requirements for each feature before implementation.</li>
+  <li>Apply the principle of least privilege across users, APIs, and services.</li>
+  <li>Ensure proper authentication, authorisation, and session management across the system.</li>
+  <li>Keep dependencies, third-party components, and supply chain sources verified and up to date.</li>
+  <li>Continuously monitor and test the system for logic flaws, abuse paths, and emergent risks as new features or AI components are added.</li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: What’s the flag?</p>
+
+<p>Find the path to the messages of admin: <code class="language-plaintext highlighter-rouge">10.81.131.27:5005/api/messages/admin</code></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{1NS3CUR3_D35IGN_4SSUMPT10N}</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

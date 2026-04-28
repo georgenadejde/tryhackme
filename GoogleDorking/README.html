@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Dorking · THM Writeups</title>
+  
+  <meta name="description" content="Explaining how Search Engines work and leveraging them into finding hidden content!" />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Google Dorking</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">GoogleDorking/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">googledorking</span>
+          
+          <span class="tag-pill">seo</span>
+          
+          <span class="tag-pill">robots</span>
+          
+          <span class="tag-pill">sitemap</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Explaining how Search Engines work and leveraging them into finding hidden content!</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="google-dorking"><a href="https://tryhackme.com/room/googledorking">Google Dorking</a></h1>
+
+<h2 id="crawlers">Crawlers</h2>
+
+<ul>
+  <li>they discover content through various means such as pure discovery or by using any or all URLs found from previous crawled websites.</li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/crawlers.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>In the diagram above, “mywebsite.com” has been scraped as having the keywords as “Apple” “Banana” and “Pear”.</p>
+
+    <ul>
+      <li>
+        <p>These keywords are stored in a <em>dictionary</em> by the crawler, who then returns these to the search engine i.e. Google.</p>
+      </li>
+      <li>
+        <p>Because of this persistence, Google now knows that the domain “mywebsite.com” has the keywords “Apple”, “Banana” and “Pear”.</p>
+      </li>
+      <li>
+        <p>As only one website has been crawled, if a user was to search for “Apple”…“mywebsite.com” <em>would appear</em>.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>However, as we previously mentioned, crawlers attempt to traverse, termed as crawling, every URL and file that they can find!</p>
+
+    <ul>
+      <li>Say if “mywebsite.com” had the same keywords as before (“Apple”, “Banana” and “Pear”), but also had a URL to another website “anotherwebsite.com”, the crawler will then <em>attempt to traverse everything on that URL</em> (anotherwebsite.com) and retrieve the contents of everything within that domain respectively.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/crawlers2.png" alt="" /></p>
+
+<ul>
+  <li>now the search engine know this:</li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/crawlers3.png" alt="" /></p>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>Name the key term of what a “Crawler” is used to do</li>
+</ol>
+
+<p>A: Index</p>
+
+<ol>
+  <li>What is the name of the technique that “Search Engines” use to retrieve this information about websites?</li>
+</ol>
+
+<p>A: Crawling</p>
+
+<ol>
+  <li>What is an example of the type of contents that could be gathered from a website?</li>
+</ol>
+
+<p>A: Keywords</p>
+
+<h2 id="search-engine-optimisation-seo">Search Engine Optimisation (SEO)</h2>
+
+<ul>
+  <li>
+    <p>search engines will ‘prioritise’ those domains that are easier to index.</p>
+  </li>
+  <li>
+    <p>websites gain something similar to a point-scoring system, which is influenced by:</p>
+
+    <ul>
+      <li>
+        <p>how <em>responsive</em> is your website to the different <em>browser types</em></p>
+      </li>
+      <li>
+        <p><em>how easy is to crawl</em> your website (or if this is even allowed) through the use of <em>Sitemaps</em></p>
+      </li>
+      <li>
+        <p>What kind of <em>keywords</em> the website has.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>tools that show how optimised your domain is:</p>
+
+    <ul>
+      <li><a href="https://web.dev/">Google’s Site Analyser</a></li>
+    </ul>
+  </li>
+  <li>
+    <p>the crawlers want to index everything on our websites, but sometimes we don’t want all of the contents indexed:</p>
+
+    <ul>
+      <li>
+        <p>a secret administration page, maybe?</p>
+      </li>
+      <li>
+        <p>We don’t want anyone to find that, especially through a google search</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="robotstxt">Robots.txt</h2>
+
+<ul>
+  <li>
+    <p>this is the <strong>first thing indexed by Crawlers</strong> when visiting a website.</p>
+  </li>
+  <li>
+    <p>this file must be located in the <em>root directory</em></p>
+  </li>
+  <li>
+    <p>it defines the permissions a Crawler has on the website</p>
+
+    <ul>
+      <li>
+        <p>user agents</p>
+      </li>
+      <li>
+        <p>files or directories</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/robots.png" alt="" /></p>
+
+<ul>
+  <li>Keywords:</li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/KeywordsRobots.png" alt="" /></p>
+
+<ul>
+  <li>Example:</li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/Robots2.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Crawlers will not index anything contained within /super-secret-directory</p>
+  </li>
+  <li>
+    <p>Crawlers will index anything contained within /not-a-secret, but will not index anything contained within the sub-directory /but-this-is</p>
+  </li>
+  <li>
+    <p>Example:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/disallowrd.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Here, the crawler “msnbot” <em>is not allowed to index</em> the website</p>
+  </li>
+  <li>
+    <p>if you have a huge website, it can be difficult to index all of the sensitive files by including every path and every filename for each. Hence, we can use <em>regex</em>:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/disallowrd.png" alt="" /></p>
+
+<ul>
+  <li>Here, the crawlers cannot index <em>any</em> file with the extension .ini contained in any directory or subdirectory using (“$”) of the site.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>Where would “robots.txt” be located on the domain “ablog.com”</li>
+</ol>
+
+<p>A: ablog/robots.txt</p>
+
+<ol>
+  <li>If a website was to have a sitemap, where would that be located?</li>
+</ol>
+
+<p>A: /sitemap.xml</p>
+
+<ol>
+  <li>How would we only allow “Bingbot” to index the website?</li>
+</ol>
+
+<p>A: User-agent: Bingbot</p>
+
+<ol>
+  <li>How would we prevent a “Crawler” from indexing the directory “/dont-index-me/”?</li>
+</ol>
+
+<p>A: Disallow: /dont-index-me/</p>
+
+<ol>
+  <li>What is the extension of a Unix/Linux system configuration file that we might want to hide from “Crawlers”?</li>
+</ol>
+
+<p>A: .conf</p>
+
+<h2 id="sitemaps">Sitemaps</h2>
+
+<ul>
+  <li>
+    <p>comparable to geographical maps in real life, except that they are used for websites!</p>
+  </li>
+  <li>
+    <p>they specify the routes to find content on the domain</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/sitemap.png" alt="" /></p>
+
+<ul>
+  <li>Or more realistically:</li>
+</ul>
+
+<p><img src="/tryhackme/GoogleDorking/sitemapsreal.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>it influences the SEO of a website quite drastically</p>
+
+    <ul>
+      <li>
+        <p>Why? Because they have a lot of data to process and these sitemaps help them just scrape the content, instead of going manually through the process of finding and scraping them</p>
+      </li>
+      <li>
+        <p>it is like using a wordlist instead of randomly guessing</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>the easier a website is to crawl, the more optimised it is for the Search Engines.</p>
+  </li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>What is the typical file structure of a “Sitemap”?</li>
+</ol>
+
+<p>A: xml</p>
+
+<ol>
+  <li>What real life example can “Sitemaps” be compared to?</li>
+</ol>
+
+<p>A: map</p>
+
+<ol>
+  <li>Name the keyword for the path taken for content on a website</li>
+</ol>
+
+<p>A: route</p>
+
+<h2 id="google-dorking-1">Google Dorking</h2>
+
+<ul>
+  <li>
+    <p>use “<em>site:</em>” to search for a query only on that website</p>
+
+    <ul>
+      <li>
+        <p><strong>filetype:</strong> -&gt; search for a file by its extension</p>
+      </li>
+      <li>
+        <p><strong>cache:</strong> -&gt; view Google’s cached version of the website</p>
+      </li>
+      <li>
+        <p><strong>intitle:</strong> -&gt; the specified words must appear in the title of the page</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>What would be the format used to query the site bbc.co.uk about flood defences</li>
+</ol>
+
+<p>A: site:bbc.co.uk flood defences</p>
+
+<ol>
+  <li>What term would you use to search by file type?</li>
+</ol>
+
+<p>A: filetype:</p>
+
+<ol>
+  <li>What term can we use to look for login pages?</li>
+</ol>
+
+<p>A: intitle:login</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

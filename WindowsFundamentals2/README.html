@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows Fundamentals 2 · THM Writeups</title>
+  
+  <meta name="description" content="In part 2 of the Windows Fundamentals module, discover more about System Configuration, UAC Settings, Resource Monitoring, the Windows Registry and more." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Windows Fundamentals 2</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">WindowsFundamentals2/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">windows</span>
+          
+        
+        
+        <span class="writeup-meta-desc">In part 2 of the Windows Fundamentals module, discover more about System Configuration, UAC Settings, Resource Monitoring, the Windows Registry and more.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="windows-fundamentals-2"><a href="https://tryhackme.com/room/windowsfundamentals2x0x">Windows Fundamentals 2</a></h1>
+
+<h2 id="system-configuration">System Configuration</h2>
+
+<p>#msconfig #systemconfiguration</p>
+
+<ul>
+  <li>
+    <p>The <strong>System Configuration utility (MSConfig)</strong> is for advanced troubleshooting, and its main purpose is to help diagnose startup issues.</p>
+
+    <ul>
+      <li>More info <a href="https://docs.microsoft.com/en-us/troubleshoot/windows-client/performance/system-configuration-utility-troubleshoot-configuration-errors">here</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/msconfig-start.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>In the <strong>General</strong> tab, we can select what devices and services for Windows to load upon boot.</p>
+
+    <ul>
+      <li>The options are: <strong>Normal</strong>, <strong>Diagnostic</strong>, or <strong>Selective</strong>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/msconfig1.png" alt="" /></p>
+
+<ul>
+  <li>In the <strong>Boot</strong> tab, we can define various boot options for the Operating System.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/msconfig2.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The <strong>Services</strong> tab lists all services configured for the system <em>regardless</em> of their state (running or stopped).</p>
+
+    <ul>
+      <li>A service is a special type of application that runs in the background.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/msconfig3.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The <strong>Startup</strong> tab does not show anything interesting</p>
+  </li>
+  <li>
+    <p>As you can see, Microsoft advises using Task Manager (<strong>taskmgr</strong>) to manage (enable/disable) startup items.</p>
+
+    <ul>
+      <li>The System Configuration utility is <strong>NOT</strong> a startup management program.</li>
+    </ul>
+  </li>
+  <li>
+    <p>There is a list of various utilities (tools) in the <strong>Tools</strong> tab that we can run to configure the operating system further.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/msconfig5.png" alt="" /></p>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>What is the name of the service that lists Systems Internals as the manufacturer?</li>
+</ol>
+
+<ul>
+  <li>Find System Internals on the Manufacturer column</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/Screenshot%20at%202022-06-14%2011-23-13.png" alt="" /></p>
+
+<p>A: PsShutdown</p>
+
+<ol>
+  <li>Whom is the Windows license registered to?</li>
+</ol>
+
+<ul>
+  <li>In the tools section, I launched the About Windows tool</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/Screenshot%20at%202022-06-14%2011-25-25.png" alt="" /></p>
+
+<p>A: Windows User</p>
+
+<ol>
+  <li>What is the command for Windows Troubleshooting?</li>
+</ol>
+
+<ul>
+  <li>We can find this in the Tools tab</li>
+</ul>
+
+<p>A: C:\Windows\System32\control.exe /name Microsoft.Troubleshooting</p>
+
+<ol>
+  <li>What command will open the Control Panel? (The answer is  the name of .exe, not the full path)</li>
+</ol>
+
+<ul>
+  <li>Again, the answer is in the Tools section</li>
+</ul>
+
+<p>A: control.exe</p>
+
+<h2 id="change-uac-settings">Change UAC Settings</h2>
+
+<p>#uac</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>What is the command to open User Account Control Settings? (The answer is the name of the .exe file, not the full path)</li>
+</ol>
+
+<ul>
+  <li>Find the answer in the Tools section</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/uac.png" alt="" /></p>
+
+<p>A: UserAccountControlSettings.exe</p>
+
+<h2 id="computer-management">Computer Management</h2>
+
+<p>#compmgmt</p>
+
+<ul>
+  <li>The <strong>Computer Management (compmgmt)</strong> utility has three primary sections: <em>System Tools</em>, <em>Storage</em>, and <em>Services and Applications</em>.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/compmgmt1.png" alt="" /></p>
+
+<h3 id="system-tools">System Tools</h3>
+
+<ul>
+  <li>
+    <p>Let’s start with <strong>Task Scheduler</strong>.</p>
+
+    <ul>
+      <li>Per Microsoft, with Task Scheduler, we can create and manage common tasks that our computer will carry out automatically at the times we specify.</li>
+    </ul>
+  </li>
+  <li>
+    <p>A task can run an application, a script, etc., and tasks can be configured to run at any point.</p>
+
+    <ul>
+      <li>
+        <p>A task can run at log in or at log off.</p>
+      </li>
+      <li>
+        <p>Tasks can also be configured to run on a specific schedule, for example, every five mins.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Event Viewer</strong> allows us to view events that have occurred on the computer.</p>
+
+    <ul>
+      <li>
+        <p>These records of events can be seen as an audit trail that can be used to understand the activity of the computer system.</p>
+      </li>
+      <li>
+        <p>This information is often used to diagnose problems and investigate actions executed on the system.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/event-viewer.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Event Viewer has three panes.</p>
+
+    <ul>
+      <li>The pane on the left provides a hierarchical tree listing of the event log providers. (as shown in the image above)</li>
+      <li>The pane in the middle will display a general overview and summary of the events specific to a selected provider.</li>
+      <li>The pane on the right is the actions pane.</li>
+    </ul>
+  </li>
+  <li>
+    <p>There are five types of events that can be logged.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/five-event-types.png" alt="" /></p>
+
+<ul>
+  <li>The standard logs are visible under Windows Logs.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/standard-event-logs.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><strong>Shared Folders</strong> is where you will see a complete list of shares and folders shared that others can connect to.</p>
+  </li>
+  <li>
+    <p>Under <strong>Sessions</strong>, you will see a list of users who are currently connected to the shares.</p>
+  </li>
+  <li>
+    <p>All the folders and/or files that the connected users access will list under <strong>Open Files</strong>.</p>
+  </li>
+  <li>
+    <p>The Local Users and Groups section you should be familiar with from Windows Fundamentals 1 because it’s <strong>lusrmgr.msc</strong>.</p>
+  </li>
+  <li>
+    <p>In <strong>Performance</strong>, you’ll see a utility called <strong>Performance Monitor</strong> (<strong>perfmon</strong>).</p>
+  </li>
+  <li>
+    <p>Perfmon is used to view performance data either in real-time or from a log file.</p>
+
+    <ul>
+      <li>This utility is useful for troubleshooting performance issues on a computer system, whether local or remote.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/perfmon.png" alt="" /></p>
+
+<ul>
+  <li><strong>Device Manager</strong> allows us to view and configure the hardware, such as disabling any hardware attached to the computer.</li>
+</ul>
+
+<h3 id="storage">Storage</h3>
+
+<ul>
+  <li>
+    <p>Under Storage is <strong>Windows Server Backup</strong> and <strong>Disk Management</strong>.</p>
+
+    <ul>
+      <li>We’ll only look at Disk Management in this room.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/disk-mgmt.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Disk Management is a system utility in Windows that enables you to perform advanced storage tasks.  Some tasks are:</p>
+
+    <ul>
+      <li>Set up a new drive</li>
+      <li>Extend a partition</li>
+      <li>Shrink a partition</li>
+      <li>Assign or change a drive letter (ex. E:)</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="services-and-applications">Services and Applications</h2>
+
+<ul>
+  <li>
+    <p>Recall from the previous task; a service is a special type of application that runs in the background.</p>
+
+    <ul>
+      <li>Here you can do more than enable and disable a service, such as view the Properties for the service.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/services-apps.png" alt="" /></p>
+
+<p><img src="/tryhackme/WindowsFundamentals2/service.png" alt="" /></p>
+
+<p>#wmi</p>
+<ul>
+  <li>WMI Control configures and controls the <strong>Windows Management Instrumentation (WMI)</strong> service.</li>
+</ul>
+
+<blockquote>
+  <p>Per Wikipedia, “WMI allows scripting languages (such as VBScript or Windows PowerShell) to manage Microsoft Windows personal computers and servers, both locally and remotely. Microsoft also provides a command-line interface to WMI called Windows Management Instrumentation Command-line (WMIC).”</p>
+</blockquote>
+
+<ul>
+  <li>Note: The WMIC tool is deprecated in Windows 10, version 21H1. Windows PowerShell supersedes this tool for WMI.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>What is the command to open Computer Management? (The answer is the name of the .msc file, not the full path)</li>
+</ol>
+
+<p>A: compmgmt.msc</p>
+
+<ol>
+  <li>At what time every day is the GoogleUpdateTaskMachineUA task configured to run?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals2/Screenshot%20at%202022-06-14%2012-11-46.png" alt="" /></p>
+
+<p>A: 6:15 AM</p>
+
+<ol>
+  <li>What is the name of the hidden share?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals2/Screenshot%20at%202022-06-14%2012-12-33.png" alt="" /></p>
+
+<p>A: sh4r3dF0Ld3r</p>
+
+<h2 id="system-information">System Information</h2>
+
+<p>#msinfo32</p>
+<ul>
+  <li>What is the System Information (<strong>msinfo32</strong>) tool?</li>
+</ul>
+
+<blockquote>
+  <p>Per Microsoft, “Windows includes a tool called Microsoft System Information (Msinfo32.exe).  This tool gathers information about your computer and displays a comprehensive view of your hardware, system components, and software environment, which you can use to diagnose computer issues.”</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>The  information in System Summary is divided into three sections:</p>
+
+    <ul>
+      <li><strong>Hardware Resources</strong></li>
+      <li><strong>Components</strong></li>
+      <li><strong>Software Environment</strong></li>
+    </ul>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">System Summary</code> will display general technical specifications for the computer, such as processor brand and model.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/system-summary.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>The information displayed in <code class="language-plaintext highlighter-rouge">Hardware Resources</code> is not for the average computer user.</p>
+
+    <ul>
+      <li>If you want to learn more about this section, refer to the official Microsoft <a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/kernel/hardware-resources#:~:text=Hardware%20resources%20are%20the%20assignable,of%20bus%2Drelative%20memory%20addresses.">page</a>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/hardware-resources.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Under <code class="language-plaintext highlighter-rouge">Components</code>, you can see specific information about the hardware devices installed on the computer.</p>
+
+    <ul>
+      <li>Some sections don’t show any information, but some sections do, such as <code class="language-plaintext highlighter-rouge">Display</code> and <code class="language-plaintext highlighter-rouge">Input</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/components.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>In the <code class="language-plaintext highlighter-rouge">Software Environment</code> section, you can see information about software baked into the operating system and software you have installed.</p>
+
+    <ul>
+      <li>Other details are visible in this section as well, such as the <em>Environment Variables</em> and <em>Network Connections</em>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/software-env.png" alt="" /></p>
+
+<p>#environmentvariables</p>
+
+<blockquote>
+  <p>Per Microsoft, “Environment variables store information about the operating system environment. This information includes details such as the operating system path, the number of processors used by the operating system, and the location of temporary folders.</p>
+</blockquote>
+
+<p>The environment variables store data that is used by the operating system and other programs. For example, the WINDIR environment variable contains the location of the Windows installation directory. Programs can query the value of this variable to determine where Windows operating system files are located”.</p>
+
+<p><img src="/tryhackme/WindowsFundamentals2/env-variables.png" alt="" /></p>
+
+<ul>
+  <li>Another method to view environment variables is <code class="language-plaintext highlighter-rouge">Control Panel &gt; System and Security &gt; System &gt; Advanced system settings &gt; Environment Variables</code> OR <code class="language-plaintext highlighter-rouge">Settings &gt; System &gt; About &gt; system info &gt; Advanced system settings &gt; Environment Variables</code></li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/env-variables2.png" alt="" /></p>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>What is the command to open System Information? (The answer is the name of the .exe file, not the full path)</li>
+</ol>
+
+<p>A: msinfo32.exe</p>
+
+<ol>
+  <li>What is listed under System Name?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals2/Screenshot%20at%202022-06-14%2012-22-52.png" alt="" /></p>
+
+<p>A: THM-WINFUN2</p>
+
+<ol>
+  <li>Under Environment Variables, what is the value for ComSpec?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals2/Screenshot%20at%202022-06-14%2012-23-18.png" alt="" /></p>
+
+<p>A: %SystemRoot%\system32\cmd.exe</p>
+
+<h2 id="resource-monitor">Resource Monitor</h2>
+
+<p>#resmon</p>
+<ul>
+  <li>What is Resource Monitor (<strong>resmon</strong>)?</li>
+</ul>
+
+<blockquote>
+  <p>Per Microsoft, “Resource Monitor displays per-process and aggregate CPU, memory, disk, and network usage information, in addition to providing details about which processes are using individual file handles and modules. Advanced filtering allows users to isolate the data related to one or more processes (either applications or services), start, stop, pause, and resume services, and close unresponsive applications from the user interface. It also includes a process analysis feature that can help identify deadlocked processes and file locking conflicts so that the user can attempt to resolve the conflict instead of closing an application and potentially losing data.”</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>As some of the other tools mentioned in this room, this utility is geared primarily to advanced users who need to perform advanced troubleshooting on the computer system.</p>
+  </li>
+  <li>
+    <p>In the Overview tab, Resmon has four sections:</p>
+
+    <ul>
+      <li>CPU</li>
+      <li>Disk</li>
+      <li>Network</li>
+      <li>Memory</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/resmon1.png" alt="" /></p>
+
+<h3 id="cpu">CPU</h3>
+
+<p><img src="/tryhackme/WindowsFundamentals2/resmon-cpu.png" alt="" /></p>
+
+<h3 id="memory">Memory</h3>
+
+<p><img src="/tryhackme/WindowsFundamentals2/resmon-mem.png" alt="" /></p>
+
+<h3 id="disk">Disk</h3>
+
+<p><img src="/tryhackme/WindowsFundamentals2/resmon-disk.png" alt="" /></p>
+
+<h3 id="network">Network</h3>
+
+<p><img src="/tryhackme/WindowsFundamentals2/resmon-network.png" alt="" /></p>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>What is the command to open Resource Monitor? (The answer is the name of the .exe file, not the full path)</li>
+</ol>
+
+<p>A: resmon.exe</p>
+
+<h2 id="command-prompt">Command Prompt</h2>
+
+<p>#cmd</p>
+
+<ul>
+  <li>The command <code class="language-plaintext highlighter-rouge">hostname</code> will output the computer name.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/hostname.png" alt="" /></p>
+
+<ul>
+  <li>The command <code class="language-plaintext highlighter-rouge">whoami</code> will output the name of the logged-in user.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/whoami.png" alt="" /></p>
+
+<ul>
+  <li>A command used often is ipconfig. This command will show the network address settings for the computer.</li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/ipconfig.png" alt="" /></p>
+
+<p>#important</p>
+<ul>
+  <li>A  command to retrieve the help manual for a command is <code class="language-plaintext highlighter-rouge">/?</code></li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/ipconfig-help.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Note: To clear the command prompt screen, the command is <code class="language-plaintext highlighter-rouge">cls</code>.</p>
+  </li>
+  <li>
+    <p>The next command is <code class="language-plaintext highlighter-rouge">netstat</code>.</p>
+
+    <ul>
+      <li>Per the help manual, this command will display protocol statistics and current TCP/IP network connections.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">net</code> command is primarily used to manage network resources.</p>
+
+    <ul>
+      <li>This command supports sub-commands.</li>
+    </ul>
+  </li>
+  <li>
+    <p>If you type net without a sub-command, the output will show the syntax for the root command showing a few of the sub-commands you can use.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/WindowsFundamentals2/net.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>For the net command, to display the help manual <code class="language-plaintext highlighter-rouge">/?</code> will not work. In this case, you need to use different syntax, which is <code class="language-plaintext highlighter-rouge">net help</code>.</p>
+  </li>
+  <li>
+    <p>So, if you wish to see the help information for net user , the command is <code class="language-plaintext highlighter-rouge">net help user</code>.</p>
+  </li>
+</ul>
+
+<h3 id="questions-5">Questions</h3>
+
+<ol>
+  <li>In System Configuration, what is the full command for Internet Protocol Configuration?</li>
+</ol>
+
+<p>A: C:\Windows\System32\cmd.exe /k %windir%\system32\ipconfig.exe</p>
+
+<ol>
+  <li>For the ipconfig command, how do you show detailed information?</li>
+</ol>
+
+<p><img src="/tryhackme/WindowsFundamentals2/Screenshot%20at%202022-06-14%2012-56-07.png" alt="" /></p>
+
+<p>A: ipconfig /all</p>
+
+<h2 id="registry-editor">Registry Editor</h2>
+
+<p>#registry</p>
+<ul>
+  <li>
+    <p>The Windows Registry (per Microsoft) is a central hierarchical database used to store information necessary to configure the system for one or more users, applications, and hardware devices.</p>
+  </li>
+  <li>
+    <p>The registry contains information that Windows continually references during operation, such as:</p>
+
+    <ul>
+      <li>Profiles for each user</li>
+      <li>Applications installed on the computer and the types of documents that each can create</li>
+      <li>Property sheet settings for folders and application icons</li>
+      <li>What hardware exists on the system</li>
+      <li>The ports that are being used.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#regedit</p>
+<ul>
+  <li>
+    <p>There are various ways to view/edit the registry. One way is to use the <strong>Registry Editor</strong> <strong>(regedit)</strong>.</p>
+
+    <ul>
+      <li><a href="https://docs.microsoft.com/en-us/troubleshoot/windows-server/performance/windows-registry-advanced-users">More</a> on Windows Registry</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<ol>
+  <li>What is the command to open the Registry Editor? (The answer is the name of  the .exe file, not the full path)</li>
+</ol>
+
+<p>A: regedt32.exe</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

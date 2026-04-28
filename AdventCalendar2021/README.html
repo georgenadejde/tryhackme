@@ -1,0 +1,3828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advent Calendar 2021 · THM Writeups</title>
+  
+  <meta name="description" content="Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Advent Calendar 2021</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">AdventCalendar2021/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">authentication</span>
+          
+          <span class="tag-pill">authorisation</span>
+          
+          <span class="tag-pill">contentdiscovery</span>
+          
+          <span class="tag-pill">dirbuster</span>
+          
+          <span class="tag-pill">fuzzing</span>
+          
+          <span class="tag-pill">burp</span>
+          
+          <span class="tag-pill">xss</span>
+          
+          <span class="tag-pill">lfi</span>
+          
+          <span class="tag-pill">important</span>
+          
+          <span class="tag-pill">php</span>
+          
+          <span class="tag-pill">phpwrapper</span>
+          
+          <span class="tag-pill">nosql</span>
+          
+          <span class="tag-pill">mongodb</span>
+          
+          <span class="tag-pill">nosqlinjection</span>
+          
+          <span class="tag-pill">powershell</span>
+          
+          <span class="tag-pill">wireshark</span>
+          
+          <span class="tag-pill">dns</span>
+          
+          <span class="tag-pill">ip</span>
+          
+          <span class="tag-pill">port</span>
+          
+          <span class="tag-pill">nmap</span>
+          
+          <span class="tag-pill">mssqlserver</span>
+          
+          <span class="tag-pill">interesting</span>
+          
+          <span class="tag-pill">nfs</span>
+          
+          <span class="tag-pill">windows</span>
+          
+          <span class="tag-pill">privilegeescalation</span>
+          
+          <span class="tag-pill">wmic</span>
+          
+          <span class="tag-pill">devops</span>
+          
+          <span class="tag-pill">ci</span>
+          
+          <span class="tag-pill">cd</span>
+          
+          <span class="tag-pill">osint</span>
+          
+          <span class="tag-pill">googledorking</span>
+          
+          <span class="tag-pill">blockcahin</span>
+          
+          <span class="tag-pill">aws</span>
+          
+          <span class="tag-pill">s3</span>
+          
+          <span class="tag-pill">iam</span>
+          
+          <span class="tag-pill">awsarn</span>
+          
+          <span class="tag-pill">docker</span>
+          
+          <span class="tag-pill">ecr</span>
+          
+          <span class="tag-pill">phishing</span>
+          
+          <span class="tag-pill">virustotal</span>
+          
+          <span class="tag-pill">md5</span>
+          
+          <span class="tag-pill">strings</span>
+          
+          <span class="tag-pill">yara</span>
+          
+          <span class="tag-pill">ole</span>
+          
+          <span class="tag-pill">vba</span>
+          
+          <span class="tag-pill">logs</span>
+          
+          <span class="tag-pill">postexploitation</span>
+          
+          <span class="tag-pill">hash</span>
+          
+          <span class="tag-pill">sam</span>
+          
+          <span class="tag-pill">ntlm</span>
+          
+          <span class="tag-pill">mimikatz</span>
+          
+          <span class="tag-pill">johntheripper</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="advent-calendar-2021"><a href="https://tryhackme.com/room/adventofcyber3">Advent Calendar 2021</a></h1>
+
+<ul>
+  <li><em>User</em>: h4ck@d4wn</li>
+  <li><em>Date</em>: 23th February 2022</li>
+  <li><em>Description</em>: Get started with Cyber Security in 25 Days - Learn the basics by doing a new, beginner friendly security challenge every day leading up to Christmas.</li>
+</ul>
+
+<p>Tags: #authentication #authorisation</p>
+
+<h2 id="day-3-web-exploitation-christmas-blackout">[Day 3] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Christmas Blackout</h2>
+
+<p>#contentdiscovery</p>
+
+<ul>
+  <li>
+    <p>Content is the assets and inner workings of the application that we are testing. Contents can be files, folders, or pathways that weren’t necessarily intended to be accessed by the general public.</p>
+
+    <ul>
+      <li>Contents can be files, folders, or pathways that weren’t necessarily intended to be accessed by the general public.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Using specific Content discovery techniques, we can find:</p>
+
+    <ul>
+      <li>Configuration files</li>
+      <li>Passwords and secrets</li>
+      <li>Backups</li>
+      <li>Content management systems</li>
+      <li>Administrator dashboards or portals</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#dirbuster</p>
+
+<ul>
+  <li>
+    <p>using automate tools like dirbuster, we can discover hidden files more easily and a lot faster.</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/danielmiessler/SecLists/tree/master/Passwords/Default-Credentials">List of default credential</a></p>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>Using a common wordlist for discovering content, enumerate <code class="language-plaintext highlighter-rouge">&lt;ip&gt;</code> to find the location of the administrator dashboard. What is the name of the folder?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>used the command <code class="language-plaintext highlighter-rouge">dirb http://&lt;ip&gt; /usr/share/wordlists/dirb/common.txt -r</code>.</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">-r</code> flag will tell dirb to not do recursive searches.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>A: admin</p>
+
+<ol>
+  <li>In your web browser, try some default credentials on the newly discovered login form for the “administrator” user. What is the password?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>The username is obviously <code class="language-plaintext highlighter-rouge">administrator</code></p>
+  </li>
+  <li>
+    <p>The passwords I tried were <code class="language-plaintext highlighter-rouge">password</code>, <code class="language-plaintext highlighter-rouge">admin</code> and <code class="language-plaintext highlighter-rouge">administrator</code>. The latter was the correct one.</p>
+  </li>
+</ul>
+
+<p>A: administrator</p>
+
+<ol>
+  <li>Access the admin panel. What is the value of the flag?</li>
+</ol>
+
+<ul>
+  <li>After logging in as administrator, the flag will appear.</li>
+</ul>
+
+<p>A: THM{ADM1N_AC3SS}</p>
+
+<h2 id="day-4-web-exploitation-santas-running-behind">[Day 4] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Santa’s Running Behind</h2>
+
+<p>#authentication #authorisation</p>
+
+<ul>
+  <li>
+    <p>Authentication can be proven using:</p>
+
+    <ul>
+      <li>A known set of <em>credentials</em> to the server and user such as a username and password</li>
+      <li><em>Token</em> authentication (these are unique pieces of encrypted text)</li>
+      <li><em>Biometric</em> authentication (fingerprints, retina data, etc.)</li>
+    </ul>
+  </li>
+  <li>
+    <p>Authentication is often used interchangeably with authorisation, but it is very different.</p>
+
+    <ul>
+      <li>Authorisation is a term for the rules defining what an authenticated user can and cannot access.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#fuzzing</p>
+
+<ul>
+  <li>fuzzing is an automated means of testing an element of a web application until the application gives a vulnerability or valuable information.</li>
+</ul>
+
+<p>#burp</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>What valid password can you use to access the “santa” account?</li>
+</ol>
+
+<ul>
+  <li>Used the intruder to fuzz the password of santa using the provided password list</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-19%2009-41-25.png" alt="" /></p>
+
+<ul>
+  <li>We can see that one of them provides a different length response</li>
+</ul>
+
+<p>A: cookie</p>
+
+<ol>
+  <li>What is the flag in Santa’s itinerary?</li>
+</ol>
+
+<ul>
+  <li>logged in as santa</li>
+</ul>
+
+<p>A: THM{SANTA_DELIVERS}</p>
+
+<h2 id="day-5-web-exploitation-pesky-elf-forum">[Day 5] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Pesky Elf Forum</h2>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>#xss</p>
+
+<ul>
+  <li>
+    <p>Cross-Site Scripting is classified as an injection attack where malicious JavaScript gets injected into a web application with the intention of being executed by other users.</p>
+  </li>
+  <li>
+    <p>If successful, you can:</p>
+
+    <ul>
+      <li>install a keylogger</li>
+      <li>steal the user’s cookie and hijack their session</li>
+      <li>redirect the user to a malicious website</li>
+    </ul>
+  </li>
+  <li>
+    <p>Four types:</p>
+
+    <ul>
+      <li><em>DOM</em></li>
+      <li><em>Reflected</em></li>
+      <li><em>Stored</em></li>
+      <li><em>Blind</em></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="dom">DOM</h3>
+
+<ul>
+  <li>
+    <p>stands for <em>Document Object Model</em> is a programming interface for HTML and XML documents.</p>
+
+    <ul>
+      <li>It represents the page so that programs can change the document structure, style and content.</li>
+    </ul>
+  </li>
+  <li>
+    <p>DOM Based XSS is where the JavaScript execution happens directly in the browser without any new pages being loaded or data submitted to backend code.</p>
+  </li>
+  <li>
+    <p>An example of this could be a website’s JavaScript code getting the contents from the <code class="language-plaintext highlighter-rouge">window.location.hash</code> parameter and then write that onto the page in the currently being viewed section.</p>
+
+    <ul>
+      <li>The contents of the hash aren’t checked for malicious code, allowing an attacker to inject JavaScript of their choosing onto the webpage.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="reflected">Reflected</h3>
+
+<ul>
+  <li>
+    <p>Reflected XSS happens when user-supplied data in an HTTP request is included in the webpage source without any validation.</p>
+  </li>
+  <li>
+    <p>An example of this could be an error message which is in a query string of an URL that is reflected onto the webpage. The URL could look something like the following: <code class="language-plaintext highlighter-rouge">https://website.thm/login?error=Username%20Is%20Incorrect</code></p>
+
+    <ul>
+      <li>The error message could be replaced with JavaScript code which gets executed when a user visits the page.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="stored">Stored</h3>
+
+<ul>
+  <li>
+    <p>As the name infers, the XSS payload is stored on the web application (in a database, for example) and then gets run when other users visit the site or web page.</p>
+  </li>
+  <li>
+    <p>This type of XSS can be particularly damaging due to the number of victims that may be affected.</p>
+
+    <ul>
+      <li>An example of this could be a blog that allows visitors to leave comments. If a visitor’s message is not properly validated and checked for XSS payloads, then every subsequent visit to the blog page would run the malicious JavaScript code.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="blind">Blind</h3>
+
+<ul>
+  <li>
+    <p>Blind XSS is similar to a stored XSS in that your payload gets stored on the website for another user to view, but in this instance, you can’t see the payload working or be able to test it against yourself first.</p>
+
+    <ul>
+      <li>An example of this could be a contact form.</li>
+      <li>In the contact form, your message could contain an XSS payload, which when a member of staff views the message it gets executed.</li>
+    </ul>
+  </li>
+</ul>
+
+<ol>
+  <li>What flag did you get when you disabled the plugin?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Logged in as McSkidy, changed my password and then injected an xss payload that changes the password to the one we just set (notice that when we changed our password, the url had <code class="language-plaintext highlighter-rouge">/settings?new_password=newpassword</code> at the end of it) as a comment on one of the posts.</p>
+  </li>
+  <li>
+    <p>when Grinch visits it, it will automaticaly change their password to the one we just set.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-19%2010-04-16.png" alt="" /></p>
+
+<p>A: THM{NO_MORE_BUTTMAS}</p>
+
+<h2 id="day-6-web-exploitation-patch-management-is-hard">[Day 6] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Patch Management Is Hard</h2>
+
+<p>#lfi</p>
+
+<h3 id="what-is-lfi">What is LFI?</h3>
+
+<ul>
+  <li>
+    <p>An LFI vulnerability is found in various web applications. As an example, in the PHP, the following functions cause this kind of vulnerability:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">include</code></li>
+      <li><code class="language-plaintext highlighter-rouge">require</code></li>
+      <li><code class="language-plaintext highlighter-rouge">include_once</code></li>
+      <li><code class="language-plaintext highlighter-rouge">require_once</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>It is a web application vulnerability that allows the attacker to <strong>include</strong> and <strong>read</strong> local files on the server.</p>
+  </li>
+  <li>
+    <p>The main issue of these vulnerabilities is the lack of input validation, in which the user inputs are not sanitized or validated, and the user controls them.</p>
+  </li>
+</ul>
+
+<h3 id="the-risk">The Risk</h3>
+
+<ul>
+  <li>
+    <p>read sensitive data if you have readable permissions on files.</p>
+
+    <ul>
+      <li>leaking sensitive data accessed by a regular user.</li>
+    </ul>
+  </li>
+  <li>
+    <p>sometimes, <code class="language-plaintext highlighter-rouge">RCE</code> is possible.</p>
+  </li>
+</ul>
+
+<h3 id="testing-for-lfi">Testing for LFI</h3>
+
+<ul>
+  <li>
+    <p>HTTP <code class="language-plaintext highlighter-rouge">GET</code> and <code class="language-plaintext highlighter-rouge">POST</code> parameters.</p>
+  </li>
+  <li>
+    <p>Parameters are query parameter strings attached to the URL that could be used to retrieve data or perform actions based on user input.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/dbf35cc4f35fde7a4327ad8b5a2ae2ec.png" alt="" /></p>
+
+<ul>
+  <li>In addition, other entry points can be used depending on the web application, and where can consider the User-Agent, Cookies, session, and other HTTP headers.</li>
+</ul>
+
+<p>#important</p>
+
+<ul>
+  <li>The following are some Linux system files that have sensitive information:</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/etc/issue
+/etc/passwd
+/etc/shadow
+/etc/group
+/etc/hosts
+/etc/motd
+/etc/mysql/my.cnf
+/proc/[0-9]*/fd/[0-9]*   (first number is the PID, second is the filedescriptor)
+/proc/self/environ
+/proc/version
+/proc/cmdline
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>As a test case, we can always try /etc/passwd against Linux OS since it is readable for sure. We can also try to include using different techniques such as:</p>
+
+    <ul>
+      <li>A direct file inclusion, which starts with <code class="language-plaintext highlighter-rouge">/etc/passwd</code></li>
+      <li>using <code class="language-plaintext highlighter-rouge">..</code> to get out the current directory, the number of <code class="language-plaintext highlighter-rouge">..</code> is varies depending on the web app directory.</li>
+      <li>Bypassing filters using <code class="language-plaintext highlighter-rouge">....//</code>.</li>
+      <li>URL encoding techniques (such as double encoding)</li>
+    </ul>
+  </li>
+  <li>
+    <p>Examples:</p>
+  </li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://example.thm.labs/page.php?file=/etc/passwd 
+http://example.thm.labs/page.php?file=../../../../../../etc/passwd 
+http://example.thm.labs/page.php?file=../../../../../../etc/passwd%00 
+http://example.thm.labs/page.php?file=....//....//....//....//etc/passwd 
+http://example.thm.labs/page.php?file=%252e%252e%252fetc%252fpasswd
+</code></pre></div></div>
+
+<h3 id="exploiting-lfi">Exploiting LFI</h3>
+
+<p>#php</p>
+
+<ul>
+  <li>
+    <p>If we are dealing with a PHP web application, then we can use a PHP-supported Wrapper.</p>
+  </li>
+  <li>
+    <p>PHP provides various methods of transmission of data (Input/Output stream) to allow PHP to read from.</p>
+
+    <ul>
+      <li>It will enable reading data via various data type channels.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="php-filter">PHP Filter</h4>
+
+<ul>
+  <li>
+    <p>The PHP filter wrapper is used in LFI to read the actual PHP page content.</p>
+  </li>
+  <li>
+    <p>In typical cases, it is not possible to read a PHP file’s content via LFI because PHP files get executed and never show the existing code.</p>
+
+    <ul>
+      <li>However, we can use the PHP filter to display the content of PHP files in other encoding formats such as base64 or ROT13.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Reading the /etc/passwd file using the PHP filter wrapper:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">http://example.thm.labs/page.php?file=php://filter/resource=/etc/passwd</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Now try to read the index.php file using a PHP filter; we get errors because the web server tries to execute the PHP code. To avoid this, we can use a PHP filter while base64 or ROT13 encoding the output as follows:</p>
+  </li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://example.thm.labs/page.php?file=php://filter/read=string.rot13/resource=/etc/passwd 
+http://example.thm.labs/page.php?file=php://filter/convert.base64-encode/resource=/etc/passwd
+</code></pre></div></div>
+
+<h3 id="php-data">PHP DATA</h3>
+
+<p>#phpwrapper</p>
+
+<ul>
+  <li>
+    <p>The PHP wrapper is used to include raw plain text or base64 encoded data.</p>
+
+    <ul>
+      <li>It is used to include images on the current page.</li>
+      <li>It is being used in LFI exploit.</li>
+    </ul>
+  </li>
+  <li>
+    <p>we can include our base64 data into the vulnerable page as follows:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">http://example.thm.labs/page.php?file=data://text/plain;base64,QW9DMyBpcyBmdW4hCg==</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>As a result, the page will show our lovely message, which is AoC3 is fun!.</p>
+  </li>
+  <li>
+    <p>Using this technique, we can include PHP code into a page, by encoding the required PHP code and including it into PHP data wrapper.</p>
+  </li>
+</ul>
+
+<h3 id="lfi-to-rce-via-log-files">LFI to RCE via Log files</h3>
+
+<ul>
+  <li>
+    <p>It is also called a log poisoning attack.</p>
+  </li>
+  <li>
+    <p>It is a technique used to gain remote command execution on the webserver.</p>
+  </li>
+  <li>
+    <p>The attacker needs to include a malicious payload into services log files such as Apache, SSH, etc.</p>
+  </li>
+  <li>
+    <p>Then, the LFI vulnerability is used to request the page that includes the malicious payload.</p>
+  </li>
+  <li>
+    <p>Exploiting this kind of attack depends on various factors, including the design of the web application and server configurations.</p>
+
+    <ul>
+      <li>
+        <p>Thus, it requires enumerations, analysis, and an understanding of how the web application works.</p>
+      </li>
+      <li>
+        <p>For example, a user can include a malicious payload into an apache log file via User-Agent or other HTTP headers.</p>
+
+        <ul>
+          <li>In SSH, the user can inject a malicious payload in the username section.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The <strong>User-Agent</strong> is an HTTP header that includes the user’s browser information to let servers identify the type of operating system, vendor, and version.</p>
+  </li>
+  <li>
+    <p>Therefore, in order to get the RCE, you need to include PHP code into User-Agent and send a request to the log file using the LFI to execute in the browser.</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-A</span> <span class="s2">"This is testing"</span> http://10-10-30-212.p.thmlabs.com/login.php
+</code></pre></div></div>
+
+<ul>
+  <li>Inject php code:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-A</span> <span class="s2">"&lt;?php phpinfo();?&gt;"</span> http://10-10-30-212.p.thmlabs.com/login.php
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <ul>
+      <li>
+        <p>Now using the LFI, load the log file to get the PHP code executed.</p>
+
+        <ul>
+          <li>Note that it is important to visit the log file via LFI.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="lfi-to-rce-via-php-sessions">LFI to RCE via PHP Sessions</h3>
+
+<ul>
+  <li>
+    <p>The LFI to RCE via PHP sessions follows the same concept of the log poisoning technique.</p>
+  </li>
+  <li>
+    <p>PHP sessions are files within the operating system that store temporary information.</p>
+
+    <ul>
+      <li>After the user logs out of the web application, the PHP session information will be deleted.</li>
+    </ul>
+  </li>
+  <li>
+    <p>This technique requires enumeration to read the PHP configuration file first, and then we know where the PHP sessions files are.</p>
+  </li>
+  <li>
+    <p>Then, we include a PHP code into the session and finally call the file via LFI.</p>
+  </li>
+  <li>
+    <p>PHP stores session data in files within the system in different locations based on the configuration.</p>
+  </li>
+</ul>
+
+<p>The following are some of the common locations that the PHP stores in:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c:\Windows\Temp
+/tmp/
+/var/lib/php5
+/var/lib/php/session
+</code></pre></div></div>
+
+<ul>
+  <li></li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>Deploy the attached VM and look around. What is the entry point for our web application?</li>
+</ol>
+
+<ul>
+  <li>Figured this out by looking at the URL: <code class="language-plaintext highlighter-rouge">http://10.10.150.46/index.php?err=error.txt</code></li>
+</ul>
+
+<p>A: err</p>
+
+<ol>
+  <li>Use the entry point to perform LFI to read the /etc/flag file. What is the flag?</li>
+</ol>
+
+<ul>
+  <li>changed the file included to <code class="language-plaintext highlighter-rouge">/etc/flag</code> and the flag popped up on the screen</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-19%2010-59-11.png" alt="" /></p>
+
+<p>A: THM{d29e08941cf7fe41df55f1a7da6c4c06}</p>
+
+<ol>
+  <li>Use the PHP filter technique to read the source code of the index.php. What is the $flag variable’s value?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Used the following payload: <code class="language-plaintext highlighter-rouge">http://10.10.150.46/index.php?err=php://filter/convert.base64-encode/resource=index.php</code></p>
+  </li>
+  <li>
+    <p>Got a very long base64 result: <code class="language-plaintext highlighter-rouge">PD9waHAgc2Vzc2lvbl9zdGFydCgpOwokZmxhZyA9ICJUSE17NzkxZDQzZDQ2MDE4YTBkODkzNjFkYmY2MGQ1ZDllYjh9IjsKaW5jbHVkZSgiLi9pbmNsdWRlcy9jcmVkcy5waHAiKTsKaWYoJF9TRVNTSU9OWyd1c2VybmFtZSddID09PSAkVVNFUil7ICAgICAgICAgICAgICAgICAgICAgICAgCgloZWFkZXIoICdMb2NhdGlvbjogbWFuYWdlLnBocCcgKTsKCWRpZSgpOwp9IGVsc2UgewoJJGxhYk51bSA9ICIiOwogIHJlcXVpcmUgIi4vaW5jbHVkZXMvaGVhZGVyLnBocCI7Cj8+CjxkaXYgY2xhc3M9InJvdyI+CiAgPGRpdiBjbGFzcz0iY29sLWxnLTEyIj4KICA8L2Rpdj4KICA8ZGl2IGNsYXNzPSJjb2wtbGctOCBjb2wtb2Zmc2V0LTEiPgogICAgICA8P3BocCBpZiAoaXNzZXQoJGVycm9yKSkgeyA/PgogICAgICAgICAgPHNwYW4gY2xhc3M9InRleHQgdGV4dC1kYW5nZXIiPjxiPjw/cGhwIGVjaG8gJGVycm9yOyA/PjwvYj48L3NwYW4+CiAgICAgIDw/cGhwIH0KCj8+CiA8cD5XZWxjb21lIDw/cGhwIGVjaG8gZ2V0VXNlck5hbWUoKTsgPz48L3A+Cgk8ZGl2IGNsYXNzPSJhbGVydCBhbGVydC1kYW5nZXIiIHJvbGU9ImFsZXJ0Ij5UaGlzIHNlcnZlciBoYXMgc2Vuc2l0aXZlIGluZm9ybWF0aW9uLiBOb3RlIEFsbCBhY3Rpb25zIHRvIHRoaXMgc2VydmVyIGFyZSBsb2dnZWQgaW4hPC9kaXY+IAoJPC9kaXY+Cjw/cGhwIGlmKCRlcnJJbmNsdWRlKXsgaW5jbHVkZSgkX0dFVFsnZXJyJ10pO30gPz4KPC9kaXY+Cgo8P3BocAp9Cj8+</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-19%2011-07-14.png" alt="" /></p>
+
+<ul>
+  <li>If we decode it, we get the flag</li>
+</ul>
+
+<p>A: THM{791d43d46018a0d89361dbf60d5d9eb8}</p>
+
+<p>McSkidy forgot his login credential. Can you help him to login in order to recover one of the server’s passwords?</p>
+
+<ol>
+  <li>Now that you read the index.php, there is a login credential PHP file’s path. Use the PHP filter technique to read its content. What are the username and password?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>used the following payload: <code class="language-plaintext highlighter-rouge">http://10.10.30.212/index.php?err=php://filter/convert.base64-encode/resource=/var/www/html/includes/creds.php</code></p>
+  </li>
+  <li>
+    <p>Got the following decoded from base64 text:</p>
+  </li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span> 
+<span class="nv">$USER</span> <span class="o">=</span> <span class="s2">"McSkidy"</span><span class="p">;</span>
+<span class="nv">$PASS</span> <span class="o">=</span> <span class="s2">"A0C315Aw3s0m"</span><span class="p">;</span>
+<span class="o">?</span>
+</code></pre></div></div>
+
+<p>A: McSkidy:A0C315Aw3s0m</p>
+
+<ol>
+  <li>Use the credentials to login into the web application. Help McSkidy to recover the server’s password. What is the password of the flag.thm.aoc server?</li>
+</ol>
+
+<p>A: THM{552f313b52e3c3dbf5257d8c6db7f6f1}</p>
+
+<ol>
+  <li>The web application logs all users’ requests, and only authorized users can read the log file. Use the LFI to gain RCE via the log file page. What is the hostname of the webserver? The log file location is at ./includes/logs/app_access.log.</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Curled some php: <code class="language-plaintext highlighter-rouge">curl -A "&lt;?php phpinfo();?&gt;" http://10-10-30-212.p.thmlabs.com/login.php</code></p>
+  </li>
+  <li>
+    <p>Then used LFI to load the page: <code class="language-plaintext highlighter-rouge">http://10.10.30.212/index.php?err=php://filter/resource=/var/www/html/includes/logs/app_access.log</code></p>
+  </li>
+  <li>
+    <p>Got a bunch of info:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-19%2018-31-51.png" alt="" /></p>
+
+<p>A: lfi-aoc-awesome-59aedca683fff9261263bb084880c965</p>
+
+<ol>
+  <li>Bonus: The current PHP configuration stores the PHP session files in /tmp. Use the LFI to call the PHP session file to get your PHP code executed.</li>
+</ol>
+
+<h2 id="day-7-web-exploitation-migration-without-security">[Day 7] <code class="language-plaintext highlighter-rouge">Web Exploitation</code> Migration Without Security</h2>
+
+<p>#nosql</p>
+
+<h3 id="what-are-nosql-and-mongodb">What are NoSQL and MongoDB?</h3>
+<ul>
+  <li>
+    <p>A NoSQL database refers to a non-relational database</p>
+  </li>
+  <li>
+    <p>NoSQL databases are commonly used nowadays for <strong>Big Data</strong> and <strong>IoT devices</strong> due to their powerful features such as <em>fast queries</em>, <em>ease of use</em> to developers, <em>scale</em> easily, and <em>flexible data structure</em>.</p>
+  </li>
+  <li>
+    <p>NoSQL Databases:  <em>MongoDB</em>, <em>Couchbase</em>, <em>RavenDB</em></p>
+  </li>
+</ul>
+
+<p>#mongodb</p>
+
+<ul>
+  <li>
+    <p>MongoDB consists of databases, tables, fields but with different names where:</p>
+
+    <ul>
+      <li><strong>Collections</strong> are similar to tables or views in MySQL and MSSQL.</li>
+      <li><strong>Documents</strong> are similar to rows or records in MySQL and MSSQL.</li>
+      <li><strong>Fields</strong> are similar to columns in MySQL and MSSQL.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Documents in MongoDB are objects stored in a format called <code class="language-plaintext highlighter-rouge">BSON</code>, which supports <code class="language-plaintext highlighter-rouge">JSON</code> data types for document storing.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/753375399860b87237241fbd9ab2af72.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>compare the <a href="https://docs.mongodb.com/manual/reference/operator/query/">query operators</a> between MongoDB and MySQL:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">$and</code> equivalent to <code class="language-plaintext highlighter-rouge">AND</code> in MySQL</li>
+      <li><code class="language-plaintext highlighter-rouge">$or</code> equivalent to <code class="language-plaintext highlighter-rouge">OR</code> in MySQL</li>
+      <li><code class="language-plaintext highlighter-rouge">$eq</code> equivalent to <code class="language-plaintext highlighter-rouge">=</code> in MySQL</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="interacting-with-a-mongodb-server">Interacting with a MongoDB server</h3>
+
+<ul>
+  <li>
+    <p>start mongo with <code class="language-plaintext highlighter-rouge">mongo</code> command</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">show</code> - list all the databases that we have in MongoDB</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-20%2020-44-14.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">use</code> - connect to a database if it exists or creates one if it doesn’t.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">db.createCollection()</code> - create new collections</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">db.getCollectionNames()</code> - show available collections</li>
+    </ul>
+  </li>
+  <li>
+    <p>we create a document within the users collection and insert data into it:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">db.users.insert({id:"1", username: "admin", email: "admin@thm.labs", password: "idk2021!"})</code></p>
+
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">db.users.find()</code> - show available documents</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Note that MongoDB automatically creates a unique ID called _id for each document within the collection</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">db.users.update({id:"2"}, {$set: {username: "tryhackme"}});</code> - update the document with id=2 and update the username</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">db.users.remove({'id':'2'})</code> - remove document with id=2</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">db.users.drop()</code> - drop the collection</p>
+  </li>
+</ul>
+
+<h3 id="what-is-nosql-injection">What is NoSQL Injection?</h3>
+
+<p>#nosqlinjection</p>
+
+<ul>
+  <li>
+    <p>A NoSQL injection happens by sending queries via untrusted and unfiltered web application input, which leads to leaked unauthorized information.</p>
+
+    <ul>
+      <li>In addition, the attacker can use the NoSQL injection to perform various operations such as <em>modifying data</em>, <em>escalating privileges</em>, <em>DoS attacks</em>, and others.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="bypassing-login-pages">Bypassing login pages!</h3>
+
+<ul>
+  <li>
+    <p>first, connect to the database and then look for a certain username and password;</p>
+
+    <ul>
+      <li>if they exist in the collection (in the database), then we have a valid entry.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The following is the query that is used in the web applications used on our login page:  <code class="language-plaintext highlighter-rouge">db.users.find({query})</code> or <code class="language-plaintext highlighter-rouge">db.users.findOne(query)</code>  functions where the query is <code class="language-plaintext highlighter-rouge">JSON</code> data that’s send via the application:  {<code class="language-plaintext highlighter-rouge">"username": "admin", "password":"adminpass"}</code>.</p>
+
+    <ul>
+      <li>Note that when we provide the correct credentials, a document returns, while a <code class="language-plaintext highlighter-rouge">null</code> reply is received when providing the wrong credentials when nothing matches!</li>
+    </ul>
+  </li>
+  <li>
+    <p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-20%2020-56-46.png" alt="" /></p>
+  </li>
+  <li>
+    <p>MongoDB operators that we need to be familiar with that are heavily used in the injections:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">$eq</code> - matches records that equal to a certain value</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">$ne</code> - matches records that are not equal to a certain value</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">$gt</code> - matches records that are greater than a certain value.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">$where</code> - matches records based on Javascript condition</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">$exists</code> - matches records that have a certain field</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">$regex</code> - matches records that satisfy certain regular expressions.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>we will be exploiting the logic of the login query by injecting a JSON object which includes one of the NoSQL operators, which is <code class="language-plaintext highlighter-rouge">$ne</code>:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-20%2020-58-58.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">db.users.findOne({username: "admin", password: {"$ne":"xyz"}})</code></p>
+  </li>
+  <li>
+    <p>We injected a JSON objection {“$ne”: “XYZ”}  in the password field, and we changed the logic to become as follows:</p>
+
+    <ul>
+      <li>We are telling MongoDB to find a document (user) with a username equal to admin and his password is not equal to xyz, which turns this statement to TRUE because the admin’s password is not xyz.</li>
+    </ul>
+  </li>
+  <li>
+    <p>As a result, we have successfully retrieved the document from MongoDB since our statement’s logic is true.</p>
+
+    <ul>
+      <li>By applying this concept against a login page of a web application, we will be able to bypass the login page.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Now let’s say if we wanted to log in to a system as another user who is not admin.</p>
+  </li>
+  <li>
+    <p>In this case, we can also inject into a username field to be as follows:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">db.users.findOne({username:{"$ne":"admin"},password:{"$ne":"xyz"}})</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="exploiting-nosql-injection">Exploiting NoSQL injection</h3>
+
+<ul>
+  <li>
+    <p>To exploit NoSQL injection within the web application, first, you need to find an entry point that <strong>doesn’t sanitize the user’s input</strong>.</p>
+  </li>
+  <li>
+    <p>Next, you need to understand how the web application passes the request to the database!</p>
+  </li>
+  <li>
+    <p>Sometimes, the web app accepts the user’s input via <code class="language-plaintext highlighter-rouge">GET</code> or <code class="language-plaintext highlighter-rouge">POST</code> queries, and sometimes web applications accept a JSON object, as is the case with <code class="language-plaintext highlighter-rouge">APIs</code>.</p>
+  </li>
+  <li>
+    <p>To interact with MongoDB via GET or POST is by injecting an array of the MongoDB operator to match the JSON objection to match the <code class="language-plaintext highlighter-rouge">Key: Value</code>.</p>
+  </li>
+  <li>
+    <p>The following is an example of how to inject via URL:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">http://example.thm.labs/search?username=admin&amp;role[$ne]=user</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Note that we inject the MongoDB operator <code class="language-plaintext highlighter-rouge">[$ne]</code> (not equal) in the role parameter.</p>
+  </li>
+  <li>
+    <p>We will try to list all usernames that have a <code class="language-plaintext highlighter-rouge">user</code> role!</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">http://example.thm.labs/search?username[$ne]=ben&amp;role=user</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>As a result, the web application will return many records from MongoDB that satisfy the query.</p>
+  </li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>Interact with the MongoDB server to find the flag. What is the flag?</li>
+</ol>
+
+<ul>
+  <li>used the Flagdb database, showed the collections and then the document that is in there</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-20%2020-53-19.png" alt="" /></p>
+
+<p>A: THM{8814a5e6662a9763f7df23ee59d944f9}</p>
+
+<ol>
+  <li>We discussed how to bypass login pages as an admin. Can you log into the application that Grinch Enterprise controls as <code class="language-plaintext highlighter-rouge">admin</code> and retrieve the flag?</li>
+</ol>
+
+<p>Use the knowledge given in AoC3 day 4 to setup and run Burp Suite proxy to intercept the HTTP request for the login page. Then modify the POST parameter.</p>
+
+<ul>
+  <li>intercepted the request using Burp then modified the password parameter to <code class="language-plaintext highlighter-rouge">password[$ne]=password</code> and then I got logged in.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/11ebe0504325632b2690ebb147fdcf58.png" alt="" /></p>
+
+<p>A: THM{b6b304f5d5834a4d089b570840b467a8}</p>
+
+<ol>
+  <li>Once you are logged in, use the gift search page to list all usernames that have <code class="language-plaintext highlighter-rouge">guest</code> roles. What is the flag?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-20%2021-14-38.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>used the following paylaod: <code class="language-plaintext highlighter-rouge">username[$ne]=guest&amp;role=guest</code></p>
+  </li>
+  <li>
+    <p>this is what was returned: 
+<img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-20%2021-17-37.png" alt="" /></p>
+  </li>
+</ul>
+
+<p>A: THM{2ec099f2d602cc4968c5267970be1326}</p>
+
+<ol>
+  <li>Use the gift search page to perform NoSQL injection and retrieve the <code class="language-plaintext highlighter-rouge">mcskidy</code> record. What is the details record?</li>
+</ol>
+
+<ul>
+  <li>used the paylaod: <code class="language-plaintext highlighter-rouge">username=mcskidy&amp;role[$ne]=guest</code></li>
+</ul>
+
+<p>A: ID:6184f516ef6da50433f100f4:mcskidy:admin</p>
+
+<h2 id="day-8-special-by-john-hammond-santas-bag-of-toys">[Day 8] <code class="language-plaintext highlighter-rouge">Special by John Hammond</code> Santa’s Bag of Toys</h2>
+
+<p>#powershell</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">PowerShell Transcription Logs</code> capture the input and output of Windows PowerShell commands, allowing an analyst to review what happened when.</p>
+
+    <ul>
+      <li>Typically, PowerShell Transcription can be enabled by Group Policy, but another method to turn on this logging is by configuring the Windows Registry.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/db043444e0f48f521f7825b419465745.png" alt="" /></p>
+
+<h3 id="questions-5">Questions</h3>
+
+<ol>
+  <li>What operating system is Santa’s laptop running (“OS Name”)?</li>
+</ol>
+
+<ul>
+  <li>Opened the first powershell Transcript file and searched for ‘OS Name’</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2011-33-51.png" alt="" /></p>
+
+<p>A: Microsoft Windows 11 Pro</p>
+
+<ol>
+  <li>What was the password set for the new “backdoor” account?</li>
+</ol>
+
+<ul>
+  <li>You can find this info in the second file</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2011-36-42.png" alt="" /></p>
+
+<p>A: grinchstolechristmas</p>
+
+<ol>
+  <li>In one of the transcription logs,  the bad actor interacts with the target under the new backdoor user account, and copies a unique file to the Desktop. Before it is copied to the Desktop, what is the full path of the original file?</li>
+</ol>
+
+<ul>
+  <li>Find this info in the third file</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2011-39-31.png" alt="" /></p>
+
+<p>A: C:\Users\santa\AppData\Local\Microsoft\Windows\UsrClass.dat</p>
+
+<ol>
+  <li>The actor uses a Living Off The Land binary (LOLbin) to encode this file, and then verifies it succeeded by viewing the output file. What is the name of this LOLbin?</li>
+</ol>
+
+<ul>
+  <li>In the same file:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2011-41-40.png" alt="" /></p>
+
+<p>A: certutil.exe</p>
+
+<ol>
+  <li>Drill down into the folders and see if you can find anything that might indicate how we could better track down what this SantaRat really is. What specific folder name clues us in that this might be publicly accessible software hosted on a code-sharing platform?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Decoded the .dat file and then uploaded it to the desired tool to get the shellbags</p>
+  </li>
+  <li>
+    <p>Found the folder SantaRat and inside of it the answer to this question.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2011-58-55.png" alt="" /></p>
+
+<p>A: .github</p>
+
+<ol>
+  <li>Additionally, there is a unique folder named “Bag of Toys” on the Desktop! This must be where Santa prepares his collection of toys, and this is certainly sensitive data that the actor could have compromised. What is the name of the file found in this folder?</li>
+</ol>
+
+<p>A: bag_of_toys.zi</p>
+
+<ol>
+  <li>What is the name of the user that owns the SantaRat repository?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2012-00-30.png" alt="" /></p>
+
+<p>A: Grinchiest</p>
+
+<ol>
+  <li>Explore the other repositories that this user owns. What is the name of the repository that seems especially pertinent to our investigation?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2012-01-35.png" alt="" /></p>
+
+<p>A: operation-bag-of-toys</p>
+
+<ol>
+  <li>What is the name of the executable that installed a unique utility the actor used to collect the bag of toys?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2012-04-34.png" alt="" /></p>
+
+<p>A: uharc-cmd-install.exe</p>
+
+<ol>
+  <li>What are the contents of these “malicious” files (coal, mold, and all the others)?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2012-06-53.png" alt="" /></p>
+
+<p>A: Grinchmas</p>
+
+<ol>
+  <li>What is the password to the original bag_of_toys.uha archive? (You do not need to perform any password-cracking or bruteforce attempts)</li>
+</ol>
+
+<p><img src="Screenshot at 2022-05-29 12-08-46" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2012-10-25.png" alt="" /></p>
+
+<p>A: TheGrinchiestGrinchmasOfAll</p>
+
+<ol>
+  <li>How many original files were present in Santa’s Bag of Toys?</li>
+</ol>
+
+<ul>
+  <li>I used the password to unlock the UHA archive and find all of the presents.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2012-12-31.png" alt="" /></p>
+
+<p>A: 228</p>
+
+<h2 id="day-9-networking-where-is-all-this-data-going">[Day 9] <code class="language-plaintext highlighter-rouge">Networking</code> Where Is All This Data Going</h2>
+
+<p>#wireshark</p>
+
+<p><img src="/tryhackme/AdventCalendar2021/13c778e7c432bb30a029dd5495056cdf.png" alt="" /></p>
+
+<ul>
+  <li>Filter to only show get requests: <code class="language-plaintext highlighter-rouge">http.request.method == GET</code></li>
+</ul>
+
+<p>#dns</p>
+
+<ul>
+  <li>specify DNS packets: <code class="language-plaintext highlighter-rouge">udp.port==53</code> or <code class="language-plaintext highlighter-rouge">dns</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/0c75a59341f7cb5fab198054b5eb46a9.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>By expanding the <code class="language-plaintext highlighter-rouge">Domain Name System (query)</code> subtree, it is obvious that this packet is a question <code class="language-plaintext highlighter-rouge">Questions: 1</code>, where the client queries a domain name and looks for an answer from the server.</p>
+
+    <ul>
+      <li>Also, by checking the Queries subtree, we can see that the client is asking for a type <code class="language-plaintext highlighter-rouge">A</code> record of the <code class="language-plaintext highlighter-rouge">packet.tryhackme.com</code> domain name.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Next, we will be looking at the response to the DNS request.</p>
+  </li>
+  <li>
+    <p>In Wireshark, note that in the query request, which is the first DNS request, in the info field, we can see Transaction ID with a value of <code class="language-plaintext highlighter-rouge">query 0xef8e</code></p>
+  </li>
+  <li>
+    <p>Thus, this query reference number is used to find the right DNS response of that query.</p>
+
+    <ul>
+      <li>To confirm that, check the field section where showing query <code class="language-plaintext highlighter-rouge">response 0xef8e A packet.tryhackme.com.</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/a27736d55dd7c0c83666672113528df5.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>By double-clicking on the required packet, we can see that it has an answer section, where it has the answer to our query, which is Address: <code class="language-plaintext highlighter-rouge">127.0.0.1</code>.</p>
+  </li>
+  <li>
+    <p>This means that the type <code class="language-plaintext highlighter-rouge">A</code> DNS request of the <code class="language-plaintext highlighter-rouge">packet.tryhackme.com </code> is <code class="language-plaintext highlighter-rouge">127.0.0.1</code></p>
+  </li>
+  <li>
+    <p>we filter and list all FTP packets by using the following filter: <code class="language-plaintext highlighter-rouge">ftp</code> or <code class="language-plaintext highlighter-rouge">tcp.port == 21</code></p>
+  </li>
+  <li>
+    <p>The user logged into the FTP server using a username and password and uploaded a secret file.</p>
+  </li>
+  <li>
+    <p>Thus, the current Wireshark filter will not show the packet of the actual uploaded file.</p>
+
+    <ul>
+      <li>Instead, we can use the <code class="language-plaintext highlighter-rouge">ftp-data</code> Wireshark filter to list the packets that have the content of the file.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<ol>
+  <li>In the HTTP #1 - GET requests section, which directory is found on the web server?</li>
+</ol>
+
+<p>A: login</p>
+
+<ol>
+  <li>What is the username and password used in the login page in the HTTP #2 - POST section?</li>
+</ol>
+
+<ul>
+  <li>filtered to only show POST requests and then i followed the TCP stream to get the answer.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-22%2016-56-35.png" alt="" /></p>
+
+<p>A: McSkidy:Christmas2021</p>
+
+<ol>
+  <li>What is the User-Agent’s name that has been sent in HTTP #2 - POST section?</li>
+</ol>
+
+<ul>
+  <li>from the same window we get the answer for this question too.</li>
+</ul>
+
+<p>A: TryHackMe-UserAgent-THM{d8ab1be969825f2c5c937aec23d55bc9}</p>
+
+<ol>
+  <li>In the DNS section, there is a TXT DNS query. What is the flag in the message of that DNS query?</li>
+</ol>
+
+<ul>
+  <li>found the query for the TXT DNS query and then I followed the UDP stream.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-22%2017-09-21.png" alt="" /></p>
+
+<p>A: THM{dd63a80bf9fdd21aabbf70af7438c257}</p>
+
+<ol>
+  <li>In the FTP section, what is the FTP login password?</li>
+</ol>
+
+<ul>
+  <li>we filter the FTP packets and we get the answers for the next two questions</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-22%2017-14-36.png" alt="" /></p>
+
+<p>A: TryH@ckM3!</p>
+
+<ol>
+  <li>In the FTP section, what is the FTP command used to upload the secret.txt  file?</li>
+</ol>
+
+<p>A: STOR</p>
+
+<ol>
+  <li>In the FTP section, what is the content of the secret.txt file?</li>
+</ol>
+
+<ul>
+  <li>filtered the <code class="language-plaintext highlighter-rouge">ftp-data</code> packets and then checked details of the packet to get the answer</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-22%2017-17-33.png" alt="" /></p>
+
+<p>A: 123^-^321</p>
+
+<h2 id="day-10-networking-offensive-is-the-best-defence">[Day 10] <code class="language-plaintext highlighter-rouge">Networking</code> Offensive Is The Best Defence</h2>
+
+<p>#ip</p>
+
+<ul>
+  <li>
+    <p>On Microsoft Windows, one way to find your IP address is by running <code class="language-plaintext highlighter-rouge">ipconfig</code> in the command prompt or PowerShell.</p>
+  </li>
+  <li>
+    <p>On Linux and macOS, you can find your IP address by executing <code class="language-plaintext highlighter-rouge">ip address show</code> on the terminal.</p>
+  </li>
+  <li>
+    <p>Note that <code class="language-plaintext highlighter-rouge">ip</code> will accept abbreviations of arguments such as <code class="language-plaintext highlighter-rouge">ip addr show</code> or even <code class="language-plaintext highlighter-rouge">ip a s</code>.</p>
+  </li>
+</ul>
+
+<p>#port</p>
+
+<ul>
+  <li>
+    <p>Common protocols and their respective ports:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">HTTP</code>  - 80</li>
+      <li><code class="language-plaintext highlighter-rouge">HTTPS</code>	- 443</li>
+      <li><code class="language-plaintext highlighter-rouge">POP3</code>	- 110</li>
+      <li><code class="language-plaintext highlighter-rouge">SMTP</code>	- 25</li>
+      <li><code class="language-plaintext highlighter-rouge">SSH</code>	- 22</li>
+      <li><code class="language-plaintext highlighter-rouge">Telnet</code>- 23</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#nmap</p>
+
+<ul>
+  <li>
+    <p>To better understand the difference between <code class="language-plaintext highlighter-rouge">-sT</code> and <code class="language-plaintext highlighter-rouge">-sS</code>, we can use the analogy of knocking on a door.</p>
+
+    <ul>
+      <li>The TCP connect scan (<code class="language-plaintext highlighter-rouge">-sT</code>) is like knocking on a door, waiting for someone to open it, greeting each other, then excusing yourself to leave.</li>
+      <li>The TCP SYN scan (<code class="language-plaintext highlighter-rouge">-sS</code>) resembles knocking, and once someone answers, you pretend that it was not you that knocked and walk away innocently.
+        <ul>
+          <li>The latter will make it more difficult for the other party to remember you.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-7">Questions</h3>
+
+<ol>
+  <li>Help McSkidy and run nmap -sT MACHINE_IP. How many ports are open between 1 and 100?</li>
+</ol>
+
+<ul>
+  <li>ran the scan with sudo because it only returned that ssh is opened only.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-23%2014-42-06.png" alt="" /></p>
+
+<p>A: 2</p>
+
+<ol>
+  <li>What is the smallest port number that is open?</li>
+</ol>
+
+<p>A: 22</p>
+
+<ol>
+  <li>What is the service related to the highest port number you found in the first question?</li>
+</ol>
+
+<p>A: HTTP</p>
+
+<ol>
+  <li>Now run nmap -sS MACHINE_IP. Did you get the same results? (Y/N)</li>
+</ol>
+
+<ul>
+  <li>this time you have to run the command with sudo.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-23%2014-43-06.png" alt="" /></p>
+
+<p>A: Y</p>
+
+<ol>
+  <li>If you want Nmap to detect the version info of the services installed, you can use nmap -sV MACHINE_IP. What is the version number of the web server?</li>
+</ol>
+
+<ul>
+  <li>added the <code class="language-plaintext highlighter-rouge">-sV</code> flag in order to return the version as well.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-23%2014-44-21.png" alt="" /></p>
+
+<p>A: Apache httpd 2.4.49</p>
+
+<ol>
+  <li>By checking the <a href="https://httpd.apache.org/security/vulnerabilities_24.html">vulnerabilities</a> related to the installed web server, you learn that there is a critical vulnerability that allows path traversal and remote code execution. Now you can tell McSkidy that Grinch Enterprises used this vulnerability. What is the CVE number of the vulnerability that was solved in version 2.4.51?</li>
+</ol>
+
+<ul>
+  <li>a quick look on the website provided and the answer is found:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-23%2014-45-41.png" alt="" /></p>
+
+<p>A: CVE-2021-42013</p>
+
+<ol>
+  <li>You are putting the pieces together and have a good idea of how your web server was exploited. McSkidy is suspicious that the attacker might have installed a backdoor. She asks you to check if there is some service listening on an uncommon port, i.e. outside the 1000 common ports that Nmap scans by default. She explains that adding -p1-65535 or -p- will scan all 65,535 TCP ports instead of only scanning the 1000 most common ports. What is the port number that appeared in the results now?</li>
+</ol>
+
+<ul>
+  <li>I only scanned ports 20000-21000 like the hint indicated to save some time.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-23%2014-48-52.png" alt="" /></p>
+
+<p>A: 20212</p>
+
+<ol>
+  <li>What is the name of the program listening on the newly discovered port?</li>
+</ol>
+
+<p>A: telnetd</p>
+
+<h2 id="day-11-networking-where-are-the-reindeers">[Day 11] <code class="language-plaintext highlighter-rouge">Networking</code> Where Are The Reindeers?</h2>
+
+<p>#mssqlserver</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">MS SQL Server</code> is a <strong>Relational Database Management System</strong> (RDBMS).</p>
+  </li>
+  <li>
+    <p>One simple way to think of a relational database is a group of tables that have relations.</p>
+  </li>
+  <li>
+    <p>Knowing the MS SQL Server is running and accessible over the network, we want to check if our username and password are still valid.</p>
+
+    <ul>
+      <li>we will use the command <code class="language-plaintext highlighter-rouge">sqsh</code> (pronounced skwish), an interactive database shell.</li>
+    </ul>
+  </li>
+  <li>
+    <p>A simple syntax would be <code class="language-plaintext highlighter-rouge">sqsh -S server -U username -P password</code>, where:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">-S server</code> is used to specify the server, for example <code class="language-plaintext highlighter-rouge">-S 10.10.199.126</code></li>
+      <li><code class="language-plaintext highlighter-rouge">-U username</code> is used to provide the username; for example, <code class="language-plaintext highlighter-rouge">-U sa</code> is the username that we have enabled.</li>
+      <li><code class="language-plaintext highlighter-rouge">-P password</code> lets us specify the password.</li>
+    </ul>
+  </li>
+  <li>
+    <p>we executed the query, <code class="language-plaintext highlighter-rouge">SELECT * FROM reindeer.dbo.names;</code>.</p>
+
+    <ul>
+      <li>
+        <p>This SQL query should dump all the contents of the table names from the database reindeer.</p>
+
+        <ul>
+          <li>Note that the ; indicates the end of the SQL query, while <code class="language-plaintext highlighter-rouge">go</code> sends a SQL batch to the database.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-43-53.png" alt="" /></p>
+
+<p>#interesting</p>
+
+<ul>
+  <li>
+    <p>Some MS SQL Servers have <code class="language-plaintext highlighter-rouge">xp_cmdshell</code> enabled.</p>
+
+    <ul>
+      <li>If this is the case, we might have access to something similar to a <code class="language-plaintext highlighter-rouge">command prompt</code>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The command syntax is <code class="language-plaintext highlighter-rouge">xp_cmdshell 'COMMAND';</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-49-44.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-50-00.png" alt="" /></p>
+
+<h3 id="questions-8">Questions</h3>
+
+<ol>
+  <li>There is an open port related to MS SQL Server accessible over the network. What is the port number?</li>
+</ol>
+
+<ul>
+  <li>Ran this command:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-24%2007-40-12.png" alt="" /></p>
+
+<p>A: 1433</p>
+
+<ol>
+  <li>If the connection is successful, you will get a prompt. What is the prompt that you have received?</li>
+</ol>
+
+<ul>
+  <li>Using the command <code class="language-plaintext highlighter-rouge">sqsh -S 10.10.199.126 -U sa -P t7uLKzddQzVjVFJp</code> I get a shell:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-40-30.png" alt="" /></p>
+
+<p>A: 1&gt;</p>
+
+<ol>
+  <li>We can see four columns in the table displayed above: id, first (name), last (name), and nickname. What is the first name of the reindeer of id 9?</li>
+</ol>
+
+<ul>
+  <li>We run the following commands:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-45-14.png" alt="" /></p>
+
+<p>A: Rudolph</p>
+
+<ol>
+  <li>Check the table schedule. What is the destination of the trip scheduled on December 7?</li>
+</ol>
+
+<ul>
+  <li>We run: <img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-46-44.png" alt="" /></li>
+</ul>
+
+<p>A: Prague</p>
+
+<ol>
+  <li>Check the table presents. What is the quantity available for the present “Power Bank”?</li>
+</ol>
+
+<ul>
+  <li>We run: <img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-47-37.png" alt="" /></li>
+</ul>
+
+<p>A: 25000</p>
+
+<ol>
+  <li>There is a flag hidden in the grinch user’s home directory. What are its contents?</li>
+</ol>
+
+<ul>
+  <li>Checked out the directories in <code class="language-plaintext highlighter-rouge">C:\Users\grinch</code> using the command:</li>
+</ul>
+
+<pre><code class="language-sqsh">1&gt; xp_cmdshell 'dir c:\Users\grinch'
+2&gt; go
+</code></pre>
+
+<ul>
+  <li>Nothing interesting popped up, so I checked the Documents directory next:</li>
+</ul>
+
+<pre><code class="language-sqsh">1&gt; xp_cmdshell 'dir c:\Users\grinch\Documents'
+2&gt; go
+</code></pre>
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-54-26.png" alt="" /></p>
+
+<ul>
+  <li>Found it! Now we use <code class="language-plaintext highlighter-rouge">type</code> to get the content of the file:</li>
+</ul>
+
+<pre><code class="language-sqsh">1&gt; xp_cmdshell 'type c:\Users\grinch\Documents\flag.txt'
+2&gt; go
+</code></pre>
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2011-55-23.png" alt="" /></p>
+
+<p>A: THM{YjtKeUy2qT3v5dDH}</p>
+
+<h2 id="day-12-networking-sharing-without-caring">[Day 12] <code class="language-plaintext highlighter-rouge">Networking</code> Sharing Without Caring</h2>
+
+<p>#nfs</p>
+
+<ul>
+  <li>
+    <p><strong>Network File System (NFS)</strong> is a protocol that allows the ability to <em>transfer files</em> between different computers and is available on many systems, including MS Windows and Linux.</p>
+  </li>
+  <li>
+    <p>Now that we have discovered an NFS service is listening, let’s check what files are being shared.</p>
+
+    <ul>
+      <li>We can do this using the command <code class="language-plaintext highlighter-rouge">showmount</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>to mount the shares we have discovered, we can create a directory tmp1.</p>
+
+    <ul>
+      <li>Then we can use this directory to mount the public NFS share using: <code class="language-plaintext highlighter-rouge">mount 10.10.144.30:/my-notes tmp1</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="questions-9">Questions</h2>
+
+<ol>
+  <li>Scan the target server with the IP MACHINE_IP. Remember that MS Windows hosts block pings by default, so we need to add -Pn, for example, nmap -Pn MACHINE_IP for the scan to work correctly. How many TCP ports are open?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2012-18-38.png" alt="" /></p>
+
+<p>A: 7</p>
+
+<ol>
+  <li>In the scan results you received earlier, you should be able to spot NFS or mountd, depending on whether you used the -sV option with Nmap or not. Which port is detected by Nmap as NFS or using the mountd service?</li>
+</ol>
+
+<ul>
+  <li>Check the result of nmap</li>
+</ul>
+
+<p>A: 2049</p>
+
+<ol>
+  <li>How many shares did you find?</li>
+</ol>
+
+<ul>
+  <li>We run <code class="language-plaintext highlighter-rouge">showmount -e 10.10.144.30</code>, where <code class="language-plaintext highlighter-rouge">-e</code> is <code class="language-plaintext highlighter-rouge">--exports</code> and shows the NFS server’s export list</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2012-22-29.png" alt="" /></p>
+
+<p>A: 4</p>
+
+<ol>
+  <li>How many shares show “everyone”?</li>
+</ol>
+
+<p>A: 3</p>
+
+<ol>
+  <li>What is the title of file 2680-0.txt?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Had to use sudo to make it work
+<img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2012-26-15.png" alt="" /></p>
+  </li>
+  <li>
+    <p>using <code class="language-plaintext highlighter-rouge">less 2680-0.txt</code> gets me the answer</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2012-27-39.png" alt="" /></p>
+
+<p>A: Meditations</p>
+
+<ol>
+  <li>It seems that Grinch Enterprises has forgotten their SSH keys on our system. One of the shares contains a private key used for SSH authentication (id_rsa). What is the name of the share?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>We had two choices for the shares to look into: confidential and admin-files</p>
+  </li>
+  <li>
+    <p>I tried the former: created another directory and then mount the share on that newly created directory.</p>
+  </li>
+  <li>
+    <p>inside it, we can find an ssh directory with the ssh keys in there.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2012-32-45.png" alt="" /></p>
+
+<p>A: confidential</p>
+
+<ol>
+  <li>We can calculate the MD5 sum of a file using md5sum FILENAME. What is the MD5 sum of id_rsa?</li>
+</ol>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">md5sum id_rsa</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-25%2012-33-32.png" alt="" /></p>
+
+<p>A: 3e2d315a38f377f304f5598dc2f044de</p>
+
+<h2 id="day-13-networking-they-lost-the-plan">[Day 13] <code class="language-plaintext highlighter-rouge">Networking</code> They Lost The Plan!</h2>
+
+<p>#windows #privilegeescalation</p>
+
+<ul>
+  <li>
+    <p>On a typical Windows server, you may find several different account types; these are summarized below.</p>
+
+    <ul>
+      <li>
+        <p><strong>Domain Administrators</strong>: This is typically the highest account level you will find in an enterprise along with Enterprise Administrators. An account with this level of privilege can manage all accounts of the organization, their access levels, and almost anything you can think of. A “domain” is a central registry used to manage all users and computers within the organization.</p>
+      </li>
+      <li>
+        <p><strong>Services</strong>: Accounts used by software to perform their tasks such as back-ups or antivirus scans.</p>
+      </li>
+      <li>
+        <p><strong>Domain users</strong>: Accounts typically used by employees. These should have just enough privileges to do their daily jobs. For example, a system administrator may restrict a user’s ability to install and uninstall software.</p>
+      </li>
+      <li>
+        <p><strong>Local accounts</strong>: These accounts are only valid on the local system and can not be used over the domain.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="windows-privilege-escalation-vectors">Windows Privilege Escalation Vectors</h3>
+
+<ul>
+  <li>
+    <p>Vectors:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Stored Credentials</code>: Important credentials can be saved in files by the user or in the configuration file of an application installed on the target system.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Windows Kernel Exploit</code>: The Windows operating system installed on the target system can have a known vulnerability that can be exploited to increase privilege levels.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Insecure File/Folder Permissions</code>: In some situations, even a low privileged user can have read or write privileges over files and folders that can contain sensitive information.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Insecure Service Permissions</code>: Similar to permissions over sensitive files and folders, low privileged users may have rights over services. These can be somewhat harmless such as querying the service status (SERVICE_QUERY_STATUS) or more interesting rights such as starting and stopping a service (SERVICE_START and SERVICE_STOP, respectively).</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">DLL Hijacking</code>: Applications use DLL files to support their execution. You can think of these as smaller applications that can be launched by the main application. Sometimes DLLs that are deleted or not present on the system are called by the application. This error doesn’t always result in a failure of the application, and the application can still run. Finding a DLL the application is looking for in a location we can write to can help us create a malicious DLL file that will be run by the application. In such a case, the malicious DLL will run with the main application’s privilege level. If the application has a higher privilege level than our current user, this could allow us to launch a shell with a higher privilege level.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Unquoted Service Path</code>: If the executable path of a service contains a space and is not enclosed within quotes, a hacker could introduce their own malicious executables to run instead of the intended executable.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Always Install Elevated</code>: Windows applications can be installed using Windows Installer (also known as MSI packages) files. These files make the installation process easy and straightforward. Windows systems can be configured with the “AlwaysInstallElevated” policy. This allows the installation process to run with administrator privileges without requiring the user to have these privileges. This feature allows users to install software that may need higher privileges without having this privilege level. If “AlwaysInstallElevated” is configured, a malicious executable packaged as an MSI file could be run to obtain a higher privilege level.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Other software</code>: Software, applications, or scripts installed on the target machine may also provide privilege escalation vectors.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="initial-information-gathering">Initial Information Gathering</h3>
+
+<ul>
+  <li>
+    <p>Users on the target system.</p>
+
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">net users</code> command will list users on the target system.</li>
+    </ul>
+  </li>
+  <li>
+    <p>OS version:</p>
+
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">systeminfo | findstr /B /C: "OS Name"/C: "OS Version"</code> command will output information about the operating system.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Installed services:</p>
+  </li>
+</ul>
+
+<p>#wmic</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- the `wmic service list` command will list services installed on the target system ### Questions
+</code></pre></div></div>
+
+<ol>
+  <li>Complete the username: p…..</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-28%2012-50-46.png" alt="" /></p>
+
+<p>A: pepper</p>
+
+<ol>
+  <li>What is the OS version?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-28%2012-56-10.png" alt="" /></p>
+
+<p>A: 10.0.17763 N/A Build 17763</p>
+
+<ol>
+  <li>What backup service did you find running on the system?</li>
+</ol>
+
+<ul>
+  <li>Ran <code class="language-plaintext highlighter-rouge">wmic service list | findstr "Iperius"</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-28%2013-00-32.png" alt="" /></p>
+
+<p>A: IperiusSVC</p>
+
+<ol>
+  <li>What is the path of the executable for the backup service you have identified?</li>
+</ol>
+
+<ul>
+  <li>Copy from the result of the previous command</li>
+</ul>
+
+<p>A: C:\Program FIles (x86)\Iperius Backup\IperiusService.exe</p>
+
+<ol>
+  <li>Run the whoami command on the connection you have received on your attacking machine. What user do you have?</li>
+</ol>
+
+<p>A: the-grinch-hack\thegrinch</p>
+
+<ol>
+  <li>What is the content of the flag.txt file?</li>
+</ol>
+
+<p>A: THM-736635221</p>
+
+<ol>
+  <li>The Grinch forgot to delete a file where he kept notes about his schedule! Where can we find him at 5:30?</li>
+</ol>
+
+<p>A: jazzercize</p>
+
+<h2 id="day-14-networking-devinsecureops">[Day 14] <code class="language-plaintext highlighter-rouge">Networking</code> Dev(Insecure)Ops</h2>
+
+<p>#devops #ci #cd</p>
+
+<h3 id="what-is-cicd">What is CI/CD</h3>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">CI</code>: <strong>Continuous Integration</strong> is the process in which software source code is kept in a central repository (such as GitHub).</p>
+
+    <ul>
+      <li>All changes are stored in this central repository to avoid ending up with different versions of the same code.</li>
+    </ul>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">CD</code>: <strong>Continuous Delivery</strong> is the following (sometimes integral) step of the continuous integration model where code is automatically deployed to the test, pre-production, or production environments.</p>
+
+    <ul>
+      <li>CD is sometimes used as an acronym for “<strong>Continuous Deployment</strong>”.</li>
+    </ul>
+  </li>
+  <li>
+    <p>If you feel like the terms above don’t seem to have clear limits, you are right.</p>
+
+    <ul>
+      <li>CI, CD, and the other CD are all part of DevOps best practices that aim to make code delivery <em>faster</em> and <em>more reliable</em>.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>CI/CD</strong> should be considered as a <em>set of practices</em> that are put in place to enable development teams to make changes, test their code, and deploy the application more reliably.</p>
+  </li>
+  <li>
+    <p>However, some risks associated with the CI/CD process should be taken into consideration when dealing with such an integration.</p>
+
+    <ul>
+      <li>As a penetration tester, one of our goals would be to uncover weaknesses in the automation process.</li>
+    </ul>
+  </li>
+  <li>
+    <p>These can vary from file permissions to configuration errors made when installing any CI/CD automation software.</p>
+
+    <ul>
+      <li>DevOps teams typically use software such as Jenkins, GitLab, Bamboo, AWS CodePipeline, etc., to automate CI/CD steps summarized above.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Major risks related to a CI/CD integration:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Access security</code>: The increasing number of integration points can make access management difficult. Any component integrated with the process may need partial or full access to another component. In this case, allowing too much access can also open a path for malicious activity.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Permissions</code>: Components are connected with each other and perform their tasks with user accounts. Similar to access security, user permissions should be checked.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Keys and secrets</code>: Many integrations are done using keys (API keys, ID keys, etc.) or secrets. These should be secured. Otherwise, anyone could potentially access resources using this authentication method.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">User security</code>: User accounts are another successful attack vector often used by cybercriminals. Any user who has access to the source code repository could include a malicious component in the codebase and could be included in the deployed application.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Default configuration</code>: Some platforms are known to have default credentials and vulnerabilities. If the default credentials are not changed, and in use within the CI/CD process, this could result in the complete compromise of the infrastructure.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-10">Questions</h3>
+
+<ol>
+  <li>How many pages did the dirb scan find with its default wordlist?</li>
+</ol>
+
+<ul>
+  <li>Used <code class="language-plaintext highlighter-rouge">dirb http://10.10.173.24</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2011-16-36.png" alt="" /></p>
+
+<p>A: 4</p>
+
+<ol>
+  <li>How many scripts do you see in the /home/thegrinch/scripts folder?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2011-08-17.png" alt="" /></p>
+
+<p>A: 4</p>
+
+<ol>
+  <li>What are the five characters following $6$G in pepper’s password hash?</li>
+</ol>
+
+<ul>
+  <li>Changed the content of the loot.sh script to <code class="language-plaintext highlighter-rouge">cat /etc/shadow &gt; /var/www/html/ls.html</code> and after some time I got the result on the web page.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-29%2011-16-00.png" alt="" /></p>
+
+<p>A: ZUP42</p>
+
+<ol>
+  <li>What is the content of the flag.txt file on the Grinch’s user’s desktop?</li>
+</ol>
+
+<ul>
+  <li>I used the same loot.sh script but this time I added the command <code class="language-plaintext highlighter-rouge">cat /home/thegrinch/Desktop/flag.txt &gt; /var/www/html/ls.html</code></li>
+</ul>
+
+<p>A: DI3H4rdIsTheBestX-masMovie!</p>
+
+<h2 id="day-16-osint-ransomware-madness">[Day 16] <code class="language-plaintext highlighter-rouge">OSINT</code> Ransomware Madness</h2>
+
+<p>#osint</p>
+
+<ul>
+  <li>
+    <p>OSINT stands for <strong>Open Source Intelligence</strong>, information that can be obtained from free and public sources.</p>
+
+    <ul>
+      <li>Offensive teams commonly use OSINT to perform reconnaissance on a target, an individual, or a corporation.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Information</strong> is at the core of OSINT; information is typically found in two places:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Clearnet</code>: This refers to anything you can publicly access from your traditional web browser, including:
+  	- Facebook
+        <ul>
+          <li>Twitter</li>
+          <li>GitHub</li>
+        </ul>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">Darknet</code>: The darknet is accessed using special software and requires additional configuration; it is most commonly used by privacy-minded individuals, whistleblowers, censored people, criminals, journalists, and government law enforcement agencies. Below are a few examples of what the darknet has to offer:</p>
+
+        <ul>
+          <li>TOR</li>
+          <li>Freenet</li>
+          <li>I2P</li>
+          <li>IPFS</li>
+          <li>Zeronet</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="osint-process-cycle">OSINT Process Cycle</h3>
+
+<ul>
+  <li>The <strong>RIS OSINT data-information model</strong> outlines an approach to gathering information to identify and categorize data.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/88f137b6e95bfb541532a6580a74734e.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Intelligence is obtained from information that is obtained from data.</p>
+
+    <ul>
+      <li>
+        <p>Intelligence will ultimately lead you or your customer to a decision.</p>
+
+        <ul>
+          <li>This decision will determine where in the next model you will move.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The RIS OSINT Roller Coaster outlines phases of an OSINT investigation centering around the client.</p>
+  </li>
+  <li>
+    <p>This is an ever-evolving process that will change and continue depending on intelligence and decisions from the previous model.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/8faa6f8c3218aa5e6c4dfc01648b0972.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2021-11-30.png" alt="" /></p>
+
+<h3 id="account-discovery--analysis">Account Discovery &amp; Analysis</h3>
+
+<ul>
+  <li>When analyzing a target’s account, we are commonly looking at the following objectives:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2021-12-26.png" alt="" /></p>
+
+<h3 id="google-dorking">Google Dorking</h3>
+
+<p>#googledorking</p>
+
+<ul>
+  <li>
+    <p>unfortunately, a simple google search will not necessarily get us what we want or will not be as <strong>granular</strong> as we would like.</p>
+  </li>
+  <li>
+    <p>Google has a known feature called “google dorks” that will allow you to use specific syntax in a search query to filter further and make your search more granular.</p>
+  </li>
+  <li>
+    <p>Some examples:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2021-15-54.png" alt="" /></p>
+
+<ul>
+  <li>a complete list of google dork terms can be found <a href="https://www.sans.org/posters/google-hacking-and-defense-cheat-sheet/">here</a> and <a href="https://gist.github.com/sundowndev/283efaddbcf896ab405488330d1bbc06">here</a></li>
+</ul>
+
+<h3 id="osint--the-blockchain">OSINT &amp; The Blockchain</h3>
+
+<p>#blockcahin</p>
+
+<ul>
+  <li>
+    <p>With the introduction of Web 3.0, a decentralized web protocol set in its infancy, and the increased popularity in cryptocurrencies, OSINT from a blockchain technology and decentralization perspective has become increasingly important.</p>
+  </li>
+  <li>
+    <p>A core principle of blockchain technology and decentralization is anonymity.</p>
+
+    <ul>
+      <li>How can you gather information on a target if they are anonymous?</li>
+    </ul>
+  </li>
+  <li>
+    <p>Blockchain technology is completely open while remaining anonymous; this comes with its pros and cons from an OSINT perspective; we can quickly identify specific identifiers but linking them can become difficult.</p>
+  </li>
+  <li>
+    <p>Multiple tools aid in exploring the blockchain, including but not limited to,</p>
+
+    <ul>
+      <li>Blocktrail</li>
+      <li>Bitcoin Who’s Who</li>
+      <li>Graphsense</li>
+      <li>Block Explorer</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#important</p>
+
+<ul>
+  <li>An example of an unintentional information leak from <em>GitHub</em> could be a company that <code class="language-plaintext highlighter-rouge">forgot to delete its API keys from a JSON file</code>. They made a new commit to their repository with the thought that no one could access those keys anymore. Anyone can look at a public repository commit history and view exactly what was deleted and added to the repository.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/fcd94be34ed25de238ad3232606bd9c2.png" alt="" /></p>
+<h3 id="questions-11">Questions</h3>
+
+<ol>
+  <li>What is the operator’s username?</li>
+</ol>
+
+<ul>
+  <li>Translated the text in russian and got a personal identification code and a username.</li>
+</ul>
+
+<p>A: GrinchWho31</p>
+
+<ol>
+  <li>What social media platform is the username associated with?</li>
+</ol>
+
+<ul>
+  <li>searched the username on google and found 3 interesting things:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2021-27-32.png" alt="" /></p>
+
+<ul>
+  <li>Tried Reddit first but it was not the one. Twitter remained.</li>
+</ul>
+
+<p>A: twitter</p>
+
+<ol>
+  <li>What is the cryptographic identifier associated with the operator?</li>
+</ol>
+
+<ul>
+  <li>On his twitter account, I found this tweet:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2021-29-48.png" alt="" /></p>
+
+<p>A: 1GW8QR7CWW3cpvVPGMCF5tZz4j96ncEgrVaR</p>
+
+<ol>
+  <li>What platform is the cryptographic identifier associated with?</li>
+</ol>
+
+<ul>
+  <li>In the same tweet we can find the answer.</li>
+</ul>
+
+<p>A: keybase.io</p>
+
+<ol>
+  <li>What is the bitcoin address of the operator?</li>
+</ol>
+
+<ul>
+  <li>On his profile on keybase.io, we can see there is a bitcoin address in his description</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2021-32-18.png" alt="" /></p>
+
+<p>A: bc1q5q2w2x6yka5gchr89988p2c8w8nquem6tndw2f</p>
+
+<ol>
+  <li>What platform does the operator leak the bitcoin address on?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>If we go to the github link there, we can see two projects.</p>
+  </li>
+  <li>
+    <p>the second one is more interesting and it contains a <code class="language-plaintext highlighter-rouge">.cpp</code> file with a comment that includes the bitcoin address</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2021-35-29.png" alt="" /></p>
+
+<p>A: GitHub</p>
+
+<ol>
+  <li>What is the operator’s personal email?</li>
+</ol>
+
+<ul>
+  <li>To answer the following two questions, I checked the commits of the bash script in the other repositories. And indeed, he left some important info there :)</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2021-42-03.png" alt="" /></p>
+
+<p>A: DonteHeath21@gmail.com</p>
+
+<ol>
+  <li>What is the operator’s real name?</li>
+</ol>
+
+<p>A: Donte Heath</p>
+
+<h2 id="day-17-cloud-elf-leaks">[Day 17] <code class="language-plaintext highlighter-rouge">Cloud</code> Elf Leaks</h2>
+
+<p>#aws</p>
+
+<ul>
+  <li>
+    <p><strong>Amazon AWS</strong> is a public cloud service provider.</p>
+  </li>
+  <li>
+    <p>As of their most recent financial disclosures, AWS accounts for the bulk of Amazon’s profit.</p>
+  </li>
+  <li>
+    <p>Most major enterprises leverage AWS in some form or another for <em>Compute Services</em>, <em>Big Data</em> or <em>Machine Learning</em>, <em>Data Archive</em>, <em>Video Streaming</em>, <em>IoT</em>, etc.</p>
+  </li>
+  <li>
+    <p>The number of services AWS supports is so vast that we can barely fit it all in this screenshot.</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/AWSConsole.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>AWS divides its infrastructure into Regions, mostly independent clusters of datacenters.</p>
+  </li>
+  <li>
+    <p>Within each region are <strong>availability zones (AZ)</strong>.</p>
+  </li>
+  <li>
+    <p>Each AZ in a region leverages separate power grids and usually are located in different flood plains.</p>
+
+    <ul>
+      <li>This redundancy allows you to establish highly resilient architectures to withstand significant weather or geological events, or more frequently, hardware or facility failures.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Because regions are independent - you’ll get different answers to questions depending on the region you are querying.</p>
+
+    <ul>
+      <li>You can specify a region with the <code class="language-plaintext highlighter-rouge">--region</code> option to the AWS CLI.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="amazon-s3">Amazon S3</h3>
+
+<p>#s3</p>
+
+<ul>
+  <li>
+    <p><strong>Amazon S3 (Simple Storage Service)</strong> is their hosted object storage service.</p>
+
+    <ul>
+      <li>Objects are stored in <strong>Buckets</strong>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>To highly simplify the concept of object storage, Buckets are <strong>key-value stores</strong>, with the Object Key being a full pathname for a file and the value being the contents of the file.</p>
+
+    <ul>
+      <li>S3 is a <strong>publicly hosted service</strong> - it doesn’t exist behind a corporate firewall, making it convenient for hosting public content.</li>
+    </ul>
+  </li>
+  <li>
+    <p>AWS Buckets use a global namespace.</p>
+
+    <ul>
+      <li>Only one AWS customer can create a bucket named <code class="language-plaintext highlighter-rouge">bestfestivalcompany-images</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Amazon S3 is used for more than public hosting.</p>
+
+    <ul>
+      <li>It has many uses for <strong>data archive</strong>, <strong>video processing</strong>, <strong>regulatory record retention</strong>, etc.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The challenge for Best Festival Company, like any enterprise using S3, is that sometimes data gets mixed up, and data that shouldn’t be public gets made public.</p>
+  </li>
+</ul>
+
+<h3 id="discovering-bucket-names">Discovering Bucket Names</h3>
+
+<ul>
+  <li>
+    <p>One of the easiest ways is when a company embeds content hosted in S3 on their website.</p>
+  </li>
+  <li>
+    <p>Images, PDFs, etc., can all be hosted cheaply in S3 and linked from another site. These links will look like this:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">http://BUCKETNAME.s3.amazonaws.com/FILENAME.ext</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>or</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">http://s3.amazonaws.com/BUCKETNAME/FILENAME.ext</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Amazon S3 is one of AWS’s oldest services.</p>
+  </li>
+  <li>
+    <p>It’s so old that it has two different methods of access control: <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-policies.html">Bucket Policies</a> and <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/managing-acls.html">S3 ACLs</a>.</p>
+  </li>
+  <li>
+    <p>Downloading an object from S3 is also easy. You can use curl:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">curl http://irs-form-990.s3.amazonaws.com/201101319349101615_public.xml</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>or the AWS CLI:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">aws s3 cp s3://irs-form-990/201101319349101615_public.xml . --no-sign-request</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>(The option <code class="language-plaintext highlighter-rouge">--no-sign-request</code> allows you to request data from S3 without being an AWS Customer. )</p>
+  </li>
+  <li>
+    <p>Note the two different URIs for an object. Objects can be addressed with <code class="language-plaintext highlighter-rouge">http://</code> or via <code class="language-plaintext highlighter-rouge">s3://</code></p>
+  </li>
+</ul>
+
+<h3 id="the-different-levels-of-amazon-s3-authentication">The different levels of Amazon S3 Authentication</h3>
+
+<ul>
+  <li>
+    <p>In Amazon S3, Object permissions are different from Bucket permissions.</p>
+
+    <ul>
+      <li>Bucket permissions allow you to <em>list the objects in a bucket</em>, while the object’s permissions will enable you <em>to download the object</em>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>There are also two levels of public buckets and objects.</p>
+  </li>
+  <li>
+    <p>The first level is “<strong>Anyone</strong>.”</p>
+  </li>
+  <li>
+    <p>The second level is just as <strong>public</strong> - and that is public to <strong>Any AWS Customer</strong> (what AWS foolishly called AuthenticatedUsers for many years).</p>
+
+    <ul>
+      <li><em>Anyone</em> with a <em>credit card</em> can create an AWS account; therefore, Authenticated Users doesn’t provide much data protection.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2022-11-50.png" alt="" /></p>
+
+<h3 id="aws-iam">AWS IAM</h3>
+
+<p>#iam</p>
+
+<ul>
+  <li>
+    <p>Excluding a few older services like Amazon S3, all requests to AWS services must be signed.</p>
+  </li>
+  <li>
+    <p>This is typically done behind the scenes by the AWS CLI or the various Software development Kits that AWS provides.</p>
+  </li>
+  <li>
+    <p>The signing process leverages <strong>IAM Access Keys</strong>.</p>
+
+    <ul>
+      <li>These access keys are one of the primary ways an AWS account is compromised.</li>
+    </ul>
+  </li>
+  <li>
+    <p>IAM Access Keys consist of an <strong>Access Key ID</strong> and the <strong>Secret Access Key</strong>.</p>
+  </li>
+  <li>
+    <p>Access Key IDs always begin with the letters <strong>AKIA</strong> and are <em>20 characters long</em>.</p>
+
+    <ul>
+      <li>These act as a <em>user name</em> for the AWS API.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The Secret Access Key is <em>40 characters long</em>.</p>
+
+    <ul>
+      <li>AWS generates both strings; however, AWS doesn’t make the Secret Access Key available to download after the initial generation.</li>
+    </ul>
+  </li>
+  <li>
+    <p>There is another type of credentials, <strong>short-term credentials</strong>, where the Access Key ID begins with the letters <strong>ASIA</strong> and includes an additional string called the <strong>Session Token</strong>.</p>
+  </li>
+  <li>
+    <p>When you find credentials to AWS, you can add them to your AWS Profile in the AWS CLI.</p>
+  </li>
+  <li>
+    <p>For this, you use the command:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">aws configure --profile PROFILENAME</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>This command will add entries to the <code class="language-plaintext highlighter-rouge">.aws/config</code> and <code class="language-plaintext highlighter-rouge">.aws/credentials</code> files in your user’s home directory.</p>
+  </li>
+  <li>
+    <p>Once you have configured a new profile with the new access keys, you can execute any command using this other set of credentials.</p>
+  </li>
+  <li>
+    <p>For example, to list all the S3 Buckets in the AWS account you have found credentials for, try:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">aws s3 ls --profile PROFILENAME</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>A few other common AWS reconnaissance techniques are:</p>
+
+    <ul>
+      <li>Finding the Account ID belonging to an access key:</li>
+    </ul>
+
+  	- <code class="language-plaintext highlighter-rouge">aws sts get-access-key-info --access-key-id AKIAEXAMPLE </code>
+
+    <ul>
+      <li>Determining the Username the access key you’re using belongs to</li>
+    </ul>
+
+  	- <code class="language-plaintext highlighter-rouge">aws sts get-caller-identity --profile PROFILENAME</code>
+
+    <ul>
+      <li>Listing all the EC2 instances running in an account</li>
+    </ul>
+
+  	- <code class="language-plaintext highlighter-rouge">aws ec2 describe-instances --output text --profile PROFILENAME</code>
+
+    <ul>
+      <li>Listing all the EC2 instances running in an account in a different region</li>
+    </ul>
+
+  	- <code class="language-plaintext highlighter-rouge">aws ec2 describe-instances --output text --region us-east-1 --profile PROFILENAME</code>
+  </li>
+</ul>
+
+<h2 id="aws-arns">AWS ARNs</h2>
+
+<p>#awsarn</p>
+
+<ul>
+  <li>
+    <p>An Amazon ARN is their way of generating a unique identifier for all resources in the AWS Cloud.</p>
+  </li>
+  <li>
+    <p>It consists of multiple strings separated by colons.</p>
+  </li>
+  <li>
+    <p>The format is:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">arn:aws:&lt;service&gt;:&lt;region&gt;:&lt;account_id&gt;:&lt;resource_type&gt;/&lt;resource_name&gt;</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-12">Questions</h3>
+
+<ol>
+  <li>What is the name of the S3 Bucket used to host the HR Website announcement?</li>
+</ol>
+
+<ul>
+  <li>The link of the image gave it away: <code class="language-plaintext highlighter-rouge">https://s3.amazonaws.com/images.bestfestivalcompany.com/flyer.png</code></li>
+</ul>
+
+<p>A: images.bestfestivalcompany.com</p>
+
+<ol>
+  <li>What is the message left in the flag.txt object from that bucket?</li>
+</ol>
+
+<ul>
+  <li>Just changed the link to get the desired file from the bucket: <code class="language-plaintext highlighter-rouge">https://s3.amazonaws.com/images.bestfestivalcompany.com/flag.txt</code></li>
+</ul>
+
+<p>A: It’s easy to get your elves data when you leave it so easy to find!</p>
+
+<ol>
+  <li>What other file in that bucket looks interesting to you?</li>
+</ol>
+
+<ul>
+  <li>To get the content of the bucket, I used the command <code class="language-plaintext highlighter-rouge">aws s3 ls s3://images.bestfestivalcompany.com/ --no-sign-request</code> and got the results:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2022-26-35.png" alt="" /></p>
+
+<ul>
+  <li>The backup file looks suspiciously good :)</li>
+</ul>
+
+<p>A: wp-backup.zip</p>
+
+<ol>
+  <li>What is the AWS Access Key ID in that file?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>downloaded the file using aws CLI, as curl did not work for me, using: <code class="language-plaintext highlighter-rouge">aws s3 cp s3://images.bestfestivalcompany.com/wp-backup.zip . --no-sign-request</code></p>
+  </li>
+  <li>
+    <p>Then I used <code class="language-plaintext highlighter-rouge">grep -iRl AKIA</code> to search for the string in the newly downloaded file</p>
+  </li>
+  <li>
+    <p>Two results:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2022-39-08.png" alt="" /></p>
+
+<ul>
+  <li>A simple <code class="language-plaintext highlighter-rouge">cat</code> of the first file and the AKIA string is visible.</li>
+</ul>
+
+<p>A:</p>
+
+<ol>
+  <li>What is the AWS Account ID that access-key works for?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>That file also gave us the Secret Access Key.</p>
+  </li>
+  <li>
+    <p>We use this and the profile hr (that we know about from the problem statement) and the Access Key Id to configure a profile.</p>
+  </li>
+  <li>
+    <p>Running the command <code class="language-plaintext highlighter-rouge">aws sts get-access-key-info --access-key-id &lt;access-key-id&gt;</code> after that gives us the Account ID:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2022-48-22.png" alt="" /></p>
+
+<p>A: 019181489476</p>
+
+<ol>
+  <li>What is the Username for that access-key?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>I knew I had to use the command <code class="language-plaintext highlighter-rouge">aws sts get-caller-identity --profile hr</code>, but I had no profile configuration with that name.</p>
+  </li>
+  <li>
+    <p>So I created one more, making sure now that I provide the name using <code class="language-plaintext highlighter-rouge">aws configure --profile hr</code>:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2022-53-18.png" alt="" /></p>
+
+<p>A: ElfMcHR@bfc.com</p>
+
+<ol>
+  <li>There is an EC2 Instance in this account. Under the TAGs, what is the Name of the instance?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Used the command <code class="language-plaintext highlighter-rouge">aws ec2 describe-instances --output text --profile hr</code></p>
+  </li>
+  <li>
+    <p>After some trial and error, I found the name:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2022-58-35.png" alt="" /></p>
+
+<p>A: HR-Portal</p>
+
+<ol>
+  <li>What is the database password stored in Secrets Manager?</li>
+</ol>
+
+<ul>
+  <li>To list the secrets, I used <code class="language-plaintext highlighter-rouge">aws secretsmanager list-secrets --profile hr</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2023-07-27.png" alt="" /></p>
+
+<ul>
+  <li>Then tried this:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2023-09-54.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>So we have to change the region to somethin <code class="language-plaintext highlighter-rouge">xx-north-x</code></p>
+  </li>
+  <li>
+    <p>After trying some regions, I finally found the right one that gave me the password: <code class="language-plaintext highlighter-rouge">aws secretsmanager get-secret-value --secret-id HR-Password --profile hr --region eu-north-1</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-26%2023-13-29.png" alt="" /></p>
+
+<p>A: Winter2021!</p>
+
+<h2 id="day-18-cloud-playing-with-containers">[Day 18] <code class="language-plaintext highlighter-rouge">Cloud</code> Playing With Containers</h2>
+
+<p>#docker #ecr</p>
+
+<ul>
+  <li>
+    <p><strong>AWS Elastic Container Registry (ECR)</strong> - an online registry for public and private container images.</p>
+  </li>
+  <li>
+    <p>Specifically, the term “Docker” is used to describe:</p>
+
+    <ul>
+      <li>
+        <p><strong>Docker API</strong> - a local communication interface on a configured Linux machine, with standardized commands used to communicate with a Docker Daemon.</p>
+      </li>
+      <li>
+        <p><strong>Docker Daemon</strong> - a process that runs on your machine (the Docker daemon), to interact with container components such as images, data volumes, and other container artifacts.</p>
+      </li>
+      <li>
+        <p><strong>Docker Container Image Format</strong> - ultimately a .tar file. For Version 1, the docker image format was not strictly compliant with the OCI Image Specification. For our purposes, this won’t change how we interact with container images in this exercise, but it does slightly change the format and content of a container image.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Docker containers are stored in “<em>repositories</em>”, which are a reference to file mappings the Docker daemon knows how to reach, which include the container .tar files.</p>
+
+    <ul>
+      <li>Each image in a repository will include an image tag, and images can be referenced using either their tag or Image ID.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Retrieve a docker image: <code class="language-plaintext highlighter-rouge">docker pull public.ecr.aws/h0w1j9u3/grinch-aoc:latest</code></p>
+  </li>
+  <li>
+    <p>You can run the container and interact with it by running the following command:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">docker run -it public.ecr.aws/h0w1j9u3/grinch-aoc:latest</code>, which will open a shell inside the container image, as indicated by the $.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Save the container image as a <code class="language-plaintext highlighter-rouge">.tar</code> file: <code class="language-plaintext highlighter-rouge">docker save -o aoc.tar public.ecr.aws/h0w1j9u3/grinch-aoc:latest</code></p>
+  </li>
+</ul>
+
+<p>#important</p>
+<ul>
+  <li>
+    <p>A good place to check next is environment variables - in Linux and especially for containers, environment variables may be used to store secrets or other sensitive information used to configure the container at run-time.</p>
+  </li>
+  <li>
+    <p>So we try <code class="language-plaintext highlighter-rouge">printenv</code> to learn more about the environment configurations where we see:</p>
+  </li>
+  <li>
+    <p>A container image is composed of a number of layers</p>
+  </li>
+  <li>
+    <p>Container images are built from a source file known as a <code class="language-plaintext highlighter-rouge">Dockerfile</code></p>
+  </li>
+  <li>
+    <p>Dockerfiles are a list of new-line separated instructions that instruct the Docker daemon how to generate a container image.</p>
+  </li>
+</ul>
+
+<h3 id="questions-13">Questions</h3>
+
+<ol>
+  <li>What command will list container images stored in your local container registry?</li>
+</ol>
+
+<p>A: docker images</p>
+
+<ol>
+  <li>What command will allow you to save a docker image as a tar archive?</li>
+</ol>
+
+<p>A: docker save</p>
+
+<p>#important</p>
+<ol>
+  <li>What is the name of the file (including file extension) for the configuration, repository tags, and layer hash values stored in a container image?</li>
+</ol>
+
+<p>A: manifest.json</p>
+
+<ol>
+  <li>What is the token value you found for the bonus challenge?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-27%2016-38-46.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-27%2016-40-56.png" alt="" /></p>
+
+<ul>
+  <li>Installed <code class="language-plaintext highlighter-rouge">jq</code>, which makes it easier to read the layers of the container image.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-27%2016-44-41.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">f886f00520700e2ddd74a14856fcc07a36c819b4cea8cee8be83d4de01e9787.json</code> is the configuration files</p>
+  </li>
+  <li>
+    <p>Untarred the layer that included the repository pulled from GitHub and using <code class="language-plaintext highlighter-rouge">cat root/envconsul/config.hcl | grep token</code> I found the value of the token:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-27%2016-52-41.png" alt="" /></p>
+
+<p>A: 7095b3e9300542edadbc2dd558ac11fa</p>
+
+<h2 id="day-19-blue-teaming-something-phishy-is-going-on">[Day 19] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> Something Phishy Is Going On</h2>
+
+<p>#phishing</p>
+
+<ul>
+  <li>
+    <p>Official <a href="https://attack.mitre.org/techniques/T1566/">definition</a>:</p>
+
+    <ul>
+      <li>
+        <p>Adversaries may send phishing messages to gain access to victim systems. All forms of phishing are electronically delivered social engineering. Phishing can be targeted, known as spearphishing. In spearphishing, a specific individual, company, or industry will be targeted by the adversary. More generally, adversaries can conduct non-targeted phishing, such as in mass malware spam campaigns.</p>
+      </li>
+      <li>
+        <p>Adversaries may send victims emails containing malicious attachments or links, typically to execute malicious code on victim systems. Phishing may also be conducted via third-party services, like social media platforms. Phishing may also involve social engineering techniques, such as posing as a trusted source.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-14">Questions</h3>
+
+<ol>
+  <li>Who was the email sent to? (Answer is the email address)</li>
+</ol>
+
+<ul>
+  <li>I opened the mail application and under <code class="language-plaintext highlighter-rouge">More</code> I selected <code class="language-plaintext highlighter-rouge">View Source</code>.</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-30%2010-19-18.png" alt="" /></p>
+
+<p>A: elfmcphearson@tbfc.com</p>
+
+<ol>
+  <li>Phishing emails use similar domains of their targets to increase the likelihood the recipient will be tricked into interacting with the email. Who does it say the email was from? (Answer is the email address)</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-30%2010-20-46.png" alt="" /></p>
+
+<p>A: customerservice@t8fc.info</p>
+
+<ol>
+  <li>Sometimes phishing emails have a different reply-to email address. If this email was replied to, what email address will receive the email response?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-30%2010-21-39.png" alt="" /></p>
+
+<p>A: fisher@tempmailz.grinch</p>
+
+<ol>
+  <li>Less sophisticated phishing emails will have typos. What is the misspelled word?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-30%2010-22-28.png" alt="" /></p>
+
+<p>A: stright</p>
+
+<ol>
+  <li>The email contains a link that will redirect the recipient to a fraudulent website in an effort to collect credentials. What is the link to the credential harvesting website?</li>
+</ol>
+
+<p>A: https://89xgwsnmo5.grinch/out/fishing/</p>
+
+<ol>
+  <li>View the email source code. There is an unusual email header. What is the header and its value?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-30%2010-27-50.png" alt="" /></p>
+
+<p>A: X-GrinchPhish: &gt;;^)</p>
+
+<ol>
+  <li>You received other reports of phishing attempts from other colleagues. Some of the other emails contained attachments. Open attachment.txt. What is the name of the attachment?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-30%2010-28-58.png" alt="" /></p>
+
+<p>A: password-reset-instructions.pdf</p>
+
+<ol>
+  <li>What is the flag in the PDF file?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Used <code class="language-plaintext highlighter-rouge">cat attachment-base64-only.txt |base64 -d &gt; rez.pdf</code> to decode the attachment and then create the resulting pdf.</p>
+  </li>
+  <li>
+    <p>opened the PDF and got the flag</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-30%2010-33-04.png" alt="" /></p>
+
+<p>A: THM{A0C_Thr33_Ph1sh1ng_An4lys!s}</p>
+
+<h2 id="day-20-blue-teaming-whats-the-worst-that-could-happen">[Day 20] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> What’s the Worst That Could Happen?</h2>
+
+<p>#virustotal #md5 #strings</p>
+
+<h3 id="questions-15">Questions</h3>
+<ol>
+  <li>Open the terminal and navigate to the file on the desktop named ‘testfile’. Using the ‘strings’ command, check the strings in the file. There is only a single line of output to the ‘strings’ command. What is the output?</li>
+</ol>
+
+<ul>
+  <li>Went to <code class="language-plaintext highlighter-rouge">Desktop</code> on the deployed machine and ran <code class="language-plaintext highlighter-rouge">strings</code> on <code class="language-plaintext highlighter-rouge">testfile</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-31%2007-26-19.png" alt="" /></p>
+
+<p>A: X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*</p>
+
+<ol>
+  <li>Check the file type of ‘testfile’ using the ‘file’ command. What is the file type?</li>
+</ol>
+
+<ul>
+  <li>ran the <code class="language-plaintext highlighter-rouge">file</code> command</li>
+</ul>
+
+<p>A: EICAR virus test files</p>
+
+<ol>
+  <li>Calculate the file’s hash and search for it on VirusTotal. When was the file first seen in the wild?</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Using <code class="language-plaintext highlighter-rouge">md5sum</code> I got the hash: 44d88612fea8a8f36de82e1278abb02f</p>
+  </li>
+  <li>
+    <p>Searched it on VirusTotal and under <code class="language-plaintext highlighter-rouge">Details</code> I found the answer</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-31%2007-29-16.png" alt="" /></p>
+
+<p>A: 2005-10-17 22:03:48</p>
+
+<ol>
+  <li>On VirusTotal’s detection tab, what is the classification assigned to the file by Microsoft?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-05-31%2007-30-31.png" alt="" /></p>
+
+<p>A:  Virus:DOS/EICAR_Test_File</p>
+
+<ol>
+  <li>Go to this link to learn more about this file and what it is used for. What were the first two names of this file?</li>
+</ol>
+
+<ul>
+  <li>If your test file is a program, then it should also produce sensible results if it is executed. Also, because you probably want to avoid shipping a pseudo-viral file along with your anti-virus product, your test file should be short and simple, so that your customers can easily create copies of it for themselves.</li>
+</ul>
+
+<p>A: ducklin.htm or ducklin-html.htm</p>
+
+<ol>
+  <li>The file has 68 characters in the start known as the known string. It can be appended with whitespace characters upto a limited number of characters. What is the maximum number of total characters that can be in the file?</li>
+</ol>
+
+<p>A: 128</p>
+
+<h2 id="day-21-blue-teaming-needles-in-computer-stacks">[Day 21] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> Needles In Computer Stacks</h2>
+
+<p>#yara</p>
+
+<ul>
+  <li>
+    <p>YARA is a multi-platform tool for matching patterns of interest in (malicious) files.</p>
+  </li>
+  <li>
+    <p>It is used to perform research on malware families and identify malware with similar patterns.</p>
+  </li>
+  <li>
+    <p>It can help in categorizing malware in different malware families, and can also be used as a detection aid for malware analysis.</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/InQuest/awesome-yara">Repository</a> with different YARA rules.</p>
+  </li>
+  <li>
+    <p><strong>Syntax</strong>:</p>
+  </li>
+</ul>
+
+<pre><code class="language-yara">rule rulename
+  {
+    meta:
+      author = "tryhackme"
+      description = "test rule"
+      created = "11/12/2021 00:00"
+    strings:
+      $textstring = "text"
+      $hexstring = {4D 5A}
+    conditions:
+      $textstring and $hexstring
+  }
+</code></pre>
+
+<ul>
+  <li>
+    <p>A string declaration starts with a <code class="language-plaintext highlighter-rouge">$</code> sign, followed by the name we want to assign to that string.</p>
+
+    <ul>
+      <li>strings can be text strings or hex strings.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Text strings are strings found in the legible text portion of a file, however, hex strings are raw sequences of bytes in a file.</p>
+  </li>
+  <li>
+    <p>To define text strings, we use double quotes, and to define hex strings, we use curly brackets.</p>
+  </li>
+  <li>
+    <p><strong>Conditions</strong>:</p>
+
+    <ul>
+      <li>The condition section defines the conditions that the rule writer wants to meet in order for the rule to hit on a file.
+        <ul>
+          <li>Conditions are boolean expressions, and they use the strings defined in the strings section as variables.</li>
+        </ul>
+      </li>
+      <li>
+        <p>For example, in the example above, we use the and operator between the two strings.</p>
+      </li>
+      <li>
+        <p>This means that the rule will hit if it identifies a 4D 5A hex string anywhere in the file as well as the text string text.</p>
+
+        <ul>
+          <li>There is no other condition in this rule.</li>
+        </ul>
+      </li>
+      <li>The most commonly used operators are <code class="language-plaintext highlighter-rouge">and</code>, <code class="language-plaintext highlighter-rouge">or</code> and <code class="language-plaintext highlighter-rouge">not</code>.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Metadata</strong>:</p>
+  </li>
+  <li>
+    <p>Metadata is an <em>optional</em>, but important section in the rules.</p>
+
+    <ul>
+      <li>It starts with the keyword meta.</li>
+    </ul>
+  </li>
+  <li>
+    <p>It can be used to add additional information about the rule to help the analyst in their analysis.</p>
+
+    <ul>
+      <li>Generally, it contains arbitrarily defined identifiers, and their values, which are universally understood.</li>
+    </ul>
+  </li>
+  <li>
+    <p>For example, in our example rule above, we used the identifiers of <code class="language-plaintext highlighter-rouge">author</code>, <code class="language-plaintext highlighter-rouge">description</code>, and <code class="language-plaintext highlighter-rouge">created</code>.</p>
+
+    <ul>
+      <li>Adding metadata to rules is especially important when contributing to the community, as they provide important contextual information and attribution for the rule.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The syntax to run a Yara rule can be simply stated as follows:</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yara <span class="o">[</span>options] rule_file <span class="o">[</span>target]
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>If we run this command as it is, it will return us with the rule name and the file name if the rule is hit.</p>
+
+    <ul>
+      <li>If the rule is not hit, it will not return anything.</li>
+    </ul>
+  </li>
+  <li>
+    <p>We can use the <code class="language-plaintext highlighter-rouge">-m</code> option for Yara to return the metadata when the rule is hit.</p>
+  </li>
+  <li>
+    <p>Similarly, we can use the <code class="language-plaintext highlighter-rouge">-s</code> option to print the strings that matched the file.</p>
+  </li>
+  <li>
+    <p><a href="https://yara.readthedocs.io/en/stable/writingrules.html#">Yara Documentation</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/Yara-Rules/rules">Community Written Yara Rules</a></p>
+  </li>
+</ul>
+
+<h3 id="questions-16">Questions</h3>
+
+<ol>
+  <li>We changed the text in the string $a as shown in the eicaryara rule we wrote, from X5O to X50, that is, we replaced the letter O with the number 0. The condition for the Yara rule is $a and $b and $c and $d. If we are to only make a change to the first boolean operator in this condition, what boolean operator shall we replace the ‘and’ with, in order for the rule to still hit the file?</li>
+</ol>
+
+<p>A: or</p>
+
+<ol>
+  <li>What option is used in the Yara command in order to list down the metadata of the rules that are a hit to a file?</li>
+</ol>
+
+<p>A: -m</p>
+
+<ol>
+  <li>What section contains information about the author of the Yara rule?</li>
+</ol>
+
+<p>A: metadata</p>
+
+<ol>
+  <li>What option is used to print only rules that did not hit?</li>
+</ol>
+
+<ul>
+  <li>Checked the Yara Documentation website</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-01%2010-50-07.png" alt="" /></p>
+
+<p>A: -n</p>
+
+<ol>
+  <li>Change the Yara rule value for the $a string to X50. Rerun the command, but this time with the -c option. What is the result?</li>
+</ol>
+
+<ul>
+  <li>Created a YARA rule and then ran it using <code class="language-plaintext highlighter-rouge">-c</code> (print number of matches) on <code class="language-plaintext highlighter-rouge">testfile</code></li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-01%2010-56-34.png" alt="" /></p>
+
+<p>A: 0</p>
+
+<h2 id="day-22-blue-teaming-how-it-happened">[Day 22] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> How It Happened</h2>
+
+<p>#important</p>
+<ul>
+  <li>
+    <p>“<strong>Base64 encoding</strong> schemes are commonly used when there is a need to encode binary data that needs to be stored and transferred over media that are designed to deal with ASCII.”</p>
+  </li>
+  <li>
+    <p>While attackers still use this simple form of obfuscation to evade Antivirus detection, it’s far from the most effective and stealthy technique.</p>
+  </li>
+</ul>
+
+<p>#ole</p>
+
+<ul>
+  <li>
+    <p>Oledump (<a href="https://blog.didierstevens.com/programs/oledump-py/">oledump.py</a>) is an excellent tool written in Python by Didier Stevens, which helps you analyze <strong>OLE</strong> (<strong>Compound File Binary Format</strong>) files.</p>
+  </li>
+  <li>
+    <p>You can think of OLE files as ‘a mini file system’ or similar to a Zip archive.</p>
+
+    <ul>
+      <li>
+        <p>Applications such as MS Office with extensions <code class="language-plaintext highlighter-rouge">.doc</code>, <code class="language-plaintext highlighter-rouge">.xls</code>, <code class="language-plaintext highlighter-rouge">.ppt</code> are known as OLE files.</p>
+      </li>
+      <li>
+        <p>Malicious actors can abuse macros to hide malicious commands/scripts within Excel and Word documents.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><a href="https://olefile.readthedocs.io/en/latest/OLE_Overview.html">OLE files Documentation</a></p>
+  </li>
+  <li>
+    <p>OLE files could contain storages which are basically folders that contain streams of data or other storages.</p>
+  </li>
+</ul>
+
+<p>#vba</p>
+<ul>
+  <li>
+    <p>The M letter next to a stream indicates that the stream contains a <code class="language-plaintext highlighter-rouge">VBA Macro</code>.</p>
+  </li>
+  <li>
+    <p>Useful options for analyzing OLE files (to explore more options, use the <code class="language-plaintext highlighter-rouge">-m</code> option):</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">-A</code> does an ASCII dump similar to option <code class="language-plaintext highlighter-rouge">-a</code>, but duplicate lines are removed.</li>
+      <li><code class="language-plaintext highlighter-rouge">-S</code> dumps strings.</li>
+      <li><code class="language-plaintext highlighter-rouge">-d</code> produces a raw dump of the stream content.</li>
+      <li><code class="language-plaintext highlighter-rouge">-s</code> STREAM NUMBER or –select=STREAM NUMBER allows you to select the stream number to analyze (<code class="language-plaintext highlighter-rouge">-s a</code> to select all streams)</li>
+      <li><code class="language-plaintext highlighter-rouge">-d</code>, <code class="language-plaintext highlighter-rouge">--dump</code> - perform a raw dump
+ 	- <code class="language-plaintext highlighter-rouge">-x</code>, <code class="language-plaintext highlighter-rouge">--hexdump</code> - perform a hex dump</li>
+      <li><code class="language-plaintext highlighter-rouge">-a</code>, <code class="language-plaintext highlighter-rouge">--asciidump</code> - perform an ascii dump</li>
+      <li><code class="language-plaintext highlighter-rouge">-S</code>, <code class="language-plaintext highlighter-rouge">--strings</code> - perform a strings dump</li>
+      <li><code class="language-plaintext highlighter-rouge">-v</code>, <code class="language-plaintext highlighter-rouge">--vbadecompress</code> - VBA decompression</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-17">Questions</h3>
+
+<ol>
+  <li>What is the username (email address of Grinch Enterprises) from the decoded script?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-01%2011-33-02.png" alt="" /></p>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-01%2011-33-28.png" alt="" /></p>
+
+<p>A: Grinch.Enterprises.2021@gmail.com</p>
+
+<ol>
+  <li>What is the mailbox password you found?</li>
+</ol>
+
+<p>A: S@ntai$comingt0t0wn</p>
+
+<ol>
+  <li>What is the subject of the email?</li>
+</ol>
+
+<p>A: Christmas Wishlist</p>
+
+<ol>
+  <li>What port is the script using to exfiltrate data from the North Pole?</li>
+</ol>
+
+<p>A: 587</p>
+
+<ol>
+  <li>What is the flag hidden found in the document that Grinch Enterprises left behind? (Hint: use the following command oledump.py -s {stream number} -d, the answer will be in the caption).</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-01%2011-34-31.png" alt="" /></p>
+
+<p>A: YouFoundGrinchCookie</p>
+
+<ol>
+  <li>There is still a second flag somewhere… can you find it on the machine?</li>
+</ol>
+
+<ul>
+  <li>In the data from stream 8 there was something about the Pictures folder. I checked it and found a png</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-01%2011-38-10.png" alt="" /></p>
+
+<p>A: S@nt@c1Au$IsrEAI</p>
+
+<h2 id="day-23-blue-teaming-powershellf-magic">[Day 23] <code class="language-plaintext highlighter-rouge">Blue Teaming</code> PowershELlF Magic</h2>
+
+<p>#powershell #logs</p>
+
+<ul>
+  <li>
+    <p>About <a href="https://docs.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.2">Powershell</a></p>
+  </li>
+  <li>
+    <p>As defenders, we can audit commands run in the PowerShell console on each workstation.</p>
+
+    <ul>
+      <li>This is known as <code class="language-plaintext highlighter-rouge">PowerShell Logging</code>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>When a PowerShell command or script is run, the activity is logged into the Windows Event Log system.</p>
+  </li>
+  <li>
+    <p>Typically you’ll use <code class="language-plaintext highlighter-rouge">Event Viewer</code> to view event logs locally on a Windows system, but we installed a nifty tool called <code class="language-plaintext highlighter-rouge">Full Event Log View</code> to help make this a painless experience.</p>
+  </li>
+  <li>
+    <p>Additional resources:</p>
+
+    <ul>
+      <li><a href="https://tryhackme.com/jr/investigatingwindows2">Investigating Windows 2.0:</a></li>
+      <li><a href="https://tryhackme.com/jr/investigatingwindows3">Investigating Windows 3.x:</a></li>
+      <li><a href="https://tryhackme.com/jr/powershellforpentesters">PowerShell for Pentesters:</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-18">Questions</h3>
+
+<ol>
+  <li>What command was executed as Elf McNealy to add a new user to the machine?</li>
+</ol>
+
+<ul>
+  <li>Found a proof of concept of CVE-2021-1675 <a href="https://github.com/calebstewart/CVE-2021-1675">here</a></li>
+</ul>
+
+<p>A: Invoke-Nightmare</p>
+
+<ol>
+  <li>What user executed the PowerShell file to send the password.txt file from the administrator’s desktop to a remote server?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2001-15-58.png" alt="" /></p>
+
+<p>A: adm1n</p>
+
+<ol>
+  <li>What was the IP address of the remote server? What was the port used for the remote connection? (format: IP,Port)</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2001-17-32.png" alt="" /></p>
+
+<p>A: 10.10.148.96,4321</p>
+
+<ol>
+  <li>What was the encryption key used to encrypt the contents of the text file sent to the remote server?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2001-18-17.png" alt="" /></p>
+
+<p>A: j3pn50vkw21hhurbqmxjlpmo9doiukyb</p>
+
+<ol>
+  <li>What application was used to delete the password.txt file?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2001-19-47.png" alt="" /></p>
+
+<p>A: sdelete.exe</p>
+
+<ol>
+  <li>What is the date and timestamp the logs show that password.txt was deleted? (format: MM/DD/YYYY H:MM:SS PM)</li>
+</ol>
+
+<ul>
+  <li>
+    <p>Could not find the right timestamp on the logs I already had so I tried multiple things in the searching menu.</p>
+  </li>
+  <li>
+    <p>One thing that worked is modifying the event description string to include <code class="language-plaintext highlighter-rouge">password.txt</code></p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2001-26-17.png" alt="" /></p>
+
+<ul>
+  <li>We got our answer:</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2001-27-43.png" alt="" /></p>
+
+<p>A: 11/11/2021 7:29:27 PM</p>
+
+<ol>
+  <li>What were the contents of the deleted password.txt file?</li>
+</ol>
+
+<ul>
+  <li>Edited the decryptor with the key we found earlier and the encrypted value</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2001-32-00.png" alt="" /></p>
+
+<ul>
+  <li>Ran the decryptor and got the original content of password.txt</li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2001-35-22.png" alt="" /></p>
+
+<p>A: Mission Control: letitsnowletitsnowletitsnow</p>
+
+<h2 id="day-24-post-exploitation-learning-from-the-grinch">[Day 24] <code class="language-plaintext highlighter-rouge">Post Exploitation</code> Learning From The Grinch</h2>
+
+<p>#postexploitation</p>
+
+<ul>
+  <li>
+    <p>The post-exploitation stage usually occurs after an attacker has gained unauthorized access to a system.</p>
+  </li>
+  <li>
+    <p>During this stage, an attacker will aim to do the following:</p>
+
+    <ul>
+      <li>
+        <p><strong>Escalate their privileges</strong>: An attacker would try to obtain access to sensitive information (documentation on how internal technology stacks work or credentials for other systems) or critical functionality that is only available to higher privileged users, e.g., administrative portals to manage users.</p>
+      </li>
+      <li>
+        <p><strong>Maintain persistence within the target environment</strong>: An attacker would set up other mechanisms to maintain access to the environment if their current access has been blocked or removed.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="password-hashing">Password hashing</h3>
+
+<p>#hash</p>
+
+<ul>
+  <li>
+    <p>A password hash represents the original password that has been converted to another form.</p>
+  </li>
+  <li>
+    <p>Hashing this password applies a one-way transformation to change the clear text password to a form that cannot easily be recognized.</p>
+  </li>
+  <li>
+    <p>When a string is provided to a hash function, the output of this hash function is a fixed-length string that is unique for the input provided.</p>
+
+    <ul>
+      <li>Various types of algorithms perform this hashing, including <code class="language-plaintext highlighter-rouge">MD5</code>, <code class="language-plaintext highlighter-rouge">SHA1</code>, and <code class="language-plaintext highlighter-rouge">SHA256</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="authentication-and-hashing">Authentication and Hashing</h3>
+
+<p>#sam</p>
+<ul>
+  <li>
+    <p>Windows stores various credentials in the <code class="language-plaintext highlighter-rouge">Security Accounts Manager (SAM)</code> database.</p>
+  </li>
+  <li>
+    <p>Commonly, credentials such as user passwords are stored as hashes within the <code class="language-plaintext highlighter-rouge">SAM</code> database.</p>
+  </li>
+  <li>
+    <p>The two most common hashes stored in the SAM database are:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">LAN Manager (LM)</code> - this hash is the oldest form of password storage used by Windows that are kept around for legacy systems. The algorithm used to create this hash utilizes a limited character set as input, so it’s possible to try all combinations of letters and numbers to retrieve the original hash.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#ntlm  <br />
+    - <code class="language-plaintext highlighter-rouge">NT LAN Manager (NTLM)</code> - Modern Windows systems use this hashing algorithm to store passwords</p>
+
+<p>#important</p>
+<ul>
+  <li>
+    <p>When a user logs onto a local Windows machine, the <code class="language-plaintext highlighter-rouge">Local Security Authority Subsystem Service (LSASS)</code> process retrieves the user’s credentials from the SAM database.</p>
+
+    <ul>
+      <li>
+        <p>It compares this against the hashed form of the user’s password.</p>
+      </li>
+      <li>
+        <p>If the hash of the password entered by the user matches the hash of the password stored in the SAM database, then the user can successfully log on.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Once this user successfully logs on, the LSASS process stores the user’s credentials in memory.</p>
+
+    <ul>
+      <li>This is designed out of convenience; when users access other resources, they don’t need to enter their credentials constantly, but the LSASS process uses the credentials stored in memory for various actions.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="dumping-password-hashes">Dumping Password Hashes</h3>
+
+<ul>
+  <li>
+    <p>When an attacker gets access to a local Windows system, one of the first things they would do would be to dump the password hashes stored in the LSASS process.</p>
+  </li>
+  <li>
+    <p>Since the LSASS process has to interact with the SAM database and store credentials in memory, it usually runs with more privileges than a standard user.</p>
+
+    <ul>
+      <li>For an attacker to interact with LSASS, they need to have high privileges.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>#mimikatz</p>
+<ul>
+  <li>
+    <p>A standard tool used to retrieve password hashes from memory is called <a href="https://github.com/gentilkiwi/mimikatz">mimikatz</a>.</p>
+
+    <ul>
+      <li>
+        <p>Mimikatz has various modules that can be used to extract different kinds of credentials from memory and use these credentials to access user accounts.</p>
+
+        <ul>
+          <li>
+            <p>For this exercise, we’ll be using the <code class="language-plaintext highlighter-rouge">sekurlsa</code> module.</p>
+          </li>
+          <li>
+            <p>This module is used to extract various credentials from the LSASS memory.</p>
+          </li>
+          <li>
+            <p>You need Administrator access or a SYSTEM account to use this module.</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2012-50-12.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Use <code class="language-plaintext highlighter-rouge">privilege::debug</code> to test if you have the necessary privileges to run the program.</p>
+  </li>
+  <li>
+    <p>Within the <code class="language-plaintext highlighter-rouge">sekurlsa</code> module, we can use the <code class="language-plaintext highlighter-rouge">logonpasswords</code> function to extract the credentials for currently logged in users:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">sekurlsa::logonpasswords</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2012-53-27.png" alt="" /></p>
+
+<h3 id="cracking-password-hashes">Cracking Password Hashes</h3>
+
+<p>#johntheripper</p>
+
+<ul>
+  <li>
+    <p>We will use the command <code class="language-plaintext highlighter-rouge">john --format=NT -w=/usr/share/wordlists/rockyou.txt hash.txt --pot=output.txt</code> to crack the NTLM hash, where:</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">—format=NT</code> is used to represent the type of the hash. In this case, we’re specifying that we want to crack an NTLM hash. You can find a full list of formats supported by john using the john –list=formats command.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">/usr/share/wordlists/rockyou.txt</code> is the wordlist containing the input passwords that will be hashed by john and compared against our hash.</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">hash.txt</code> represents the text file containing the hash</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">—pot=output.txt</code> represents the output file that the clear text retrieved password will be stored in</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-19">Questions</h3>
+
+<ol>
+  <li>What is the username of the other user on the system?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2012-53-27.png" alt="" /></p>
+
+<p>A: emily</p>
+
+<ol>
+  <li>What is the NTLM hash of this user?</li>
+</ol>
+
+<p>A: 8af326aa4850225b75c592d4ce19ccf5</p>
+
+<ol>
+  <li>What is the password for this user?</li>
+</ol>
+
+<p><img src="/tryhackme/AdventCalendar2021/Screenshot%20at%202022-06-03%2013-01-13.png" alt="" /></p>
+
+<p>A: 123456890</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

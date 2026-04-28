@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Networking Core Protocols · THM Writeups</title>
+  
+  <meta name="description" content="Learn about the core TCP/IP protocols." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Networking Core Protocols</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Networking Core Protocols/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">dns</span>
+          
+          <span class="tag-pill">whois</span>
+          
+          <span class="tag-pill">https</span>
+          
+          <span class="tag-pill">ftp</span>
+          
+          <span class="tag-pill">http</span>
+          
+          <span class="tag-pill">smtp</span>
+          
+          <span class="tag-pill">pop3</span>
+          
+          <span class="tag-pill">imap</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about the core TCP/IP protocols.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="networking-core-protocols"><a href="https://tryhackme.com/room/networkingcoreprotocols">Networking Core Protocols</a></h1>
+
+<h2 id="dns-remembering-addresses">DNS: Remembering Addresses</h2>
+
+<p>Unless it is a private IP address of a local device, no one needs to worry about memorizing IP addresses. This is in part due to the Domain Name System (DNS), which is responsible for properly mapping a domain name to an IP address.</p>
+
+<p>DNS operates at the Application Layer, i.e., Layer 7 of the ISO OSI model. DNS traffic uses UDP port 53 by default and TCP port 53 as a default fallback. There are many types of DNS record:</p>
+
+<ul>
+  <li><strong>A record</strong>: The A (Address) record maps a hostname to one or more IPv4 addresses. For example, you can set <code class="language-plaintext highlighter-rouge">example.com</code> to resolve to <code class="language-plaintext highlighter-rouge">172.17.2.172</code>.</li>
+  <li><strong>AAAA Record</strong>: The AAAA record is similar to the A Record, but it is for IPv6. Remember that it is AAAA (quad-A), as AA and AAA would refer to a battery size; furthermore, AAA refers to <em>Authentication, Authorization, and Accounting</em>; neither falls under DNS.</li>
+  <li><strong>CNAME Record</strong>: The CNAME (Canonical Name) record maps a domain name to another domain name. For example, <code class="language-plaintext highlighter-rouge">www.example.com</code> can be mapped to <code class="language-plaintext highlighter-rouge">example.com</code> or even to <code class="language-plaintext highlighter-rouge">example.org</code>.</li>
+  <li><strong>MX Record</strong>: The MX (Mail Exchange) record specifies the mail server responsible for handling emails for a domain.</li>
+</ul>
+
+<p>In other words, when you type <code class="language-plaintext highlighter-rouge">example.com</code> in your browser, your browser tries to resolve this domain name by querying the DNS server for the A record. However, when you try to send an email to <code class="language-plaintext highlighter-rouge">test@example.com</code>, the mail server would query the DNS server to find the MX record.</p>
+
+<p>If you want to look up the IP address of a domain from the command line, you can use a tool such as <code class="language-plaintext highlighter-rouge">nslookup</code></p>
+
+<p><img src="/tryhackme/Networking%20Core%20Protocols/2025-12-12_16-50.png" alt="" /></p>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Which DNS record type refers to IPv6?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">AAAA</code></p>
+
+<p>Q: Which DNS record type refers to the email server?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">MX</code></p>
+
+<h2 id="whois">WHOIS</h2>
+
+<p>someone needs to have the authority to set the A, AAAA, and MX records, among other DNS records for the domain. Whoever registers a domain name is granted this power. Therefore, if you register example.com, you can set any valid DNS records for example.com.</p>
+
+<p>You can register any available domain name for one or more years. You need to pay the annual fee, and you are required to provide <a href="https://www.icann.org/resources/pages/whois-data-accuracy-2017-06-20-en">accurate contact information</a> as the registrant. This information is part of the data available via WHOIS records and is available publicly. (Although written in uppercase, WHOIS is not an acronym; it is pronounced <em>who is</em>.)</p>
+
+<p>You can look up the WHOIS records of any registered domain name using one of the online services or via the command-line tool <code class="language-plaintext highlighter-rouge">whois</code>, available on Linux systems, among others. As expected, a WHOIS record provides information about the entity that registered a domain name, including name, phone number, email, and address. In the screenshot shown below, you can see when the record was first created and when it was last updated. Moreover, you can find the registrant’s name, address, phone, and email.</p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: When was the x.com record created? Provide the answer in YYYY-MM-DD format.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">1993-04-02</code></p>
+
+<p>Q: When was the twitter.com record created? Provide the answer in YYYY-MM-DD format.</p>
+
+<p><img src="/tryhackme/Networking%20Core%20Protocols/2025-12-12_17-03.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">2000-01-21</code></p>
+
+<h2 id="https-accessing-the-web">HTTP(S): Accessing the Web</h2>
+
+<p>Some of the commands or methods that your web browser commonly issues to the web server are:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">GET</code> retrieves data from a server, such as an HTML file or an image.</li>
+  <li><code class="language-plaintext highlighter-rouge">POST</code> allows us to submit new data to the server, such as submitting a form or uploading a file.</li>
+  <li><code class="language-plaintext highlighter-rouge">PUT</code> is used to create a new resource on the server and to update and overwrite existing information.</li>
+  <li><code class="language-plaintext highlighter-rouge">DELETE</code>, as the name suggests, is used to delete a specified file or resource on the server.</li>
+</ul>
+
+<p>HTTP and HTTPS commonly use TCP ports 80 and 443, respectively, and less commonly other ports such as 8080 and 8443.</p>
+
+<p>As you remember from <a href="https://tryhackme.com/r/room/networkingconcepts">Networking Concepts</a>, we used the <code class="language-plaintext highlighter-rouge">telnet</code> client to connect to the web server running on <code class="language-plaintext highlighter-rouge">10.82.163.228</code> at port <code class="language-plaintext highlighter-rouge">80</code>. We had to send a couple of lines: <code class="language-plaintext highlighter-rouge">GET / HTTP/1.1</code> and <code class="language-plaintext highlighter-rouge">Host: anything</code> to get the page we wanted. (On some servers, you might get the file without sending <code class="language-plaintext highlighter-rouge">Host: anything</code>.) You can use this method to access any page and not just the default page <code class="language-plaintext highlighter-rouge">/</code>. To get <code class="language-plaintext highlighter-rouge">file.html</code>, you would send <code class="language-plaintext highlighter-rouge">GET /file.html HTTP/1.1</code>, for instance (<code class="language-plaintext highlighter-rouge">GET /file.html</code> might work depending on the web server in use). This approach is efficient for troubleshooting as you would be “talking HTTP” with the server.</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Use <code class="language-plaintext highlighter-rouge">telnet</code> to access the file <code class="language-plaintext highlighter-rouge">flag.html</code> on <code class="language-plaintext highlighter-rouge">10.82.163.228</code>. What is the hidden flag?</p>
+
+<p><img src="/tryhackme/Networking%20Core%20Protocols/2025-12-12_17-07.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{TELNET-HTTP}</code></p>
+
+<h2 id="ftp-transferring-files">FTP: Transferring Files</h2>
+
+<p>Unlike HTTP, which is designed to retrieve web pages, File Transfer Protocol (FTP) is designed to transfer files. As a result, FTP is very efficient for file transfer, and when all conditions are equal, it can achieve higher speeds than HTTP.</p>
+
+<p>Example commands defined by the FTP protocol are:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">USER</code> is used to input the username</li>
+  <li><code class="language-plaintext highlighter-rouge">PASS</code> is used to enter the password</li>
+  <li><code class="language-plaintext highlighter-rouge">RETR</code> (retrieve) is used to download a file from the FTP server to the client.</li>
+  <li><code class="language-plaintext highlighter-rouge">STOR</code> (store) is used to upload a file from the client to the FTP server.</li>
+</ul>
+
+<p>FTP server listens on TCP port 21 by default; data transfer is conducted via another connection from the client to the server.</p>
+
+<p>One last thing to note is that the directory listing and the file we downloaded are sent over a separate connection each.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Using the FTP client <code class="language-plaintext highlighter-rouge">ftp</code> on the AttackBox, access the FTP server at <code class="language-plaintext highlighter-rouge">10.82.163.228</code> and retrieve <code class="language-plaintext highlighter-rouge">flag.txt</code>. What is the flag found?</p>
+
+<p>Log in using <code class="language-plaintext highlighter-rouge">anonymous:&lt;empty&gt;</code> and download the file using <code class="language-plaintext highlighter-rouge">get flag.txt</code>.</p>
+
+<p><img src="/tryhackme/Networking%20Core%20Protocols/2025-12-12_17-11.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{FAST-FTP}</code></p>
+
+<h2 id="smtp-sending-email">SMTP: Sending Email</h2>
+
+<p>As with browsing the web and downloading files, sending email needs its own protocol. Simple Mail Transfer Protocol (SMTP) defines how a mail client talks with a mail server and how a mail server talks with another.</p>
+
+<p>The analogy for the SMTP protocol is when you go to the local post office to send a package. You greet the employee, tell them where you want to send your package, and provide the sender’s information before handing them the package. Depending on the country you are in, you might be asked to show your identity card. This process is not very different from an SMTP session.</p>
+
+<p>Let’s present some of the commands used by your mail client when it transfers an email to an SMTP server:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">HELO</code> or <code class="language-plaintext highlighter-rouge">EHLO</code> initiates an SMTP session</li>
+  <li><code class="language-plaintext highlighter-rouge">MAIL FROM</code> specifies the sender’s email address</li>
+  <li><code class="language-plaintext highlighter-rouge">RCPT TO</code> specifies the recipient’s email address</li>
+  <li><code class="language-plaintext highlighter-rouge">DATA</code> indicates that the client will begin sending the content of the email message</li>
+  <li><code class="language-plaintext highlighter-rouge">.</code> is sent on a line by itself to indicate the end of the email message</li>
+</ul>
+
+<p>The SMTP server listens on TCP port 25 by default.</p>
+
+<p><img src="/tryhackme/Networking%20Core%20Protocols/5f04259cf9bf5b57aed2c476-1719849634602.png" alt="" /></p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: Which SMTP command indicates that the client will start the contents of the email message?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">DATA</code></p>
+
+<p>Q: What does the email client send to indicate that the email message has been fully entered?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">.</code></p>
+
+<h2 id="section-4"><a href="POP3: Receiving Email">Section 4</a></h2>
+
+<p>You’ve received an email and want to download it to your local mail client. The Post Office Protocol version 3 (POP3) is designed to allow the client to communicate with a mail server and retrieve email messages.</p>
+
+<p>Without going into in-depth technical details, an email client sends its messages by relying on SMTP and retrieves them using POP3. SMTP is similar to handing your envelope or package to the post office, and POP3 is similar to checking your local mailbox for new letters or packages.</p>
+
+<p>Some common POP3 commands are:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">USER &lt;username&gt;</code> identifies the user</li>
+  <li><code class="language-plaintext highlighter-rouge">PASS &lt;password&gt;</code> provides the user’s password</li>
+  <li><code class="language-plaintext highlighter-rouge">STAT</code> requests the number of messages and total size</li>
+  <li><code class="language-plaintext highlighter-rouge">LIST</code> lists all messages and their sizes</li>
+  <li><code class="language-plaintext highlighter-rouge">RETR &lt;message_number&gt;</code> retrieves the specified message</li>
+  <li><code class="language-plaintext highlighter-rouge">DELE &lt;message_number&gt;</code> marks a message for deletion</li>
+  <li><code class="language-plaintext highlighter-rouge">QUIT</code> ends the POP3 session applying changes, such as deletions</li>
+</ul>
+
+<p>POP3 server listens on TCP port 110 by default.</p>
+
+<p>Someone capturing the network packets would be able to intercept the exchanged traffic. As per previous Wireshark captures, the commands in red are sent by the client, and the lines in blue are the server’s. It is also clear that someone capturing the traffic can read the passwords.</p>
+
+<p><img src="/tryhackme/Networking%20Core%20Protocols/5f04259cf9bf5b57aed2c476-1719849655900.png" alt="" /></p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: Looking at the traffic exchange, what is the name of the POP3 server running on the remote server?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Dovecot</code></p>
+
+<p>Q: Use <code class="language-plaintext highlighter-rouge">telnet</code> to connect to <code class="language-plaintext highlighter-rouge">10.82.163.228</code>’s POP3 server. What is the flag contained in the fourth message?</p>
+
+<p><img src="/tryhackme/Networking%20Core%20Protocols/2025-12-12_17-20.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{TELNET_RETR_EMAIL}</code></p>
+
+<h2 id="imap-synchronizing-email">IMAP: Synchronizing Email</h2>
+
+<p>POP3 is enough when working from one device, e.g., your favourite email client on your desktop computer. However, what if you want to check your email from your office desktop computer and from your laptop or smartphone? In this scenario, you need a protocol that allows synchronization of messages instead of deleting a message after retrieving it. One solution to maintaining a synchronized mailbox across multiple devices is Internet Message Access Protocol (IMAP).</p>
+
+<p>IMAP allows synchronizing read, moved, and deleted messages. IMAP is quite convenient when you check your email via multiple clients. Unlike POP3, which tends to minimize server storage as email is downloaded and deleted from the remote server, IMAP tends to use more storage as email is kept on the server and synchronized across the email clients.</p>
+
+<p>The IMAP protocol commands are more complicated than the POP3 protocol commands. We list a few examples below:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">LOGIN &lt;username&gt; &lt;password&gt;</code> authenticates the user</li>
+  <li><code class="language-plaintext highlighter-rouge">SELECT &lt;mailbox&gt;</code> selects the mailbox folder to work with</li>
+  <li><code class="language-plaintext highlighter-rouge">FETCH &lt;mail_number&gt; &lt;data_item_name&gt;</code> Example <code class="language-plaintext highlighter-rouge">fetch 3 body[]</code> to fetch message number 3, header and body.</li>
+  <li><code class="language-plaintext highlighter-rouge">MOVE &lt;sequence_set&gt; &lt;mailbox&gt;</code> moves the specified messages to another mailbox</li>
+  <li><code class="language-plaintext highlighter-rouge">COPY &lt;sequence_set&gt; &lt;data_item_name&gt;</code> copies the specified messages to another mailbox</li>
+  <li><code class="language-plaintext highlighter-rouge">LOGOUT</code> logs out</li>
+</ul>
+
+<p>IMAP server listens on TCP port 143 by default</p>
+
+<p><img src="/tryhackme/Networking%20Core%20Protocols/5f04259cf9bf5b57aed2c476-1719849677604.png" alt="" /></p>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>Q: What IMAP command retrieves the fourth email message?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">FETCH 4 body[]</code></p>
+
+<h2 id="summarization">Summarization</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th><strong>Protocol</strong></th>
+      <th><strong>Transport Protocol</strong></th>
+      <th><strong>Default Port Number</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TELNET</td>
+      <td>TCP</td>
+      <td>23</td>
+    </tr>
+    <tr>
+      <td>DNS</td>
+      <td>UDP or TCP</td>
+      <td>53</td>
+    </tr>
+    <tr>
+      <td>HTTP</td>
+      <td>TCP</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <td>HTTPS</td>
+      <td>TCP</td>
+      <td>443</td>
+    </tr>
+    <tr>
+      <td>FTP</td>
+      <td>TCP</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <td>SMTP</td>
+      <td>TCP</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>POP3</td>
+      <td>TCP</td>
+      <td>110</td>
+    </tr>
+    <tr>
+      <td>IMAP</td>
+      <td>TCP</td>
+      <td>143</td>
+    </tr>
+  </tbody>
+</table>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burp Suite Basics · THM Writeups</title>
+  
+  <meta name="description" content="An introduction to using Burp Suite for Web Application pentesting" />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Burp Suite Basics</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">BurpSuite/BurpSuiteBasics/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">burpsuite</span>
+          
+        
+        
+        <span class="writeup-meta-desc">An introduction to using Burp Suite for Web Application pentesting</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="burp-suite-basics"><a href="https://tryhackme.com/room/burpsuitebasics">Burp Suite Basics</a></h1>
+
+<h2 id="getting-started-what-is-burp-suite"><code class="language-plaintext highlighter-rouge">Getting Started</code> What is Burp Suite?</h2>
+
+<ul>
+  <li>
+    <p><strong>Burp Suite</strong> is a framework written in Java that aims to provide a one-stop-shop for web application penetration testing.</p>
+  </li>
+  <li>
+    <p>Burp Suite is also very commonly used when assessing mobile applications, as the same features which make it so attractive for web app testing translate almost perfectly into testing the <strong>APIs</strong> (<strong>Application Programming Interfaces</strong>) powering most mobile apps.</p>
+  </li>
+  <li>
+    <p>At the simplest level, Burp can capture and manipulate all of the traffic between an attacker and a webserver: this is the core of the framework.</p>
+
+    <ul>
+      <li>After capturing requests, we can choose to send them to various other parts of the Burp Suite framework</li>
+    </ul>
+  </li>
+  <li>
+    <p>The Burp Suite Professional and Enterprise editions both require expensive licenses but come with powerful extra features:</p>
+
+    <ul>
+      <li><strong>Burp Suite Professional</strong> is an unrestricted version of Burp Suite Community and has features such as:</li>
+    </ul>
+
+  	- An automated vulnerability scanner
+  	- A fuzzer/bruteforcer that isn’t rate limited
+  	- Saving projects for future use; report generation
+  	- A built-in API to allow integration with other tools
+  	- Unrestricted access to add new extensions for greater functionality
+  	- Access to the Burp Suite Collaborator (effectively providing a unique request catcher self-hosted or running on a Portswigger owned server)
+
+    <ul>
+      <li>
+        <p>In short, Burp Pro is an extremely powerful tool – which is why it comes with a £319/$399 price tag per user for a one-year subscription.</p>
+
+        <ul>
+          <li>For this reason, Burp Pro is usually only used by professionals (with licenses often being provided by employers).</li>
+        </ul>
+      </li>
+      <li>
+        <p><strong>Burp Suite Enterprise</strong> is slightly different.</p>
+
+        <ul>
+          <li>
+            <p>Unlike the community and professional editions, Burp Enterprise is used for continuous scanning.</p>
+          </li>
+          <li>
+            <p>It provides an automated scanner that can periodically scan webapps for vulnerabilities in much the same way as software like <a href="https://tryhackme.com/room/rpnessusredux">Nessus</a> performs  automated infrastructure scanning.</p>
+          </li>
+          <li>
+            <p>Unlike the other editions of Burp Suite which allow you to perform manual attacks from your own computer, Enterprise sits on a server and constantly scans target web apps for vulnerabilities.</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>Which edition of Burp Suite will we be using in this module?</li>
+</ol>
+
+<p>A: Burp Suite Community</p>
+
+<ol>
+  <li>Which edition of Burp Suite runs on a server and provides constant scanning for target web apps?</li>
+</ol>
+
+<p>A: Burp Suite Enterprise</p>
+
+<ol>
+  <li>Burp Suite is frequently used when attacking web applications and <strong>__</strong> applications.</li>
+</ol>
+
+<p>A: mobile</p>
+
+<h2 id="getting-started-features-of-burp-community"><code class="language-plaintext highlighter-rouge">Getting Started</code> Features of Burp Community</h2>
+
+<ul>
+  <li>
+    <p><strong>Proxy</strong>:</p>
+
+    <ul>
+      <li>The most well-known aspect of Burp Suite, the Burp Proxy allows us to intercept and modify requests/responses when interacting with web applications.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Repeater</strong>:</p>
+
+    <ul>
+      <li>
+        <p>The second most well-known Burp feature – <a href="https://tryhackme.com/room/burpsuiterepeater">Repeater</a> – allows us to capture, modify, then resend the same request numerous times.</p>
+      </li>
+      <li>
+        <p>This feature can be absolutely invaluable, especially when we need to craft a payload through trial and error (e.g. in an SQLi – Structured Query Language Injection) or when testing the functionality of an endpoint for flaws.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Intruder</strong>:</p>
+
+    <ul>
+      <li>
+        <p>Although harshly rate-limited in Burp Community, <a href="https://tryhackme.com/room/burpsuiteintruder">Intruder</a> allows us to spray an endpoint with requests.</p>
+      </li>
+      <li>
+        <p>This is often used for <em>bruteforce attacks</em> or to <em>fuzz</em> endpoints.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Decoder</strong>:</p>
+
+    <ul>
+      <li>
+        <p>Though less-used than the previously mentioned features, <a href="https://tryhackme.com/room/burpsuiteom">Decoder</a> still provides a valuable service when transforming data – either in terms of decoding captured information, or encoding a payload prior to sending it to the target.</p>
+      </li>
+      <li>
+        <p>Whilst there are other services available to do the same job, doing this directly within Burp Suite can be very efficient.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Comparer</strong>:</p>
+
+    <ul>
+      <li>
+        <p>As the name suggests, <a href="https://tryhackme.com/room/burpsuiteom">Comparer</a> allows us to compare two pieces of data at either word or byte level.</p>
+      </li>
+      <li>
+        <p>Again, this is not something that is unique to Burp Suite, but being able to send (potentially very large) pieces of data directly into a comparison tool with a single keyboard shortcut can speed things up considerably.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Sequencer</strong>:</p>
+
+    <ul>
+      <li>
+        <p>We usually use <a href="https://tryhackme.com/room/burpsuiteom">Sequencer</a> when assessing the randomness of tokens such as session cookie values or other supposedly random generated data.</p>
+      </li>
+      <li>
+        <p>If the algorithm is not generating secure random values, then this could open up some devastating avenues for attack.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The Burp Suite <a href="https://tryhackme.com/room/burpsuiteextender">Extender</a> module can quickly and easily load extensions into the framework, as well as providing a marketplace to download third-party modules (referred to as the “BApp Store”).</p>
+
+    <ul>
+      <li>
+        <p>Whilst many of these extensions require a professional license to download and add in, there are still a fair number that can be integrated with Burp Community.</p>
+
+        <ul>
+          <li>For example, we may wish to extend the inbuilt logging functionality of Burp Suite with the <a href="https://github.com/portswigger/logger-plus-plus">Logger++</a> module.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="questions-1">Questions</h2>
+
+<ol>
+  <li>Which Burp Suite feature allows us to intercept requests between ourselves and the target?</li>
+</ol>
+
+<p>A: proxy</p>
+
+<ol>
+  <li>Which Burp tool would we use if we wanted to bruteforce a login form?</li>
+</ol>
+
+<p>A: intruder</p>
+
+<h2 id="getting-started-the-dashboard"><code class="language-plaintext highlighter-rouge">Getting Started</code> The Dashboard</h2>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/faa047e93b82af360a0cff161caa1295.png" alt="" /></p>
+
+<ul>
+  <li>In short, the Dashboard interface is split into four quadrants:</li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/11202e4c73faa30a757f1439b63b85c6.png" alt="" /></p>
+
+<ol>
+  <li>
+    <p>The Tasks menu allows us to define background tasks that Burp Suite will run whilst we use the application. The Pro version would also allow us to create on-demand scans. The default “Live Passive Crawl” (which automatically logs the pages we visit) will be more than suitable for our uses in this module.</p>
+  </li>
+  <li>
+    <p>The Event log tells us what Burp Suite is doing (e.g. starting the Proxy), as well as information about any connections that we are making through Burp.</p>
+  </li>
+  <li>
+    <p>The Issue Activity section is exclusive to Burp Pro. It won’t give us anything using Burp Community, but in Burp Professional it would list all of the vulnerabilities found by the automated scanner. These would be ranked by severity and filterable by how sure Burp is that the component is vulnerable.</p>
+  </li>
+  <li>
+    <p>The Advisory section gives more information about the vulnerabilities found, as well as references and suggested remediations. These could then be exported into a report.</p>
+  </li>
+</ol>
+
+<h2 id="getting-started-navigation"><code class="language-plaintext highlighter-rouge">Getting Started</code> Navigation</h2>
+
+<ul>
+  <li>Navigating around the Burp Suite GUI by default is done entirely using the top menu bars:</li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/85b53390eb4d38e3d40f7de1bdb862f8.png" alt="" /></p>
+
+<ul>
+  <li>Tabs can also be popped out into separate windows should you prefer to view multiple tabs separately. This can be done by clicking “Window” in the application menu at the top of the screen, then choosing to “Detach” tabs:</li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/46310bb85e12e7b7ff2c242c168cd547.png" alt="" /></p>
+
+<p>#important</p>
+<ul>
+  <li>
+    <p>Burp Suite also has keyboard shortcuts that allow quick navigation to key tabs.</p>
+
+    <ul>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">CTRL + Shift + D</code> - Switch to Dasboard</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">CTRL + Shift + T</code> - Switch to the Target tab</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">CTRL + Shift + P</code> - Switch to the Proxy tab</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">CTRL + Shift + I</code> - Switch to the Intruder tab</p>
+      </li>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">CTRL + Shift + R</code> - Switch to the Repeater tab</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="getting-started-options"><code class="language-plaintext highlighter-rouge">Getting Started</code> Options</h2>
+
+<ul>
+  <li>
+    <p>The options provided in the <code class="language-plaintext highlighter-rouge">User options</code> tab will apply every time we open Burp Suite.</p>
+  </li>
+  <li>
+    <p>In contrast, the <code class="language-plaintext highlighter-rouge">Project options</code> will only apply to the current project.</p>
+
+    <ul>
+      <li>Given that we can’t save projects in Burp Community, this means that our project options will reset every time we close Burp.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/3bae017cf9d1271daa48fd10be117a56.png" alt="" /></p>
+
+<h3 id="user-options">User options</h3>
+
+<ul>
+  <li>
+    <p>There are four main sub-sections of the User options tab:</p>
+
+    <ul>
+      <li>The options in the <strong>Connections</strong> sub-tab allow us to control how Burp makes connections to targets.</li>
+    </ul>
+
+  	- For example, we can set a proxy for Burp Suite to connect through; this is very useful if we want to use Burp Suite through a network pivot.
+
+    <ul>
+      <li>
+        <p>The <strong>TLS</strong> sub-tab allows us to enable and disable various TLS (Transport Layer Security) options, as well as giving us a place to upload client certificates should a web app require us to use one for connections.</p>
+      </li>
+      <li>
+        <p>An essential set of options: <strong>Display</strong> allows us to change how Burp Suite looks.</p>
+      </li>
+    </ul>
+
+  	- The options here include things like changing the font and scale, as well as setting the theme for the framework (e.g. dark mode) and configuring various options to do with the rendering engine in Repeater (more on this later!).
+
+    <ul>
+      <li>The <strong>Misc</strong> sub-tab contains a wide variety of settings, including the keybinding table (HotKeys), which allowing us to view and alter the keyboard shortcuts used by Burp Suite. Familiarising yourself with these settings would be advisable, as using the keybinds can speed up your workflow massively.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="project-options">Project options</h3>
+
+<ul>
+  <li>
+    <p>There are five sub-tabs here:</p>
+
+    <ul>
+      <li><strong>Connections</strong> holds many of the same options as the equivalent section of the User options tab: these can be used to override the application-wide settings.</li>
+    </ul>
+
+  	- For example, it is possible to set a proxy for just the project, overriding any proxy settings that you set in the User options tab. 
+
+  	- There are a few differences between this sub-tab and that of the User options, however. 
+  		- For example, the “Hostname Resolution” option (allowing you to map domains to IPs directly within Burp Suite) can be very handy – as can the “Out-of-Scope Requests” settings, which enable  us to determine whether Burp will send requests to anything you aren’t explicitly targeting (more on this later!).
+
+    <ul>
+      <li>
+        <p>The <strong>HTTP</strong> sub-tab defines how Burp handles various aspects of the HTTP protocol: for example, whether it follows redirects or how to handle unusual response codes.</p>
+      </li>
+      <li>
+        <p><strong>TLS</strong> allows us to override application-wide TLS options, as well as showing us a list of public server certificates for sites that we have visited.</p>
+      </li>
+      <li>
+        <p>The <strong>Sessions</strong> tab provides us with options for handling sessions.</p>
+      </li>
+    </ul>
+
+  	- It allows us to define how Burp obtains, saves, and uses session cookies that it receives from target sites. 
+
+  	- It also allows us to define macros which we can use to automate things such as logging into web applications (giving us an instant authenticated session, assuming we have valid credentials).
+
+    <ul>
+      <li>There are fewer options in the <strong>Misc</strong> sub-tab than in the equivalent tab for the “User options” section.</li>
+    </ul>
+
+  	- Many of the options here are also only available if you have access to Burp Pro (such as those configuring Collaborator). 
+
+  	- That said, there are a couple of options related to logging and the embedded browser (which we will look at in a couple of tasks) that are well worth perusing.
+  </li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>
+    <p>Change the Burp Suite theme to dark mode</p>
+  </li>
+  <li>
+    <p>In which Project options sub-tab can you find reference to a “Cookie jar”?</p>
+  </li>
+</ol>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/Screenshot%20at%202022-06-26%2015-47-29.png" alt="" /></p>
+
+<p>A: Sessions</p>
+
+<ol>
+  <li>In which User options sub-tab can you change the Burp Suite update behaviour?</li>
+</ol>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/Screenshot%20at%202022-06-26%2015-48-34.png" alt="" /></p>
+
+<p>A: Misc</p>
+
+<ol>
+  <li>What is the name of the section within the User options “Misc” sub-tab which allows you to change the Burp Suite keybindings?</li>
+</ol>
+
+<p>A: Hotkeys</p>
+
+<ol>
+  <li>If we have uploaded Client-Side TLS certificates in the User options tab, can we override these on a per-project basis (Aye/Nay)?</li>
+</ol>
+
+<p>A: Aye</p>
+
+<h2 id="proxy-introduction-to-the-burp-proxy"><code class="language-plaintext highlighter-rouge">Proxy</code> Introduction to the Burp Proxy</h2>
+
+<p>#proxy</p>
+
+<ul>
+  <li>The “<code class="language-plaintext highlighter-rouge">Or Request Was Intercepted</code>” rule is good for catching responses to all requests that were intercepted by the proxy:</li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/a265a9cf710aa8cd1706f9f60d0286d0.png" alt="" /></p>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>Which button would we choose to send an intercepted request to the target in Burp Proxy?</li>
+</ol>
+
+<p>A: Forward</p>
+
+<ol>
+  <li>[Research] What is the default keybind for this?</li>
+</ol>
+
+<p>Note: Assume you are using Windows or Linux (i.e. swap Cmd for Ctrl).</p>
+
+<p>A: Ctrl+F</p>
+
+<h2 id="proxy-connecting-through-the-proxy-foxyproxy"><code class="language-plaintext highlighter-rouge">Proxy</code> Connecting through the Proxy (FoxyProxy)</h2>
+
+<p>#foxyproxy</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/b2d6f2b724f123070ca434bf2759df91.png" alt="" /></p>
+
+<h3 id="questions-4">Questions</h3>
+
+<ol>
+  <li>Read through the options in the right-click menu.</li>
+</ol>
+
+<p>There is one particularly useful option that allows you to intercept and modify the response to your request.</p>
+
+<p>What is this option?</p>
+
+<p>Note: The option is in a dropdown sub-menu.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Do intercept -&gt; Response to this request</code></li>
+</ul>
+
+<p>A: Response to this request</p>
+
+<ol>
+  <li>[Bonus Question – Optional] Try installing FoxyProxy standard and have a look at the pattern matching features.</li>
+</ol>
+
+<h2 id="proxy-proxying-https"><code class="language-plaintext highlighter-rouge">Proxy</code> Proxying HTTPS</h2>
+
+<ul>
+  <li>
+    <p>Great, so we can intercept HTTP traffic – what’s next?</p>
+  </li>
+  <li>
+    <p>Unfortunately, there’s a problem.</p>
+  </li>
+  <li>
+    <p>What happens if we navigate to a site with TLS enabled? For example, https://google.com/:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/8b4b43cac91cd9a80622b953598d05eb.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>We need to get Firefox to trust connections secured by Portswigger certs, so we will manually add the CA certificate to our list of trusted certificate authorities.</p>
+  </li>
+  <li>
+    <p>First, with the proxy activated head to <code class="language-plaintext highlighter-rouge">http://burp/cert</code>; this will download a file called <code class="language-plaintext highlighter-rouge">cacert.der</code> – save it somewhere on your machine.</p>
+  </li>
+  <li>
+    <p>Next, type about:preferences into your Firefox search bar and press enter; this takes us to the FireFox settings page.</p>
+
+    <ul>
+      <li>Search the page for “certificates” and we find the option to “View Certificates”:</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/a9de0495b2ac6738520c8f9946afdecb.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Clicking the “View Certificates” button allows us to see all of our trusted CA certificates.</p>
+
+    <ul>
+      <li>We can register a new certificate for Portswigger by pressing “Import” and selecting the file that we just downloaded.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="proxy-the-burp-suite-browser"><code class="language-plaintext highlighter-rouge">Proxy</code> The Burp Suite Browser</h2>
+
+<ul>
+  <li>
+    <p>In addition to giving us the option to modify our regular web browser to work with the proxy, Burp Suite also includes a built-in Chromium browser that is pre-configured to use the proxy without any of the modifications we just had to do.</p>
+  </li>
+  <li>
+    <p>Whilst this may seem ideal, it is not as commonly used as the process detailed in the previous few tasks.</p>
+
+    <ul>
+      <li>People tend to stick with their own browser as it gives them a lot more customisability; however, both are perfectly valid choices.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-5">Questions</h3>
+
+<ol>
+  <li>Using the in-built browser, make a request to http://10.10.55.255/ and capture it in the proxy.</li>
+</ol>
+
+<h2 id="proxy-scoping-and-targeting"><code class="language-plaintext highlighter-rouge">Proxy</code> Scoping and Targeting</h2>
+
+<p>#scoping</p>
+
+<ul>
+  <li>
+    <p>It can get extremely tedious having Burp capturing all of our traffic.</p>
+  </li>
+  <li>
+    <p>When it logs everything (including traffic to sites we aren’t targeting), it muddies up logs we may later wish to send to clients.</p>
+
+    <ul>
+      <li>In short, allowing Burp to capture everything can quickly become a massive pain.</li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p>What’s the solution? Scoping.</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>Setting a scope for the project allows us to define what gets proxied and logged.</p>
+  </li>
+  <li>
+    <p>We can restrict Burp Suite to only target the web application(s) that we want to test.</p>
+  </li>
+  <li>
+    <p>The easiest way to do this is by switching over to the “Target” tab, right-clicking our target from our list on the left, then choosing “Add To Scope”.</p>
+
+    <ul>
+      <li>Burp will then ask us whether we want to stop logging anything which isn’t in scope – most of the time we want to choose “yes” here.</li>
+    </ul>
+  </li>
+  <li>
+    <p>We can now check our scope by switching to the “Scope” sub-tab.</p>
+  </li>
+  <li>
+    <p>The Scope sub-tab allows us to control what we are targeting by either Including or Excluding domains / IPs.</p>
+
+    <ul>
+      <li>This is a very powerful section, so it’s well worth taking the time to get accustomed to using it.</li>
+    </ul>
+  </li>
+  <li>
+    <p>We just chose to disable <em>logging</em> for out of scope traffic, but the proxy will still be intercepting everything.</p>
+  </li>
+  <li>
+    <p>To turn this off, we need to go into the Proxy Options sub-tab and select “And URL Is in target scope” from the Intercept Client Requests section:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/dec63f8822c1fe3393d779e17052577b.png" alt="" /></p>
+
+<ul>
+  <li>With this option selected, the proxy will completely ignore anything that isn’t in the scope, vastly cleaning up the traffic coming through Burp.</li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<ol>
+  <li>Add http://10.10.55.255/ to your scope and change the Proxy settings to only intercept traffic to in-scope targets.</li>
+</ol>
+
+<p>See the difference between the amount of traffic getting caught by the proxy before and after limiting the scope.</p>
+
+<h2 id="proxy-site-map-and-issue-definitions"><code class="language-plaintext highlighter-rouge">Proxy</code> Site Map and Issue Definitions</h2>
+
+<p>#sitemap #issuedefinitions</p>
+
+<ul>
+  <li>
+    <p>Control of the scope may be the most useful aspect of the Target tab, but it’s by no means the only use for this section of Burp.</p>
+  </li>
+  <li>
+    <p>There are three sub-tabs under <em>Target</em>:</p>
+
+    <ul>
+      <li><strong>Site map</strong> allows us to map out the apps we are targeting in a tree structure.</li>
+    </ul>
+
+  	- Every page that we visit will show up here, allowing us to automatically generate a site map for the target simply by browsing around the web app. 
+
+  	- Burp Pro would also allow us to spider the targets automatically (i.e. look through every page for links and use them to map out as much of the site as-is publicly accessible using the links between pages); however, with Burp Community, we can still use this to accumulate data whilst we perform our initial enumeration steps.
+
+  	- The Site map can be especially useful if we want to map out an API, as whenever we visit a page, any API endpoints that the page retrieves data from whilst loading will show up here.
+
+    <ul>
+      <li>
+        <p><strong>Scope</strong>: We have already seen the Scope sub-tab – it allows us to control Burp’s target scope for the project.</p>
+      </li>
+      <li>
+        <p><strong>Issue Definitions</strong>: Whilst we don’t have access to the Burp Suite vulnerability scanner in Burp Community, we do still have access to a list of all the vulnerabilities it looks for.</p>
+      </li>
+    </ul>
+
+  	- The Issue Definitions section gives us a huge list of web vulnerabilities (complete with descriptions and references) which we can draw from should we need citations for a report or help describing a vulnerability.
+  </li>
+</ul>
+
+<h3 id="questions-7">Questions</h3>
+
+<p>Take a look around the site on http://10.10.55.255/ – we will be using this a lot throughout the module. Visit every page linked to from the homepage, then check your sitemap – one endpoint should stand out as being very unusual!</p>
+
+<p>Visit this in your browser (or use the “Response” section of the site map entry for that endpoint)</p>
+
+<ol>
+  <li>What is the flag you receive?</li>
+</ol>
+
+<ul>
+  <li>Checked out all of the pages I could access in the website and observed a weird URL in the site map</li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/Screenshot%20at%202022-07-01%2016-12-36.png" alt="" /></p>
+
+<p>A: THM{NmNlZTliNGE1MWU1ZTQzMzgzNmFiNWVk}</p>
+
+<ol>
+  <li>Look through the Issue Definitions list.</li>
+</ol>
+
+<p>What is the typical severity of a Vulnerable JavaScript dependency?</p>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/Screenshot%20at%202022-07-01%2016-13-37.png" alt="" /></p>
+
+<p>A: low</p>
+
+<h2 id="practical-example-attack"><code class="language-plaintext highlighter-rouge">Practical</code> Example Attack</h2>
+
+<p>#xss #reflected</p>
+
+<ul>
+  <li>
+    <p>Bypassing a client-side filter</p>
+  </li>
+  <li>
+    <p>XSS does not work on the contact form, so we will use some real data first</p>
+  </li>
+  <li>
+    <p>Entering some data in the Contact form and capture the request</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/Screenshot%20at%202022-07-01%2016-18-49.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>With the request captured in the proxy, we can now change the email field to be our very simple payload from above: <code class="language-plaintext highlighter-rouge">&lt;script&gt;alert("Succ3ssful XSS")&lt;/script&gt;</code>.</p>
+  </li>
+  <li>
+    <p>After pasting in the payload, we need to select it, then URL encode it with the Ctrl + U shortcut to make it safe to send.</p>
+  </li>
+  <li>
+    <p>Forwardung the request gives us a pop up message:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/BurpSuite/BurpSuiteBasics/Screenshot%20at%202022-07-01%2016-22-29.png" alt="" /></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

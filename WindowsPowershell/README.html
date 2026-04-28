@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows Powershell · THM Writeups</title>
+  
+  <meta name="description" content="Discover the &quot;Power&quot; in PowerShell and learn the basics." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Windows Powershell</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">WindowsPowershell/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">windows</span>
+          
+          <span class="tag-pill">powershell</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Discover the "Power" in PowerShell and learn the basics.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="windows-powershell">Windows Powershell</h1>
+
+<h2 id="what-is-poweshell">What is PoweShell</h2>
+
+<p>PowerShell is a powerful tool from Microsoft designed for task automation and configuration management. It combines a command-line interface and a scripting language built on the .NET framework. Unlike older text-based command-line tools, PowerShell is object-oriented, which means it can handle complex data types and interact with system components more effectively. Initially exclusive to Windows, PowerShell has lately expanded to support macOS and Linux, making it a versatile option for IT professionals across different operating systems.</p>
+
+<p>In the early 2000s, as Windows was increasingly used in complex enterprise environments, traditional tools like <code class="language-plaintext highlighter-rouge">cmd.exe</code> and batch files fell short in automating and managing these systems. Microsoft needed a tool that could handle more sophisticated administrative tasks and interact with Windows’ modern APIs.</p>
+
+<p>To fully grasp the power of PowerShell, we first need to understand what an <strong>object</strong> is in this context.</p>
+
+<p>In programming, an <strong>object</strong> represents an item with <strong>properties</strong> (characteristics) and <strong>methods</strong> (actions). For example, a <code class="language-plaintext highlighter-rouge">car</code> object might have properties like <code class="language-plaintext highlighter-rouge">Color</code>, <code class="language-plaintext highlighter-rouge">Model</code>, and <code class="language-plaintext highlighter-rouge">FuelLevel</code>, and methods like <code class="language-plaintext highlighter-rouge">Drive()</code>, <code class="language-plaintext highlighter-rouge">HonkHorn()</code>, and <code class="language-plaintext highlighter-rouge">Refuel()</code>.</p>
+
+<p>Similarly, in PowerShell, objects are fundamental units that encapsulate data and functionality, making it easier to manage and manipulate information. An object in PowerShell can contain file names, usernames or sizes as data (<strong>properties</strong>), and carry functions (<strong>methods</strong>) such as copying a file or stopping a process.</p>
+
+<p>The traditional Command Shell’s basic commands are text-based, meaning they process and output data as plain text. Instead, when a <strong>cmdlet</strong> (pronounced <em>command-let</em>) is run in PowerShell, it returns objects that retain their properties and methods. This allows for more powerful and flexible data manipulation since these objects do not require additional parsing of text.</p>
+
+<h3 id="questions">Questions</h3>
+
+<p>What do we call the advanced approach used to develop PowerShell?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">object-oriented</code></p>
+
+<h2 id="powershell-basics">PowerShell Basics</h2>
+
+<p> If you are working on a Windows system from the graphical interface (GUI), these are some of the possible ways to launch it:</p>
+
+<ul>
+  <li><strong>Start Menu</strong>: Type <code class="language-plaintext highlighter-rouge">powershell</code> in the Windows Start Menu search bar, then click on <code class="language-plaintext highlighter-rouge">Windows PowerShell</code> or <code class="language-plaintext highlighter-rouge">PowerShell</code> from the results.</li>
+  <li><strong>Run Dialog</strong>: Press <code class="language-plaintext highlighter-rouge">Win + R</code> to open the <code class="language-plaintext highlighter-rouge">Run</code> dialog, type <code class="language-plaintext highlighter-rouge">powershell</code>, and hit <code class="language-plaintext highlighter-rouge">Enter</code>.</li>
+  <li><strong>File Explorer</strong>: Navigate to any folder, then type <code class="language-plaintext highlighter-rouge">powershell</code> in the address bar, and press <code class="language-plaintext highlighter-rouge">Enter</code>. This opens PowerShell in that specific directory.</li>
+  <li><strong>Task Manager</strong>: Open the Task Manager, go to <code class="language-plaintext highlighter-rouge">File &gt; Run new task</code>, type <code class="language-plaintext highlighter-rouge">powershell</code>, and press <code class="language-plaintext highlighter-rouge">Enter</code>.</li>
+</ul>
+
+<p>Alternatively, PowerShell can be launched from a Command Prompt (<code class="language-plaintext highlighter-rouge">cmd.exe</code>) by typing <code class="language-plaintext highlighter-rouge">powershell</code>, and pressing <code class="language-plaintext highlighter-rouge">Enter</code>.</p>
+
+<p>Cmdlets follow a consistent <code class="language-plaintext highlighter-rouge">Verb-Noun</code> naming convention. This structure makes it easy to understand what each cmdlet does. The <code class="language-plaintext highlighter-rouge">Verb</code> describes the action, and the <code class="language-plaintext highlighter-rouge">Noun</code> specifies the object on which action is performed. For example:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Get-Content</code>: Retrieves (gets) the content of a file and displays it in the console.</li>
+  <li><code class="language-plaintext highlighter-rouge">Set-Location</code>: Changes (sets) the current working directory.</li>
+</ul>
+
+<p>To list all available cmdlets, functions, aliases, and scripts that can be executed in the current PowerShell session, we can use <code class="language-plaintext highlighter-rouge">Get-Command</code>. It’s an essential tool for discovering what commands one can use.</p>
+
+<p> if we want to display only the available commands of type “function”, we can use <code class="language-plaintext highlighter-rouge">-CommandType "Function"</code></p>
+
+<p>Another essential cmdlet to keep in our tool belt is <code class="language-plaintext highlighter-rouge">Get-Help</code>: it provides detailed information about cmdlets, including usage, parameters, and examples.</p>
+
+<p>As shown in the results above, <code class="language-plaintext highlighter-rouge">Get-Help</code> informs us that we can retrieve other useful information about a cmdlet by appending some options to the basic syntax. For example, by appending <code class="language-plaintext highlighter-rouge">-examples</code> to the command displayed above, we will be shown a list of common ways in which the chosen cmdlet can be used.</p>
+
+<p>To make the transition easier for IT professionals, PowerShell includes aliases —which are shortcuts or alternative names for cmdlets— for many traditional Windows commands. Indispensable for users already familiar with other command-line tools, <code class="language-plaintext highlighter-rouge">Get-Alias</code> lists all aliases available. For example, <code class="language-plaintext highlighter-rouge">dir</code> is an alias for <code class="language-plaintext highlighter-rouge">Get-ChildItem</code>, and <code class="language-plaintext highlighter-rouge">cd</code> is an alias for <code class="language-plaintext highlighter-rouge">Set-Location</code>.</p>
+
+<p>Another powerful feature of PowerShell is the possibility of extending its functionality by downloading additional cmdlets from online repositories.</p>
+
+<p>To search for modules (collections of cmdlets) in online repositories like the PowerShell Gallery, we can use <code class="language-plaintext highlighter-rouge">Find-Module</code>. Sometimes, if we don’t know the exact name of the module, it can be useful to search for modules with a similar name. We can achieve this by filtering the <code class="language-plaintext highlighter-rouge">Name</code> property and appending a wildcard (<code class="language-plaintext highlighter-rouge">*</code>) to the module’s partial name, using the following standard PowerShell syntax: <code class="language-plaintext highlighter-rouge">Cmdlet -Property "pattern*"</code>.</p>
+
+<p>Once identified, the modules can be downloaded and installed from the repository with <code class="language-plaintext highlighter-rouge">Install-Module</code>, making new cmdlets contained in the module available for use.</p>
+<h3 id="questions-1">Questions</h3>
+
+<p>How would you retrieve a list of commands that <strong>start with</strong> the verb <code class="language-plaintext highlighter-rouge">Remove</code>? [for the sake of this question, avoid the use of quotes (“ or ‘) in your answer]</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Get-Command -Name Remove*</code></p>
+
+<p>What cmdlet has its traditional counterpart <code class="language-plaintext highlighter-rouge">echo</code> as an alias?</p>
+
+<p>Do a <code class="language-plaintext highlighter-rouge">Get-Alias</code> in the terminal.</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Write-Output</code></p>
+
+<p>What is the command to retrieve some example usage for the cmdlet <code class="language-plaintext highlighter-rouge">New-LocalUser</code>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Get-Help New-LocalUser -examples</code></p>
+
+<h2 id="navigating-the-file-system-and-working-with-files">Navigating the File System and Working with Files</h2>
+
+<p>Similar to the <code class="language-plaintext highlighter-rouge">dir</code> command in Command Prompt (or <code class="language-plaintext highlighter-rouge">ls</code> in Unix-like systems), <code class="language-plaintext highlighter-rouge">Get-ChildItem</code> lists the files and directories in a location specified with the <code class="language-plaintext highlighter-rouge">-Path</code> parameter. It can be used to explore directories and view their contents. If no <code class="language-plaintext highlighter-rouge">Path</code> is specified, the cmdlet will display the content of the current working directory.</p>
+
+<p>To navigate to a different directory, we can use the <code class="language-plaintext highlighter-rouge">Set-Location</code> cmdlet.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Set-Location</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="s2">".\Documents"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>While the traditional Windows CLI uses separate commands to create and manage different items like directories and files, PowerShell simplifies this process by providing a single set of cmdlets to handle the creation and management of both files and directories.</p>
+
+<p>To create an item in PowerShell, we can use <code class="language-plaintext highlighter-rouge">New-Item</code>. We will need to specify the path of the item and its type (whether it is a file or a directory).</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">New-Item</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="s2">".\captain-cabin\captain-wardrobe"</span><span class="w"> </span><span class="nt">-ItemType</span><span class="w"> </span><span class="s2">"Directory"</span><span class="w">
+</span><span class="n">New-Item</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="s2">".\captain-cabin\captain-wardrobe\captain-boots.txt"</span><span class="w"> </span><span class="nt">-ItemType</span><span class="w"> </span><span class="s2">"File"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Similarly, the <code class="language-plaintext highlighter-rouge">Remove-Item</code> cmdlet removes both directories and files, whereas in Windows CLI we have separate commands <code class="language-plaintext highlighter-rouge">rmdir</code> and <code class="language-plaintext highlighter-rouge">del</code>.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Remove-Item</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="s2">".\captain-cabin\captain-wardrobe\captain-boots.txt"</span><span class="w">
+</span><span class="n">Remove-Item</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="s2">".\captain-cabin\captain-wardrobe"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>We can copy or move files and directories alike, using respectively <code class="language-plaintext highlighter-rouge">Copy-Item</code> (equivalent to <code class="language-plaintext highlighter-rouge">copy</code>) and <code class="language-plaintext highlighter-rouge">Move-Item</code> (equivalent to <code class="language-plaintext highlighter-rouge">move</code>).</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Copy-Item</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="o">.</span><span class="nx">\captain-cabin\captain-hat.txt</span><span class="w"> </span><span class="nt">-Destination</span><span class="w"> </span><span class="o">.</span><span class="nx">\captain-cabin\captain-hat2.txt</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Finally, to read and display the contents of a file, we can use the <code class="language-plaintext highlighter-rouge">Get-Content</code> cmdlet, which works similarly to the <code class="language-plaintext highlighter-rouge">type</code> command in Command Prompt (or <code class="language-plaintext highlighter-rouge">cat</code> in Unix-like systems).</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-Content</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="s2">".\captain-hat.txt"</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>What cmdlet can you use instead of the traditional Windows command <code class="language-plaintext highlighter-rouge">type</code>?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Get-Content</code></p>
+
+<p>What PowerShell command would you use to display the content of the “C:\Users” directory? [for the sake of this question, avoid the use of quotes (“ or ‘) in your answer]</p>
+
+<p>A: ` Get-ChildItem -Path C:\Users`</p>
+
+<p>How many items are displayed by the command described in the previous question?</p>
+
+<p><img src="/tryhackme/WindowsPowershell/2025-12-03_11-14.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">4</code></p>
+
+<h2 id="piping-filtering-and-sorting-data">Piping, Filtering, and Sorting Data</h2>
+
+<p>In PowerShell, piping is even more powerful because it passes <strong>objects</strong> rather than just text. These objects carry not only the data but also the properties and methods that describe and interact with the data.</p>
+
+<p>For example, if you want to get a list of files in a directory and then sort them by size, you could use the following command in PowerShell:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-ChildItem</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Sort-Object</span><span class="w"> </span><span class="nx">Length</span><span class="w">
+</span></code></pre></div></div>
+
+<p>To filter objects based on specified conditions, returning only those that meet the criteria, we can use the <code class="language-plaintext highlighter-rouge">Where-Object</code> cmdlet. For instance, to list only <code class="language-plaintext highlighter-rouge">.txt</code> files in a directory, we can use:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-ChildItem</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Where-Object</span><span class="w"> </span><span class="nt">-Property</span><span class="w"> </span><span class="s2">"Extension"</span><span class="w"> </span><span class="o">-eq</span><span class="w"> </span><span class="s2">".txt"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The operator <code class="language-plaintext highlighter-rouge">-eq</code> (i.e. “<strong>equal to</strong>”) is part of a set of <strong>comparison operators</strong> that are shared with other scripting languages (e.g. Bash, Python). To show the potentiality of the PowerShell’s filtering, we have selected some of the most useful operators from that list:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-ne</code>: “<strong>not equal</strong>”. This operator can be used to exclude objects from the results based on specified criteria.</li>
+  <li><code class="language-plaintext highlighter-rouge">-gt</code>: “<strong>greater than</strong>”. This operator will filter only objects which exceed a specified value. It is important to note that this is a strict comparison, meaning that objects that are equal to the specified value will be excluded from the results.</li>
+  <li><code class="language-plaintext highlighter-rouge">-ge</code>: “<strong>greater than or equal to</strong>”. This is the non-strict version of the previous operator. A combination of <code class="language-plaintext highlighter-rouge">-gt</code> and <code class="language-plaintext highlighter-rouge">-eq</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">-lt</code>: “<strong>less than</strong>”. Like its counterpart, “greater than”, this is a strict operator. It will include only objects which are strictly below a certain value.</li>
+  <li><code class="language-plaintext highlighter-rouge">-le</code>: “<strong>less than or equal to</strong>”. Just like its counterpart <code class="language-plaintext highlighter-rouge">-ge</code>, this is the non-strict version of the previous operator. A combination of <code class="language-plaintext highlighter-rouge">-lt</code> and <code class="language-plaintext highlighter-rouge">-eq</code>.</li>
+</ul>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-ChildItem</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Where-Object</span><span class="w"> </span><span class="nt">-Property</span><span class="w"> </span><span class="s2">"Name"</span><span class="w"> </span><span class="o">-like</span><span class="w"> </span><span class="s2">"ship*"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The next filtering cmdlet, <code class="language-plaintext highlighter-rouge">Select-Object</code>, is used to select specific properties from objects or limit the number of objects returned. It’s useful for refining the output to show only the details one needs.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-ChildItem</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">Select-Object</span><span class="w"> </span><span class="nx">Name</span><span class="p">,</span><span class="nx">Length</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The last in this set of filtering cmdlets is <code class="language-plaintext highlighter-rouge">Select-String</code>. This cmdlet searches for text patterns within files, similar to <code class="language-plaintext highlighter-rouge">grep</code> in Unix-based systems or <code class="language-plaintext highlighter-rouge">findstr</code> in Windows Command Prompt. It’s commonly used for finding specific content within log files or documents.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Select-String</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="s2">".\captain-hat.txt"</span><span class="w"> </span><span class="nt">-Pattern</span><span class="w"> </span><span class="s2">"hat"</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>How would you retrieve the items in the current directory with size greater than 100? [for the sake of this question, avoid the use of quotes (“ or ‘) in your answer]</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Get-ChildItem | Where-Object -Property Length -gt 100</code></p>
+
+<h2 id="system-and-network-information">System and Network Information</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">Get-ComputerInfo</code> cmdlet retrieves comprehensive system information, including operating system information, hardware specifications, BIOS details, and more. It provides a snapshot of the entire system configuration in a single command. Its traditional counterpart <code class="language-plaintext highlighter-rouge">systeminfo</code> retrieves only a small set of the same details.</p>
+
+<p>Essential for managing user accounts and understanding the machine’s security configuration, <code class="language-plaintext highlighter-rouge">Get-LocalUser</code> lists all the local user accounts on the system. The default output displays, for each user, username, account status, and description.</p>
+
+<p>Similar to the traditional <code class="language-plaintext highlighter-rouge">ipconfig</code> command, the following two cmdlets can be used to retrieve detailed information about the system’s network configuration.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Get-NetIPConfiguration</code> provides detailed information about the network interfaces on the system, including IP addresses, DNS servers, and gateway configurations.</p>
+
+<p>In case we need specific details about the IP addresses assigned to the network interfaces, the <code class="language-plaintext highlighter-rouge">Get-NetIPAddress</code> cmdlet will show details for all IP addresses configured on the system, including those that are not currently active.</p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Other than your current user and the default “Administrator” account, what other user is enabled on the target machine?</p>
+
+<p><img src="/tryhackme/WindowsPowershell/2025-12-03_11-51.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">p1r4t3</code></p>
+
+<p>This lad has hidden his account among the others with no regard for our beloved captain! What is the motto he has so bluntly put as his account’s description?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">A merry life and a short one.</code></p>
+
+<p>Now a small challenge to put it all together. This shady lad that we just found hidden among the local users has his own home folder in the “C:\Users” directory. <br />
+Can you navigate the filesystem and find the hidden treasure inside this pirate’s home?</p>
+
+<p><img src="/tryhackme/WindowsPowershell/2025-12-03_11-53.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{p34rlInAsh3ll}</code></p>
+
+<h2 id="real-time-system-analysis">Real-Time System Analysis</h2>
+
+<p><code class="language-plaintext highlighter-rouge">Get-Process</code> provides a detailed view of all currently running processes, including CPU and memory usage, making it a powerful tool for monitoring and troubleshooting.</p>
+
+<p>Similarly, <code class="language-plaintext highlighter-rouge">Get-Service</code> allows the retrieval of information about the status of services on the machine, such as which services are running, stopped, or paused. It is used extensively in troubleshooting by system administrators, but also by forensics analysts hunting for anomalous services installed on the system.</p>
+
+<p>To monitor active network connections, <code class="language-plaintext highlighter-rouge">Get-NetTCPConnection</code> displays current TCP connections, giving insights into both local and remote endpoints. This cmdlet is particularly handy during an incident response or malware analysis task, as it can uncover hidden backdoors or established connections towards an attacker-controlled server.</p>
+
+<p>Additionally, we are going to mention <code class="language-plaintext highlighter-rouge">Get-FileHash</code> as a useful cmdlet for generating file hashes, which is particularly valuable in incident response, threat hunting, and malware analysis, as it helps verify file integrity and detect potential tampering.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Get-FileHash</span><span class="w"> </span><span class="nt">-Path</span><span class="w"> </span><span class="o">.</span><span class="nx">\ship-flag.txt</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>In the previous task, you found a marvellous treasure carefully hidden in the target machine. What is the hash of the file that contains it?</p>
+
+<p><img src="/tryhackme/WindowsPowershell/2025-12-03_11-57.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">71FC5EC11C2497A32F8F08E61399687D90ABE6E204D2964DF589543A613F3E08</code></p>
+
+<p>What property retrieved by default by <code class="language-plaintext highlighter-rouge">Get-NetTCPConnection</code> contains information about the process that has started the connection?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">OwningProcess</code></p>
+
+<p>It’s time for another small challenge. Some vital service has been installed on this pirate ship to guarantee that the captain can always navigate safely. But something isn’t working as expected, and the captain wonders why. Investigating, they find out the truth, at last: the service has been tampered with! The shady lad from before has modified the service <code class="language-plaintext highlighter-rouge">DisplayName</code> to reflect his very own motto, the same that he put in his user description.</p>
+
+<p>With this information and the PowerShell knowledge you have built so far, can you find the service name?</p>
+
+<p>Searching in the output of the command <code class="language-plaintext highlighter-rouge">Get-Service</code> for something peculiar:</p>
+
+<p><img src="/tryhackme/WindowsPowershell/2025-12-03_12-01.png" alt="" /></p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">p1r4t3-s-compass</code></p>
+
+<h2 id="scripting">Scripting</h2>
+
+<p>Simply speaking, scripting is like giving a computer a to-do list, where each line in the script is a task that the computer will carry out automatically. This saves time, reduces the chance of errors, and allows to perform tasks that are too complex or tedious to do manually.</p>
+
+<p>Learning scripting with PowerShell goes beyond the scope of this room. Nonetheless, we must understand that its power makes it a crucial skill across all cyber security roles.</p>
+
+<ul>
+  <li>
+    <p>For <strong>blue team</strong> professionals such as incident responders, malware analysts, and threat hunters, PowerShell scripts can automate many different tasks, including log analysis, detecting anomalies, and extracting indicators of compromise (IOCs). These scripts can also be used to reverse-engineer malicious code (malware) or automate the scanning of systems for signs of intrusion.</p>
+  </li>
+  <li>
+    <p>For the <strong>red team</strong>, including penetration testers and ethical hackers, PowerShell scripts can automate tasks like system enumeration, executing remote commands, and crafting obfuscated scripts to bypass defences. Its deep integration with all types of systems makes it a powerful tool for simulating attacks and testing systems’ resilience against real-world threats.</p>
+  </li>
+  <li>
+    <p>Staying in the context of cyber security, <strong>system administrators</strong> benefit from PowerShell scripting for automating integrity checks, managing system configurations, and securing networks, especially in remote or large-scale environments. PowerShell scripts can be designed to enforce security policies, monitor systems health, and respond automatically to security incidents, thus enhancing the overall security posture.</p>
+  </li>
+</ul>
+
+<p>Whether used defensively or offensively, PowerShell scripting is an essential capability in the cyber security toolkit.</p>
+
+<p>Before concluding this task about scripting, we can’t go without mentioning the <code class="language-plaintext highlighter-rouge">Invoke-Command</code> cmdlet.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Invoke-Command</code> is essential for executing commands on remote systems, making it fundamental for system administrators, security engineers and penetration testers. <code class="language-plaintext highlighter-rouge">Invoke-Command</code> enables efficient remote management and—combining it with scripting—automation of tasks across multiple machines. It can also be used to execute payloads or commands on target systems during an engagement by penetration testers—or attackers alike.</p>
+
+<p>Examples:</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ------------- Example 1: Run a script on a server -------------</span><span class="w">
+</span><span class="n">Invoke-Command</span><span class="w"> </span><span class="nt">-FilePath</span><span class="w"> </span><span class="nx">c:\scripts\test.ps1</span><span class="w"> </span><span class="nt">-ComputerName</span><span class="w"> </span><span class="nx">Server01</span><span class="w">
+</span><span class="c"># --------- Example 2: Run a command on a remote server ---------</span><span class="w">
+</span><span class="n">Invoke-Command</span><span class="w"> </span><span class="nt">-ComputerName</span><span class="w"> </span><span class="nx">Server01</span><span class="w"> </span><span class="nt">-Credential</span><span class="w"> </span><span class="nx">Domain01\User01</span><span class="w"> </span><span class="nt">-ScriptBlock</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Get-Culture</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>What is the syntax to execute the command <code class="language-plaintext highlighter-rouge">Get-Service</code> on a remote computer named “RoyalFortune”? Assume you don’t need to provide credentials to establish the connection. [for the sake of this question, avoid the use of quotes (“ or ‘) in your answer]</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Invoke-Command -ComputerName RoyalFortune -ScriptBlock { Get-Service }</code></p>
+
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DNS In Detail · THM Writeups</title>
+  
+  <meta name="description" content="Learn how DNS works and how it helps you access internet services." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>DNS In Detail</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">DNSInDetail/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">dns</span>
+          
+          <span class="tag-pill">networking</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how DNS works and how it helps you access internet services.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="dns-in-detail"><a href="https://tryhackme.com/room/dnsindetail">DNS In Detail</a></h1>
+
+<h2 id="what-is-dns">What is DNS?</h2>
+
+<p>Instead of remembering an IP address, DNS allows us to instead remember a name of the website (tryhackme.com)</p>
+
+<h2 id="domain-hierarchy">Domain Hierarchy</h2>
+<p><img src="/tryhackme/DNSInDetail/DomainHierarchy.png" alt="" /></p>
+<h3 id="tld-top-level-domains">TLD (Top-Level Domains)</h3>
+
+<ul>
+  <li>It is basically the right hand side of a website’s URL. For e.g., the TLD of tryhackme.com would be <em>.com</em>.</li>
+  <li>
+    <p>Two types of TLD: <strong>gTLD</strong> (Generic Top Level Domain) and <strong>ccTLD</strong> (Country Code Top Level Domain). Historically, the gTLD was used to tell the purpose of the domain name:</p>
+  </li>
+  <li>.com -&gt; commercial</li>
+  <li>.gov -&gt; gouvernment</li>
+  <li>.edu -&gt; education</li>
+  <li>.org -&gt; organisation</li>
+</ul>
+
+<p>And ccTLD for geographical purposes:</p>
+
+<ul>
+  <li>.ca -&gt; sites based in Canada</li>
+  <li>.co.uk -&gt; based in the UK</li>
+</ul>
+
+<p><a href="https://data.iana.org/TLD/tlds-alpha-by-domain.txt">List</a> of over 2000 TLDs:</p>
+
+<h3 id="second-level-domain">Second-Level Domain</h3>
+
+<p>Given the domain tryhackme.com, the SLD would be <em>tryhackme</em> in this case.</p>
+
+<p>Some constraints regarding these:</p>
+
+<ul>
+  <li>SLD is limited to 63 characters</li>
+  <li>TLD can only use a-z 0-9 and hyphens (cannot start or end with hyphens or have consecutive hyphens)</li>
+</ul>
+
+<h3 id="subdomain">Subdomain</h3>
+
+<p>Sits on the left of a SLD. For ex, in admin.tryhackme.com, <em>admin</em> would be the subdomain. Has the same constraints with a SLD. You can have how many subdomains splits as you like, but it has to be kept to 253 characters or less. Also, there is no limit to the number of subdomains you can create.</p>
+
+<h2 id="record-types">Record Types</h2>
+
+<ul>
+  <li>
+    <p><em>A Record</em> - resolve IPv4 addresses</p>
+  </li>
+  <li>
+    <p><em>AAAA Record</em> - resolve IPv6 addresses</p>
+  </li>
+  <li>
+    <p><em>CNAME Record</em> - resolve to another domain name (ex: trayhackme’s online shop has the subdomain name store.tryhackme.com which returns a CNAME record shops.shopify.com. Another DNS request is make to the latter to work out the IP address)</p>
+  </li>
+  <li>
+    <p><em>MX Record</em> - These records resolve to the address of the servers that handle the email for the domain you are querying, for example an MX record response for tryhackme.com would look something like <em>alt1.aspmx.l.google.com</em>. These records also come with a priority flag. This tells the client in which order to try the servers, this is perfect for if the main server goes down and email needs to be sent to a backup server.</p>
+  </li>
+  <li>
+    <p>What type of record would be used to advise where to send email? - MX Record</p>
+  </li>
+  <li>
+    <p><em>TXT Record</em> - free text fields where any text-based data can be stored. TXT records have multiple uses, but some common ones can be to list servers that have the authority to send an email on behalf of the domain (this can help in the battle against spam and spoofed email). They can also be used to verify ownership of the domain name when signing up for third party services.</p>
+  </li>
+</ul>
+
+<h2 id="making-a-request">Making a request</h2>
+
+<p><img src="/tryhackme/DNSInDetail/MakingADNSRequest.png" alt="" /></p>
+
+<ol>
+  <li>
+    <p>Checks your <strong>local cache</strong> in case you recently looked up that IP. If not, a request to your <em>Recursive DNS Server</em> is made.</p>
+  </li>
+  <li>
+    <p>A <em>Recursive DNS Server</em> is usually provided by your ISP (but you can also choose your own). This server also has a local cache. If your IP is found, the request ends here (the case with heavily requested services such as Facebook, Google…). Otherwise, the request is forwarded to a <strong>Root DNS Server</strong></p>
+  </li>
+  <li>
+    <p>The job of a Root DNS Server is to redirect you to the correct <strong>Top Level Domain Server</strong>. If you are requesting tryhackme.com, the root server will redirect the request to a TLD server that handles .com addresses.</p>
+  </li>
+  <li>
+    <p>The TLD server holds record for where to find the <em>Authoritative server</em> (also knows as the <em>nameserver</em> for the domain) to answer the DNS request. You will often find multiple namservers for a domain name to act as a backup in case one goes down.</p>
+  </li>
+  <li>
+    <p>An <strong>authoritative DNS server</strong> is the server that is responsible for storing the DNS records for a particular domain name and where any updates to your domain name DNS records would be made. Depending on the record type, the DNS record is then sent back to the Recursive DNS Server, where a local copy will be cached for future requests and then relayed back to the original client that made the request. DNS records all come with a <strong>TTL</strong> (Time To Live) value. This value is a number represented in seconds that the response should be saved for locally until you have to look it up again. Caching saves on having to make a DNS request every time you communicate with a server.</p>
+  </li>
+</ol>
+
+<ul>
+  <li>What type of server holds all the records for a domain? - Authoritative Servers</li>
+</ul>
+
+<h2 id="practical">Practical</h2>
+
+<ul>
+  <li>What is the CNAME of shop.website.thm?</li>
+</ul>
+
+<p>nslookup –type=CNAME shop.website.thm</p>
+
+<p>=&gt; shops.myshopify.com</p>
+
+<ul>
+  <li>What is the value of the TXT record of website.thm?</li>
+</ul>
+
+<p>nslookup –type=TXT website.thm</p>
+
+<p>“THM{7012BBA60997F35A9516C2E16D2944FF}”</p>
+
+<ul>
+  <li>What is the numerical priority value for the MX record?</li>
+</ul>
+
+<p>nslookup –type=MX website.thm</p>
+
+<p>website.thm mail exchanger = <em>30</em></p>
+
+<ul>
+  <li>What is the IP address for the A record of www.website.thm?</li>
+</ul>
+
+<p>nslookup –type=A website.thm</p>
+
+<p>10.10.10.10</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

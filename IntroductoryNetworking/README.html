@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introductory Networking · THM Writeups</title>
+  
+  <meta name="description" content="An introduction to networking theory and basic networking tools" />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Introductory Networking</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">IntroductoryNetworking/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">networking</span>
+          
+          <span class="tag-pill">osi</span>
+          
+          <span class="tag-pill">tcp-ip</span>
+          
+          <span class="tag-pill">dns</span>
+          
+        
+        
+        <span class="writeup-meta-desc">An introduction to networking theory and basic networking tools</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="introductory_networking"><a href="https://tryhackme.com/room/introtonetworking">Introductory_Networking</a></h1>
+
+<p>The OSI (Open Systems Interconnection) Model is a standardized model to demonstrate how 
+networks work. In practice, however, the TCP/IP model is used.</p>
+
+<p>People Don’t Need These Stupid Packets Anyway.</p>
+
+<ol>
+  <li><strong>Application Layer</strong>
+    <ul>
+      <li>it works almost exclusively with applications, providing them with an interface in order to transmit data.</li>
+    </ul>
+  </li>
+  <li><strong>Presentation Layer</strong>
+    <ul>
+      <li>translates the data received from the Application layer into a standardized format, as well as handling any encryption, compression or other types of data transformation.</li>
+    </ul>
+  </li>
+  <li><strong>Session Layer</strong>
+    <ul>
+      <li>it establishes a connection with the session layer of the remote computer. If it fails, it sends an error and stops the process. Otherwise, it’s his responsibility to maintain and synchronise a connection with	the other session layer. It creates a unique session to the communication in question, and hence it does not mix up the messages in case you have to send data to multiple endpoints of the remote computer.</li>
+    </ul>
+  </li>
+  <li><strong>Transport Layer</strong>
+    <ul>
+      <li>Numerous functions: it chooses the protocol over which data is to be transmitted. Two common protocols: TCP (Transmission Control Protocol), UDP (User Datagram Protocol). TCP is a CONNECTION-BASED protocol, which means it establishes a connection (that is maintained for the duration of the request) with the remote computer to make sure ALL of the packets have arrived in the right order. If some get lost, TCP can send them once again. UDP is a CONNECTIONLESS protocol that just sends the packets and doesn’t care if they arrived or not, but with a higher degree of speed compared to TCP. TCP can be used for things where accuracy is important (file transfer, loading a webpage) and UDP when speed is important (video streaming). After having selected a protocol, the transport layer then divides the data into bite-sized pieces called SEGMENTS (for TCP) or DATAGRAMS (for UDP), which makes it easier to transmit the mesasge successfully.</li>
+    </ul>
+  </li>
+  <li><strong>Network Layer</strong>
+    <ul>
+      <li>locates the destination of your request. It takes the IP address of the receiver and chooses the best route to take to get there.</li>
+    </ul>
+  </li>
+  <li><strong>Data Link Layer</strong>
+    <ul>
+      <li>focuses on the physical addressing of the transmission. It adds the MAC address (Media Access Control) of the endpoint on top of the IP one.</li>
+      <li>Every NIC (Network Interface Card) comes with a unique MAC address that is literally burnt into the card. They can’t be changed, but they can be spoofed. When sending information within a network, it is the MAC address that is used to identify where to send the data. Also, it presents the data in a suitable way for transmission. Also, when it receives data, it makes sure that it hasn’t been corrupted during transmission.</li>
+    </ul>
+  </li>
+  <li><strong>Physical Layer</strong>
+    <ul>
+      <li>happening in the hardware of the computer. Converts binary data to signals using electrical pulses, as well as receiving signals and converting them into binary data.</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="encapsulation">ENCAPSULATION</h2>
+
+<ul>
+  <li>
+    <p>As the data is passed down the layers, information specific to the layer is added to the start of the transmission. E.g.: transport would add info about the protocol used, netw. about the source and destination IP address. Data link also adds smth to the end of the transmission, a TRAILER, which is used to verify that it has not been corrupted.</p>
+  </li>
+  <li>
+    <p>Data is reffered to in different terms while sending it. In the first 3 layers, it is just data. In the transport layer, it is either <em>SEGMENTS</em> or <em>DATAGRAMS</em>. In the Network Layer, it is referred to as <em>PACKETS</em>. In the Data Link, it is called <em>FRAMES</em>, while in Physical as <em>BITS</em>.</p>
+  </li>
+</ul>
+
+<p><em>De-encapsulation</em> = process used by the receiver computer to get the data sent by the sender, which is just the reverse of the encapsulation process.</p>
+
+<h2 id="tcp--ip-model">TCP / IP model</h2>
+
+<ul>
+  <li>
+    <p>TCP/IP is older than OSI (which was introduce just as a comprehensive guide for learning)</p>
+  </li>
+  <li>
+    <p>Layers: Application, Transport, Internet, Network Interface (Data link/ Physical)</p>
+  </li>
+  <li>
+    <p>It gets its name from the most important protocols used: TCP (Transmission Control Protocol) and IP (Internet Protocol).</p>
+  </li>
+  <li>
+    <p>The stable connection that TCP establishes with the remote computer when sending out data is called <strong>THE THREE-WAY HANDSHAKE</strong>. Firstly, the computer sends a special request to the remote computer indicating that it wants to initialize a connection. This is done by sending a SYN (synchronise) bit. The remote computer will respond with a packet containing the SYN bit, as well as a ACK (acknowledgment) bit. Finally, your computer will send the ACK bit by itself, completing the three-way handshake.</p>
+  </li>
+  <li>
+    <p><strong>PING</strong> - works using the ICMP protocol. This protocol works on the Network Layer /Internet Layer.</p>
+  </li>
+  <li>
+    <p><strong>TRACEROUTE</strong> - by default, Windows uses ICMP, Unix over UDP.</p>
+  </li>
+  <li>
+    <p><strong>WHOIS</strong> - query who a domain name is registered to. Domains are leased out by companies called <em>DOMAIN REGISTRARS</em>.</p>
+
+    <p><img src="/tryhackme/IntroductoryNetworking/OSI_VS_TCPIP.png" alt="" /></p>
+  </li>
+</ul>
+
+<h2 id="domain-servers">Domain servers:</h2>
+
+<ul>
+  <li>
+    <p><strong>DNS</strong> - Domain Name System</p>
+  </li>
+  <li>
+    <p>When you make a request for a website, your computer checks if it has its IP address on its local cache. If not, it makes a request to a <strong>RECURSIVE DNS SERVER</strong>, which your router knows how to find. If it also doesn’t know the ip address, the request is passed to a <strong>ROOT NAME SERVER</strong>. Before 2004, there were exactly <em>13</em> ROOT NAME SERVERS in the world. These servers keep track of the DNS Servers in next level down, choosing an appropriate one to redirect your request to: <strong>TOP-LEVEL DOMAIN SERVERS</strong> (TLD). These are split by extension (if you want to get google.com, you would get redirected to one that handes .com domains). Also, TLD servers keep track of the next level down:</p>
+  </li>
+  <li>
+    <p><strong>AUTHORITATIVE NAME SERVERS</strong>. These are used to store DNS records for domains DIRECTLY.</p>
+  </li>
+  <li>
+    <p><em>DIG</em> - manually query recursive DNS Servers of our choice for information about domains:</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dig &lt;domain&gt; @&lt;dns-server-ip&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>Dig also tells us is the TIME TO LIVE (TTL) of a queried DNS record. When we make a request for a domain, it gets stored in our local cache. The TTl of the record tells us when to stop considering the record as valid - when it shoud request the data again. In a dig answer, this is highlighted in the second column of the ANSWER SECTION (measured in seconds).</li>
+</ul>
+
+<p><img src="/tryhackme/IntroductoryNetworking/TTL.png" alt="" /></p>
+
+<ul>
+  <li><em>Google public DNS Servers</em>: 8.8.8.8 and 8.8.4.4</li>
+</ul>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

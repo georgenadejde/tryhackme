@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Common Attacks · THM Writeups</title>
+  
+  <meta name="description" content="An introduction to common attacks on internet users, and recommendations for staying safe online." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Common Attacks</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">CommonAttacks/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">phishing</span>
+          
+          <span class="tag-pill">socialengineering</span>
+          
+          <span class="tag-pill">malware</span>
+          
+          <span class="tag-pill">ransomeware</span>
+          
+          <span class="tag-pill">passwords</span>
+          
+          <span class="tag-pill">authentication</span>
+          
+          <span class="tag-pill">vpn</span>
+          
+        
+        
+        <span class="writeup-meta-desc">An introduction to common attacks on internet users, and recommendations for staying safe online.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="common-attacks"><a href="https://tryhackme.com/room/commonattacks">Common Attacks</a></h1>
+
+<h2 id="social-engineering">Social Engineering</h2>
+
+<ul>
+  <li>
+    <p>relies on tricking humans to give the atatcker access, rather than using technological means to do that.</p>
+  </li>
+  <li>
+    <p>The target is the <em>human</em>, rather than the computer.</p>
+  </li>
+  <li>
+    <p>often results in gaining significant control over an individual’s life.</p>
+  </li>
+  <li>
+    <p>often multi-layered.</p>
+  </li>
+  <li>
+    <p>Whilst direct interaction with targets is the most common style of social engineering, other examples include dropping USB storage devices in public (e.g. in company car parks) in the hope that someone (often a company employee) will pick one up and plug it into a sensitive computer.</p>
+  </li>
+  <li>
+    <p>In a similar vein, attackers may leave a “charging cable” plugged into a socket in a public place.</p>
+  </li>
+  <li>
+    <p>In actuality, the cable contains malicious software such as keyloggers or tools to take control of the victim’s device.</p>
+  </li>
+</ul>
+
+<h3 id="case-study-stuxnet">Case Study: Stuxnet</h3>
+
+<p>Stuxnet was the name given to a particularly nasty computer virus (allegedly developed by the governments of the United States and Israel) that was originally used to target the Iran nuclear programme in 2009. Due to its ability as a “worm” to self-replicate (i.e. clone itself across networks — including the internet), the virus escaped and became much more widespread than was intended. Multiple variants now also exist, making Stuxnet a particularly hard-hitting and notorious weapon. You can read more about the background of Stuxnet <a href="https://www.cyber.nj.gov/threat-center/threat-profiles/ics-malware-variants/stuxnet">here</a>.</p>
+
+<p>What makes Stuxnet particularly interesting for this section is the original method of infection. The virus can clone itself across networks, but that doesn’t help much when the target network is a nuclear weapons development facility with no access to the wider internet. The question became: how can you get a virus into a network that doesn’t let anything in or out? The answer was simple: drop malicious USB devices in places where workers at companies that dealt with the facility would find them and hope that one of them plugged the device into a work computer. In this case, the gamble worked, with Stuxnet causing severe damage to the Iran nuclear programme and effectively destroying many of the nuclear centrifuges.</p>
+
+<h3 id="staying-safe-from-social-engineering-attacks">Staying Safe from Social Engineering Attacks</h3>
+
+<ul>
+  <li>
+    <p>Quite tricky, because it won’t always be you who the attackers uses to gain access (ex.: calling your bank pretending it is you).</p>
+  </li>
+  <li>
+    <p>Some measures:</p>
+    <ul>
+      <li>set up multiple layers of authentication and give ‘wrong’ answers to security questions, while storing them in a safe place.</li>
+      <li>never plug in external media into your computer (especially one that is connected to other devices as well) that you don’t trust</li>
+      <li>always insist on proof of identity</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>What was the original target of Stuxnet?</li>
+</ol>
+
+<p>R: the Iran nuclear programme</p>
+
+<h2 id="social-engineering---phishing">Social Engineering - Phishing</h2>
+
+<ul>
+  <li>
+    <p>one of the first attack vectors before performing other stronger attacks on the organisation’s network.</p>
+  </li>
+  <li>
+    <p>one of the most prolific attacks around.</p>
+  </li>
+</ul>
+
+<h3 id="what-is-phishing">What is phishing?</h3>
+
+<ul>
+  <li>
+    <p>sub-section of social engineering.</p>
+  </li>
+  <li>
+    <p>basically a scammer who tricks one to open a malicious website by sending them a text message, email or somethinh similar.</p>
+  </li>
+  <li>
+    <p>traditionally, phishing reffered to emails, but nowadays it also propagates to instant messages, video calls etc.</p>
+  </li>
+  <li>
+    <p><em>smishing</em> = phishing over SMS</p>
+  </li>
+  <li>
+    <p><em>vishing</em> = phishing over voice chat</p>
+  </li>
+  <li>
+    <p>deploys psychological trickery</p>
+  </li>
+  <li>
+    <p>victim enters their credentials on the hacker’s malicious website.</p>
+  </li>
+  <li>
+    <p>but the victim may unknowingly install malware from the website and then giving the attacker an entry point into their device and network.</p>
+  </li>
+  <li>
+    <p><em>Types</em> of phishing:</p>
+
+    <ul>
+      <li><em>general phishing</em>: mass targeted and not that greatly done.</li>
+      <li><em>spearphishing</em>: targeted and better crafted.</li>
+      <li><em>whaling</em>: targets highly-value individuals and are very hard to spot.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/CommonAttacks/types_of_phishing.png" alt="" /></p>
+
+<ul>
+  <li><em>Steps</em>:</li>
+</ul>
+
+<ol>
+  <li>The attackers send out a malicious phishing email campaign.</li>
+  <li>Prospective victims receive the emails - some of them open the email and click the link.</li>
+  <li>The victims tner their credentials into the attacker’s fake web page.</li>
+  <li>The web page stores the credentials or sends them directly to the attacker.</li>
+  <li>The attacker uses the credentials to access the site, thus taking over the victims’ accounts.</li>
+</ol>
+
+<ul>
+  <li>phishing attacks work best when using well known websites.</li>
+</ul>
+
+<h3 id="identifying-phishing-attacks">Identifying Phishing Attacks</h3>
+
+<ul>
+  <li>
+    <p>poor grammar, generic greetings (‘dear customer’).</p>
+  </li>
+  <li>
+    <p>the domain name will be something similar, but never identical.</p>
+  </li>
+  <li>
+    <p>Example: in 2021, scammers managed to register a domain name royalmai1.co.uk, opposite to the original one royalmail.co.uk and managed a quite susccessful smishing campaign.</p>
+  </li>
+  <li>
+    <p>also, you can get tricked by going to a illegimate site using a legitimate name, such in the picture:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/CommonAttacks/types_of_phishing.png" alt="" /></p>
+
+<ul>
+  <li>the from email may be suspicious, as many times attackers don’t bother to change it to a company’s specific email.</li>
+</ul>
+
+<h3 id="staying-safe-from-phishing-attacks">Staying Safe from Phishing Attacks</h3>
+
+<ul>
+  <li>delete unknown emails without opening them and / or mark them as spam / forward it to your IT Security Department.</li>
+  <li>never open attachments from untrusted sources</li>
+  <li>do not open links directly from the email/sms. Instead, manually browse that website on the web. If you really want to open it directly though, make sure the domain name is what it needs to be and it points to the real website.</li>
+  <li>make sure your device and antivirus software are up-to-date.</li>
+  <li>avoid making your personal information public.</li>
+</ul>
+
+<h2 id="malware-malicious-software-and-ransomware">Malware (Malicious Software) and Ransomware</h2>
+
+<h3 id="malware">Malware</h3>
+
+<ul>
+  <li>
+    <p><em>Malware</em> = software designed to perform malicous actions on behalf of an attacker.</p>
+  </li>
+  <li>
+    <p>Malware is often used to perform  a set of tasks reffered to as “<strong>Command and Control</strong>” (or <strong>C2/C&amp;C</strong>). C2 malware connects back to a waiting server and allows an attacker to control the infected system remotely.</p>
+  </li>
+</ul>
+
+<h3 id="ransomeware">Ransomeware</h3>
+
+<ul>
+  <li>
+    <p>encrypts the data on the devices and holds them for ransom.</p>
+  </li>
+  <li>
+    <p>the ransom is usually some cryptocurrency that, if paid, <em>theoretically</em> will allow the data to be decrypted by getting a decryption key.</p>
+  </li>
+  <li>
+    <p>uses known vulnerabilities in installed software and is easily spreadable after infecting.</p>
+  </li>
+  <li>
+    <p>Example: <a href="https://www.malwarebytes.com/wannacry">WannaCry</a></p>
+  </li>
+</ul>
+
+<h3 id="delivery-methods">Delivery Methods</h3>
+
+<ul>
+  <li>
+    <p>usually through social engineerings attacks and phishing</p>
+  </li>
+  <li>
+    <p>can use macros on Word Docs.</p>
+  </li>
+  <li>
+    <p>work only if the victim presses “Enable Content” when they open the document.</p>
+  </li>
+  <li>
+    <p>compiled as a <em>.exe</em>, <em>.pdf</em>, <em>.ps1</em> (PowerShell script), <em>.bat</em> (Batch script). <em>.hta</em> (HTML application file), <em>.js</em> (Java script).</p>
+  </li>
+</ul>
+
+<h3 id="staying-safe">Staying safe</h3>
+
+<ul>
+  <li>always accept updates and patches when offered - especially on OS s, as they ussually include some fixes to security flaws.</li>
+  <li>don’t open suspicious links or attachements - just delete them, report them as spam or send them to the IT Security Department.</li>
+  <li>be aware of people trying to get you to download or run files - especially over email or instant messaging.</li>
+  <li>do not plug usb devices into important computers.</li>
+  <li>back up your important data.</li>
+  <li>antivirus is installed and up-to-date.</li>
+</ul>
+
+<p><em>Note: If you or your business get infected with ransomware, do not pay the ransom. Instead, call your local authorities immediately, and try to contain the infection by disabling your router or otherwise physically preventing the infected device from connecting to anything else. Do not power the infected device off, as this can sometimes destroy any potential opportunities to decrypt the data without paying.</em></p>
+
+<h2 id="passwords-and-authentication">Passwords and Authentication</h2>
+
+<ul>
+  <li>Current best practices lean more towards length than complexity. For example:</li>
+</ul>
+
+<p>Vim is <em>obviously</em>, indisputably the best text editor in existence!</p>
+
+<ul>
+  <li>
+    <p>By using a passphrase rather than a traditional password, the password is significantly longer whilst still retaining some of the more complex elements — despite not looking quite so obfuscated.</p>
+  </li>
+  <li>
+    <p>This has the advantage of being easier to remember whilst still being incredibly difficult to brute-force.</p>
+  </li>
+  <li>
+    <p>Ideally, however, you should use long, completely random passwords. For example:</p>
+  </li>
+</ul>
+
+<p>w41=V1)S7KIJGPN,dII&gt;cHEh&gt;FRVQsj3M^]CB</p>
+
+<ul>
+  <li>
+    <p>These take millions of years to crack and are objectively the most secure option available.</p>
+  </li>
+  <li>
+    <p>In short, any password that could easily be guessed by someone who knows you relatively well (this includes an attacker looking at your social media) is a bad idea!</p>
+  </li>
+  <li>
+    <p>Equally, short passwords (especially those that don’t contain any non-alphanumeric characters) are weak against brute-force attacks. We will look at this in more depth later in the task.</p>
+  </li>
+  <li>So, what happens if a service gets hacked and their database containing user account information gets leaked?</li>
+  <li>
+    <p>As a best-case scenario, the service has used a secure hashing algorithm, and you have a strong password — in this case, your password is safe, but your email address or username may still be leaked publicly (so expect some spam emails).</p>
+  </li>
+  <li><em>credentials stuffing</em> = using your stolen username and pw against other devices to see if you reused them elsewhere.</li>
+</ul>
+
+<h2 id="multi-factor-authentication-and-password-managers">Multi-factor Authentication and Password Managers</h2>
+
+<ul>
+  <li><em>Multi-factor Authentication</em> (or MFA) is used to describe to authentication process where you have to use more than one way of authenticating.
+    <ul>
+      <li>for example, you enter your password and then you are sent a code on your phone that you need to enter before it expires (<strong>Time-based One Time Password - TOTP</strong> -&gt; one of the most used second factors).</li>
+    </ul>
+  </li>
+  <li>
+    <p>At the most basic level, password managers provide a safe space to store your passwords.</p>
+  </li>
+  <li>
+    <p>They store passwords in “vaults”: encrypted storage either locally on your own device, or as an online service (which also usually allows you to access your passwords from any device).</p>
+  </li>
+  <li>
+    <p>These vaults are accessed using a master password — the only password you need to remember —  or (more commonly in recent years) biometric data such as a fingerprint.</p>
+  </li>
+  <li>
+    <p>Some password managers are free, whilst others require a paid subscription.</p>
+  </li>
+  <li>Some common password managers include:
+    <ul>
+      <li><a href="https://1password.com/">1Password</a></li>
+      <li><a href="https://www.lastpass.com/">LastPass</a></li>
+      <li><a href="https://keepass.info/">KeePass</a></li>
+      <li><a href="https://bitwarden.com/">Bitwardem</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="public-network-safety">Public Network Safety</h2>
+
+<h3 id="problem">Problem</h3>
+
+<ul>
+  <li>
+    <p>Public WiFi, whilst incredibly handy, also gives an attacker ideal opportunities to attack other users’ devices or simply intercept and record traffic to steal sensitive information.</p>
+  </li>
+  <li>
+    <p>The attacker can quickly set up a network of their own and monitor the traffic of everyone who connects; this is referred to as a “man-in-the-middle” attack and is very easy to carry out.</p>
+  </li>
+  <li>
+    <p>Equally, being connected to any network (regardless of whether you trust it or not) makes your device visible to others on the network.</p>
+    <ul>
+      <li>You never know who else is on a public network or what their intentions might be!</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="solution">Solution</h3>
+
+<ul>
+  <li>
+    <p>The ideal solution to this problem is simply not connecting to untrusted networks.</p>
+  </li>
+  <li>
+    <p>Beneficial though public wireless connections are, it will always be safer to use a mobile hotspot or private network.</p>
+  </li>
+  <li>
+    <p><em>Virtual Private Networks</em> (VPNs) encrypt all traffic leaving and re-entering your machine, rendering any interception techniques useless as the intercepted data will simply look like gibberish.</p>
+  </li>
+  <li>Options:
+    <ul>
+      <li><a href="https://protonvpn.com/">ProtonVPN</a></li>
+      <li><a href="https://mullvad.net/en/">Mullvad</a></li>
+    </ul>
+  </li>
+  <li>
+    <p>As with using a VPN, this prevents an attacker from reading, or modifying your web traffic if they intercept it.</p>
+  </li>
+  <li>
+    <p>The encrypted connection used to create HTTPS (Hyper Text Transfer Protocol Secure) is referred to as TLS (Transport Layer Security), and in most browsers is represented by a padlock to the left of the search bar, which indicates that the connection is secure</p>
+  </li>
+  <li>
+    <p>In some instances, you may also see a p<em>adlock with a cross</em> through it or an exclamation mark over it; this indicates that the connection is theoretically secure but that there is something wrong with the certificate in use by the server.</p>
+  </li>
+  <li>
+    <p>The presence of this altered padlock icon can mean anything from the server administrator simply letting the certificate go out of date to an attacker actively meddling with the security of your connection.</p>
+  </li>
+  <li>In other words: if the icon is anything other than a regular padlock, do not trust that connection is secure.</li>
+</ul>
+
+<h2 id="backups">Backups</h2>
+
+<ul>
+  <li>Backups are arguably the single most important defensive measure you can take to protect your data.</li>
+</ul>
+
+<h3 id="the-golden-321-rule">The Golden 3,2,1 Rule</h3>
+
+<p><img src="/tryhackme/CommonAttacks/3.2.1.goldenrule.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p><em>but</em> of equal importance is the <em>frequency</em> at which you take backups.</p>
+
+    <ul>
+      <li>There’s no point in keeping your backups stored securely if they are all a year old!</li>
+    </ul>
+  </li>
+</ul>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

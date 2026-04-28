@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Networking Concepts · THM Writeups</title>
+  
+  <meta name="description" content="Learn about the ISO OSI model and the TCP/IP protocol suite." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Networking Concepts</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">Networking Concepts/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">networking</span>
+          
+          <span class="tag-pill">tcp</span>
+          
+          <span class="tag-pill">udp</span>
+          
+          <span class="tag-pill">osi</span>
+          
+          <span class="tag-pill">telnet</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn about the ISO OSI model and the TCP/IP protocol suite.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="networking-concepts"><a href="https://tryhackme.com/room/networkingconcepts">Networking Concepts</a></h1>
+
+<h2 id="osi-model">OSI Model</h2>
+
+<p>The OSI (Open Systems Interconnection) model is a conceptual model developed by the International Organization for Standardization (ISO) that describes how communications should occur in a computer network. In other words, the OSI model defines a framework for computer network communications. Although this model is theoretical, it is vital to learn and understand as it helps grasp networking concepts on a deeper level. The OSI model is composed of seven layers:</p>
+
+<ol>
+  <li>Physical Layer</li>
+  <li>Data Link Layer</li>
+  <li>Network Layer</li>
+  <li>Transport Layer</li>
+  <li>Session Layer</li>
+  <li>Presentation Layer</li>
+  <li>Application Layer</li>
+</ol>
+
+<p>To help you remember the layers from bottom to top, you can use a mnemonic such as “Please Do Not Throw Spinach Pizza Away.” You can check the Internet for other easy-to-remember acronyms if this helps you memorise them. Remembering the OSI model layers with their layer numbers is important; otherwise, you will struggle to understand terms such as “layer 3 switch” or “layer 7 firewall.”</p>
+
+<h3 id="layer-1-physical-layer">Layer 1: Physical Layer</h3>
+
+<p>The physical layer, also referred to as layer 1, deals with the physical connection between devices; this includes the medium, such as a wire, and the definition of the binary digits 0 and 1. Data transmission can be via an electrical, optical, or wireless signal. Consequently, we need data cables or antennas, depending on our physical medium.</p>
+
+<p>In addition to Ethernet cable and optical fibre cable, examples of the physical layer medium include the WiFi radio bands, the 2.4 GHz band, the 5 GHz band, and the 6 GHz band.</p>
+
+<h3 id="layer-2-data-link-layer">Layer 2: Data Link Layer</h3>
+
+<p>The physical layer defines a medium to transmit our signal. The data link layer, i.e., layer 2, represents the protocol that enables data transfer between nodes on the same network segment. Let’s put it in simpler terms. The data link layer describes an agreement between the different systems on the same network segment on how to communicate. A network segment refers to a group of networked devices using a shared medium or channel for information transfer. For example, consider a company office with ten computers connected to a network switch; that’s a network segment.</p>
+
+<p>Examples of layer 2 include Ethernet, i.e., 802.3, and WiFi, i.e., 802.11. Ethernet and WiFi addresses are six bytes. Their address is called a MAC address, where MAC stands for Media Access Control. They are usually expressed in hexadecimal format with a colon separating each two hexadecimal digits (one byte). The three leftmost bytes identify the vendor.</p>
+
+<h3 id="layer-3-network-layer">Layer 3: Network Layer</h3>
+
+<p>The data link layer focuses on sending data between two nodes on the same network segment. The network layer, i.e., layer 3, is concerned with sending data between different networks. In more technical terms, the network layer handles logical addressing and routing, i.e., finding a path to transfer the network packets between the diverse networks.</p>
+
+<p>In the data link layer, we gave an example of one company office with ten computers, where the data link layer is responsible for providing a connection between them. Let’s say that this company has multiple offices distributed across various cities, countries, or even continents. The network layer is responsible for connecting the different offices together.</p>
+
+<p>Examples of the network layer include Internet Protocol (IP), Internet Control Message Protocol (ICMP), and Virtual Private Network (VPN) protocols such as IPSec and SSL/TLS VPN.</p>
+
+<h3 id="layer-4-transport-layer">Layer 4: Transport Layer</h3>
+
+<p>Layer 4, the transport layer, enables end-to-end communication between running applications on different hosts. Your web browser is connected to the TryHackMe web server over the transport layer, which can support various functions like flow control, segmentation, and error correction.</p>
+
+<p>Examples of layer 4 are Transmission Control Protocol (TCP) and User Datagram Protocol (UDP).</p>
+
+<h3 id="layer-5-session-layer">Layer 5: Session Layer</h3>
+
+<p>The session layer is responsible for establishing, maintaining, and synchronising communication between applications running on different hosts. Establishing a session means initiating communication between applications and negotiating the necessary parameters for the session. Data synchronisation ensures that data is transmitted in the correct order and provides mechanisms for recovery in case of transmission failures.</p>
+
+<p>Examples of the session layer are Network File System (NFS) and Remote Procedure Call (RPC).</p>
+
+<h3 id="layer-6-presentation-layer">Layer 6: Presentation Layer</h3>
+
+<p>The presentation layer ensures the data is delivered in a form the application layer can understand. Layer 6 handles data encoding, compression, and encryption. An example of encoding is character encoding, such as ASCII or Unicode.</p>
+
+<p>Various standards are used at the presentation layer. Consider the scenario where we want to send an image via email. First, we use JPEG, GIF, and PNG to save our images; furthermore, although hidden from the user by the email client, we use MIME (Multipurpose Internet Mail Extensions) to attach the file to our email. MIME encodes a binary file using 7-bit ASCII characters.</p>
+
+<h3 id="layer-7-application-layer">Layer 7: Application Layer</h3>
+
+<p>The application layer provides network services directly to end-user applications. Your web browser would use the HTTP protocol to request a file, submit a form, or upload a file.</p>
+
+<p>The application layer is the top layer, and you might have encountered many of its protocols as you use different applications. Examples of Layer 7 protocols are HTTP, FTP, DNS, POP3, SMTP, and IMAP.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Layer Number</th>
+      <th>Layer Name</th>
+      <th>Main Function</th>
+      <th>Example Protocols and Standards</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Layer 7</td>
+      <td>Application layer</td>
+      <td>Providing services and interfaces to applications</td>
+      <td>HTTP, FTP, DNS, POP3, SMTP, IMAP</td>
+    </tr>
+    <tr>
+      <td>Layer 6</td>
+      <td>Presentation layer</td>
+      <td>Data encoding, encryption, and compression</td>
+      <td>Unicode, MIME, JPEG, PNG, MPEG</td>
+    </tr>
+    <tr>
+      <td>Layer 5</td>
+      <td>Session layer</td>
+      <td>Establishing, maintaining, and synchronising sessions</td>
+      <td>NFS, RPC</td>
+    </tr>
+    <tr>
+      <td>Layer 4</td>
+      <td>Transport layer</td>
+      <td>End-to-end communication and data segmentation</td>
+      <td>UDP, TCP</td>
+    </tr>
+    <tr>
+      <td>Layer 3</td>
+      <td>Network layer</td>
+      <td>Logical addressing and routing between networks</td>
+      <td>IP, ICMP, IPSec</td>
+    </tr>
+    <tr>
+      <td>Layer 2</td>
+      <td>Data link layer</td>
+      <td>Reliable data transfer between adjacent nodes</td>
+      <td>Ethernet (802.3), WiFi (802.11)</td>
+    </tr>
+    <tr>
+      <td>Layer 1</td>
+      <td>Physical layer</td>
+      <td>Physical data transmission media</td>
+      <td>Electrical, optical, and wireless signals</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="questions">Questions</h3>
+
+<p>Q: Which layer is responsible for end-to-end communication between running applications?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">4</code></p>
+
+<p>Q: Which layer is responsible for routing packets to the proper network?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">3</code></p>
+
+<p>Q: In the OSI model, which layer is responsible for encoding the application data?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">6</code></p>
+
+<p>Q: Which layer is responsible for transferring data between hosts on the same network segment?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">2</code></p>
+
+<h2 id="tcpip-model">TCP/IP Model</h2>
+
+<p>TCP/IP stands for Transmission Control Protocol/Internet Protocol and was developed in the 1970s by the Department of Defense (DoD). I hear you ask why DoD would create such a model. One of the strengths of this model is that it allows a network to continue to function as parts of it are out of service, for instance, due to a military attack. This capability is possible in part due to the design of the routing protocols to adapt as the network topology changes.</p>
+
+<p>In our presentation of the ISO OSI model, we went from bottom to top, from layer 1 to layer 7. In this task, let’s look at things from a different perspective, from top to bottom. From top to bottom, we have:</p>
+
+<ul>
+  <li><strong>Application Layer</strong>: The OSI model application, presentation and session layers, i.e., layers 5, 6, and 7, are grouped into the application layer in the TCP/IP model.</li>
+  <li><strong>Transport Layer</strong>: This is layer 4.</li>
+  <li><strong>Internet Layer</strong>: This is layer 3. The OSI model’s network layer is called the Internet layer in the TCP/IP model.</li>
+  <li><strong>Link Layer</strong>: This is layer 2.</li>
+</ul>
+
+<p><img src="/tryhackme/Networking%20Concepts/2025-12-11_16-56.png" alt="" /></p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>Q: To which layer does HTTP belong in the TCP/IP model?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Application Layer</code></p>
+
+<p>Q: How many layers of the OSI model does the application layer in the TCP/IP model cover?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">3</code></p>
+
+<p>Q:</p>
+
+<p>A: ``</p>
+
+<h2 id="ip-addresses-and-subnets">IP Addresses and Subnets</h2>
+
+<p>Every host on the network needs a unique identifier for other hosts to communicate with him. Without a unique identifier, the host cannot be found without ambiguity. When using the TCP/IP protocol suite, we need to assign an IP address for each device connected to the network.</p>
+
+<p>One analogy of an IP address is your home postal address. Your postal address allows you to receive letters and parcels from all over the world. Furthermore, it can identify your home without ambiguity; otherwise, you cannot shop online!</p>
+
+<p>An IP address comprises four octets, i.e., 32 bits. Being 8 bits, an octet allows us to represent a decimal number between 0 and 255.</p>
+
+<p>At the risk of oversimplifying things, the 0 and 255 are reserved for the network and broadcast addresses, respectively. In other words, <code class="language-plaintext highlighter-rouge">192.168.1.0</code> is the network address, while <code class="language-plaintext highlighter-rouge">192.168.1.255</code> is the broadcast address. Sending to the broadcast address targets all the hosts on the network. With simple math, you can conclude that we cannot have more than 4 billion unique IPv4 addresses. If you are curious about the math, it is approximately 232 because we have 32 bits. This number is approximate because we didn’t consider network and broadcast addresses.</p>
+
+<p>On Linux and UNIX-based systems, you can issue the command <code class="language-plaintext highlighter-rouge">ifconfig</code> or <code class="language-plaintext highlighter-rouge">ip address show</code>, which can be typed as <code class="language-plaintext highlighter-rouge">ip a s</code></p>
+
+<p>A subnet mask of <code class="language-plaintext highlighter-rouge">255.255.255.0</code> can also be written as <code class="language-plaintext highlighter-rouge">/24</code>. The <code class="language-plaintext highlighter-rouge">/24</code> means that the leftmost 24 bits within the IP address do not change across the network, i.e., the subnet. In other words, the leftmost three octets are the same across the whole subnet; therefore, we can expect to find addresses that range from <code class="language-plaintext highlighter-rouge">192.168.66.1</code> to <code class="language-plaintext highlighter-rouge">192.168.66.254</code>. Similar to what was mentioned earlier, <code class="language-plaintext highlighter-rouge">192.168.66.0</code> and <code class="language-plaintext highlighter-rouge">192.168.66.255</code> are the network and broadcast addresses, respectively.</p>
+
+<p>There are two types of IP addresses:</p>
+
+<ul>
+  <li>Public IP addresses</li>
+  <li>Private IP addresses</li>
+</ul>
+
+<p>RFC 1918 defines the following three ranges of private IP addresses:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">10.0.0.0</code> - <code class="language-plaintext highlighter-rouge">10.255.255.255</code> (<code class="language-plaintext highlighter-rouge">10/8</code>)</li>
+  <li><code class="language-plaintext highlighter-rouge">172.16.0.0</code> - <code class="language-plaintext highlighter-rouge">172.31.255.255</code> (<code class="language-plaintext highlighter-rouge">172.16/12</code>)</li>
+  <li><code class="language-plaintext highlighter-rouge">192.168.0.0</code> - <code class="language-plaintext highlighter-rouge">192.168.255.255</code> (<code class="language-plaintext highlighter-rouge">192.168/16</code>)</li>
+</ul>
+
+<p>We presented earlier an analogy stating that a public IP address is like your home postal address. A private IP address is different; the original idea is that it cannot reach or be reached from the outside world. It is like an isolated city or a compound, where all houses and apartments are numbered systematically and can easily exchange mail with each other, but not with the outside world. For a private IP address to access the Internet, the router must have a public IP address and must support Network Address Translation (NAT)</p>
+
+<p>A router is like your local post office; you hand them the mail parcel, and they would know how to deliver it. If we dig deeper, you might mail something to an address in another city or country. The post office will check the address and decide where to send it next. For example, if it is to leave the country, we expect one central office to handle all shipments abroad.</p>
+
+<p>In technical terms, a router forwards data packets to the proper network. Usually, a data packet passes through multiple routers before it reaches its final destination. The router functions at layer 3, inspecting the IP address and forwarding the packet to the best network (router) so the packet gets closer to its destination</p>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Q: Which of the following IP addresses is not a private IP address?</p>
+
+<ul>
+  <li>192.168.250.125</li>
+  <li>10.20.141.132</li>
+  <li>49.69.147.197</li>
+  <li>172.23.182.251</li>
+</ul>
+
+<p>A: <code class="language-plaintext highlighter-rouge">49.69.147.197</code></p>
+
+<p>Q: Which of the following IP addresses is not a valid IP address?</p>
+
+<ul>
+  <li>192.168.250.15</li>
+  <li>192.168.254.17</li>
+  <li>192.168.305.19</li>
+  <li>192.168.199.13</li>
+</ul>
+
+<p>A: <code class="language-plaintext highlighter-rouge">192.168.305.19</code></p>
+
+<h2 id="udp-and-tcp">UDP and TCP</h2>
+
+<p>The IP protocol allows us to reach a destination host on the network; the host is identified by its IP address. We need protocols that would enable processes on networked hosts to communicate with each other. There are two transport protocols to achieve that: UDP and TCP.</p>
+
+<h3 id="udp">UDP</h3>
+
+<p>UDP (User Datagram Protocol) allows us to reach a specific process on this target host. UDP is a simple connectionless protocol that operates at the transport layer, i.e., layer 4. Being connectionless means that it does not need to establish a connection. UDP does not even provide a mechanism to know that the packet has been delivered.</p>
+
+<p>An IP address identifies the host; we need a mechanism to determine the sending and receiving process. This can be achieved by using port numbers. A port number uses two octets; consequently, it ranges between 1 and 65535; port 0 is reserved. (The number 65535 is calculated by the expression 216 − 1.)</p>
+
+<p>A real-life example similar to UDP is the standard mail service, with no delivery confirmation. In other words, there is no guarantee that the UDP packet has been received successfully, similar to the case of sending a parcel using standard mail with no confirmation of delivery. In the case of standard mail, it means a cheaper cost than the mail delivery options with confirmation. In the case of UDP, it means better speed than a transport protocol that provides “confirmation.”</p>
+
+<p>But what if we want a transport protocol that acknowledges received packets? The answer lies in using TCP instead of UDP.</p>
+
+<h3 id="tcp">TCP</h3>
+
+<p>TCP (Transmission Control Protocol) is a connection-oriented transport protocol. It uses various mechanisms to ensure reliable data delivery sent by the different processes on the networked hosts. Like UDP, it is a layer 4 protocol. Being connection-oriented, it requires the establishment of a TCP connection before any data can be sent.</p>
+
+<p>In TCP, each data octet has a sequence number; this makes it easy for the receiver to identify lost or duplicated packets. The receiver, on the other hand, acknowledges the reception of data with an acknowledgement number specifying the last received octet.</p>
+
+<p>A TCP connection is established using what’s called a three-way handshake. Two flags are used: SYN (Synchronise) and ACK (Acknowledgment). The packets are sent as follows:</p>
+
+<ol>
+  <li>SYN Packet: The client initiates the connection by sending a SYN packet to the server. This packet contains the client’s randomly chosen initial sequence number.</li>
+  <li>SYN-ACK Packet: The server responds to the SYN packet with a SYN-ACK packet, which adds the initial sequence number randomly chosen by the server.</li>
+  <li>ACK Packet: The three-way handshake is completed as the client sends an ACK packet to acknowledge the reception of the SYN-ACK packet.</li>
+</ol>
+
+<p>Similar to UDP, TCP identifies the process of initiating or waiting (listening) for a connection using port numbers. As stated, a valid port number ranges between 1 and 65535 because it uses two octets and port 0 is reserved.</p>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>Q: Which protocol requires a three-way handshake?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">TCP</code></p>
+
+<p>Q: What is the approximate number of port numbers (in thousands)?</p>
+
+<p>A: 65``</p>
+
+<h2 id="encapsulation">Encapsulation</h2>
+
+<p>Encapsulation refers to the process of every layer adding a header (and sometimes a trailer) to the received unit of data and sending the “encapsulated” unit to the layer below.</p>
+
+<p>Encapsulation is an essential concept as it allows each layer to focus on its intended function. In the image below, we have the following four steps:</p>
+
+<ul>
+  <li><strong>Application data</strong>: It all starts when the user inputs the data they want to send into the application. For example, you write an email or an instant message and hit the send button. The application formats this data and starts sending it according to the application protocol used, using the layer below it, the transport layer.</li>
+  <li><strong>Transport protocol segment or datagram</strong>: The transport layer, such as TCP or UDP, adds the proper header information and creates the TCP <strong>segment</strong> (or UDP <strong>datagram</strong>). This segment is sent to the layer below it, the network layer.</li>
+  <li><strong>Network packet</strong>: The network layer, i.e. the Internet layer, adds an IP header to the received TCP segment or UDP datagram. Then, this IP <strong>packet</strong> is sent to the layer below it, the data link layer.</li>
+  <li><strong>Data link frame</strong>: The Ethernet or WiFi receives the IP packet and adds the proper header and trailer, creating a <strong>frame</strong>.</li>
+</ul>
+
+<p>We start with application data. At the transport layer, we add a TCP or UDP header to create a <strong>TCP segment</strong> or <strong>UDP datagram</strong>. Again, at the network layer, we add the proper IP header to get an <strong>IP packet</strong> that can be routed over the Internet. Finally, we add the appropriate header and trailer to get a WiFi or Ethernet frame at the link layer</p>
+
+<p><img src="/tryhackme/Networking%20Concepts/5f04259cf9bf5b57aed2c476-1719849061418.svg" alt="" /></p>
+
+<h3 id="the-life-of-a-packet">The Life of a Packet</h3>
+
+<p>Based on what we have studied so far, we can explain a <em>simplified version</em> of the packet’s life. Let’s consider the scenario where you search for a room on TryHackMe.</p>
+
+<ol>
+  <li>On the TryHackMe search page, you enter your search query and hit enter.</li>
+  <li>Your web browser, using HTTPS, prepares an HTTP request and pushes it to the layer below it, the transport layer.</li>
+  <li>The TCP layer needs to establish a connection via a three-way handshake between your browser and the TryHackMe web server. After establishing the TCP connection, it can send the HTTP request containing the search query. Each TCP segment created is sent to the layer below it, the Internet layer.</li>
+  <li>The IP layer adds the source IP address, i.e., your computer, and the destination IP address, i.e., the IP address of the TryHackMe web server. For this packet to reach the router, your laptop delivers it to the layer below it, the link layer.</li>
+  <li>Depending on the protocol, The link layer adds the proper link layer header and trailer, and the packet is sent to the router.</li>
+  <li>The router removes the link layer header and trailer, inspects the IP destination, among other fields, and routes the packet to the proper link. Each router repeats this process until it reaches the router of the target server.</li>
+</ol>
+
+<p>The steps will then be reversed as the packet reaches the router of the destination network</p>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>Q: On a WiFi, within what will an IP packet be encapsulated?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">frame</code></p>
+
+<p>Q: What do you call the UDP data unit that encapsulates the application data?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">datagram</code></p>
+
+<p>Q: What do you call the data unit that encapsulates the application data sent over TCP?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">Segment</code></p>
+
+<h2 id="telnet">Telnet</h2>
+
+<p>The TELNET (Teletype Network) protocol is a network protocol for remote terminal connection. In simpler words, <code class="language-plaintext highlighter-rouge">telnet</code>, a TELNET client, allows you to connect to and communicate with a remote system and issue text commands. Although initially it was used for remote administration, we can use <code class="language-plaintext highlighter-rouge">telnet</code> to connect to any server listening on a TCP port number.</p>
+
+<p>On the target virtual machine, different services are running. We will experiment with three of them:</p>
+
+<ul>
+  <li>Echo server: This server echoes everything you send it. By default, it listens on port 7.</li>
+  <li>Daytime server: This server listens on port 13 by default and replies with the current day and time.</li>
+  <li>Web (HTTP) server: This server listens on TCP port 80 by default and serves web pages.</li>
+</ul>
+
+<p>Before continuing, we should mention that the echo and daytime servers are considered security risks and should not be run; however, we started them explicitly to demonstrate communication with the server using <code class="language-plaintext highlighter-rouge">telnet</code>.</p>
+
+<p><img src="/tryhackme/Networking%20Concepts/2025-12-11_17-19.png" alt="" /></p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>Q: Use <code class="language-plaintext highlighter-rouge">telnet</code> to connect to the web server on <code class="language-plaintext highlighter-rouge">MACHINE_IP</code>. What is the name and version of the HTTP server?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">lighttpd/1.4.63</code></p>
+
+<p>Q: What flag did you get when you viewed the page?</p>
+
+<p>A: <code class="language-plaintext highlighter-rouge">THM{TELNET_MASTER}</code></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

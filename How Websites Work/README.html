@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How Websites Work · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>How Websites Work</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">How Websites Work/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">web</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h2 id="how-websites-work">How Websites Work</h2>
+
+<ul>
+  <li>When you visit a website, your browser (<em>like Safari or Google Chrome</em>) makes a request to a web server asking for information about the page you’re visiting.</li>
+  <li>It will respond with data that your browser uses to show you the page; a web server is just a dedicated computer somewhere else in the world that handles your requests.</li>
+</ul>
+
+<p><img src="/tryhackme/How%20Websites%20Work/clientserver.png" alt="" /></p>
+
+<ul>
+  <li>There are two major components that make up a website:</li>
+</ul>
+
+<ol>
+  <li>Front End (Client-Side) - the way your browser renders a website.</li>
+  <li>Back End (Server-Side) - a server that processes your request and returns a response.</li>
+</ol>
+
+<h3 id="questions">Questions</h3>
+
+<p>What term best describes the side your browser renders a website?</p>
+
+<p>A: client side</p>
+
+<h2 id="html">HTML</h2>
+
+<ul>
+  <li>Websites are primarily created using:
+    <ul>
+      <li>HTML, to build websites and define their structure</li>
+      <li>CSS, to make websites look pretty by adding styling options</li>
+      <li>JavaScript, implement complex features on pages using interactivity</li>
+    </ul>
+  </li>
+  <li><strong>H</strong>yper<strong>T</strong>ext <strong>M</strong>arkup <strong>L</strong>anguage (HTML) is the language websites are written in.</li>
+  <li>Elements (also known as tags) are the building blocks of HTML pages and tells the browser how to display content.</li>
+  <li>The code snippet below shows a simple HTML document, the structure of which is the same for every website:</li>
+</ul>
+
+<p><img src="/tryhackme/How%20Websites%20Work/example_html.png" alt="" /></p>
+
+<ul>
+  <li>The HTML structure (as shown in the screenshot) has the following components:
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">&lt;!DOCTYPE html&gt;</code> defines that the page is a HTML5 document.
+        <ul>
+          <li>This helps with standardisation across different browsers and tells the browser to use HTML5 to interpret the page.</li>
+        </ul>
+      </li>
+      <li>The <code class="language-plaintext highlighter-rouge">&lt;html&gt;</code> element is the root element of the HTML page - all other elements come after this element.</li>
+      <li>The <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code> element contains information about the page (such as the page title)</li>
+      <li>The <code class="language-plaintext highlighter-rouge">&lt;body&gt;</code> element defines the HTML document’s body; only content inside of the body is shown in the browser.</li>
+      <li>The <code class="language-plaintext highlighter-rouge">&lt;h1&gt;</code> element defines a large heading</li>
+      <li>The <code class="language-plaintext highlighter-rouge">&lt;p&gt;</code> element defines a paragraph</li>
+      <li>There are many other elements (tags) used for different purposes.
+        <ul>
+          <li>For example, there are tags for buttons (<code class="language-plaintext highlighter-rouge">&lt;button&gt;</code>), images (<code class="language-plaintext highlighter-rouge">&lt;img&gt;</code>), lists, and much more.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Tags can contain attributes such as the class attribute which can be used to style an element (e.g. make the tag a different color) <code class="language-plaintext highlighter-rouge">&lt;p class="bold-text"&gt;</code>, or the <em>src</em> attribute which is used on images to specify the location of an image: <code class="language-plaintext highlighter-rouge">&lt;img src="img/cat.jpg"&gt;.</code></li>
+  <li>
+    <p>An element can have multiple attributes each with its own unique purpose, e.g., &lt;p attribute1="value1" attribute2="value2"&gt;.</p>
+  </li>
+  <li>Elements can also have an id attribute (<code class="language-plaintext highlighter-rouge">&lt;p id="example"&gt;</code>), which is unique to the element.</li>
+  <li>Unlike the class attribute, where multiple elements can use the same class, an element must have different id’s to identify them uniquely.</li>
+  <li>Element id’s are used for styling and to identify it by JavaScript.</li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>One of the images on the cat website is broken - fix it, and the image will reveal the hidden text answer!</p>
+
+<p><img src="/tryhackme/How%20Websites%20Work/q1.png" alt="" /></p>
+
+<ul>
+  <li>Added the <code class="language-plaintext highlighter-rouge">.jpg</code> extension to the second image</li>
+</ul>
+
+<p>A: htmlhero</p>
+
+<p>Add a dog image to the page by adding another img tag (<img />) on line 11. The dog image location is img/dog-1.png. What is the text in the dog image?</p>
+
+<ul>
+  <li>Add the following line <code class="language-plaintext highlighter-rouge">&lt;img src='img/dog-1.png'&gt;</code></li>
+</ul>
+
+<p>A: doghtml</p>
+
+<h2 id="javascript">JavaScript</h2>
+
+<ul>
+  <li>JavaScript (JS) is one of the most popular coding languages in the world and allows pages to become interactive.</li>
+  <li>HTML is used to create the website structure and content, while JavaScript is used to control the functionality of web pages - without JavaScript, a page would not have interactive elements and would always be static.</li>
+  <li>
+    <p>JS can dynamically update the page in real-time, giving functionality to change the style of a button when a particular event on the page occurs (such as when a user clicks a button) or to display moving animations.</p>
+  </li>
+  <li>
+    <p>JavaScript is added within the page source code and can be either loaded within <code class="language-plaintext highlighter-rouge">&lt;script&gt;</code> tags or can be included remotely with the src attribute: <code class="language-plaintext highlighter-rouge">&lt;script src="/location/of/javascript_file.js"&gt;&lt;/script&gt;</code></p>
+  </li>
+  <li>
+    <p>The following JavaScript code finds a HTML element on the page with the id of “demo” and changes the element’s contents to “Hack the Planet”: <code class="language-plaintext highlighter-rouge">document.getElementById("demo").innerHTML = "Hack the Planet";</code></p>
+  </li>
+  <li>HTML elements can also have events, such as “onclick” or “onhover” that execute JavaScript when the event occurs.</li>
+  <li>The following code changes the text of the element with the demo ID to Button Clicked: <code class="language-plaintext highlighter-rouge">&lt;button onclick='document.getElementById("demo").innerHTML = "Button Clicked";'&gt;Click Me!&lt;/button&gt;</code> - onclick events can also be defined inside the JavaScript script tags, and not on elements directly.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>Add the button HTML from this task that changes the element’s text to “Button Clicked” on the editor on the right, update the code by clicking the “Render HTML+JS Code” button and then click the button.</p>
+
+<ul>
+  <li>Added the following JS: <code class="language-plaintext highlighter-rouge">document.getElementById("demo").innerHTML = "Hack the Planet";</code></li>
+</ul>
+
+<p><img src="/tryhackme/How%20Websites%20Work/js.png" alt="" /></p>
+
+<p>A: JSISFUN</p>
+
+<h2 id="sensitive-data-exposure">Sensitive Data Exposure</h2>
+
+<ul>
+  <li>
+    <p>Sensitive Data Exposure occurs when a website doesn’t properly protect (or remove) sensitive clear-text information to the end-user; usually found in a site’s frontend source code.</p>
+  </li>
+  <li>We now know that websites are built using many HTML elements (tags), all of which we can see simply by “viewing the page source”.</li>
+  <li>A website developer may have forgotten to remove login credentials, hidden links to private parts of the website or other sensitive data shown in HTML or JavaScript.</li>
+</ul>
+
+<p><img src="https://assets.tryhackme.com/additional/how-websites-work/html_source.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Sensitive information can be potentially leveraged to 
+further an attacker’s access within different parts of a web application. 
+For example, there could be HTML comments with temporary login credentials, and if you viewed the page’s source code and found this, you could use these credentials to log in elsewhere on the application (or worse, used to access other backend components of the site).</p>
+  </li>
+  <li>
+    <p>Whenever you’re assessing a web application for security issues, one of the first things you should do is review the page source code to see if you can find any exposed login credentials or hidden links.</p>
+  </li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>View the website on this task. What is the password hidden in the source code?</p>
+
+<ul>
+  <li>Entered a random password that got me a link to the source code:</li>
+</ul>
+
+<p><img src="/tryhackme/How%20Websites%20Work/sensitive.png" alt="" /></p>
+
+<p>A: testpasswd</p>
+
+<h2 id="html-injection">HTML Injection</h2>
+
+<ul>
+  <li>HTML Injection is a vulnerability that occurs when unfiltered user input is displayed on the page. </li>
+  <li>
+    <p>If a website fails to sanitise user input (filter any “malicious” text that a user inputs into a website), and that input is used on the page, an attacker can inject HTML code into a vulnerable website.</p>
+  </li>
+  <li>Input sanitisation is very important in keeping a website secure, as information a user inputs into a website is often used in other frontend and backend functionality.</li>
+  <li>
+    <p>A vulnerability you’ll explore in another lab is database injection, where you can manipulate a database lookup query to log in as another user by controlling the input that’s directly used in the query - but for now, let’s focus on HTML injection (which is client-side).</p>
+  </li>
+  <li>When a user has control of how their input is displayed, they can submit HTML (or JavaScript) code, and the browser will use it on the page, allowing the user to control the page’s appearance and functionality.</li>
+</ul>
+
+<p><img src="https://assets.tryhackme.com/additional/how-websites-work/html_injection.png" alt="" /></p>
+
+<ul>
+  <li>The image above shows how a form outputs text to the page.</li>
+  <li>
+    <p>Whatever the user inputs into the “What’s your name” field is passed to a JavaScript function and output to the page, which means if the user adds their own HTML or JavaScript in the field, it’s used in the sayHi function and is added to the page - this means you can add your own HTML (such as a <code class="language-plaintext highlighter-rouge">&lt;h1&gt;</code> tag) and it will output your input as pure HTML.</p>
+  </li>
+  <li>The general rule is never to trust user input.</li>
+  <li>To prevent malicious input, the website developer should sanitise everything the user enters before using it in the JavaScript function; in this case, the developer could remove any HTML tags.</li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>View the website on this task and inject HTML so that a malicious link to http://hacker.com is shown.</p>
+
+<ul>
+  <li>In the What’s your name field, I have inserted the following HTML code: <code class="language-plaintext highlighter-rouge">&lt;a href="http://hacker.com"&gt;Malicious&lt;/a&gt;</code>, which outputs a clickable link to that particular website</li>
+</ul>
+
+<p><img src="/tryhackme/How%20Websites%20Work/htmlinj.png" alt="" /></p>
+
+<p>A: HTML_INJ3CTI0N</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

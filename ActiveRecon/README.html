@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Active Recon · THM Writeups</title>
+  
+  <meta name="description" content="Learn how to use simple tools such as traceroute, ping, telnet, and a web browser to gather information." />
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>Active Recon</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">ActiveRecon/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">ping</span>
+          
+          <span class="tag-pill">traceroute</span>
+          
+          <span class="tag-pill">telnet</span>
+          
+          <span class="tag-pill">nc</span>
+          
+        
+        
+        <span class="writeup-meta-desc">Learn how to use simple tools such as traceroute, ping, telnet, and a web browser to gather information.</span>
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="active-recon">Active Recon</h1>
+
+<ul>
+  <li>
+    <p>any connection we made to the target may leave traces in the logs.</p>
+  </li>
+  <li>
+    <p>but not all of them: a browser, for example, is not suspicious as there are a lot of users accessing it through that</p>
+  </li>
+</ul>
+
+<h2 id="web-browser">Web Browser</h2>
+
+<ul>
+  <li>
+    <p>on the transport layer the browser connects to:</p>
+
+    <ul>
+      <li>Port 80 when website is accessed over HTTP</li>
+      <li>Port 443 when website is accessed over HTTPS</li>
+    </ul>
+  </li>
+  <li>
+    <p>127.0.0.1 = <em>localhost</em></p>
+  </li>
+  <li>
+    <p>Press <em>CTRL+Shist+I</em> to access the Developer Tools in Firefox</p>
+  </li>
+  <li>
+    <p>Useful tools:</p>
+
+    <ul>
+      <li>
+        <p><em>FoxyProxy</em> lets you quickly change the proxy server you are using to access the target website. This browser extension is convenient when you are using a tool such as Burp Suite or if you need to switch proxy servers regularly. You can get FoxyProxy for Firefox from <a href="https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard">here</a>.</p>
+      </li>
+      <li>
+        <p><em>User-Agent Switcher and Manager</em> gives you the ability to pretend to be accessing the webpage from a different operating system or different web browser. In other words, you can pretend to be browsing a site using an iPhone when in fact, you are accessing it from Mozilla Firefox. You can download User-Agent Switcher and Manager for Firefox <a href="https://addons.mozilla.org/en-US/firefox/addon/user-agent-string-switcher">here</a>.</p>
+      </li>
+      <li>
+        <p><em>Wappalyzer</em> provides insights about the technologies used on the visited websites. Such extension is handy, primarily when you collect all this information while browsing the website like any other user. You can find Wappalyzer for Firefox <a href="https://addons.mozilla.org/en-US/firefox/addon/user-agent-string-switcher">here</a>.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ping">Ping</h2>
+
+<ul>
+  <li>
+    <p>The primary purpose of ping is to check whether you can reach the remote system and that the remote system can reach you back.</p>
+  </li>
+  <li>
+    <p>In other words, initially, this was used to check network connectivity; however, we are more interested in its different uses: checking whether the remote system is online.</p>
+  </li>
+  <li>
+    <p>ping sends <strong>ICMP Echo packets</strong> to a remote system</p>
+
+    <ul>
+      <li>If the system is online, hence the packet was correctly routed and not blocked by any firewall, the system should send back an <strong>ICMP Echo Reply</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ping <span class="nt">-c</span> 10 MACHINE_IP <span class="c">#send 10 packets</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Technically speaking, ping falls under the protocol ICMP (<strong>Internet Control Message Protocol</strong>).</p>
+
+    <ul>
+      <li>ICMP supports many types of queries, but, in particular, we are interested in <em>ping</em> (<em>ICMP echo/type 8</em>) and <em>ping reply</em> (<em>ICMP echo reply/type 0</em>).</li>
+    </ul>
+  </li>
+  <li>
+    <p>MS Windows Firewall blocks ping by default.</p>
+  </li>
+</ul>
+
+<h3 id="questions">Questions</h3>
+
+<ol>
+  <li>Which option would you use to set the size of the data carried by the ICMP echo request?</li>
+</ol>
+
+<p>R: -s</p>
+
+<ol>
+  <li>What is the size of the ICMP header in bytes?</li>
+</ol>
+
+<p>R: 8</p>
+
+<ol>
+  <li>Does MS Windows Firewall block ping by default? (Y/N)</li>
+</ol>
+
+<p>R: Y</p>
+
+<p>4.Deploy the VM for this task and using the AttackBox terminal, issue the command ping -c 10 MACHINE_IP. How many ping replies did you get back?</p>
+
+<p>R: 10</p>
+
+<h2 id="traceroute">Traceroute</h2>
+
+<ul>
+  <li>
+    <p>its purpose is to find the IP addresses of the routers or hops that a packet traverses on its way to the target.</p>
+  </li>
+  <li>
+    <p>There is no direct way to discover the path from your system to a target system.</p>
+
+    <ul>
+      <li>We rely on ICMP to “trick” the routers into revealing their IP addresses.</li>
+      <li>We can accomplish this by using a small <em>Time To Live</em> (TTL) in the IP header field.</li>
+      <li>Although the T in TTL stands for time, TTL indicates <em>the maximum number of routers/hops that a packet can pass through before being dropped</em>; TTL is not a maximum number of time units.</li>
+      <li>When a router receives a packet, it decrements the TTL by one before passing it to the next router.</li>
+      <li>each time the IP packet passes through a router, its TTL value is decremented by 1.</li>
+      <li>Initially, it leaves the system with a TTL value of 64; it reaches the target system with a TTL value of 60 after passing through 4 routers.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/ActiveRecon/e82c42dcfae78ac592a8d7843465d2d6.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>However, <em>if the TTL reaches 0, it will be dropped, and an ICMP Time-to-Live exceeded would be sent to the original sender</em>.</p>
+  </li>
+  <li>
+    <p>In the following figure, the system set TTL to 1 before sending it to the router.</p>
+
+    <ul>
+      <li>The first router on the path decrements the TTL by 1, resulting in a TTL of 0.</li>
+      <li>Consequently, this router will discard the packet and send an ICMP time exceeded in-transit error message.</li>
+      <li>Note that some routers are configured not to send such ICMP messages when discarding a packet.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/ActiveRecon/traceroute2.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>On Linux, traceroute will start by sending <em>UDP datagrams</em> within IP packets of <em>TTL being 1</em>.</p>
+
+    <ul>
+      <li>
+        <p>Thus, it causes the <em>first router to encounter a TTL=0 and send an ICMP Time-to-Live exceeded back.</em></p>
+      </li>
+      <li>
+        <p>Hence, a TTL of 1 <em>will reveal the IP address of the first router to you</em>.</p>
+      </li>
+      <li>
+        <p>Then it will send another packet with TTL=2; this packet will be dropped at the second router. And so on.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>To summarize, we can notice the following:</p>
+
+    <ul>
+      <li>
+        <p>The number of hops/routers between your system and the target system depends on the time you are running traceroute. There is no guarantee that your packets will always follow the same route, even if you are on the same network or you repeat the traceroute command within a short time.</p>
+      </li>
+      <li>
+        <p>Some routers return a public IP address. You might examine a few of these routers based on the scope of the intended penetration testing.</p>
+      </li>
+      <li>
+        <p>Some routers don’t return a reply.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-1">Questions</h3>
+
+<ol>
+  <li>In Traceroute A, what is the IP address of the last router/hop before reaching tryhackme.com?</li>
+</ol>
+
+<p>R: 172.67.69.208</p>
+
+<ol>
+  <li>In Traceroute B, what is the IP address of the last router/hop before reaching tryhackme.com?</li>
+</ol>
+
+<p>R: 104.26.11.229</p>
+
+<ol>
+  <li>In Traceroute B, how many routers are between the two systems?</li>
+</ol>
+
+<p>R: 26</p>
+
+<h2 id="telnet">Telnet</h2>
+
+<ul>
+  <li>
+    <p>The Telnet (<em>Teletype network</em>) was developed in 1969 to communicate with a remote system via a command line interface (CLI).</p>
+  </li>
+  <li>
+    <p><em>default port: 23</em></p>
+  </li>
+  <li>
+    <p>it sends the username and passwords in plaintext, which may be stolen by the attacker if he has access to the communciation channel</p>
+  </li>
+  <li>
+    <p>secure alternative: SSH</p>
+  </li>
+  <li>
+    <p>the telnet client relies on TCP</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>telnet IP PORT
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Let’s say we want to discover more information about a web server, listening on port 80.</p>
+  </li>
+  <li>
+    <p>We connect to the server at port 80, and then we communicate using the HTTP protocol.</p>
+
+    <ul>
+      <li>To specify something other than the default index page, you can issue GET /page.html HTTP/1.1, which will request page.html.</li>
+    </ul>
+  </li>
+  <li>
+    <p>We also specified to the remote web server that we want to use HTTP version 1.1 for communication.</p>
+
+    <ul>
+      <li>
+        <p>To get a valid response, instead of an error, you need to input some value for the host-&gt; host: example and hit enter twice.</p>
+      </li>
+      <li>
+        <p>Executing these steps will provide the requested index page.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<ol>
+  <li>Start the attached VM from Task 3 if it is not already started. On the AttackBox, open the terminal and use the telnet client to connect to the VM on port 80. What is the name of the running server?</li>
+</ol>
+
+<p><img src="/tryhackme/ActiveRecon/tracerouteex.png" alt="" /></p>
+
+<p>R: apache</p>
+
+<ol>
+  <li>What is the version of the running server (on port 80 of the VM)?</li>
+</ol>
+
+<p>R: 2.4.10</p>
+
+<h2 id="netcat">Netcat</h2>
+
+<ul>
+  <li>
+    <p>netcat supports both UDP and TCP</p>
+  </li>
+  <li>
+    <p>it can act either as a client that connects to a server or as a sever that listens on a port of my choice.</p>
+  </li>
+  <li>
+    <p>you can connect to a server as you did with telnet to get its <em>banner</em> using:</p>
+  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nc IP PORT
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>Note that you need to press SHIFT-ENTER after the GET line</p>
+  </li>
+  <li>
+    <p>Netcat flags:</p>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/ActiveRecon/ncoptions.png" alt="" /></p>
+
+<ul>
+  <li><em>port number less than 1024 need root privileges to listen on!!</em></li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<ol>
+  <li>Start the VM and open the AttackBox. Once the AttackBox loads, use Netcat to connect to the VM port 21. What is the version of the running server?</li>
+</ol>
+
+<p>R: 0.17</p>
+
+<p><img src="/tryhackme/ActiveRecon/nc.png" alt="" /></p>
+
+<h2 id="recap">Recap</h2>
+
+<ul>
+  <li>
+    <p>It is easy to put a few of them together via a shell script to build a primitive network and system scanner.</p>
+
+    <ul>
+      <li>
+        <p>You can use traceroute to map the path to the target, ping to check if the target system responds to ICMP Echo, and telnet to check which ports are open and reachable by attempting to connect to them.</p>
+      </li>
+      <li>
+        <p>Available scanners do this at much more advanced and sophisticated levels, as we will see in the next four rooms with nmap.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/ActiveRecon/recap.png" alt="" /></p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

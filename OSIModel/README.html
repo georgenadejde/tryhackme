@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OSI Model · THM Writeups</title>
+  
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline';" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="no-referrer" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/tryhackme/assets/css/style.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="scanlines"></div>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="/tryhackme/" class="nav-logo">
+      <span class="prompt">~/george/thm</span><span class="cursor-blink">_</span>
+    </a>
+    <div class="nav-right">
+      <a href="/tryhackme/" class="nav-link"><span class="cmd-prefix">./</span>index</a>
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer" class="nav-link">
+        <span class="cmd-prefix">~/</span>portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="writeup-main">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/tryhackme/">writeups</a>
+      <span class="breadcrumb-sep">→</span>
+      <span>OSI Model</span>
+    </div>
+
+    <!-- Writeup header -->
+    <div class="writeup-header">
+      <div class="terminal-bar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="terminal-title">OSIModel/README.md</span>
+      </div>
+      <div class="writeup-meta">
+        <span class="platform-badge">TryHackMe</span>
+        
+          
+          <span class="tag-pill">osi</span>
+          
+        
+        
+      </div>
+    </div>
+
+    <!-- Writeup body: sidebar + content -->
+    <div class="writeup-body">
+
+      <!-- ToC Sidebar -->
+      <aside class="toc-sidebar" id="tocSidebar">
+        <div class="toc-header">
+          <span class="toc-label">$ cat --toc</span>
+          <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">✕</button>
+        </div>
+        <nav class="toc-nav" id="tocNav">
+          <p class="toc-empty">No headings found.</p>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <div class="writeup-content-wrap">
+        <article class="writeup-content" id="writeupContent">
+          <h1 id="osi-model">OSI Model</h1>
+
+<h3 id="what-is-the-osi-model">What is the OSI Model?</h3>
+
+<ul>
+  <li>The <strong>OSI</strong> model (or <strong>O</strong>pen <strong>S</strong>ystems <strong>I</strong>nterconnection Model) is an absolute fundamental model used in networking. 
+    <ul>
+      <li>This critical model provides a framework dictating how all networked devices will send, receive and interpret data.</li>
+    </ul>
+  </li>
+  <li>One of the main benefits of the OSI model is that devices can have different functions and designs on a network while communicating with other devices.
+    <ul>
+      <li>Data sent across a network that follows the uniformity of the OSI model can be understood by other devices.</li>
+    </ul>
+  </li>
+  <li>The OSI model consists of seven layers which are illustrated in the diagram below.
+    <ul>
+      <li>Each layer has a different set of responsibilities and is arranged from Layer 7 to Layer 1.</li>
+    </ul>
+  </li>
+  <li>At every individual layer that data travels through, specific processes take place, and pieces of information are added to this data, which is what we’ll come to discuss in the upcoming tasks within this room.
+    <ul>
+      <li>However, for now, we only need to understand that this process is called encapsulation and what the OSI model looks like in the diagram below:</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OSIModel/Pasted%20image%2020230202110847.png" alt="" /></p>
+
+<h3 id="questions">Questions</h3>
+
+<p>What does the “OSI” in “OSI Model” stand for?</p>
+
+<p>A: Open System Interconnection</p>
+
+<p>How many layers (in digits) does the OSI model have?</p>
+
+<p>A: 7</p>
+
+<p>What is the key term for when pieces of information get added to data?</p>
+
+<p>A: encapsulation</p>
+
+<h2 id="layer-7---application">Layer 7 - Application</h2>
+
+<ul>
+  <li>The application layer of the OSI model is the layer that you will be most familiar with.</li>
+  <li>
+    <p>This familiarity is because the application layer is the layer in which protocols and rules are in place to determine how the user should interact with data sent or received.</p>
+  </li>
+  <li>Everyday applications such as email clients, browsers, or file server browsing software such as FileZilla provide a friendly, <strong>G</strong>raphical <strong>U</strong>ser <strong>I</strong>nterface (<strong>GUI</strong>) for users to interact with data sent or received.
+    <ul>
+      <li>Other protocols include <strong>DNS</strong> (<strong>D</strong>omain <strong>N</strong>ame <strong>S</strong>ystem), which is how website addresses are translated into IP addresses.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="/tryhackme/OSIModel/Pasted%20image%2020230202111129.png" alt="" /></p>
+
+<h3 id="questions-1">Questions</h3>
+
+<p>What is the name of this Layer?</p>
+
+<p>A: application</p>
+
+<p>What is the technical term that is given to the name of the software that users interact with?</p>
+
+<p>A: graphical user interface</p>
+
+<h2 id="layer-6---presentation">Layer 6 - Presentation</h2>
+
+<ul>
+  <li>Layer 6 of the OSI model is the layer in which standardisation starts to take place.</li>
+  <li>
+    <p>Because software developers can develop any software such as an email client differently, the data still needs to be handled in the same way — no matter how the software works.</p>
+  </li>
+  <li>This layer acts as a translator for data to and from the application layer (layer 7).
+    <ul>
+      <li>The receiving computer will also understand data sent to a computer in one format destined for in another format.</li>
+    </ul>
+  </li>
+  <li>
+    <p>For example, when you send an email, the other user may have another email client to you, but the contents of the email will still need to display the same.</p>
+  </li>
+  <li>Security features such as data encryption (like HTTPS when visiting a secure site) occur at this layer.</li>
+</ul>
+
+<h3 id="questions-2">Questions</h3>
+
+<p>What is the name of this Layer?</p>
+
+<p>A: presentation
+ 
+What is the main purpose that this Layer acts as?</p>
+
+<p>A: translator</p>
+
+<h2 id="layer-5---session">Layer 5 - Session</h2>
+
+<ul>
+  <li>Once data has been correctly translated or formatted from the presentation layer (layer 6), the session layer (layer 5) will begin to create a connection to the other computer that the data is destined for.
+    <ul>
+      <li>When a connection is established, a session is created.</li>
+      <li>Whilst this connection is active, so is the session.</li>
+    </ul>
+  </li>
+  <li>The session layer (layer 5) synchronises the two computers to ensure that they are on the same page before data is sent and received.</li>
+  <li>Once these checks are in place, the session layer will begin to divide up the data sent into smaller chunks of data and begin to send these chunks (packets) one at a time.</li>
+  <li>
+    <p>This dividing up is beneficial because if the connection is lost, only the chunks that weren’t yet sent will have to be sent again — not the entire piece of the data (think of it as loading a save file in a video game).</p>
+  </li>
+  <li>What is worthy of noting is that sessions are unique — meaning that data cannot travel over different sessions, but in fact, only across each session instead.</li>
+</ul>
+
+<h3 id="questions-3">Questions</h3>
+
+<p>What is the name of this Layer?</p>
+
+<p>A: session</p>
+
+<p>What is the technical term for when a connection is successfully established?</p>
+
+<p>A: session</p>
+
+<p>What is the technical term for “small chunks of data”?</p>
+
+<p>A: packets</p>
+
+<h2 id="layer-4---transport">Layer 4 - Transport</h2>
+<p>#tcp #udp</p>
+
+<ul>
+  <li>Layer 4 of the OSI model plays a vital part in transmitting data across a network and can be a little bit difficult to grasp.</li>
+  <li>When data is sent between devices, it follows one of two different protocols that are decided based upon several factors:
+    <ul>
+      <li>TCP</li>
+      <li>UDP</li>
+    </ul>
+  </li>
+  <li>Let’s begin with TCP.
+    <ul>
+      <li>The <strong>T</strong>ransmission <strong>C</strong>ontrol <strong>P</strong>rotocol (<strong>TCP</strong>).</li>
+    </ul>
+  </li>
+  <li>Potentially hinted by the name, this protocol is designed with reliability and guarantee in mind.</li>
+  <li>
+    <p>This protocol reserves a constant connection between the two devices for the amount of time it takes for the data to be sent and received.</p>
+  </li>
+  <li>Not only this, but TCP incorporates error checking into its design.</li>
+  <li>
+    <p>Error checking is how TCP can guarantee that data sent from the small chunks in the session layer (layer 5) has then been received and reassembled in the same order.</p>
+  </li>
+  <li>Let’s summarise the advantages and disadvantages of TCP in the table below:</li>
+</ul>
+
+<p><img src="/tryhackme/OSIModel/05_4_2023_11-24.png" alt="" /></p>
+
+<ul>
+  <li>TCP is used for situations such as file sharing, internet browsing or sending an email.</li>
+  <li>
+    <p>This usage is because these services require the data to be accurate and complete (no good having half a file!).</p>
+  </li>
+  <li>Now let’s move onto the <strong>U</strong>ser <strong>D</strong>atagram <strong>P</strong>rotocol (or <strong>UDP</strong> for short).</li>
+  <li>This protocol is not nearly as advanced as its brother - the TCP protocol.</li>
+  <li>It doesn’t boast the many features offered by TCP, such as error checking and reliability.</li>
+  <li>In fact, any data that gets sent via UDP is sent to the computer whether it gets there or not.</li>
+  <li>
+    <p>There is no synchronisation between the two devices or guarantee; just hope for the best, and fingers crossed.</p>
+  </li>
+  <li>Whilst this sounds disadvantageous, it does have its merits, which we’ll layout in the table below:</li>
+</ul>
+
+<p><img src="/tryhackme/OSIModel/05_4_2023_11-28.png" alt="" /></p>
+
+<ul>
+  <li>UDP is useful in situations where there are small pieces of data being sent.</li>
+  <li>For example, protocols used for discovering devices (<em>ARP</em> and <em>DHCP</em> that we discussed in <a href="https://tryhackme.com/room/introtolan">Room 2 - Intro to LAN)</a> or larger files such as video streaming (where it is okay if some part of the video is pixelated. Pixels are just lost pieces of data!)</li>
+</ul>
+
+<h3 id="questions-4">Questions</h3>
+
+<p>What is the name of this Layer?</p>
+
+<p> A: transport</p>
+
+<p>What does TCP stand for?</p>
+
+<p> A: transmission control protocol
+ 
+What does UDP stand for?</p>
+
+<p>A: user datagram protocol</p>
+
+<p>What protocol guarantees the accuracy of data?</p>
+
+<p>A: TCP</p>
+
+<p>What protocol doesn’t care if data is received or not by the other device?</p>
+
+<p>A: UDP</p>
+
+<p>What protocol would an application such as an email client use?</p>
+
+<p>A: TCP</p>
+
+<p>What protocol would an application that downloads files use?</p>
+
+<p>A: TCP</p>
+
+<p>What protocol would an application that streams video use?</p>
+
+<p>A: UDP</p>
+
+<h3 id="layer-3--network">Layer 3- Network</h3>
+
+<ul>
+  <li>The third layer of the OSI model (network layer) is where the magic of routing &amp; re-assembly of data takes place (from these small chunks to the larger chunk).</li>
+  <li>
+    <p>Firstly, routing simply determines the most optimal path in which these chunks of data should be sent.</p>
+  </li>
+  <li>Whilst some protocols at this layer determine exactly what is the “optimal” path that data should take to reach a device, we should only know about their existence at this stage of the networking module.</li>
+  <li>Briefly, these protocols include <strong>OSPF</strong> (<strong>O</strong>pen <strong>S</strong>hortest <strong>P</strong>ath <strong>F</strong>irst) and <strong>RIP</strong> (<strong>R</strong>outing <strong>I</strong>nformation <strong>P</strong>rotocol).</li>
+  <li>The factors that decide what route is taken is decided by the following:
+    <ul>
+      <li>What path is the shortest? I.e. has the least amount of devices that the packet needs to travel across.</li>
+      <li>What path is the most reliable? I.e. have packets been lost on that path before?</li>
+      <li>Which path has the faster physical connection? I.e. is one path using a copper connection (slower) or a fibre (considerably faster)?</li>
+    </ul>
+  </li>
+  <li>At this layer, everything is dealt with via IP addresses such as 192.168.1.100.</li>
+  <li>Devices such as routers capable of delivering packets using IP addresses are known as Layer 3 devices — because they are capable of working at the third layer of the OSI model.</li>
+</ul>
+
+<p><img src="https://assets.tryhackme.com/additional/networking-fundamentals/intro-to-networking/what-is-the-internet/routing2.png" alt="" /></p>
+
+<h3 id="questions-5">Questions</h3>
+
+<p>What is the name of this Layer?</p>
+
+<p>A: transport</p>
+
+<p>Will packets take the most optimal route across a network? (Y/N)</p>
+
+<p>A: Y</p>
+
+<p>What does the acronym “OSPF” stand for?</p>
+
+<p>A: open shortest path first</p>
+
+<p>What does the acronym “RIP” stand for?</p>
+
+<p>A: routing information protocol</p>
+
+<p>What type of addresses are dealt with at this layer?</p>
+
+<p>A: IP addresses</p>
+
+<h2 id="layer-2---data-link">Layer 2 - Data Link</h2>
+
+<ul>
+  <li>The data link layer focuses on the physical addressing of the transmission.</li>
+  <li>It receives a packet from the network layer (including the IP address for the remote computer) and adds in the physical <strong>MAC</strong> (Media Access Control) address of the receiving endpoint.</li>
+  <li>
+    <p>Inside every network-enabled computer is a <strong>N</strong>etwork <strong>I</strong>nterface Card (<strong>NIC</strong>) which comes with a unique MAC address to identify it.</p>
+  </li>
+  <li>MAC addresses are set by the manufacturer and literally burnt into the card; they can’t be changed – although they can be spoofed.</li>
+  <li>
+    <p>When information is sent across a network, it’s actually the physical address that is used to identify where exactly to send the information.</p>
+  </li>
+  <li>Additionally, it’s also the job of the data link layer to present the data in a format suitable for transmission.</li>
+</ul>
+
+<h3 id="questions-6">Questions</h3>
+
+<p>What is the name of this Layer?</p>
+
+<p>A: data link</p>
+
+<p>What is the name of the piece of hardware that all networked devices come with?</p>
+
+<p>A: network interface card</p>
+
+<h2 id="layer-1---physical">Layer 1 - Physical</h2>
+
+<ul>
+  <li>This layer is one of the easiest layers to grasp.</li>
+  <li>Put simply, this layer references the physical components of the hardware used in networking and is the lowest layer that you will find.</li>
+  <li>
+    <p>Devices use electrical signals to transfer data between each other in a binary numbering system (1’s and 0’s).</p>
+  </li>
+  <li>For example, ethernet cables connecting devices, such as in the diagram below:</li>
+</ul>
+
+<p><img src="https://cdn.cnetcontent.com/19/df/19df9af1-a653-4158-ad7c-4b0f8d581431.jpg" alt="" /></p>
+
+<h3 id="questions-7">Questions</h3>
+
+<p>What is the name of this Layer?</p>
+
+<p>A: physical</p>
+
+<p>What is the name of the numbering system that is both 0’s and 1’s?</p>
+
+<p> A: binary</p>
+
+<p>What is the name of the cables that are used to connect devices?</p>
+
+<p>A: ethernet cables</p>
+
+<h2 id="practical---osi-game">Practical - OSI Game</h2>
+
+<h3 id="questions-8">Questions</h3>
+
+<p>Escape the dungeon to retrieve the flag. What is the flag?</p>
+
+<p>A: THM{OSI_DUNGEON_ESCAPED}</p>
+
+        </article>
+
+        <!-- Back button -->
+        <div class="writeup-footer-nav">
+          <a href="/tryhackme/" class="btn-ghost">← Back to Index</a>
+        </div>
+      </div>
+
+    </div><!-- /.writeup-body -->
+
+  </div>
+</main>
+
+<!-- Floating ToC toggle (shown when sidebar is hidden) -->
+<button class="toc-fab" id="tocFab" aria-label="Open table of contents" style="display:none;">
+  ☰ <span>ToC</span>
+</button>
+
+<script>
+(function () {
+  const sidebar  = document.getElementById('tocSidebar');
+  const tocNav   = document.getElementById('tocNav');
+  const toggleBtn = document.getElementById('tocToggle');
+  const fab      = document.getElementById('tocFab');
+  const content  = document.getElementById('writeupContent');
+
+  /* ── Build ToC from headings ── */
+  const headings = Array.from(content.querySelectorAll('h2, h3'));
+
+  if (headings.length === 0) {
+    // leave the "No headings" placeholder
+  } else {
+    tocNav.innerHTML = '';
+    headings.forEach((h, i) => {
+      // Ensure every heading has an id we can link to
+      if (!h.id) {
+        h.id = 'toc-heading-' + i + '-' + h.textContent.trim()
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent;
+      a.className = 'toc-link toc-' + h.tagName.toLowerCase();
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById(h.id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // on mobile, close after click
+        if (window.innerWidth < 1024) hideSidebar();
+      });
+      tocNav.appendChild(a);
+    });
+  }
+
+  /* ── Highlight active heading on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const link = tocNav.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        tocNav.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-60px 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => observer.observe(h));
+
+  /* ── Show / hide ── */
+  function showSidebar() {
+    sidebar.classList.add('open');
+    sidebar.setAttribute('aria-hidden', 'false');
+    fab.style.display = 'none';
+    localStorage.setItem('tocOpen', '1');
+  }
+  function hideSidebar() {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+    fab.style.display = 'flex';
+    localStorage.setItem('tocOpen', '0');
+  }
+
+  toggleBtn.addEventListener('click', hideSidebar);
+  fab.addEventListener('click', showSidebar);
+
+  /* ── Restore preference ── */
+  const isMobile = () => window.innerWidth < 1024;
+  const pref = localStorage.getItem('tocOpen');
+
+  if (isMobile()) {
+    hideSidebar();
+  } else if (pref === '0') {
+    hideSidebar();
+  } else {
+    showSidebar();
+  }
+
+  window.addEventListener('resize', () => {
+    if (isMobile()) {
+      hideSidebar();
+    } else if (localStorage.getItem('tocOpen') !== '0') {
+      showSidebar();
+    }
+  });
+})();
+</script>
+
+<script>
+/* ── Q&A Card Builder ── */
+(function () {
+  const article = document.getElementById('writeupContent');
+  if (!article) return;
+
+  // Mark "Questions" h3 headings
+  article.querySelectorAll('h3').forEach(h => {
+    if (h.textContent.trim().toLowerCase() === 'questions') {
+      h.classList.add('is-questions');
+    }
+  });
+
+  /*
+    Algorithm:
+    - Take a live snapshot of direct children
+    - Scan forward; when we see a <p> starting with "Q:", enter collection mode
+    - Collect all nodes into `questionNodes` until we hit a <p> starting with "A:"
+    - Collect `answerNodes` from "A:" until the next Q:, heading, or end
+    - Build a .qa-block and splice it in place of those nodes
+  */
+
+  function startsWithQ(el) {
+    return el.tagName === 'P' && /^Q:/i.test(el.textContent.trim());
+  }
+  function startsWithA(el) {
+    return el.tagName === 'P' && /^A:/i.test(el.textContent.trim());
+  }
+  function isHeading(el) {
+    return /^H[1-6]$/.test(el.tagName);
+  }
+
+  function buildCard(questionNodes, answerPara, answerNodes) {
+    const block = document.createElement('div');
+    block.className = 'qa-block';
+
+    /* ── Question ── */
+    const qRow = document.createElement('div');
+    qRow.className = 'qa-question';
+
+    const qBadge = document.createElement('span');
+    qBadge.className = 'qa-q-badge';
+    qBadge.textContent = 'Q';
+    qRow.appendChild(qBadge);
+
+    const qBody = document.createElement('div');
+    qBody.className = 'qa-question-body';
+
+    // First node is the Q: paragraph — strip the prefix, use its innerHTML
+    const qPara = questionNodes[0];
+    qBody.innerHTML = qPara.innerHTML.replace(/^Q:\s*/i, '');
+
+    // Remaining question nodes (walkthrough: images, code, prose)
+    questionNodes.slice(1).forEach(n => qBody.appendChild(n.cloneNode(true)));
+
+    qRow.appendChild(qBody);
+    block.appendChild(qRow);
+
+    /* ── Reveal button ── */
+    const btn = document.createElement('button');
+    btn.className = 'qa-reveal-btn';
+    btn.innerHTML = '<span class="qa-chevron">▼</span><span>reveal answer</span>';
+    block.appendChild(btn);
+
+    /* ── Answer ── */
+    const aPanel = document.createElement('div');
+    aPanel.className = 'qa-answer';
+
+    const aBadge = document.createElement('span');
+    aBadge.className = 'qa-a-badge';
+    aBadge.textContent = 'A';
+    aPanel.appendChild(aBadge);
+
+    const aBody = document.createElement('div');
+    aBody.className = 'qa-answer-body';
+
+    if (answerPara) {
+      // Strip "A:" prefix from the answer paragraph
+      const stripped = answerPara.innerHTML.replace(/^A:\s*/i, '').trim();
+      if (stripped) aBody.innerHTML = stripped;
+      // Trailing images / code
+      answerNodes.forEach(n => aBody.appendChild(n.cloneNode(true)));
+    } else {
+      aBody.innerHTML = '<em style="color:var(--text-dim)">—</em>';
+    }
+
+    aPanel.appendChild(aBody);
+    block.appendChild(aPanel);
+
+    /* ── Toggle ── */
+    btn.addEventListener('click', () => {
+      const isOpen = aPanel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.querySelector('span:last-child').textContent = isOpen ? 'hide answer' : 'reveal answer';
+    });
+
+    return block;
+  }
+
+  // Work on a snapshot so DOM mutations don't affect iteration
+  let children = Array.from(article.children);
+  let i = 0;
+
+  while (i < children.length) {
+    const el = children[i];
+
+    if (startsWithQ(el)) {
+      const questionNodes = [el]; // first node = Q: paragraph
+      let j = i + 1;
+
+      // Absorb everything until we hit A: or a heading or end
+      while (j < children.length && !startsWithA(children[j]) && !isHeading(children[j])) {
+        // Stop if we hit another Q: (back-to-back questions)
+        if (startsWithQ(children[j])) break;
+        questionNodes.push(children[j]);
+        j++;
+      }
+
+      let answerPara = null;
+      const answerNodes = [];
+
+      if (j < children.length && startsWithA(children[j])) {
+        answerPara = children[j];
+        j++;
+        // Absorb trailing images/code/blockquotes as part of answer
+        while (j < children.length &&
+               !startsWithQ(children[j]) &&
+               !startsWithA(children[j]) &&
+               !isHeading(children[j])) {
+          answerNodes.push(children[j]);
+          j++;
+        }
+      }
+
+      // Build card
+      const card = buildCard(questionNodes, answerPara, answerNodes);
+
+      // Insert before the first consumed node
+      article.insertBefore(card, el);
+
+      // Remove all consumed original nodes
+      [...questionNodes, ...(answerPara ? [answerPara] : []), ...answerNodes]
+        .forEach(n => { if (n.parentNode === article) article.removeChild(n); });
+
+      // Refresh snapshot after DOM mutation
+      children = Array.from(article.children);
+      // Find where the card landed and continue from there
+      i = children.indexOf(card) + 1;
+    } else {
+      i++;
+    }
+  }
+})();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-text"><span class="prompt">george@kali:~$</span> echo "George Nădejde · TryHackMe Writeups"</span>
+    <div class="footer-links">
+      <a href="https://georgenadejde.github.io" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/georgenadejde" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
